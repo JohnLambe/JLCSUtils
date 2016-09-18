@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2C2E5049-976D-408F-A67D-1463271F3E98}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JohnLambe.Util</RootNamespace>
+    <AssemblyName>JLUtils</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\Library\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LazyInitialize.cs" />
+    <Compile Include="Text\CharacterUtils.cs" />
+    <Compile Include="Collections\CollectionUtils.cs" />
+    <Compile Include="Collections\LazilyPopulatedDictionary.cs" />
+    <Compile Include="Db\EnumToSql.cs" />
+    <Compile Include="DependencyInjection\Attributes\InjectAttribute.cs" />
+    <Compile Include="DependencyInjection\AutoFactory\AutoFactoryAttribute.cs" />
+    <Compile Include="DependencyInjection\AutoFactory\AutoFactoryFactory.cs" />
+    <Compile Include="DependencyInjection\AutoFactory\AutoFactory.cs" />
+    <Compile Include="DependencyInjection\AutoFactory\SimpleInject\AutoFactorySimpleInjectorExtension.cs" />
+    <Compile Include="DependencyInjection\AutoFactory\Unity\AutoFactoryUnityExtension.cs" />
+    <Compile Include="DependencyInjection\AutoFactory\IFactory.cs" />
+    <Compile Include="Collections\DictionaryUtils.cs" />
+    <Compile Include="Collections\DictionaryWrapperMap.cs" />
+    <Compile Include="Collections\EmptyCollection.cs" />
+    <Compile Include="Collections\IMutableList.cs" />
+    <Compile Include="Collections\IQueue.cs" />
+    <Compile Include="Collections\ListUtils.cs" />
+    <Compile Include="Collections\MutableList.cs" />
+    <Compile Include="Collections\WrapperMap.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\ConfigProviderChain.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Metadata\ConfigMetadata.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Providers\CompositeProvider.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Providers\DictionaryConfigProvider.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Providers\EnvironmentVarConfigProvider.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Providers\ObjectValueProvider.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\RegisterProviderAttribute.cs" />
+    <Compile Include="DependencyInjection\DiContextConfigurer.cs" />
+    <Compile Include="DependencyInjection\IDiResolver.cs" />
+    <Compile Include="DependencyInjection\IExtendedDiContext.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\AutoEventHandler.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\ChainableContext.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\EventAutoWirer.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\PropertyInjectionDiBehavior.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\DiSimpleInjectorExtension.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\InjectPropertySelectionBehavior.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\SiDiContext.cs" />
+    <Compile Include="DependencyInjection\SimpleInject\SimpleInjectorDiContext.cs" />
+    <Compile Include="Encoding\HexConverter.cs" />
+    <Compile Include="DependencyInjection\Unity\UnityExtension.cs" />
+    <Compile Include="DependencyInjection\Unity\UnityExtensionBase.cs" />
+    <Compile Include="DynamicProxyBase.cs" />
+    <Compile Include="Encoding\SortStringCalculator.cs" />
+    <Compile Include="Math\RandomUtils.cs" />
+    <Compile Include="Reflection\EnumUtils.cs" />
+    <Compile Include="Io\FilingUtils.cs" />
+    <Compile Include="Io\PathUtils.cs" />
+    <Compile Include="Math\MathUtils.cs" />
+    <Compile Include="Math\OrdinalUtils.cs" />
+    <Compile Include="PluginFramework\Host\DiPluginInitializer.cs" />
+    <Compile Include="PluginFramework\Host\EventSystemPluginInitializer.cs" />
+    <Compile Include="PluginFramework\Host\IPluginHost.cs" />
+    <Compile Include="PluginFramework\Host\PluginInitializeParams.cs" />
+    <Compile Include="PluginFramework\Host\PluginInitializer.cs" />
+    <Compile Include="ReferenceCountedObject.cs" />
+    <Compile Include="Reflection\LooselyCoupledEvent\EventChain.cs" />
+    <Compile Include="Reflection\LooselyCoupledEvent\IHandlerMatch.cs" />
+    <Compile Include="Reflection\LooselyCoupledEvent\Exceptions.cs" />
+    <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEvent.cs" />
+    <Compile Include="Reflection\TypeUtils.cs" />
+    <Compile Include="Text\StringBuilderExtension.cs" />
+    <Compile Include="TimeUtilities\Date.cs" />
+    <Compile Include="TimeUtilities\Time.cs" />
+    <Compile Include="TimeUtilities\TimeUtils.cs" />
+    <Compile Include="TypeConversion\Converters.cs" />
+    <Compile Include="TypeConversion\GeneralTypeConverter.cs" />
+    <Compile Include="TypeConversion\IConverter.cs" />
+    <Compile Include="TypeConversion\TypeConverter.cs" />
+    <Compile Include="Delegates.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\IConfigProvider.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Providers\CommandLineConfigProvider.cs" />
+    <Compile Include="DependencyInjection\ConfigInject\Providers\RegistryConfigProvider.cs" />
+    <Compile Include="DependencyInjection\DiContext.cs" />
+    <Compile Include="DependencyInjection\DiRegisterAttribute.cs" />
+    <Compile Include="DependencyInjection\IDiContext.cs" />
+    <Compile Include="FilterDelegates\BooleanExpression.cs" />
+    <Compile Include="FilterDelegates\FilterDelegate.cs" />
+    <Compile Include="Math\BitUtils.cs" />
+    <Compile Include="MiscUtil.cs" />
+    <Compile Include="NotifyOnDispose.cs" />
+    <Compile Include="ObjectExtension.cs" />
+    <Compile Include="PluginFramework\Attributes\EventAttributes.cs" />
+    <Compile Include="PluginFramework\Attributes\PluginAttribute.cs" />
+    <Compile Include="PluginFramework\Events\IPluginInitialiseEvent.cs" />
+    <Compile Include="PluginFramework\Host\EventDispatcher.cs" />
+    <Compile Include="PluginFramework\Host\EventSender.cs" />
+    <Compile Include="PluginFramework\Host\PluginCollection.cs" />
+    <Compile Include="PluginFramework\Host\PluginDetails.cs" />
+    <Compile Include="PluginFramework\Host\PluginLoader.cs" />
+    <Compile Include="PluginFramework\Interfaces\IPluginCategory.cs" />
+    <Compile Include="PluginFramework\Interfaces\IPluginContainer.cs" />
+    <Compile Include="PluginFramework\Interfaces\IPluginDetails.cs" />
+    <Compile Include="PluginFramework\Interfaces\IPluginEvent.cs" />
+    <Compile Include="PluginFramework\Interfaces\IPluginEventSender.cs" />
+    <Compile Include="PluginFramework\Host\PluginHost.cs" />
+    <Compile Include="PluginFramework\Interfaces\IPluginInitializer.cs" />
+    <Compile Include="PluginFramework\Interfaces\PluginFilter.cs" />
+    <Compile Include="PriorityEvent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\ReflectionUtils.cs" />
+    <Compile Include="StrUtils.cs" />
+    <Compile Include="Text\FormatCollection.cs" />
+    <Compile Include="Threading\ThreadBase.cs" />
+    <Compile Include="Threading\ThreadSafe.cs" />
+    <Compile Include="Var.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Architecture.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DependencyInjection\DiAbstraction\" />
+    <Folder Include="Misc\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

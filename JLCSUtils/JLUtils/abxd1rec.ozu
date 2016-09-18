@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace JohnLambe.Util
+{
+    public unsafe class ByteArray : IDisposable
+    {
+        public ByteArray()
+        {
+            AsIntPtr = new IntPtr();
+
+        }
+
+        public ByteArray(int allocatedSize)
+        {
+            AsIntPtr = Marshal.AllocHGlobal(allocatedSize);
+
+        }
+
+        public static implicit operator IntPtr(ByteArray bytearray)
+        {
+            return bytearray.AsIntPtr;
+        }
+
+        public virtual IntPtr AsIntPtr { get; protected set; }
+
+        public virtual int AllocatedSize { get; set; }
+
+        public virtual int Size
+        {
+            get { return _size; }
+            set
+            {
+                if (value > AllocatedSize)
+                {
+                    ReAlloc();
+                    _size = value;
+                }
+            }
+        }
+
+        public virtual void Free()
+        {
+            if(AsIntPtr != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(AsIntPtr);
+                AsIntPtr = IntPtr.Zero;
+                Size = 0;
+                AllocatedSize = 0;
+            }
+        }
+
+        protected int _allocatedSize = 0;
+        protected int _size = 0;
+
+        public void Dispose()
+        {
+            Free();
+        }
+    }
+}
