@@ -128,8 +128,10 @@ namespace JohnLambe.Tests.JLUtilsTest
         public void CharAt()
         {
             Assert.AreEqual('d', "Éb\0cdefghi".CharAt(4,'x'));
+            Assert.AreEqual('#', StrUtils.CharAt(null, 4, '#'), "null");
             Assert.AreEqual('-', "qwerty".CharAt(100,'-'), "out of range");
             Assert.AreEqual('\0', "qwerty".CharAt(-1), "out of range, negative");
+            Assert.AreEqual('\0', "abcd".CharAt(4), "out of range by one");
         }
 
         [TestMethod]
@@ -184,6 +186,49 @@ namespace JohnLambe.Tests.JLUtilsTest
 
             Assert.AreEqual(null, StrUtils.Repeat(null, 10));
             TestUtil.AssertThrows(typeof(ArgumentException), () => StrUtils.Repeat("xyz", -1));
+        }
+
+        [TestMethod]
+        public void IsEnclosedIn()
+        {
+            Assert.AreEqual(true, "(test)".IsEnclosedIn("(",")"));
+            Assert.AreEqual(true, "'asdfg'".IsEnclosedIn("'"));
+
+            Assert.AreEqual(true, "##".IsEnclosedIn("#", "#"));
+            Assert.AreEqual(false, "'".IsEnclosedIn("'"));
+
+            Assert.AreEqual(true, "<--JKL->".IsEnclosedIn("<--", "->"), "different length prefix and suffix");
+
+            Assert.AreEqual(false, StrUtils.IsEnclosedIn(null, "%"), "null");
+        }
+
+        [TestMethod]
+        public void IsEnclosedIn_Char()
+        {
+            Assert.AreEqual(true, "<AAA>".IsEnclosedIn('<', '>'));
+            Assert.AreEqual(true, "%qwertá%".IsEnclosedIn('%'));
+
+            Assert.AreEqual(false, "<AAA> ".IsEnclosedIn('<', '>'));
+            Assert.AreEqual(false, "".IsEnclosedIn('%'));
+            Assert.AreEqual(false, "%".IsEnclosedIn('%'));  // the same character can't count as both `prefix` and `suffix`
+            Assert.AreEqual(false, StrUtils.IsEnclosedIn(null,'%'), "null");
+        }
+
+        [TestMethod]
+        public void ExtractEnclosed()
+        {
+            Assert.AreEqual("Ábc", StrUtils.ExtractEnclosed("/Ábc/","/"));
+            Assert.AreEqual(null, StrUtils.ExtractEnclosed("zxcvbnm", "/"), "null");
+            Assert.AreEqual("ExtractEnclosed", StrUtils.ExtractEnclosed("(*ExtractEnclosed*)", "(*","*)"));
+        }
+
+        [TestMethod]
+        public void ExtractEnclosed_Char()
+        {
+            Assert.AreEqual("sdf", StrUtils.ExtractEnclosed("asdfg", 'a', 'g'));
+            Assert.AreEqual("", StrUtils.ExtractEnclosed("@@", '@', '@'),"empty enclosed string");
+            Assert.AreEqual(null, StrUtils.ExtractEnclosed("]a[", '[', ']'));
+            Assert.AreEqual(null, StrUtils.ExtractEnclosed(null, '[', ']'),"null");
         }
     }
 }

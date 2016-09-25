@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Text\CaptionUtils.cs" />
+    <Compile Include="Types\ID.cs" />
     <Compile Include="LazyInitialize.cs" />
     <Compile Include="Text\CharacterUtils.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />

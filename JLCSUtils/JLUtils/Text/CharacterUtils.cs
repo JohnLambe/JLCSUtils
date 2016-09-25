@@ -25,7 +25,7 @@ namespace JohnLambe.Util
         /// <summary>
         /// Characters valid in decimal numbers.
         /// </summary>
-        public const string NumericCharacters = "0123456789.,-+";
+        public const string NumericCharacters = Digits + ".,-+";
 
         /// <summary>
         /// ASCII capital letter characters.
@@ -40,6 +40,6 @@ namespace JohnLambe.Util
         /// <summary>
         /// Characters allowed in identifiers such as those used in code.
         /// </summary>
-        public const string IdentifierCharacters = AsciiCapitalLetters + AsciiLowercaseLetters + "_";
+        public const string IdentifierCharacters = AsciiCapitalLetters + AsciiLowercaseLetters + Digits + "_";
     }
 }

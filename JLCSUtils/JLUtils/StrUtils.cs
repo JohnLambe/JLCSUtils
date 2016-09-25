@@ -88,7 +88,7 @@ namespace JohnLambe.Util
 
         public static string ConcatWithSeparatorIncludeBlanks(string separator, IEnumerable<object> parts)
         {
-            StringBuilder sb = new StringBuilder(TotalLength(separator.Length,parts));
+            StringBuilder sb = new StringBuilder(TotalLength(separator.Length, parts));
 
             foreach (var part in parts)
             {
@@ -124,7 +124,7 @@ namespace JohnLambe.Util
         /// <returns></returns>
         public static string ConcatWithSeparatorTrim(string separator, params string[] parts)
         {
-            StringBuilder sb = new StringBuilder(TotalLength(separator.Length,parts));
+            StringBuilder sb = new StringBuilder(TotalLength(separator.Length, parts));
 
             foreach (var part in parts)
             {
@@ -155,11 +155,11 @@ namespace JohnLambe.Util
         /// <param name="del">Delegate to be executed on each item in `enumerable`.</param>
         /// <param name="separator">Separator added between non-null items.</param>
         /// <returns></returns>
-        public static string ConcatForEach<TItem,TReturn>(IEnumerable<TItem> enumerable, Func<TItem,TReturn> del, string separator = null)
+        public static string ConcatForEach<TItem, TReturn>(IEnumerable<TItem> enumerable, Func<TItem, TReturn> del, string separator = null)
         {
             StringBuilder sb = new StringBuilder();
             bool first = true;
-            foreach(var x in enumerable)
+            foreach (var x in enumerable)
             {
                 TReturn value = del(x);
                 if (separator != null && value != null)
@@ -208,9 +208,9 @@ namespace JohnLambe.Util
         /// <returns></returns>
         public static string RemovePrefix(this string s, string prefix, StringComparison comparison = StringComparison.InvariantCulture)
         {
-            if(s==null)
+            if (s == null)
                 return null;
-            if (s.StartsWith(prefix,comparison))
+            if (s.StartsWith(prefix, comparison))
                 return s.Substring(prefix.Length);
             else
                 return s;
@@ -227,7 +227,7 @@ namespace JohnLambe.Util
         {
             if (s == null)
                 return null;
-            if (s.EndsWith(suffix,comparison))
+            if (s.EndsWith(suffix, comparison))
                 return s.Substring(0, s.Length - suffix.Length);
             else
                 return s;
@@ -340,18 +340,21 @@ namespace JohnLambe.Util
             if (s == null)
                 return null;
             return s.Replace("" + quote, "" + quote + quote);
-/*  Alternative implementation:
-            if(!s.Contains(quote))
-                return s;
-            StringBuilder sb = new StringBuilder(s.Length * 2);
-            foreach(char c in s)
-            {
-                sb.Append(quote);
-                if (c == quote)         // if quote
-                    sb.Append(quote);   // 
-            }
-*/
+            /*  Alternative implementation:
+                        if(!s.Contains(quote))
+                            return s;
+                        StringBuilder sb = new StringBuilder(s.Length * 2);
+                        foreach(char c in s)
+                        {
+                            sb.Append(quote);
+                            if (c == quote)         // if quote
+                                sb.Append(quote);   // 
+                        }
+            */
         }
+
+        #endregion
+
 
         /// <summary>
         /// Returns a substring consisting of the last <paramref name="length"/> characters of <paramref name="s"/>.
@@ -363,12 +366,10 @@ namespace JohnLambe.Util
         /// <returns></returns>
         public static string EndSubstring(this string s, int length)
         {
-            if(s==null)
+            if (s == null)
                 return null;
-            return s.Substring(System.Math.Max(0,s.Length - length));
+            return s.Substring(System.Math.Max(0, s.Length - length));
         }
-
-        #endregion
 
         #region Get character
 
@@ -381,7 +382,7 @@ namespace JohnLambe.Util
         /// <returns></returns>
         public static char CharAt(this string s, int index, char defaultValue = '\0')
         {
-            if (s == null || index > s.Length || index < 0)
+            if (s == null || index >= s.Length || index < 0)
                 return defaultValue;
             return s[index];
         }
@@ -397,8 +398,8 @@ namespace JohnLambe.Util
         {
             if (s == null || index < 0)
                 return defaultValue;
-            index = s.Length - index -1;
-            if( index < 0)
+            index = s.Length - index - 1;
+            if (index < 0)
                 return defaultValue;
             return s[index];
         }
@@ -420,9 +421,9 @@ namespace JohnLambe.Util
             if (remove == null)
                 remove = "";
             StringBuilder stringbuilder = new StringBuilder(s.Length);
-            foreach(char currentCharacter in s)
+            foreach (char currentCharacter in s)
             {
-                if(!remove.Contains(currentCharacter) ^ removeExcept)   // if it contains it or doesn't, depending on removeExcept
+                if (!remove.Contains(currentCharacter) ^ removeExcept)   // if it contains it or doesn't, depending on removeExcept
                     stringbuilder.Append(currentCharacter);
             }
             return stringbuilder.ToString();
@@ -439,7 +440,7 @@ namespace JohnLambe.Util
         public static string Repeat(this string s, int count)
         {
             if (count < 0)
-                throw new ArgumentException(nameof(count),"StrUtils.Repeat: 'count' cannot be negative (was " + count + ")");
+                throw new ArgumentException(nameof(count), "StrUtils.Repeat: 'count' cannot be negative (was " + count + ")");
             if (s == null)
                 return null;
             StringBuilder stringbuilder = new StringBuilder(s.Length * count);
@@ -447,6 +448,76 @@ namespace JohnLambe.Util
                 stringbuilder.Append(s);
             return stringbuilder.ToString();
         }
-    }
 
+        #region Enclosed
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="prefix">Prefix, must be non-null.</param>
+        /// <param name="suffix">Suffix, or null if the same as <paramref name="Prefix"/>.</param>
+        /// <returns>true iff this string starts with <paramref name="prefix"/> and ends with <paramref name="suffix"/>, not overlapping.</returns>
+        public static bool IsEnclosedIn(this string s, string prefix, string suffix = null)
+        {
+            if (suffix == null)
+                suffix = prefix;
+            return s != null                                      // returns false for null.
+                && s.Length >= prefix.Length + suffix.Length      // prefix and suffix not overlapping
+                && s.StartsWith(prefix) && s.EndsWith(suffix);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="encloser"></param>
+        /// <returns>true iff this string starts with <paramref name="encloser"/>, not overlapping.</returns>
+        public static bool IsEnclosedIn(this string s, char encloser)
+        {
+            return IsEnclosedIn(s, encloser, encloser);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="prefix"></param>
+        /// <param name="suffix"></param>
+        /// <returns>true iff this string starts with <paramref name="prefix"/> and ends with <paramref name="suffix"/>, not overlapping.</returns>
+        public static bool IsEnclosedIn(this string s, char prefix, char suffix)
+        {
+            return s != null                                      // returns false for null.
+                && s.Length >= 2                                  // prefix and suffix not overlapping
+                && s[0] == prefix && s[s.Length - 1] == suffix;
+        }
+
+        /// <summary>
+        /// Iff the string is enclosed within <paramref name="prefix"/> and <paramref name="suffix"/>,
+        /// the text between these is returned, otherwise null is returned.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="prefix">Prefix, must be non-null.</param>
+        /// <param name="suffix">Suffix, or null if the same as <paramref name="Prefix"/>.</param>
+        /// <returns></returns>
+        public static string ExtractEnclosed(this string s, string prefix, string suffix = null)
+        {
+            if (suffix == null)
+                suffix = prefix;
+            if (s.IsEnclosedIn(prefix,suffix))
+                return s.Substring(prefix.Length, s.Length - suffix.Length - prefix.Length);
+            else
+                return null;
+        }
+
+        public static string ExtractEnclosed(this string s, char prefix, char suffix)
+        {
+            if (s.IsEnclosedIn(prefix, suffix))
+                return s.Substring(1, s.Length - 2);
+            else
+                return null;
+        }
+
+        #endregion
+    }
 }

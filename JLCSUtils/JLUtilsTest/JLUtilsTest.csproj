@@ -89,7 +89,7 @@
     <Compile Include="Io\FilingUtilsTest.cs" />
     <Compile Include="LazyInitializeTest.cs" />
     <Compile Include="BitUtilsTest.cs" />
-    <Compile Include="Encoding2\HexConverterTest.cs" />
+    <Compile Include="Encoding\HexConverterTest.cs" />
     <Compile Include="ObjectConfigProviderTest.cs" />
     <Compile Include="ObjectExtensionTest.cs" />
     <Compile Include="OrdinalUtilsTest.cs" />
@@ -104,11 +104,13 @@
     <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEventTest.cs" />
     <Compile Include="StrUtilsTest.cs" />
     <Compile Include="TestUtil.cs" />
+    <Compile Include="Text\CaptionUtilsTest.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />
     <Compile Include="MiscUtilTest.cs" />
     <Compile Include="TimeUtilities\DateTest.cs" />
     <Compile Include="TimeUtilities\TimeTest.cs" />
     <Compile Include="TimeUtilities\TimeUtilsTest.cs" />
+    <Compile Include="Types\IDTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JLUtilsUnsafe\JLUtilsUnsafe.csproj">
