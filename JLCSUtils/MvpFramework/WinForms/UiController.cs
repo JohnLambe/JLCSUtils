@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace MvpFramework.WinForms
+{
+    public static class MvpWindowStateExt
+    {
+        public static MvpWindowState FromWinForms(FormWindowState state)
+        {
+            return (MvpWindowState)state;
+        }
+
+        public static FormWindowState ToWinForms(this MvpWindowState state)
+        {
+            return (FormWindowState)state;
+        }
+    }
+
+
+    public class UiController : IUiController
+    {
+        public virtual MvpWindowState MainFormState
+        {
+            get
+            {
+                return MvpWindowStateExt.FromWinForms(MainForm.WindowState);
+            }
+            set
+            {
+                MainForm.WindowState = value.ToWinForms();
+            }
+        }
+
+        public virtual bool BringToFront()
+        {
+            MainForm?.BringToFront();
+            return true;
+        }
+
+        public virtual void ShowMessage(string message, string title = "")
+        {
+            MessageBox.Show(message, title);
+        }
+
+        protected virtual Form MainForm { get { return Application.OpenForms[0]; } }
+    }
+}

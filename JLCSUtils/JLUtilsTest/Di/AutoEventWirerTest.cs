@@ -66,7 +66,6 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
         {
             Log = Log + "TestEventHandler(" + param1 + "," + param2
                 + ")\n";
-
         }
 
         public static string Log;  // Event handlers append to this
@@ -80,7 +79,6 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
             TestEventHandler.Log = TestEventHandler.Log + 
                 "TestEventHandler2(" + param1 + "," + param2
                 + ")\n";
-
         }
     }
 

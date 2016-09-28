@@ -25,6 +25,8 @@ namespace MvpFramework
         /// <returns></returns>
         TPresenter Create(TModel model);
     }
+    //TODO: Change TModel to TParam ?
+    //  Add versions with more parameters.
 
     public interface IPresenterFactory<TPresenter>
         where TPresenter : IPresenter
@@ -33,7 +35,8 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// Base class for factories for creating Presenters.
+    /// Generic factory for creating Presenters.
+    /// Could be subclassed for custom presenter factory logic.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
     /// <typeparam name="TModel"></typeparam>
@@ -72,14 +75,14 @@ namespace MvpFramework
             //this.TargetClass = targetClass;
         }
 
-        protected void Init()
+        protected virtual void Init()
         {   // This is separate from the constructor since it involves resolving items which may come from a DI container,
             // and SimpleInjector cannot register items after any resolve (so this should be called only after everything is registered).
             if (TargetConstructor == null)
             {
                 this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter), typeof(TModel));
                 TargetConstructor = TargetClass.GetConstructors().First();
-                //TODO if multiple constructors, choose one.
+                //TODO: if multiple constructors, choose one.
                 //   Evaluate which are compatible? Use Attribute.
             }
         }

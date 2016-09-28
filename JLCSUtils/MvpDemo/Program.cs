@@ -41,6 +41,8 @@ namespace MvpDemo
         {
             Resolver = new DiMvpResolver(DiContext);
 
+            DiContext.Container.Register(typeof(IUiController),typeof(MvpFramework.WinForms.UiController));
+
             //            DiContext.ScanAssembly();  // same as passing this.GetType().Assembly
 
             //            DiContext.Container.Register(typeof(EditContactView));

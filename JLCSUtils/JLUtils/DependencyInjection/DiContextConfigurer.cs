@@ -14,8 +14,7 @@ using System.Threading.Tasks;
 using JohnLambe.Util.FilterDelegates;
 using JohnLambe.Util.Encoding;
 using JohnLambe.Util.Reflection;
-using JohnLambe.Util.PluginFramework.Attributes;
-using JohnLambe.Util.PluginFramework.Interfaces;
+
 
 namespace JohnLambe.Util.DependencyInjection
 {

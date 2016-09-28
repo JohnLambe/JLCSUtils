@@ -157,7 +157,7 @@
     <Compile Include="Var.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Architecture.txt" />
+    <Content Include="PluginFramework\Architecture.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DependencyInjection\DiAbstraction\" />

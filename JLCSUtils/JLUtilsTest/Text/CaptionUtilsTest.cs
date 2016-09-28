@@ -31,5 +31,18 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
 
             Assert.AreEqual(null, CaptionUtils.PascalCaseToCaption(null), "null");
         }
+
+        [TestMethod]
+        public void PropertyToCaption()
+        {
+            Assert.AreEqual("Description of TestProperty1", CaptionUtils.PropertyToCaption(GetType().GetProperty("TestProperty1")), "from DescriptionAttribute");
+            Assert.AreEqual("Test Property 2", CaptionUtils.PropertyToCaption(GetType().GetProperty("TestProperty2")), "from property name");
+            Assert.AreEqual(null, CaptionUtils.PropertyToCaption(null), "null");
+        }
+
+        [System.ComponentModel.Description("Description of TestProperty1")]
+        public string TestProperty1 { get; set; }
+
+        public virtual int TestProperty2 { get; }
     }
 }

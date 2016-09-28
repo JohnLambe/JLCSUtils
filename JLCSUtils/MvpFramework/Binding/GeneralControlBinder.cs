@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using System.Reflection;
 
 using System.Windows.Forms;
+using System.ComponentModel.DataAnnotations;
 
 using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
 
 namespace MvpFramework.Binding
 {
+    // Quick-and-dirty binder to demonstrate the concept:
+
     /// <summary>
     /// Binds some common WinForms controls.
     /// </summary>
@@ -44,9 +47,17 @@ namespace MvpFramework.Binding
 
                 if (modelBinder.CanRead(_modelPropertyName))
                     _controlProperty.SetValue(BoundControl, modelBinder.GetValue(_modelPropertyName));
-                if(modelBinder.CanWrite(_modelPropertyName))
+                if (modelBinder.CanWrite(_modelPropertyName))
                     BoundControl.TextChanged += BoundControl_ValueChanged;
                 //modelBinder.BindProperty(_propertyName);
+
+                if (BoundControl is TextBox)
+                {
+                    var property = modelBinder.GetProperty(_modelPropertyName);
+                    var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
+                    if(attrib != null)
+                        ((TextBox)BoundControl).MaxLength = attrib.Length;
+                }
             }
 
             // 'Click' event handler:

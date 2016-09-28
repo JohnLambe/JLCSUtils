@@ -19,23 +19,20 @@ namespace MvpDemo
 
     public class EditContactPresenter : PresenterBase<IEditContactView, Contact>, IEditContactPresenter
     {
-        public EditContactPresenter(IEditContactView view, Contact model = null, IControlBinderFactory binderFactory = null) : base(view, model, binderFactory)
+        public EditContactPresenter(IEditContactView view, Contact model, IControlBinderFactory binderFactory,
+            IUiController uiController) : base(view, model, binderFactory)
         {
+            this.UiController = uiController;
         }
-
-        /*
-        protected override void Bind(IEditContactView view)
-        {
-            base.Bind(view);
-            //            view.OnOkClick += HandleOkClick;
-        }
-        */
 
         [MvpHandler(Name = "Ok")]
         public void HandleOkClick()
         {
-            System.Windows.Forms.MessageBox.Show("Ok");
+            UiController.ShowMessage("Ok\nName: " + Model.Name);
+//            System.Windows.Forms.MessageBox.Show("Ok\nName: " + Model.Name);  // should use injected interface to access 
         }
+
+        protected readonly IUiController UiController;
     }
 
 }

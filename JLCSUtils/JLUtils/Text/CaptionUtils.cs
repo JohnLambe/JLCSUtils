@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,6 +59,24 @@ namespace JohnLambe.Util.Text
                 charIndex++;
             }
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Get a caption (for display to a user) for the given property.
+        /// This uses the <see cref="DescriptionAttribute"/> if there is one, otherwise the property name.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns>The caption for the property. null if <paramref name="property"/> is null.</returns>
+        public static string PropertyToCaption(PropertyInfo property)
+        {
+            if (property == null)
+                return null;
+
+            var attrib = property.GetCustomAttribute<DescriptionAttribute>();
+            if (attrib?.Description != null)
+                return attrib?.Description;
+            else
+                return PascalCaseToCaption(property.Name);
         }
     }
 }
