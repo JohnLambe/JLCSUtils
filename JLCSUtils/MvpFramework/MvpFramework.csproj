@@ -50,8 +50,10 @@
     <Compile Include="IView.cs" />
     <Compile Include="Binding\ControlBinder.cs" />
     <Compile Include="Presenter.cs" />
+    <Compile Include="PresenterAttribute.cs" />
     <Compile Include="PresenterFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationHelper.cs" />
     <Compile Include="Resolver.cs" />
     <Compile Include="ViewBase.cs">
       <SubType>Form</SubType>

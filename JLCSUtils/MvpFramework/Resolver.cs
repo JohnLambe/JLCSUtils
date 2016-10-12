@@ -51,7 +51,7 @@ namespace MvpFramework
         /// <param name="model"></param>
         /// <returns></returns>
         //        public virtual TPresenter Resolve<TPresenter, TModel>(TModel model, Type presenterAction)
-        public virtual TPresenter PresenterForModel<TPresenter, TModel>(TModel model)
+        public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(TModel model)
             where TPresenter : class
         {
             //TODO
@@ -141,12 +141,12 @@ namespace MvpFramework
         /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
         /// <param name="presenter"></param>
         /// <returns></returns>
-        public virtual TView ViewForPresenter<TView, TPresenter>(TPresenter presenter)
+        public virtual TView GetViewForPresenter<TView, TPresenter>(TPresenter presenter)
             where TView : IView
             where TPresenter : IPresenter
         {
             Contract.Requires(presenter != null);
-            return ViewForPresenterType<TView>(presenter.GetType());
+            return GetViewForPresenterType<TView>(presenter.GetType());
 
             /*
             Type viewGenericArg = presenter.GetType().GetInterfaces().FirstOrDefault(i => i is IPresenter<TView>)
@@ -174,7 +174,7 @@ namespace MvpFramework
             */
         }
 
-        public virtual TView ViewForPresenterType<TView>(Type presenterType)
+        public virtual TView GetViewForPresenterType<TView>(Type presenterType)
             where TView: IView
         {
             Contract.Requires(presenterType != null);
@@ -202,6 +202,81 @@ namespace MvpFramework
             }
 
             throw new Exception("Resolution failed for Presenter: " + presenterType.FullName);
+        }
+
+        /// <summary>
+        /// Get the presenter interface (IPresenter subinterface) for the given presenter class.
+        /// </summary>
+        /// <param name="presenterType"></param>
+        /// <returns></returns>
+        public virtual Type ResolveInterfaceForPresenterType(Type presenterType)
+        {
+            return ResolveInterfaceForClass<IPresenter,PresenterAttribute>(presenterType);
+            /*
+            Type resolvedPresenterInterface = null;
+
+            var attribute = presenterType.GetCustomAttribute<PresenterAttribute>();
+            if(attribute != null)
+            {
+                if (attribute.Interface != null)
+                    resolvedPresenterInterface = attribute.Interface;
+            }
+
+            if (resolvedPresenterInterface == null)
+            {
+                string targetNamespace = presenterType.Namespace;
+
+                // form the conventional name for the presenter interface:
+                string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + presenterType.Name;
+                resolvedPresenterInterface = GetTypeByName(presenterInterfaceName, presenterType.Assembly);
+            }
+
+            if (!resolvedPresenterInterface.IsInterface)
+                throw new Exception("Invalid presenter interface: " + resolvedPresenterInterface.FullName + " - not an interface");
+            if( !typeof(IPresenter).IsAssignableFrom(resolvedPresenterInterface) )
+                throw new Exception("Invalid presenter interface: " + resolvedPresenterInterface.FullName + " - not derived from " + typeof(IPresenter).FullName);
+
+            // may be null
+
+            return resolvedPresenterInterface;
+            */
+        }
+
+        public virtual Type ResolveInterfaceForViewType(Type viewType)
+        {
+            return ResolveInterfaceForClass<IView,ViewAttribute>(viewType);
+        }
+
+        protected virtual Type ResolveInterfaceForClass<TRequiredInterface,TAttribute>(Type classType)
+                where TAttribute : MvpAttribute
+                where TRequiredInterface: class
+        {
+            Type resolvedInterface = null;
+
+            var attribute = classType.GetCustomAttribute<TAttribute>();
+            if (attribute != null)
+            {
+                if (attribute.Interface != null)
+                    resolvedInterface = attribute.Interface;
+            }
+
+            if (resolvedInterface == null)
+            {
+                string targetNamespace = classType.Namespace;
+
+                // form the conventional name for the presenter interface:
+                string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + classType.Name;
+                resolvedInterface = GetTypeByName(presenterInterfaceName, classType.Assembly);
+            }
+
+            if (!resolvedInterface.IsInterface)
+                throw new Exception("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
+            if (!typeof(TRequiredInterface).IsAssignableFrom(resolvedInterface))
+                throw new Exception("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
+
+            // may be null
+
+            return resolvedInterface;
         }
 
         #region Resolving types

@@ -12,6 +12,7 @@ using MvpFramework;
 
 namespace MvpDemo
 {
+    [View]
     public partial class EditContactView : ViewBase, IEditContactView
     {
         public EditContactView()

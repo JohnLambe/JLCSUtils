@@ -50,7 +50,6 @@ namespace JohnLambe.Util.DependencyInjection.ConfigInject.Providers
 
 
 // Other providers:
-//   EnvironmentVariable
 //   ConfigFile
 //     XML
 //     INI

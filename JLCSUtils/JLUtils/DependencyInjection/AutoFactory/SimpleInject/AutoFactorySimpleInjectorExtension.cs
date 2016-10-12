@@ -22,7 +22,9 @@ namespace JohnLambe.Util.DependencyInjection.AutoFactory.SimpleInject
     {
         public AutoFactorySimpleInjectorExtension(Container container)
         {
-            container.ResolveUnregisteredType += Container_ResolveUnregisteredType; ;
+            this.Container = container;
+            Container.ResolveUnregisteredType += Container_ResolveUnregisteredType;
+            _factoryFactory.OnResolveAutoInterface += ResolveAutoInterface;
         }
 
         protected virtual void Container_ResolveUnregisteredType(object sender, UnregisteredTypeEventArgs e)
@@ -43,8 +45,15 @@ namespace JohnLambe.Util.DependencyInjection.AutoFactory.SimpleInject
         {
             Debug.Assert(name == null);  // because we didn't provide one in the call to AutoFactoryFactory.ResolveEx.
             //TODO: Could support ConfigInject key.
-
-            return Container.GetInstance(interfaceType);
+            try
+            {
+                return Container.GetInstance(interfaceType);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Resolving " + interfaceType.FullName + " for AutoFactory failed", ex);
+                    //TODO exception type
+            }
         }
 
         protected AutoFactoryFactory<string> _factoryFactory = new AutoFactoryFactory<string>();

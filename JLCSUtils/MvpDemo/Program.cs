@@ -11,6 +11,7 @@ using JohnLambe.Util.DependencyInjection.ConfigInject.Providers;
 using MvpFramework;
 using MvpDemo.Model;
 using MvpFramework.Binding;
+using JohnLambe.Util.DependencyInjection;
 
 namespace MvpDemo
 {
@@ -40,19 +41,24 @@ namespace MvpDemo
         protected void SetupDi()
         {
             Resolver = new DiMvpResolver(DiContext);
+            DiContext.Container.RegisterSingleton<IDiResolver>(DiContext);
+            DiContext.Container.RegisterSingleton(Resolver);
+//                typeof(MvpResolver),Resolver);
+
+            new RegistrationHelper(Resolver, DiContext).ScanAssemblies(Assembly.GetExecutingAssembly());
 
             DiContext.Container.Register(typeof(IUiController),typeof(MvpFramework.WinForms.UiController));
 
             //            DiContext.ScanAssembly();  // same as passing this.GetType().Assembly
 
             //            DiContext.Container.Register(typeof(EditContactView));
-//            DiContext.Container.Options.DefaultScopedLifestyle = ;
-//            DiContext.Container.Register<EditContactView>(Lifestyle.Scoped);
+            //            DiContext.Container.Options.DefaultScopedLifestyle = ;
+            //            DiContext.Container.Register<EditContactView>(Lifestyle.Scoped);
 
-            //
+            /*
             //TODO: Automatic registration:
             DiContext.Container.Register(typeof(IEditContactPresenter), typeof(EditContactPresenter));
-            //            DiContext.Container.Register(typeof(IEditContactView), typeof(EditContactView));
+            //      DiContext.Container.Register(typeof(IEditContactView), typeof(EditContactView));
             DiContext.Container.Register(typeof(IEditContactView), () => new EditContactView());
 
             //            DiContext.Container.Register(typeof(MainForm));
@@ -60,9 +66,16 @@ namespace MvpDemo
 
             //            DiContext.RegisterTypes(typeof(IView));
 
+            DiContext.Container.Register(typeof(IPresenterFactory<IEditContactPresenter, Contact>),
+                    () => new PresenterFactory<IEditContactPresenter, Contact>(Resolver, DiContext)
+                );
+                */
+
+            /* Could also be registered as (less efficient):
             DiContext.Container.RegisterSingleton(typeof(IPresenterFactory<IEditContactPresenter, Contact>),
-                new PresenterFactory<IEditContactPresenter,Contact>(Resolver, /*null,*/ DiContext)
+                new PresenterFactory<IEditContactPresenter,Contact>(Resolver, DiContext)
             );
+            */
 
             DiContext.Container.RegisterSingleton(typeof(IControlBinderFactory), new ControlBinderFactory());
 
@@ -73,7 +86,7 @@ namespace MvpDemo
 
             DiContext.ProviderChain.RegisterProvider(new CommandLineConfigProvider());
 
-            DiContext.Container.Verify();
+//            DiContext.Container.Verify();
         }
 
         protected SiExtendedDiContext DiContext = new SiExtendedDiContext();

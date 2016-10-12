@@ -48,11 +48,18 @@ namespace JohnLambe.Util.DependencyInjection.AutoFactory
             return (TFactoryInterface)CreateFactory(typeof(TFactoryInterface), null, targetInstance);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arguments"></param>
+        /// <param name="targetClass">Type to be created by the factory.</param>
+        /// <param name="targetInstance"></param>
+        /// <returns></returns>
         public virtual object CreateFactory(Type arguments, Type targetClass, object targetInstance = null)
         {
             var genericArguments = arguments.GenericTypeArguments;
             if (genericArguments.Length < 1)
-                throw new ArgumentException("AutoFactory: The interface must have at least one generic parameter");  // the interface must have at least one generic parameter - the type created by the factory
+                throw new ArgumentException("AutoFactory: The interface must have at least one generic parameter (the type created by the factory)");
 /*
             var interfaceType = genericArguments[0];
             Type[] parameterTypes = genericArguments.Skip(1).ToArray();
@@ -100,7 +107,7 @@ namespace JohnLambe.Util.DependencyInjection.AutoFactory
                             }
                             else   // resolution returned an instance - there must be a mapping from 
                             {
-                                return CreateFactory(interfaceType, null, resolved); ;
+                                return CreateFactory(interfaceType, null, resolved);
                                 // create a factory that always returns the resolved instance.
                             }
                         }

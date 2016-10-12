@@ -19,7 +19,6 @@ namespace MvpFramework
         void Show();
     }
 
-
     /// <summary>
     /// Base class for Presenters.
     /// </summary>
@@ -29,6 +28,8 @@ namespace MvpFramework
     public class PresenterBase<TView, TModel> : IPresenter
         where TView : IView
     {
+//        public static Type ModelType => typeof(TModel);
+
         public PresenterBase(TView view, TModel model = default(TModel), IControlBinderFactory binderFactory = null)
         {
             Contract.Requires(view != null);

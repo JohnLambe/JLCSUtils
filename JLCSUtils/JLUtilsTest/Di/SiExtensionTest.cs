@@ -59,6 +59,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
 
         }
 
+
         public void Setup()
         {
             _context.RegisterInstance("GlobalValue", "(Global Value)");

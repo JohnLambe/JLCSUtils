@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace JohnLambe.Tests.JLUtilsTest
 {
+    /// <summary>
+    /// Utilities for unit testing.
+    /// </summary>
     public static class TestUtil
     {
         /// <summary>
@@ -40,7 +43,7 @@ namespace JohnLambe.Tests.JLUtilsTest
                     ex = ex.InnerException;    // the outer exception will be TargetInvocationException
                 Console.WriteLine("Exception: " + ex);
 
-                if (!ex.Message.Contains(message))
+                if (message != null && !ex.Message.Contains(message))
                 {
                     Console.WriteLine("Wrong exception message");
                     throw new AssertFailedException("Assertion Failed: Wrong exception message.\n" 
@@ -58,7 +61,13 @@ namespace JohnLambe.Tests.JLUtilsTest
                         + failMessage,
                         ex);
                 }
+                return;        // success
             }
+
+            // failed - an exception should have been thrown:
+            throw new AssertFailedException("No exception thrown; Expected: " + exceptionType 
+                + (!string.IsNullOrEmpty(message) ? " containing message \"" + message + "\"; " : "")
+                + " " + failMessage);
         }
     }
 }

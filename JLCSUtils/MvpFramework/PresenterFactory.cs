@@ -114,7 +114,7 @@ namespace MvpFramework
                     //                    args[parameterIndex] = Navigator.ViewForPresenterType(typeof(TPresenter));
                     // OR Resolver.ViewForPresenterType
                     // ...  (TargetClass)
-                    args[parameterIndex] = Resolver.ViewForPresenterType<IView>(typeof(TPresenter));
+                    args[parameterIndex] = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
                 }
                 else if (parameterIndex == 1)
                 {   // second parameter (if present) is the Model

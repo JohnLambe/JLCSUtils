@@ -14,6 +14,23 @@ namespace JohnLambe.Util.DependencyInjection.ConfigInject.Providers
     /// </summary>
     public class DictionaryConfigProviderBase<TValue> : IConfigProvider
     {
+        /// <summary>
+        /// Create blank.
+        /// </summary>
+        public DictionaryConfigProviderBase()
+        {
+            _values = new Dictionary<string, TValue>();   // new empty dictionary
+        }
+
+        /// <summary>
+        /// Create as a wrapper for an existing dictionary.
+        /// </summary>
+        /// <param name="values"></param>
+        public DictionaryConfigProviderBase(IDictionary<string,TValue> values)
+        {
+            this._values = values;
+        }
+
         public virtual bool GetValue<T>(string key, Type requiredType, out T value)
         {
             TValue valueOurType;   // the value in the Type we have
@@ -30,8 +47,12 @@ namespace JohnLambe.Util.DependencyInjection.ConfigInject.Providers
             }
         }
 
-        protected IDictionary<string, TValue> _values = new Dictionary<string, TValue>();
+        /// <summary>
+        /// The underlying dictionary that holds the values.
+        /// </summary>
+        protected readonly IDictionary<string, TValue> _values;
     }
+
 
     /// <summary>
     /// Provider based on a dictionary, which is publicly writable.

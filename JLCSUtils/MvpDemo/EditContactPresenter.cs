@@ -17,6 +17,7 @@ namespace MvpDemo
     }
 
 
+    [Presenter]
     public class EditContactPresenter : PresenterBase<IEditContactView, Contact>, IEditContactPresenter
     {
         public EditContactPresenter(IEditContactView view, Contact model, IControlBinderFactory binderFactory,

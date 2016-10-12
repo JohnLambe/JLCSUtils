@@ -18,7 +18,7 @@ using SimpleInjector;
 
 namespace JohnLambe.Util.DependencyInjection.SimpleInject
 {
-    public class SiDiContext : IDiContext, IDiResolver
+    public class SiDiContext : IDiContext, IDiResolver, IDiTypeRegistrar
     {
         /// <summary>
         /// Initialise with a new <see cref="global::SimpleInjector.Container"/>.
@@ -35,7 +35,7 @@ namespace JohnLambe.Util.DependencyInjection.SimpleInject
         }
 
         /// <summary>
-        /// Container setup (adding extensions, configuring etc.)
+        /// Container setup (adding extensions, configuring etc.).
         /// </summary>
         protected virtual void Init()
         {

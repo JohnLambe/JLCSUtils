@@ -11,4 +11,9 @@ namespace JohnLambe.Util.DependencyInjection
         T BuildUp<T>(T target);
         //TODO
     }
+
+    public interface IDiTypeRegistrar
+    {
+        void RegisterType(Type serviceType, Type implementationType);
+    }
 }
