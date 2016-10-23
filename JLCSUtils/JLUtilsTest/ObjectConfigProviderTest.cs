@@ -1,5 +1,5 @@
-﻿using JohnLambe.Util.DependencyInjection.ConfigInject;
-using JohnLambe.Util.DependencyInjection.ConfigInject.Providers;
+﻿using DiExtension.ConfigInject;
+using DiExtension.ConfigInject.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

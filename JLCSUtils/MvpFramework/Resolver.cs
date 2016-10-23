@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 using JohnLambe.Util;
 
 namespace MvpFramework

@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JohnLambe.Tests.JLUtilsTest</RootNamespace>
     <AssemblyName>JLUtilsTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +86,9 @@
     <Compile Include="Di\AutoEventWirerTest.cs" />
     <Compile Include="Di\AutoFactoryTest.cs" />
     <Compile Include="Di\AutoFactoryTest2.cs" />
+    <Compile Include="Di\AutoFactory\SimpleOneParameter.cs" />
+    <Compile Include="Di\AutoRegistration\DiContextConfigurerTest.cs" />
+    <Compile Include="Di\AutoRegistration\ForTest.cs" />
     <Compile Include="Di\ForTest.cs" />
     <Compile Include="Di\ParameterInjection.cs" />
     <Compile Include="Di\SiExtensionTest.cs" />
@@ -116,6 +120,10 @@
     <Compile Include="Types\IDTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DiExtension\DiExtension.csproj">
+      <Project>{a6cc2dd9-bb55-4697-a6ff-8f43657a23df}</Project>
+      <Name>DiExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JLUtilsUnsafe\JLUtilsUnsafe.csproj">
       <Project>{7029f32e-6d46-42a0-a085-5c0bf81089d7}</Project>
       <Name>JLUtilsUnsafe</Name>
@@ -123,6 +131,10 @@
     <ProjectReference Include="..\JLUtils\JLUtils.csproj">
       <Project>{2c2e5049-976d-408f-a67d-1463271f3e98}</Project>
       <Name>JLUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PluginFramework\PluginFramework.csproj">
+      <Project>{90baafd8-4595-47d0-91d6-c7699af608a0}</Project>
+      <Name>PluginFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

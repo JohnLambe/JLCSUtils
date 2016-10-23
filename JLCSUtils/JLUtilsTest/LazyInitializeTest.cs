@@ -12,7 +12,7 @@ namespace JohnLambe.Tests.JLUtilsTest
     [TestClass]
     public class LazyInitializeTest
     {
-        private LazyInitialzed<List<int>> _lazyInit = new LazyInitialzed<List<int>>( () => new List<int>( new int[] { 2, 4, 6 } ) );
+        private LazyInitialized<List<int>> _lazyInit = new LazyInitialized<List<int>>( () => new List<int>( new int[] { 2, 4, 6 } ) );
 
         [TestMethod]
         public void LazyInitialize1Test()
@@ -27,8 +27,8 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
 
-        private LazyInitialzed<List<int>> _lazyInit1B =
-            new LazyInitialzed<List<int>>(() => new List<int>(new int[] { 2, 4, 6 }));
+        private LazyInitialized<List<int>> _lazyInit1B =
+            new LazyInitialized<List<int>>(() => new List<int>(new int[] { 2, 4, 6 }));
         public List<int> LazyInit1B { get { return _lazyInit1B; } }
 
         [TestMethod]

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using JohnLambe.Util.DependencyInjection.AutoFactory;
+using DiExtension.AutoFactory;
 
 namespace JohnLambe.Tests.JLUtilsTest.AutoFactory
 {

@@ -1,4 +1,4 @@
-﻿using JohnLambe.Util.DependencyInjection;
+﻿using DiExtension;
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;

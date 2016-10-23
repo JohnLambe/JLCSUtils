@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using JohnLambe.Util.DependencyInjection;
-using JohnLambe.Util.DependencyInjection.SimpleInject;
-using JohnLambe.Util.DependencyInjection.AutoFactory;
-using JohnLambe.Util.DependencyInjection.AutoFactory.SimpleInject;
+using DiExtension;
+using DiExtension.SimpleInject;
+using DiExtension.AutoFactory;
+using DiExtension.AutoFactory.SimpleInject;
 using SimpleInjector;
 
 namespace JohnLambe.Tests.JLUtilsTest.Di
@@ -74,6 +74,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
         {
             Console.WriteLine("ClassThatNeedsFactory created with parameter: " + factory);
             TheFactory = factory;
+        }
+
+        public ClassToBeCreatedByFactory UseFactory()
+        {
+            return TheFactory.Create();
         }
 
         public readonly IFactory<ClassToBeCreatedByFactory> TheFactory;

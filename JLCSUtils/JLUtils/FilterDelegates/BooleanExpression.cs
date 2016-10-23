@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.FilterDelegates
 {
+    /// <summary>
+    /// Encapsulates a delegate that takes an argument of type <paramref name="T"/> and returns <see cref="bool"/>,
+    /// and provides operators and methods to combine these to form other <see cref="BooleanExpression{T}"/> instances.
+    /// </summary>
+    /// <typeparam name="T">The type of parameter to the delegate.</typeparam>
     public class BooleanExpression<T>
     {
         public BooleanExpression(FilterDelegate<T> del)
@@ -39,16 +44,36 @@ namespace JohnLambe.Util.FilterDelegates
             return new BooleanExpression<T>(d);
         }
 
+        /// <summary>
+        /// Acts as a *logical* AND.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        //Note: && is not overloadable.
         public static BooleanExpression<T> operator & (BooleanExpression<T> a, BooleanExpression<T> b)
         {
             return new BooleanExpression<T>( x => a._delegate(x) && b._delegate(x) );
         }
 
+        /// <summary>
+        /// Acts as a *logical* OR.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        //Note: || is not overloadable.
         public static BooleanExpression<T> operator | (BooleanExpression<T> a, BooleanExpression<T> b)
         {
             return new BooleanExpression<T>(x => a._delegate(x) || b._delegate(x));
         }
 
+        /// <summary>
+        /// Returns a <see cref="BooleanExpression"/> this is true when this one is false,
+        /// and vice versa.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
         public static BooleanExpression<T> operator !(BooleanExpression<T> a)
         {
             return new BooleanExpression<T>(x => !a._delegate(x));
@@ -115,6 +140,7 @@ namespace JohnLambe.Util.FilterDelegates
 
         protected FilterDelegate<T> _delegate;
     }
+
 
     public static class BooleanExpressionExt
     {

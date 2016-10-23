@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using JohnLambe.Util.DependencyInjection;
-using JohnLambe.Util.DependencyInjection.SimpleInject;
+using DiExtension;
+using DiExtension.SimpleInject;
 
 namespace JohnLambe.Tests.JLUtilsTest.Di
 {

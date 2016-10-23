@@ -2,10 +2,10 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using JohnLambe.Util.DependencyInjection.AutoFactory;
-using JohnLambe.Util.DependencyInjection.Attributes;
-using JohnLambe.Util.DependencyInjection.SimpleInject;
-using JohnLambe.Util.DependencyInjection.AutoFactory.SimpleInject;
+using DiExtension.AutoFactory;
+using DiExtension.Attributes;
+using DiExtension.SimpleInject;
+using DiExtension.AutoFactory.SimpleInject;
 
 namespace JohnLambe.Tests.JLUtilsTest.Di
 {
@@ -30,7 +30,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
             _context.Container.Register(typeof(ClassThatNeedsFactoryWithPropertyInjection));
 
 
-            // This just test the setup (if the target class wasn't registered, this would throw an exception):
+            // This just tests the setup (if the target class wasn't registered, this would throw an exception):
             var resolvedDirect = _context.Container.GetInstance<ClassThatNeedsFactoryWithPropertyInjection>();
             Assert.AreEqual(InjectedPropertyValue, resolvedDirect.InjectedProperty);
 

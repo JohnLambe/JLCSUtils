@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using JohnLambe.Util.DependencyInjection;
-using JohnLambe.Util.DependencyInjection.SimpleInject;
-using JohnLambe.Util.DependencyInjection.Attributes;
+using DiExtension;
+using DiExtension.SimpleInject;
+using DiExtension.Attributes;
 using System.Reflection;
 
 namespace JohnLambe.Tests.JLUtilsTest.Di
@@ -26,6 +26,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
 
             //            EventAutoWirer.RegisterWith(_context.Container, _context);
             new EventAutoWirer(_context.Container).Assemblies = new Assembly[] { Assembly.GetExecutingAssembly() };
+            // add EventAutoWirer to the container.
 
 
             _context.Container.Register(typeof(TestObjectWithEvent));
@@ -86,6 +87,5 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
     public class TestEventHandler2B : TestEventHandler2  // Not registered because the attribute is hot inherited
     {
     }
-
 
 }

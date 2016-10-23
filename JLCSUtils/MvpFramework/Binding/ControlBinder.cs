@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using JohnLambe.Util;
-using JohnLambe.Util.DependencyInjection.AutoFactory;
+using DiExtension.AutoFactory;
 
 namespace MvpFramework.Binding
 {

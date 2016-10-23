@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 using JohnLambe.Util;
 using JohnLambe.Util.FilterDelegates;
 using System.Reflection;
 
-using JohnLambe.Util.DependencyInjection.ConfigInject;
-using JohnLambe.Util.DependencyInjection.ConfigInject.Providers;
+using DiExtension.ConfigInject;
+using DiExtension.ConfigInject.Providers;
 
 namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection.ConfigInject
 {

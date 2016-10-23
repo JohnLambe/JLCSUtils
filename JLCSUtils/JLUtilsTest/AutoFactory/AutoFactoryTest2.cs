@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using JohnLambe.Util.DependencyInjection.AutoFactory;
+using DiExtension.AutoFactory;
 using System.Collections.Generic;
 
 // Test with a class with multiple constructors, and different numbers of arguments.

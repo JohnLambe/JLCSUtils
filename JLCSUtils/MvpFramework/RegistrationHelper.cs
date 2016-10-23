@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using JohnLambe.Util.Reflection;
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 using System.Diagnostics;
-using JohnLambe.Util.DependencyInjection.Attributes;
+using DiExtension.Attributes;
 
 /* TODO:
  * 

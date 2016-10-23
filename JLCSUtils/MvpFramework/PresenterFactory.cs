@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 
 
 namespace MvpFramework

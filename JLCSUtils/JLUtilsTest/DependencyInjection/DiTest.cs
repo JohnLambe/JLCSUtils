@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 using JohnLambe.Util;
 using JohnLambe.Util.FilterDelegates;
 using System.Reflection;

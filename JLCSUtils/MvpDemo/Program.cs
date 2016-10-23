@@ -6,12 +6,12 @@ using System.Reflection;
 using System.Windows.Forms;
 
 using SimpleInjector;
-using JohnLambe.Util.DependencyInjection.SimpleInject;
-using JohnLambe.Util.DependencyInjection.ConfigInject.Providers;
+using DiExtension.SimpleInject;
+using DiExtension.ConfigInject.Providers;
 using MvpFramework;
 using MvpDemo.Model;
 using MvpFramework.Binding;
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 
 namespace MvpDemo
 {

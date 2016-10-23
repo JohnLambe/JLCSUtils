@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using JohnLambe.Util.DependencyInjection;
+using DiExtension;
 using JohnLambe.Util.PluginFramework;
 using JohnLambe.Util.PluginFramework.Interfaces;
 using JohnLambe.Util.PluginFramework.Attributes;

@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Microsoft.Practices.Unity;
 
-using JohnLambe.Util.DependencyInjection.AutoFactory;
-using JohnLambe.Util.DependencyInjection.AutoFactory.Unity;
+using DiExtension.AutoFactory;
+using DiExtension.AutoFactory.Unity;
 
 namespace JohnLambe.Tests.JLUtilsTest.AutoFactory
 {
