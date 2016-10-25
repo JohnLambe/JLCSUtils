@@ -22,6 +22,11 @@ namespace MvpFramework
         //* should Show() be on base interface at all? A View could be for a non-form (panel, etc.).
 
         void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory);
+
+        /// <summary>
+        /// (Re)populate the view from the model (to update it when the model changes).
+        /// </summary>
+        void Refresh();
     }
     /* OR
     public interface IView<TResult>

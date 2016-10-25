@@ -12,6 +12,7 @@ using MvpFramework;
 using MvpDemo.Model;
 using MvpFramework.Binding;
 using DiExtension;
+using JohnLambe.Util.Reflection;
 
 namespace MvpDemo
 {
@@ -40,12 +41,14 @@ namespace MvpDemo
 
         protected void SetupDi()
         {
+            var assemblies = AssemblyUtils.GetReferencedAssemblies(Assembly.GetEntryAssembly(),true);
+            
             Resolver = new DiMvpResolver(DiContext);
             DiContext.Container.RegisterSingleton<IDiResolver>(DiContext);
             DiContext.Container.RegisterSingleton(Resolver);
-//                typeof(MvpResolver),Resolver);
+            //                typeof(MvpResolver),Resolver);
 
-            new RegistrationHelper(Resolver, DiContext).ScanAssemblies(Assembly.GetExecutingAssembly());
+            new RegistrationHelper(Resolver, DiContext).ScanAssemblies(assemblies.ToArray()); // Assembly.GetExecutingAssembly());
 
             DiContext.Container.Register(typeof(IUiController),typeof(MvpFramework.WinForms.UiController));
 

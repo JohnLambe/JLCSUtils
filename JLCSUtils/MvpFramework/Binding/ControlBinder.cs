@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
-using JohnLambe.Util;
 using DiExtension.AutoFactory;
 
 namespace MvpFramework.Binding
@@ -23,16 +15,26 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="modelBinder"></param>
         void BindModel(ModelBinderWrapper modelBinder);
+
+        /// <summary>
+        /// Update the control from the model.
+        /// </summary>
+        void Refresh();
+        //TODO: Add a parameter to bind a specific control (or group of controls)?
+        // (Specify the property updated.)
     }
 
-
+    /// <summary>
+    /// Interface to return a binder for a given controls and presenter.
+    /// May return null if the control does not bind to anything.
+    /// </summary>
     public interface IControlBinderFactory : IFactory<IControlBinder, Control, IPresenter>
     {
     }
 
 
     /// <summary>
-    /// 
+    /// Returns a control binder for a given control and presenter.
     /// </summary>
     public class ControlBinderFactory : IControlBinderFactory
     {

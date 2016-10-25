@@ -17,10 +17,32 @@ namespace MvpFramework
         {
             if (binderFactory != null)
             {
+                Binders = new List<IControlBinder>();
                 var modelBinder = new ModelBinderWrapper(model);
                 foreach (Control control in Controls)
                 {
-                    binderFactory.Create(control, presenter)?.BindModel(modelBinder);
+                    var binder = binderFactory.Create(control, presenter);
+                    if (binder != null)
+                    {
+                        Binders.Add(binder);
+                        binder.BindModel(modelBinder);
+                    }
+                }
+            }
+        }
+
+        protected IList<IControlBinder> Binders { get; private set; }
+
+        /// <summary>
+        /// (Re)populate the view from the model (to update it when the model changes).
+        /// </summary>
+        void IView.Refresh()
+        {
+            if (Binders != null)
+            {
+                foreach (var binder in Binders)
+                {
+                    binder.Refresh();
                 }
             }
         }

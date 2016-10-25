@@ -33,6 +33,13 @@ namespace MvpDemo
 //            System.Windows.Forms.MessageBox.Show("Ok\nName: " + Model.Name);  // should use injected interface to access 
         }
 
+        [MvpHandler(Name = "Update")]
+        public void HandleUpdateClick()
+        {
+            Model.Address = Model.Address + "(modified)";
+            View.Refresh();
+        }
+
         protected readonly IUiController UiController;
     }
 

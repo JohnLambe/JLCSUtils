@@ -45,8 +45,8 @@ namespace MvpFramework.Binding
             {
                 Model = modelBinder;
 
-                if (modelBinder.CanRead(_modelPropertyName))
-                    _controlProperty.SetValue(BoundControl, modelBinder.GetValue(_modelPropertyName));
+                Refresh();
+
                 if (modelBinder.CanWrite(_modelPropertyName))
                     BoundControl.TextChanged += BoundControl_ValueChanged;
                 //modelBinder.BindProperty(_propertyName);
@@ -71,6 +71,26 @@ namespace MvpFramework.Binding
             }
         }
 
+        /// <summary>
+        /// Update the control from the model.
+        /// </summary>
+        public virtual void Refresh()
+        {
+            if (_modelPropertyName != null)
+            {
+                EventEnabled = false;
+                try
+                {
+                    if (Model.CanRead(_modelPropertyName))
+                        _controlProperty.SetValue(BoundControl, Model.GetValue(_modelPropertyName));
+                }
+                finally
+                {
+                    EventEnabled = true;
+                }
+            }
+        }
+
         protected virtual void BoundControl_Click(object sender, EventArgs e)
         {
             _eventHandlerMethod?.Invoke(Presenter, new object[] { });     //TODO populate any arguments of event handler
@@ -83,8 +103,14 @@ namespace MvpFramework.Binding
         /// <param name="e"></param>
         protected virtual void BoundControl_ValueChanged(object sender, EventArgs e)
         {
-            Model.SetValue(_modelPropertyName, _controlProperty.GetValue(BoundControl));
+            if(EventEnabled)
+                Model.SetValue(_modelPropertyName, _controlProperty.GetValue(BoundControl));
         }
+
+        /// <summary>
+        /// Iff false, the event to update the model is not fired.
+        /// </summary>
+        protected virtual bool EventEnabled { get; set; } = true;
 
         protected MethodInfo _eventHandlerMethod;
 
