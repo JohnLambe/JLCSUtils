@@ -82,6 +82,11 @@ namespace DiExtension.SimpleInject
                 + " Container: " + Container.GetCurrentRegistrations().ToString();
         }
 
+        public void RegisterType(Type implementationType)
+        {
+            Container.Register(implementationType);
+        }
+
         public void RegisterType(Type serviceType, Type implementationType)
         {
             Container.Register(serviceType, implementationType);

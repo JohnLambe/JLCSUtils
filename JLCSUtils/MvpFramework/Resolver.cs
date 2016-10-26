@@ -84,6 +84,7 @@ namespace MvpFramework
             if (modelType != null)
             {   // try to find an interface or class based on the names of the interface and the model:
 
+                // form components on the conventional name:
                 string actionName = presenterInterface.Name.RemovePrefix(InterfacePrefix).RemoveSuffix(PresenterSuffix);
                 string modelName = modelType.Name.RemoveSuffix(ModelSuffix);
                 string targetNamespace = presenterInterface.Namespace;
@@ -91,6 +92,7 @@ namespace MvpFramework
 
                 // form the conventional name for the presenter interface:
                 string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + actionName + modelName + PresenterSuffix;
+                    // I{Action}{Model}Presenter
                 Type resolvedPresenterInterface = GetTypeByName(presenterInterfaceName, presenterInterface.Assembly);
                 if (resolvedPresenterInterface != null)
                 {
@@ -321,8 +323,9 @@ namespace MvpFramework
             {
                 return Context.GetInstance<T>(forType);
             }
-            catch(Exception)    //TODO: Filter exception type (currently depends on IDiResolver implementation)
-            {
+            catch(Exception /* ex*/)    //TODO: Filter exception type (currently depends on IDiResolver implementation)
+            {   // could either have failed to resolve the type or to cast it to the required type
+//                Console.WriteLine(ex);
                 return default(T);
             }
         }

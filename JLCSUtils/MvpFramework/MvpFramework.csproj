@@ -46,6 +46,8 @@
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
+    <Compile Include="MenuAttribute.cs" />
+    <Compile Include="MessageDialog.cs" />
     <Compile Include="IUiController.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="Binding\ControlBinder.cs" />

@@ -29,7 +29,8 @@ namespace MvpFramework
     /// <summary>
     /// Provides access to UI behaviours of the application or the main form.
     /// </summary>
-    public interface IUiController   // or IMainFormController ?
+    public interface IUiController : IMessageDialog
+        // or IMainFormController ?
     {
         #region Main Window
 
