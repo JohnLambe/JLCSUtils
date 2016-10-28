@@ -8,64 +8,6 @@ using System.Reflection;
 
 namespace JohnLambe.Util.Reflection
 {
-    public static class AttributeUtils
-    {
-        public static T GetCustomAttribute<T>(this ICustomAttributeProvider type)
-        {
-            foreach (var attribute in type.GetCustomAttributes(true))
-            {
-                if (attribute is T)
-                    return (T)attribute;
-            }
-            return default(T);
-        }
-
-        public static IEnumerable<T> GetCustomAttributes<T>(this ICustomAttributeProvider type, bool inherit = true)
-        {
-            /*
-            // Allocate a temporary array for the filtered collection of attributes, then copy to an array of the correct type.
-            // Three arrays allocated.
-            object[] attribs = type.GetCustomAttributes(inherit).Where(a => a is T).ToArray();
-            T[] result = new T[attribs.Length];
-            attribs.CopyTo(result, 0);
-            return result;
-            */
-
-            // The extra call to Count may cause Type.GetCustomAttributes(bool) to be called twice.
-            var attribs = type.GetCustomAttributes(inherit).Where(a => a is T);
-            T[] result = new T[attribs.Count()];
-            int index = 0;
-            foreach(object a in attribs)
-            {
-                result[index++] = (T)a;
-            }
-            return result;
-
-            /* Alternative implementation:
-            // Evaluates only once, but uses a list.
-            var list = new List<T>();
-            foreach (var attribute in type.GetCustomAttributes(inherit).Where(a => a is T))
-            {
-                list.Add((T)attribute);
-            }
-            return list;
-            */
-            // Can't do     return (IEnumerable<T>)type.GetCustomAttributes(inherit).Where( a => a is T );
-            // because type.GetCustomAttributes(bool) returns object[] .
-            // The above could only return IEnumerable<object> .
-        }
-        /*
-                public static IEnumerable<T> GetCustomAttributes<T>(this ICustomAttributeProvider type)
-                {
-                    return GetCustomAttributes<T>(type, true);
-                }
-        */
-        public static bool HasCustomAttribute<T>(this ICustomAttributeProvider type)
-        {
-            return type.GetCustomAttribute<T>() != null;
-        }
-    }
-
     public static class ReflectionUtils
     {
 
@@ -169,5 +111,76 @@ namespace JohnLambe.Util.Reflection
         {
             return (T)type.GetConstructor(argumentTypes).Invoke(arguments);
         }
+
+        #region GetProperty
+
+        private enum PropertyAction { GetProperty, GetValue, SetValue };
+
+        private static PropertyInfo GetSetProperty(object target, string propertyName, PropertyAction action, ref object value)
+        { 
+            PropertyInfo property = null;
+            string[] levels = propertyName.Split('.');
+            for (int level = 0; level < levels.Length; level++)
+            {
+                property = target.GetType().GetProperty(levels[level]);
+                if (property == null)
+                    return null;
+                if (level < levels.Length - 1)
+                    target = property.GetValue(target);
+            }
+            switch(action)
+            {
+                case PropertyAction.GetValue:
+                    value = property.GetValue(target);
+                    break;
+                case PropertyAction.SetValue:
+                    property.SetValue(target, value);
+                    break;
+            }
+            return property;
+        }
+
+        /// <summary>
+        /// Return a possibly nested property of the given object.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
+        /// <returns>The requested property, or null if it does not exist (if any property in the chain doesn't exist).</returns>
+        public static PropertyInfo GetProperty(object target, string propertyName)
+        {
+            object dummy = null;
+            return GetSetProperty(target, propertyName, PropertyAction.GetProperty, ref dummy);
+        }
+
+        /// <summary>
+        /// Get the value of a given (possibly nested) property on a given object.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target">The object from which to read the property.</param>
+        /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
+        /// <returns>The property value.</returns>
+        public static T TryGetPropertyValue<T>(object target, string propertyName)
+        {
+            object value = null;
+            GetSetProperty(target, propertyName, PropertyAction.GetValue, ref value);
+            return (T)value;
+        }
+
+        /// <summary>
+        /// Set the value of a given property on a given object.
+        /// Does nothing if the property does not exist.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target">The object to set the property on.</param>
+        /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
+        /// <param name="value">The value to set.</param>
+        public static void TrySetPropertyValue<T>(object target, string propertyName, T value)
+        {
+            object valueObject = value;
+            GetSetProperty(target, propertyName, PropertyAction.SetValue, ref valueObject);
+        }
+
+        #endregion
     }
+
 }

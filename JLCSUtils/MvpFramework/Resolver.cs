@@ -43,6 +43,13 @@ namespace MvpFramework
 
         #endregion
 
+/*
+        public virtual Type GetModel(string modelName)
+        {
+            return Type.GetType(modelName);  //TODO apply default namespace
+        }
+*/
+
         /// <summary>
         /// Get the Presenter for a given action on a given model.
         /// </summary>
@@ -50,17 +57,32 @@ namespace MvpFramework
         /// <typeparam name="TModel">The type of the Model.</typeparam>
         /// <param name="model"></param>
         /// <returns></returns>
-        //        public virtual TPresenter Resolve<TPresenter, TModel>(TModel model, Type presenterAction)
         public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(TModel model)
+            where TPresenter : class
+        {
+            return GetPresenterForModel<TPresenter, TModel>(typeof(TPresenter), typeof(TModel), model);
+        }
+
+        /// <summary>
+        /// Same as <see cref="GetPresenterForModel{TPresenter, TModel}(TModel)"/> except that the types (generic type paramters to that method)
+        /// are passed as parameters.
+        /// </summary>
+        /// <typeparam name="TPresenter"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="presenterActionType"></param>
+        /// <param name="modelType"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model)
             where TPresenter : class
         {
             //TODO
 
-            Type presenterType = ResolvePresenterType(typeof(TPresenter), typeof(TModel));
+            Type presenterType = ResolvePresenterType(presenterActionType, modelType);
             if (presenterType != null)
                 return GetInstance<TPresenter>(presenterType);
 
-            throw new Exception("Resolution failed for Model: " + typeof(TModel).FullName);
+            throw new MvpResolverException("Resolution failed for Model: " + modelType.FullName);
 
             /*            var presenterType = Type.GetType(model.GetType().FullName.RemoveSuffix(ModelSuffix)
                             + action + PresenterSuffix);    // change '<Name>[Model]' to '<Name><Action>Presenter'
@@ -84,7 +106,7 @@ namespace MvpFramework
             if (modelType != null)
             {   // try to find an interface or class based on the names of the interface and the model:
 
-                // form components on the conventional name:
+                // form components of the conventional name:
                 string actionName = presenterInterface.Name.RemovePrefix(InterfacePrefix).RemoveSuffix(PresenterSuffix);
                 string modelName = modelType.Name.RemoveSuffix(ModelSuffix);
                 string targetNamespace = presenterInterface.Namespace;
@@ -113,7 +135,7 @@ namespace MvpFramework
             if (resolvedPresenterType != null)
                 return resolvedPresenterType;
 
-            throw new Exception("Resolution failed for Presenter type: " + presenterInterface.FullName + ", " + modelType?.FullName);
+            throw new MvpResolverException("Resolution failed for Presenter type: " + presenterInterface.FullName + ", " + modelType?.FullName);
         }
 
         /*
@@ -176,6 +198,12 @@ namespace MvpFramework
             */
         }
 
+        /// <summary>
+        /// Given a presenter type, create a view of the appropriate type.
+        /// </summary>
+        /// <typeparam name="TView"></typeparam>
+        /// <param name="presenterType"></param>
+        /// <returns></returns>
         public virtual TView GetViewForPresenterType<TView>(Type presenterType)
             where TView: IView
         {
@@ -203,7 +231,7 @@ namespace MvpFramework
                     return result;
             }
 
-            throw new Exception("Resolution failed for Presenter: " + presenterType.FullName);
+            throw new MvpResolverException("Resolution failed for Presenter: " + presenterType.FullName);
         }
 
         /// <summary>
@@ -214,41 +242,26 @@ namespace MvpFramework
         public virtual Type ResolveInterfaceForPresenterType(Type presenterType)
         {
             return ResolveInterfaceForClass<IPresenter,PresenterAttribute>(presenterType);
-            /*
-            Type resolvedPresenterInterface = null;
-
-            var attribute = presenterType.GetCustomAttribute<PresenterAttribute>();
-            if(attribute != null)
-            {
-                if (attribute.Interface != null)
-                    resolvedPresenterInterface = attribute.Interface;
-            }
-
-            if (resolvedPresenterInterface == null)
-            {
-                string targetNamespace = presenterType.Namespace;
-
-                // form the conventional name for the presenter interface:
-                string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + presenterType.Name;
-                resolvedPresenterInterface = GetTypeByName(presenterInterfaceName, presenterType.Assembly);
-            }
-
-            if (!resolvedPresenterInterface.IsInterface)
-                throw new Exception("Invalid presenter interface: " + resolvedPresenterInterface.FullName + " - not an interface");
-            if( !typeof(IPresenter).IsAssignableFrom(resolvedPresenterInterface) )
-                throw new Exception("Invalid presenter interface: " + resolvedPresenterInterface.FullName + " - not derived from " + typeof(IPresenter).FullName);
-
-            // may be null
-
-            return resolvedPresenterInterface;
-            */
         }
 
+        /// <summary>
+        /// Get the view interface (IView subinterface) for the given view class.
+        /// </summary>
+        /// <param name="presenterType"></param>
+        /// <returns></returns>
         public virtual Type ResolveInterfaceForViewType(Type viewType)
         {
             return ResolveInterfaceForClass<IView,ViewAttribute>(viewType);
         }
 
+        /// <summary>
+        /// Return the presenter/view interface type for a presenter/view class:
+        /// The interface that a DI framework typically resolves to this class.
+        /// </summary>
+        /// <typeparam name="TRequiredInterface">Base type of the required interface.</typeparam>
+        /// <typeparam name="TAttribute">An attribute that may be on the class, specifying the interface type.</typeparam>
+        /// <param name="classType">A presenter or view class.</param>
+        /// <returns>The presenter/view interface type.</returns>
         protected virtual Type ResolveInterfaceForClass<TRequiredInterface,TAttribute>(Type classType)
                 where TAttribute : MvpAttribute
                 where TRequiredInterface: class
@@ -272,9 +285,9 @@ namespace MvpFramework
             }
 
             if (!resolvedInterface.IsInterface)
-                throw new Exception("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
+                throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
             if (!typeof(TRequiredInterface).IsAssignableFrom(resolvedInterface))
-                throw new Exception("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
+                throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
 
             // may be null
 
@@ -337,6 +350,40 @@ namespace MvpFramework
         }
 
         protected readonly IDiResolver Context;
+    }
+
+
+    /// <summary>
+    /// Exception on resolving MVP classes or interfaces.
+    /// </summary>
+    public class MvpResolverException : Exception
+    {
+        //
+        // Summary:
+        //     Initializes a new instance of the System.Exception class.
+        public MvpResolverException() { }
+        //
+        // Summary:
+        //     Initializes a new instance of the System.Exception class with a specified error
+        //     message.
+        //
+        // Parameters:
+        //   message:
+        //     The message that describes the error.
+        public MvpResolverException(string message) : base(message) { }
+        //
+        // Summary:
+        //     Initializes a new instance of the System.Exception class with a specified error
+        //     message and a reference to the inner exception that is the cause of this exception.
+        //
+        // Parameters:
+        //   message:
+        //     The error message that explains the reason for the exception.
+        //
+        //   innerException:
+        //     The exception that is the cause of the current exception, or a null reference
+        //     (Nothing in Visual Basic) if no inner exception is specified.
+        public MvpResolverException(string message, Exception innerException) : base(message, innerException) { }
     }
 
 

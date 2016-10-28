@@ -237,6 +237,9 @@ namespace JohnLambe.Util
 
         #region SplitToVars
 
+        //TODO: Replace with one method with a params parameter.
+        // Option to put rest of string in last parameter.
+
         /// <summary>
         /// Split a string into parts, separated by a given separator.
         /// If the separator does not occur, the whole string is the first part.
@@ -289,6 +292,24 @@ namespace JohnLambe.Util
         }
 
         #endregion
+
+        /// <summary>
+        /// Split a string on a separator, returning the first part and setting the string the rest.
+        /// Repeated calls can extract a series of parts, one at a time.
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="value">On entry: The string to be split.
+        /// On exit: The remaining part of the string (after the separator). If nothing remains (i.e. there was no separator), this is null on exit.</param>
+        /// <returns>The part before the separator.</returns>
+        public static string SplitFirst(char separator, ref string value)
+        {
+            string[] parts = value.Split(new char[] { separator }, 2);
+            if (parts.Length > 1)
+                value = parts[1];
+            else
+                value = null;
+            return parts[0];
+        }
 
         #region Quoting
 

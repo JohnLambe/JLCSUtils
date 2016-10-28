@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MvpFrameworkTest")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright © 2016 John Bernard Lambe. MIT licence")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

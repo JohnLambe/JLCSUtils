@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Reflection\AssemblyUtils.cs" />
+    <Compile Include="Reflection\AttributeUtils.cs" />
     <Compile Include="Text\CaptionUtils.cs" />
     <Compile Include="Types\ID.cs" />
     <Compile Include="LazyInitialize.cs" />

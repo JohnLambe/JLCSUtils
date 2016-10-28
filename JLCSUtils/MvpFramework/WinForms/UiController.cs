@@ -51,6 +51,7 @@ namespace MvpFramework.WinForms
 
         public virtual object ShowMessage(MessageDialogParameters parameters)
         {
+            // Mock/placeholder implementation:
             MessageBox.Show(parameters.Message, parameters.Title);
             //TOOD: support the other properties, with a better dialog box.
             return null;

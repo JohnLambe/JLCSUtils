@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 using JohnLambe.Util.Text;
+using JohnLambe.Util.Reflection;
 
 namespace MvpFramework.Binding
 {
     /// <summary>
     /// Wrapper for a model, used by control binders (<see cref="IControlBinder"/>).
     /// </summary>
-    //| A model could be a map, or XmlNode, IConfigValueProvider, etc., and this class or a subclass (maybe refactored as an interface,
+    //| A model could be a map, XmlNode, IConfigValueProvider, etc., and this class or a subclass (maybe refactored as an interface,
     //| with a factory that gets an implementation for a given model) could return properties in a standard way.
     //| Currently, it supports only accessing properties of an object.
     public class ModelBinderWrapper
@@ -22,18 +23,22 @@ namespace MvpFramework.Binding
             this.Model = model;
         }
 
-        public virtual void BindProperty(string propertyName /* ...,  */) //TODO
+        /*
+        public virtual void BindProperty(string propertyName  ...,  ) //TODO
         {
 
         }
+        */
 
         public virtual object GetValue(string propertyName)
         {
-            return GetProperty(propertyName)?.GetValue(Model);
+            //            return GetProperty(propertyName)?.GetValue(Model);
+            return ReflectionUtils.TryGetPropertyValue<object>(Model, propertyName);
         }
 
         public virtual void SetValue(string propertyName, object value)
-            => GetProperty(propertyName)?.SetValue(Model, value);
+            //            => GetProperty(propertyName)?.SetValue(Model, value);
+            => ReflectionUtils.TrySetPropertyValue<object>(Model, propertyName, value);
 
         public virtual bool CanRead(string propertyName)
             => GetProperty(propertyName)?.CanRead ?? false;
@@ -48,7 +53,7 @@ namespace MvpFramework.Binding
         /// <param name="propertyName"></param>
         /// <returns></returns>
         public virtual PropertyInfo GetProperty(string propertyName)
-            => Model.GetType().GetProperty(propertyName);
+            => ReflectionUtils.GetProperty(Model,propertyName);
 
         public virtual string GetCaptionForProperty(string propertyName)
         {
