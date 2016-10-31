@@ -12,7 +12,8 @@ namespace MvpFramework
 {
 
     /// <summary>
-    /// Resolves the Presenter for a Model or View for a Presenter.
+    /// Resolves the Presenter for a Model, View for a Presenter,
+    /// and other MVP-related resolving.
     /// </summary>
     public abstract class MvpResolver
     {
@@ -43,12 +44,18 @@ namespace MvpFramework
 
         #endregion
 
-/*
-        public virtual Type GetModel(string modelName)
-        {
-            return Type.GetType(modelName);  //TODO apply default namespace
-        }
-*/
+        /*
+                public virtual Type GetModel(string modelName)
+                {
+                    return Type.GetType(modelName);  //TODO apply default namespace
+                }
+        */
+
+        /// <summary>
+        /// Given a presenter type, create an instance of it.
+        /// </summary>
+        /// <returns></returns>
+        public abstract TPresenter GetPresenterByType<TPresenter, TParam>(Type presenterType, TParam param);
 
         /// <summary>
         /// Get the Presenter for a given action on a given model.
@@ -108,21 +115,24 @@ namespace MvpFramework
 
                 // form components of the conventional name:
                 string actionName = presenterInterface.Name.RemovePrefix(InterfacePrefix).RemoveSuffix(PresenterSuffix);
+                    // name describing the action of the required presenter, e.g. a presenter action interface of 'IViewDetailPresenter' would yield an action of "ViewDetail".
                 string modelName = modelType.Name.RemoveSuffix(ModelSuffix);
-                string targetNamespace = presenterInterface.Namespace;
-                //TODO: attribute on model to override modelName
+                    // name describing the model that this presenter acts on. e.g. a class called 'ArticleModel' or 'Article' would yield a model name of "Article".
+                    //TODO: attribute on model to override modelName
+                string targetNamespace = presenterInterface.Namespace;  //TODO
 
                 // form the conventional name for the presenter interface:
                 string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + actionName + modelName + PresenterSuffix;
                     // I{Action}{Model}Presenter
                 Type resolvedPresenterInterface = GetTypeByName(presenterInterfaceName, presenterInterface.Assembly);
-                if (resolvedPresenterInterface != null)
+                if (resolvedPresenterInterface != null)                   // if an interface with this name exists
                 {
                     var result = ResolveType(resolvedPresenterInterface);
                     if (result != null)
                         return result;
                 }
 
+                // If not found by resolving the conventional interface name:
                 // form the conventional name for the presenter class:
                 string presenterClassName = targetNamespace + "." + actionName + modelName + PresenterSuffix;
                 Type resolvedPresenterClass = GetTypeByName(presenterClassName, presenterInterface.Assembly);
@@ -330,6 +340,24 @@ namespace MvpFramework
             this.Context = diContext;
         }
 
+        public override TPresenter GetPresenterByType<TPresenter, TParam>(Type presenterType, TParam param)
+        {
+            // Make the generic factory type:
+            Type factoryType = typeof(PresenterFactory<,>).MakeGenericType(presenterType, param.GetType());
+            
+            // Get its constructor:
+            var factoryConstructor = factoryType.GetConstructor(new Type[] { GetType(), typeof(IDiResolver) });
+
+            // Invoke the constructor to get the factory:
+            var factory = factoryConstructor.Invoke( new object[] { this, Context } );
+            
+            // Get the factory method:
+            var createMethod = factoryType.GetMethod("Create", new Type[] { param.GetType() });
+
+            // Invoke the factory method to get the instance:
+            return (TPresenter)createMethod.Invoke(factory, new object[] { param });
+        }
+
         protected override T GetInstance<T>(Type forType)
         {
             try
@@ -352,76 +380,4 @@ namespace MvpFramework
         protected readonly IDiResolver Context;
     }
 
-
-    /// <summary>
-    /// Exception on resolving MVP classes or interfaces.
-    /// </summary>
-    public class MvpResolverException : Exception
-    {
-        //
-        // Summary:
-        //     Initializes a new instance of the System.Exception class.
-        public MvpResolverException() { }
-        //
-        // Summary:
-        //     Initializes a new instance of the System.Exception class with a specified error
-        //     message.
-        //
-        // Parameters:
-        //   message:
-        //     The message that describes the error.
-        public MvpResolverException(string message) : base(message) { }
-        //
-        // Summary:
-        //     Initializes a new instance of the System.Exception class with a specified error
-        //     message and a reference to the inner exception that is the cause of this exception.
-        //
-        // Parameters:
-        //   message:
-        //     The error message that explains the reason for the exception.
-        //
-        //   innerException:
-        //     The exception that is the cause of the current exception, or a null reference
-        //     (Nothing in Visual Basic) if no inner exception is specified.
-        public MvpResolverException(string message, Exception innerException) : base(message, innerException) { }
-    }
-
-
-    /*
-    /// <summary>
-    /// Handles showing or moving between forms and dialogs.
-    /// </summary>
-    public class UiNavigator
-    {
-        public UiNavigator(MvpResolver resolver)
-        {
-            MvpResolver = resolver;
-        }
-
-        /// <summary>
-        /// Bind the presenter to a View if it is not already bound, and show it.
-        /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <param name="presenter"></param>
-        public virtual void ShowForm<TView>(IPresenter presenter)
-            where TView : IView
-            //TODO: return value
-        {
-            /-*
-            if (!presenter.IsBound)                  // if not bound to a view
-            {   // bind it now
-                TView view = MvpResolver.Resolve<TView, IPresenter<TView> >(presenter); // resolve View
-                presenter.Init(view);
-            }
-            *-/
-            presenter.Show();
-        }
-
-        //TODO: Message dialogs:
-        //public MessageDialogResult ShowDialog(MessageDialogModel p);
-        // generic type for result:   public TResult ShowDialog(MessageDialogModel<TResult> p); ?
-
-        protected MvpResolver MvpResolver { get; private set; }
-    }
-*/
 }

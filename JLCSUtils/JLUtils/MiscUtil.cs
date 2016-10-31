@@ -30,12 +30,17 @@ namespace JohnLambe.Util
             return default(T);
         }
 
+
+        #region obsolete
+
+        // For earlier C# versions before the "??" operator:
+
         #region IfNotNull
 
         /// <summary>
-        /// Use a delegate with this as a parameter is this is not null/default:
+        /// Use a delegate with this as a parameter if this is not null/default:
         /// <para>If `a` is null or the default for its type, the default value of the return type is returned.
-        /// Otherwise, b is returned, using a as the parameter to b.
+        /// Otherwise, b is returned, using `a` as the parameter to b.
         /// </para>
         /// </summary>
         /// <typeparam name="R"></typeparam>
@@ -85,7 +90,6 @@ namespace JohnLambe.Util
 
         #endregion
 
-
         /// <summary>
         /// Execute a delegate, suppressing NullReferenceException,
         /// and returning `defaultValue` if it is raised by the delegate.
@@ -105,6 +109,8 @@ namespace JohnLambe.Util
                 return defaultValue;
             }
         }
+
+        #endregion
 
         #region Choose
 

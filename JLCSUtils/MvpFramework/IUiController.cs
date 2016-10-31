@@ -50,8 +50,13 @@ namespace MvpFramework
         #endregion
 
 
+        /// <summary>
+        /// Show a simple message dialog.
+        /// <para>See <see cref="IMessageDialog"/> for a message dialog with more options.</para>
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
         void ShowMessage(string message, string title = "");
-            //TODO More sophisticated message dialog.
 
     }
 
@@ -118,5 +123,15 @@ namespace MvpFramework
         /// Resume session locking and destroy this instance.
         /// </summary>
         void Release();
+    }
+
+
+    public interface ISesson
+    {
+        string SessionId { get; set; }
+
+        ISessionLockController LockController { get; }
+
+        // other Session-related properties ...
     }
 }

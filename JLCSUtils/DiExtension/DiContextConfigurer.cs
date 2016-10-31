@@ -71,7 +71,7 @@ namespace DiExtension
                 int attributeIndex = 0;
                 foreach (var attribute in type.GetCustomAttributes<DiRegisterAttributeBase>())
                 {
-                    if (filter.TryEvaluate(type))
+                    if (filter.TryEvaluate(type))      // if this type matches the filter
                     {
                         toBeRegistered.Add(MakeSortKey(type, attribute, (ushort)attributeIndex++), 
                             new RegistrationItem { Attribute = attribute, Class = type });

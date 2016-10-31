@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiExtension
 {
-    public interface IDiContext
+    public interface IDiContext 
     {
         T BuildUp<T>(T target);
         //TODO

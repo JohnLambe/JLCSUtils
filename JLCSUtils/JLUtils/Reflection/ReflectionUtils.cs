@@ -141,7 +141,7 @@ namespace JohnLambe.Util.Reflection
         }
 
         /// <summary>
-        /// Return a possibly nested property of the given object.
+        /// Return a possibly-nested property of the given object.
         /// </summary>
         /// <param name="target"></param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>

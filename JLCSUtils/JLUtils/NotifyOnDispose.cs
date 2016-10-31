@@ -24,10 +24,7 @@ namespace JohnLambe.Util
 
         public virtual void Dispose()
         {
-            if(OnDispose != null)
-            {
-                OnDispose(this as T);
-            }
+            OnDispose?.Invoke(this as T);
         }
     }
 }

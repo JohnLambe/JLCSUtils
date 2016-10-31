@@ -42,4 +42,6 @@ namespace DiExtension
     }
     //TODO: Specify types of exceptions that may be raised.
     // And/or return null on failure.
+    //TODO: These can currently throw SimpleInjector.ActivationException.
+    // Wrap in DependencyInjectionException.
 }

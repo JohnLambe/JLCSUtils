@@ -7,20 +7,6 @@ using System.Windows.Forms;
 
 namespace MvpFramework.WinForms
 {
-    public static class MvpWindowStateExt
-    {
-        public static MvpWindowState FromWinForms(FormWindowState state)
-        {
-            return (MvpWindowState)state;
-        }
-
-        public static FormWindowState ToWinForms(this MvpWindowState state)
-        {
-            return (FormWindowState)state;
-        }
-    }
-
-
     /// <summary>
     /// Basic IUiController implementation for WinForms.
     /// </summary>
@@ -30,7 +16,7 @@ namespace MvpFramework.WinForms
         {
             get
             {
-                return MvpWindowStateExt.FromWinForms(MainForm.WindowState);
+                return MainForm.WindowState.ToMvpWindowState();
             }
             set
             {

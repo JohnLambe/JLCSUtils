@@ -1,0 +1,15 @@
+﻿TODO:
+
+Method injection.
+
+*Config inject with delegate.
+Specify whether to cache for each registration.
+
+Resolve by type, then inject only property value of the resolved instance:
+	e.g.	[Inject(typeof(User),"Name")]  // inject the user name (User.Name)
+
+More automatic registration.
+
+ChainableContext
+
+Constructor Parameter Injection with [Inject]

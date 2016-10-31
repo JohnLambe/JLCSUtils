@@ -53,7 +53,7 @@ namespace MvpFramework
             {
                 // Register views first, because PresenterFactory tries to resolve the view interface to the view:
                 foreach (var view in
-                    assembly.GetExportedTypes().Where(t => t.HasCustomAttribute<ViewAttribute>())
+                    assembly.GetExportedTypes().Where(t => t.IsDefined<ViewAttribute>())
                     )
                 {
                     RegisterType(Resolver.ResolveInterfaceForViewType(view), view);
@@ -61,7 +61,7 @@ namespace MvpFramework
                 }
 
                 foreach ( var presenter in
-                    assembly.GetExportedTypes().Where( t => t.HasCustomAttribute<PresenterAttribute>() )
+                    assembly.GetExportedTypes().Where( t => t.IsDefined<PresenterAttribute>() )
                     )
                 {
                     var presenterInterface = Resolver.ResolveInterfaceForPresenterType(presenter);
@@ -103,7 +103,7 @@ namespace MvpFramework
             if (constructors.Count() == 1)              // if only one
                 return constructors.First();            // use it
             // otherwise, filter to those with the attribute:
-            constructors = constructors.Where(c => c.HasCustomAttribute<InjectAttribute>());
+            constructors = constructors.Where(c => c.IsDefined<InjectAttribute>());
             // return the first one:
             return constructors.First();
 

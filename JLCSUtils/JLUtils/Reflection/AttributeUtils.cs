@@ -8,9 +8,9 @@ namespace JohnLambe.Util.Reflection
 {
     public static class AttributeUtils
     {
-        public static T GetCustomAttribute<T>(this ICustomAttributeProvider type)
+        public static T GetCustomAttribute<T>(this ICustomAttributeProvider provider)
         {
-            foreach (var attribute in type.GetCustomAttributes(true))
+            foreach (var attribute in provider.GetCustomAttributes(true))
             {
                 if (attribute is T)
                     return (T)attribute;
@@ -58,9 +58,19 @@ namespace JohnLambe.Util.Reflection
                     return GetCustomAttributes<T>(type, true);
                 }
         */
-        public static bool HasCustomAttribute<T>(this ICustomAttributeProvider type)
+
+        [Obsolete("Use ICustomAttributeProvider.IsDefined")]
+        public static bool HasCustomAttribute<T>(this ICustomAttributeProvider provider)
         {
-            return type.GetCustomAttribute<T>() != null;
+            return provider.IsDefined(typeof(T), true);
+            //return provider.GetCustomAttribute<T>() != null;
         }
+        
+        public static bool IsDefined<T>(this ICustomAttributeProvider provider)
+        {
+            return provider.IsDefined(typeof(T), true);
+            //return provider.GetCustomAttribute<T>() != null;
+        }
+        
     }
 }

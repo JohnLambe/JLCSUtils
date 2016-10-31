@@ -46,11 +46,14 @@
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
-    <Compile Include="MenuAttribute.cs" />
+    <Compile Include="Menu\Menu.cs" />
+    <Compile Include="Menu\MenuAttribute.cs" />
+    <Compile Include="Menu\MenuBuilder.cs" />
     <Compile Include="MessageDialog.cs" />
     <Compile Include="IUiController.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="Binding\ControlBinder.cs" />
+    <Compile Include="MvpResolutionException.cs" />
     <Compile Include="Presenter.cs" />
     <Compile Include="PresenterAttribute.cs" />
     <Compile Include="PresenterFactory.cs" />
@@ -60,6 +63,7 @@
     <Compile Include="ViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="WinForms\Types.cs" />
     <Compile Include="WinForms\UiController.cs" />
   </ItemGroup>
   <ItemGroup>

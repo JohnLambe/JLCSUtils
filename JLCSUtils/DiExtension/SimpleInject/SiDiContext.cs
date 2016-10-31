@@ -155,7 +155,8 @@ namespace DiExtension.SimpleInject
             Dictionary = new DictionaryConfigProvider<object>();
             ProviderChain.RegisterProvider(Dictionary);
 
-            PropertyInjectionDiBehavior.RegisterWith(Container.Options,this);
+            PropertyInjectionBehavior = PropertyInjectionDiBehavior.RegisterWith(Container.Options,this);
+            CacheValues = true;
 
             base.Init();
         }
@@ -198,8 +199,20 @@ namespace DiExtension.SimpleInject
                 BuildUp(instance);
         }
 
+        /// <summary>
+        /// If true, values looked up by a key are cached (so if they are modified after being resolved,
+        /// the old value will still be used on subsequent resolving).
+        /// This is the usual behavior of SimpleInjector.
+        /// </summary>
+        public virtual bool CacheValues
+        {
+            get { return PropertyInjectionBehavior.CacheValues; }
+            set { PropertyInjectionBehavior.CacheValues = value; }
+        }
 
         public virtual ConfigProviderChain ProviderChain { get; private set; }
+        protected virtual PropertyInjectionDiBehavior PropertyInjectionBehavior { get; private set; }
+
         protected IConfigProvider Provider { get; private set; }
         protected DictionaryConfigProvider<object> Dictionary { get; private set; }
     }

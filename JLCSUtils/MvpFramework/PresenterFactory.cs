@@ -9,25 +9,6 @@ using DiExtension;
 
 namespace MvpFramework
 {
-    /// <summary>
-    /// Interface for factory that creates a Presenter.
-    /// Can be used for automatic factory creation on dependency injection.
-    /// </summary>
-    /// <typeparam name="TPresenter"></typeparam>
-    /// <typeparam name="TModel"></typeparam>
-    public interface IPresenterFactory<TPresenter, TModel>
-        where TPresenter : IPresenter
-    {
-        /// <summary>
-        /// Create the Presenter.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        TPresenter Create(TModel model);
-    }
-    //TODO: Change TModel to TParam ?
-    //  Add versions with more parameters.
-
     public interface IPresenterFactory<TPresenter>
         where TPresenter : IPresenter
     {
@@ -35,15 +16,89 @@ namespace MvpFramework
     }
 
     /// <summary>
+    /// Interface for factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam">Type of the parameter to the Create method.</typeparam>
+    public interface IPresenterFactory<TPresenter, TParam>
+        where TPresenter : IPresenter
+    {
+        /// <summary>
+        /// Create the Presenter.
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        TPresenter Create(TParam param);
+    }
+
+    /// <summary>
+    /// Interface for factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam2"></typeparam>
+    public interface IPresenterFactory<TPresenter, TParam1, TParam2>
+        where TPresenter : IPresenter
+    {
+        TPresenter Create(TParam1 param1, TParam2 param2);
+    }
+
+    /// <summary>
+    /// Interface for factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam3"></typeparam>
+    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>
+        where TPresenter : IPresenter
+    {
+        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3);
+    }
+
+    /// <summary>
+    /// Interface for factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam3"></typeparam>
+    /// <typeparam name="TParam4"></typeparam>
+    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>
+        where TPresenter : IPresenter
+    {
+        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4);
+    }
+
+    /// <summary>
+    /// Interface for factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam3"></typeparam>
+    /// <typeparam name="TParam4"></typeparam>
+    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
+        where TPresenter : IPresenter
+    {
+        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5);
+    }
+
+
+    /// <summary>
     /// Generic factory for creating Presenters.
     /// Could be subclassed for custom presenter factory logic.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
-    /// <typeparam name="TModel"></typeparam>
-    public class PresenterFactory<TPresenter, TModel> : IPresenterFactory<TPresenter, TModel>,
+    /// <typeparam name="TParam1"></typeparam>
+    public class PresenterFactory<TPresenter> :
         IPresenterFactory<TPresenter>
         where TPresenter : IPresenter
-        // Change TModel to TParam (not necessarily the Model) ?
     {
         public PresenterFactory(MvpResolver resolver, /*UiNavigator navigator,*/ IDiResolver diResolver
             /*, Type targetClass*/
@@ -80,24 +135,27 @@ namespace MvpFramework
             // and SimpleInjector cannot register items after any resolve (so this should be called only after everything is registered).
             if (TargetConstructor == null)
             {
-                this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter), typeof(TModel));
-                TargetConstructor = TargetClass.GetConstructors().First();
-                //TODO: if multiple constructors, choose one.
-                //   Evaluate which are compatible? Use Attribute.
+                try
+                {
+                    this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter));
+                    //                this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter), typeof(TParam1));
+                    TargetConstructor = TargetClass.GetConstructors().First();
+                    //TODO: if multiple constructors, choose one.
+                    //   Evaluate which are compatible? Use Attribute.
+                }
+                catch(Exception ex)
+                {
+                    throw new DependencyInjectionException("Failed to resolve Presenter type or constructor: " + ex.Message, ex);
+                }
             }
-        }
-
-        TPresenter IPresenterFactory<TPresenter, TModel>.Create(TModel model)
-        {
-            return CreatePresenter(model);
         }
 
         TPresenter IPresenterFactory<TPresenter>.Create()
         {
-            return CreatePresenter(null);
+            return CreatePresenter();
         }
 
-        protected virtual TPresenter CreatePresenter(object model)
+        protected virtual TPresenter CreatePresenter(params object[] param)
         { 
             Init();
 
@@ -116,9 +174,9 @@ namespace MvpFramework
                     // ...  (TargetClass)
                     args[parameterIndex] = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
                 }
-                else if (parameterIndex == 1)
-                {   // second parameter (if present) is the Model
-                    args[parameterIndex] = model;
+                else if (parameterIndex < param.Length)
+                {   // the next parameters (if present) are the Create method parameters (possibly including the Model)
+                    args[parameterIndex] = param[parameterIndex-1];
                 }
                 else
                 {   // other parameters are injected from the DI container
@@ -136,19 +194,116 @@ namespace MvpFramework
         /// The type of the Presenter created by this.
         /// </summary>
         protected Type TargetClass { get; private set; }
+
         /// <summary>
         /// The constructor of `TargetClass` to be used.
         /// </summary>
         protected ConstructorInfo TargetConstructor { get; private set; }
-//        protected readonly UiNavigator Navigator;
+
         /// <summary>
         /// Interface to the dependency injection container.
         /// </summary>
         protected readonly IDiResolver DiResolver;
+
         /// <summary>
         /// Resolver for resolving the View.
         /// </summary>
         protected readonly MvpResolver Resolver;
     }
 
+
+    public class PresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter>,
+        IPresenterFactory<TPresenter, TParam1>
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        {
+        }
+
+        TPresenter IPresenterFactory<TPresenter, TParam1>.Create(TParam1 param)
+        {
+            return CreatePresenter(param);
+        }
+    }
+
+    public class PresenterFactory<TPresenter, TParam1, TParam2> : PresenterFactory<TPresenter, TParam1>,
+        IPresenterFactory<TPresenter>,
+        IPresenterFactory<TPresenter, TParam1>,
+        IPresenterFactory<TPresenter, TParam1, TParam2>
+        /*                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>,
+                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>,
+                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
+        */
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        {
+        }
+
+        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2>.Create(TParam1 param1, TParam2 param2)
+        {
+            return CreatePresenter(param1, param2);
+        }
+    }
+
+    public class PresenterFactory<TPresenter, TParam1, TParam2, TParam3> : PresenterFactory<TPresenter, TParam1, TParam2>,
+        IPresenterFactory<TPresenter>,
+        IPresenterFactory<TPresenter, TParam1>,
+        IPresenterFactory<TPresenter, TParam1, TParam2>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>
+        /*
+                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>,
+                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
+        */
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        {
+        }
+
+        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>.Create(TParam1 param1, TParam2 param2, TParam3 param3)
+        {
+            return CreatePresenter(param1, param2, param3);
+        }
+    }
+
+    public class PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4> : PresenterFactory<TPresenter, TParam1, TParam2, TParam3>,
+        IPresenterFactory<TPresenter>,
+        IPresenterFactory<TPresenter, TParam1>,
+        IPresenterFactory<TPresenter, TParam1, TParam2>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>
+        /*
+                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
+        */
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        {
+        }
+
+        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        {
+            return CreatePresenter(param1, param2, param3, param4);
+        }
+    }
+
+    public class PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5> : PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>,
+        IPresenterFactory<TPresenter>,
+        IPresenterFactory<TPresenter, TParam1>,
+        IPresenterFactory<TPresenter, TParam1, TParam2>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        {
+        }
+
+        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        {
+            return CreatePresenter(param1, param2, param3, param4, param5);
+        }
+    }
 }

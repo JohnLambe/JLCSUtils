@@ -37,12 +37,19 @@ namespace DiExtension.SimpleInject
             ConfigProvider = context;
         }
 
-        public static void RegisterWith(ContainerOptions options, IConfigProvider context)
+        public static PropertyInjectionDiBehavior RegisterWith(ContainerOptions options, IConfigProvider context)
         {
             options.PropertySelectionBehavior = new InjectAttributePropertySelectionBehavior(context);
-            options.DependencyInjectionBehavior = new PropertyInjectionDiBehavior(
+            var diBheaviour = new PropertyInjectionDiBehavior(
                 options.DependencyInjectionBehavior, context);
+            options.DependencyInjectionBehavior = diBheaviour;
+            return diBheaviour;
         }
+
+        /// <summary>
+        /// Iff false, keys are resolved to Expression, so that the they are re-evaluated each time they are injected.
+        /// </summary>
+        public virtual bool CacheValues { get; set; } = true;
 
         /// <summary>
         /// Returns the key to be used to lookup a value for the given item in the DI container.
@@ -73,10 +80,26 @@ namespace DiExtension.SimpleInject
                     bool resolved = ConfigProvider.GetValue<object>(key, consumer.Target.TargetType, out value);
                     // For properties, `resolved` should always be true, otherwise the Property Selection Behaviour should have rejected the property.
                     if (resolved)
-                        return Expression.Constant(value, consumer.Target.TargetType);
+                    {
+                        if (!CacheValues)
+                        {   // return an Expression to lookup the key each time it is required:
+                            return Expression.Convert(         // convert to the required type
+                                Expression.Call(
+                                    Expression.Constant(this), GetType().GetMethod("GetValue", new Type[] { typeof(string), typeof(Type) }),  // GetValue method of this instance
+                                    Expression.Constant(key), Expression.Constant(consumer.Target.TargetType)
+                                ),
+                                consumer.Target.TargetType);
+                        }
+                        else
+                        {
+                            return Expression.Constant(value, consumer.Target.TargetType);   // return a constant
+                        }
+                    }
                     else
+                    {
                         Console.WriteLine("Resolution failed for " + consumer.Target.Member + "; Key=" + key);
-                    //TODO: capture information to be added to exception if resolving by other method fails
+                        //TODO: capture information to be added to exception if resolving by other method fails
+                    }
                 }
                 // if not resolved here, the default behaviour (resolving by type) will be used.
             }
@@ -84,7 +107,16 @@ namespace DiExtension.SimpleInject
             if (consumer.Target.Member.GetCustomAttribute<InjectAttribute>()?.ByType != false)   // if injecting by type is supported (if no attribute, it is)
                 return Existing.BuildExpression(consumer);
 
-            throw new Exception("Resolving failed for " + consumer.Target.Name);
+            throw new DependencyInjectionException("Resolving failed for " + consumer.Target.Name);
+        }
+
+        public virtual object GetValue(string key, Type requiredType)
+        {
+            object value;
+            if(ConfigProvider.GetValue<object>(key, requiredType, out value))
+                return value;
+            else
+                throw new DependencyInjectionException("Getting value failed for key: " + key);
         }
 
         public virtual void Verify(InjectionConsumerInfo consumer)

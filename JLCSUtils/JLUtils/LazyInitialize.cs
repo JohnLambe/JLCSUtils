@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace JohnLambe.Util
 {
     /// <summary>
-    /// Wrapper for a value and a delegate to lazy-initialise it.
+    /// Wrapper for a value and a delegate, to lazy-initialise it.
     /// The delegate is fired on the first attempt to read the value.
     /// This class is implicitly castable to the type of the value, so can be used in place of the value.
     /// </summary>

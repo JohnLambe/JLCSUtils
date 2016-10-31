@@ -92,7 +92,7 @@ namespace DiExtension.AutoFactory
         {
             if (interfaceType != null)
             {
-                if (interfaceType.IsInterface && interfaceType.HasCustomAttribute<AutoFactoryAttribute>())
+                if (interfaceType.IsInterface && interfaceType.IsDefined<AutoFactoryAttribute>())
                 {
                     var genericArguments = interfaceType.GetGenericArguments();   // generic type arguments of the interface type
                     if (genericArguments != null && genericArguments.Length > 0)  // if it has generic arguments

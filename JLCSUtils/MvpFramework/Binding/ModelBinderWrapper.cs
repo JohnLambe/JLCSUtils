@@ -57,7 +57,7 @@ namespace MvpFramework.Binding
 
         public virtual string GetCaptionForProperty(string propertyName)
         {
-            return CaptionUtils.PropertyToCaption(GetProperty(propertyName));
+            return CaptionUtils.GetDisplayName(GetProperty(propertyName));
         }
 
         protected readonly object Model;

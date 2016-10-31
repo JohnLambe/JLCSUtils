@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.TypeConversion;
+﻿using JohnLambe.Util.Reflection;
+using JohnLambe.Util.TypeConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace DiExtension.ConfigInject.Providers
 {
-    //TODO: Rename ObjectPropertyProvider ?
-
     /// <summary>
     /// Implements <see cref="IConfigProvider"/> to return property values of a given object.
     /// </summary>
@@ -23,7 +22,7 @@ namespace DiExtension.ConfigInject.Providers
             this._source = source;
         }
 
-        public bool GetValue<T>(string key, Type requiredType, out T value)
+        public virtual bool GetValue<T>(string key, Type requiredType, out T value)
         {
             return StaticGetValue<T>(_source, key ,requiredType, out value);
 /*            var property = _source?.GetType()?.GetProperty(key);
@@ -42,10 +41,15 @@ namespace DiExtension.ConfigInject.Providers
 
         public static bool StaticGetValue<T>(object source, string key, Type requiredType, out T value)
         {
-            var property = source?.GetType()?.GetProperty(key);
-            if (property != null)
+            //            var property = ReflectionUtils.GetProperty(source, key);
+            ////            var property = source?.GetType()?.GetProperty(key);
+            object objectValue = ReflectionUtils.TryGetPropertyValue<object>(source, key);
+            if (objectValue != null)
             {
-                value = GeneralTypeConverter.Convert<T>(property.GetValue(source, JohnLambe.Util.Collections.EmptyCollection<object>.EmptyArray), requiredType);
+                value = GeneralTypeConverter.Convert<T>(objectValue
+                    //property.GetValue(source, JohnLambe.Util.Collections.EmptyCollection<object>.EmptyArray)
+                    , requiredType
+                    );
                 return true;
             }
             else
@@ -55,6 +59,6 @@ namespace DiExtension.ConfigInject.Providers
             }
         }
 
-        protected object _source;
+        protected readonly object _source;
     }
 }

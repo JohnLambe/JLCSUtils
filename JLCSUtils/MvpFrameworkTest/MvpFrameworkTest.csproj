@@ -52,6 +52,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Binding\ModelBinderWrapperTest.cs" />
+    <Compile Include="Menu\MenuBuilderTest.cs" />
+    <Compile Include="RegistrationHelperTest.cs" />
     <Compile Include="ResolverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,6 +61,10 @@
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">
       <Project>{A6CC2DD9-BB55-4697-A6FF-8F43657A23DF}</Project>
       <Name>DiExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JLUtils\JLUtils.csproj">
+      <Project>{2C2E5049-976D-408F-A67D-1463271F3E98}</Project>
+      <Name>JLUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\MvpFramework\MvpFramework.csproj">
       <Project>{153a1b06-bf51-4bf1-b116-8ec44361daac}</Project>
