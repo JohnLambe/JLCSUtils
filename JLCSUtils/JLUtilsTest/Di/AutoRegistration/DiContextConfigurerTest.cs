@@ -19,7 +19,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di.AutoRegistration
 
             Container.ScanAssembly(this.GetType().Assembly,
                 new BooleanExpression<Type>(t => t.Namespace.StartsWith(this.GetType().Namespace))  // only classes in the same namespace as this
-                );  // the assembly of the container - JLUtils
+                );  // this assembly, and the namespace of this test class
             //Container.ProviderChain
 
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 
 using DiExtension;
-
+using JohnLambe.Util;
 
 namespace MvpFramework
 {
@@ -100,7 +100,8 @@ namespace MvpFramework
         IPresenterFactory<TPresenter>
         where TPresenter : IPresenter
     {
-        public PresenterFactory(MvpResolver resolver, /*UiNavigator navigator,*/ IDiResolver diResolver
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver,
+            IResolverExtension uiManager = null
             /*, Type targetClass*/
             )
         // To remove service locators:
@@ -127,6 +128,7 @@ namespace MvpFramework
             //            this.Navigator = navigator;
             this.DiResolver = diResolver;
             this.Resolver = resolver;
+            this.UiManager = uiManager ?? new NullUiManager();
             //this.TargetClass = targetClass;
         }
 
@@ -159,8 +161,13 @@ namespace MvpFramework
         { 
             Init();
 
+            var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(param);
+            if (existingPresenter != null)
+                return existingPresenter;
+
             var parameters = TargetConstructor.GetParameters();   // constructor parameters
             object[] args = new object[parameters.Count()];       // constructor arguments
+            IView view = null;
 
             // Populate the constructor arguments:
             int parameterIndex = 0;
@@ -169,12 +176,11 @@ namespace MvpFramework
                 //                if(parameter.ParameterType.IsAssignableFrom(typeof(TView)))
                 if (parameterIndex == 0)
                 {   // first parameter is always the View
-                    //                    args[parameterIndex] = Navigator.ViewForPresenterType(typeof(TPresenter));
-                    // OR Resolver.ViewForPresenterType
-                    // ...  (TargetClass)
-                    args[parameterIndex] = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                    UiManager.AfterCreateView(ref view);
+                    args[parameterIndex] = view;
                 }
-                else if (parameterIndex < param.Length)
+                else if (parameterIndex < param.Length + 1)
                 {   // the next parameters (if present) are the Create method parameters (possibly including the Model)
                     args[parameterIndex] = param[parameterIndex-1];
                 }
@@ -187,11 +193,25 @@ namespace MvpFramework
 
             var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
             DiResolver.BuildUp(presenter);                                 // inject properties
+
+            UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
+            /*
+            if (UiManager != null)
+            {
+                var newPresenter = UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
+                if(!presenter.Equals(newPresenter))
+                {
+                    MiscUtil.TryDispose(presenter);
+                    presenter = newPresenter;
+                }
+            }
+            */
+
             return presenter;
         }
 
         /// <summary>
-        /// The type of the Presenter created by this.
+        /// The type of the Presenter created by this factorys.
         /// </summary>
         protected Type TargetClass { get; private set; }
 
@@ -202,13 +222,21 @@ namespace MvpFramework
 
         /// <summary>
         /// Interface to the dependency injection container.
+        /// Non null.
         /// </summary>
         protected readonly IDiResolver DiResolver;
 
         /// <summary>
         /// Resolver for resolving the View.
+        /// Non null.
         /// </summary>
         protected readonly MvpResolver Resolver;
+
+        /// <summary>
+        /// UI Manager (places new views in the UI, etc.).
+        /// Non null. May be a null object.
+        /// </summary>
+        protected readonly IResolverExtension UiManager;
     }
 
 

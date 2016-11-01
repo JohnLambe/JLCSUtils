@@ -33,11 +33,18 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
         }
 
         [TestMethod]
-        public void PropertyToCaption()
+        public void GetDisplayName_Property()
         {
-            Assert.AreEqual("Description of TestProperty1", CaptionUtils.PropertyToCaption(GetType().GetProperty("TestProperty1")), "from DescriptionAttribute");
-            Assert.AreEqual("Test Property 2", CaptionUtils.PropertyToCaption(GetType().GetProperty("TestProperty2")), "from property name");
-            Assert.AreEqual(null, CaptionUtils.PropertyToCaption(null), "null");
+            Assert.AreEqual("Test Property 2", CaptionUtils.GetDisplayName(GetType().GetProperty("TestProperty2")), "from property name");
+            Assert.AreEqual("Test Property 1", CaptionUtils.GetDisplayName(GetType().GetProperty("TestProperty1")), "has DescriptionAttribute");
+            Assert.AreEqual(null, CaptionUtils.GetDisplayName((System.Reflection.PropertyInfo)null), "null");
+        }
+
+        [TestMethod]
+        public void GetDescriptionFromAttribute_Property()
+        {
+            Assert.AreEqual("Description of TestProperty1", CaptionUtils.GetDescriptionFromAttribute(GetType().GetProperty("TestProperty1")), "from DescriptionAttribute");
+            Assert.AreEqual(null, CaptionUtils.GetDescriptionFromAttribute(GetType().GetProperty("TestProperty2")), "no attribute");
         }
 
         [System.ComponentModel.Description("Description of TestProperty1")]

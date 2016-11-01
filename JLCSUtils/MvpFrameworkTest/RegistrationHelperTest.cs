@@ -46,6 +46,7 @@ namespace MvpFrameworkTest
             // General container setup:
             Context.Container.RegisterSingleton(typeof(IDiResolver), Context);
             Context.RegisterType(typeof(MvpResolver), typeof(DiMvpResolver));
+            Context.RegisterType(typeof(IResolverExtension), typeof(NullUiManager));
 
             // Registration of this presenter:
             Context.RegisterType(typeof(ITest1Presenter), typeof(Test1Presenter));

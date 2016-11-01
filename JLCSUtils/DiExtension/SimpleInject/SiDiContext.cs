@@ -54,7 +54,6 @@ namespace DiExtension.SimpleInject
                 public virtual IDiContext RegisterAndBuilpUpInstance(string name, object instance, bool buildUp = true);
         */
 
-//        public virtual void BuildUp(object target)
         public virtual T BuildUp<T>(T target)
         {
             // From SI documentation:

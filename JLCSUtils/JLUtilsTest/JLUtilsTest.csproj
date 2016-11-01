@@ -89,6 +89,7 @@
     <Compile Include="Di\AutoFactory\SimpleOneParameter.cs" />
     <Compile Include="Di\AutoRegistration\DiContextConfigurerTest.cs" />
     <Compile Include="Di\AutoRegistration\ForTest.cs" />
+    <Compile Include="Di\ConfigInject\ConfigInjectTest.cs" />
     <Compile Include="Di\ForTest.cs" />
     <Compile Include="Di\ParameterInjection.cs" />
     <Compile Include="Di\SiExtensionTest.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Reflection\LooselyCoupledEvent\EventChainTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\ForTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEventTest.cs" />
+    <Compile Include="Reflection\ReflectionUtilsTest.cs" />
     <Compile Include="StrUtilsTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="Text\CaptionUtilsTest.cs" />
