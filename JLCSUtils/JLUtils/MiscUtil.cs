@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,11 @@ namespace JohnLambe.Util
 {
     public static class MiscUtil
     {
+
+        #region obsolete
+
+        // For earlier C# versions before the "??" operator:
+
         // Rename Coalesce ?
         /// <summary>
         /// Return the first parameter that is not null or the default for the type.
@@ -29,11 +35,6 @@ namespace JohnLambe.Util
             }
             return default(T);
         }
-
-
-        #region obsolete
-
-        // For earlier C# versions before the "??" operator:
 
         #region IfNotNull
 
@@ -90,9 +91,11 @@ namespace JohnLambe.Util
 
         #endregion
 
+        #endregion
+
         /// <summary>
         /// Execute a delegate, suppressing NullReferenceException,
-        /// and returning `defaultValue` if it is raised by the delegate.
+        /// and returning <paramref name="defaultValue"/> if it is raised by the delegate.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="del"></param>
@@ -104,13 +107,11 @@ namespace JohnLambe.Util
             {
                 return del();
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException)
             {
                 return defaultValue;
             }
         }
-
-        #endregion
 
         #region Choose
 
@@ -205,12 +206,22 @@ namespace JohnLambe.Util
         public static void DisposeAndNull<T>(ref T value)
             where T: class
         {
+            TryDispose(value);
+            value = null;
+        }
+
+        /// <summary>
+        /// Disposes <paramref name="value"/> if it implements <see cref="IDisposable"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void TryDispose(object value)
+        {
             var disposable = value as IDisposable;
-            if(disposable != null)
+            if (disposable != null)
             {
                 disposable.Dispose();
             }
-            value = null;
         }
     }
 

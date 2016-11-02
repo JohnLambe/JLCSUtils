@@ -42,6 +42,49 @@ namespace MvpFramework
         /// </summary>
         protected const string InterfacePrefix = "I";
 
+        protected const string PresenterNamespace = PresenterSuffix;
+
+        protected const string ViewNamespace = ViewSuffix;
+
+        protected const string InterfaceSuffix = "Interface";
+
+        protected const string ViewInterfaceNamespace = ViewSuffix + InterfaceSuffix;
+
+        #endregion
+
+        #region Namespaces
+
+        /// <summary>
+        /// If <paramref name="originalNamespace"/> ends with <paramref name="oldNamespace"/>,
+        /// change <paramref name="oldNamespace"/> to <paramref name="newNamespace"/>,
+        /// otherwise, return <paramref name="originalNamespace"/>.
+        /// <para>Change 'Namespace.{old}' to 'Namespace.{new}'. </para>
+        /// </summary>
+        /// <param name="originalNamespace"></param>
+        /// <param name="oldNamespace"></param>
+        /// <param name="newNamespace">The new last part of the namespace.</param>
+        /// <returns></returns>
+        protected virtual string ChangeNamespace(string originalNamespace, string oldNamespace, string newNamespace)
+        {
+            if (originalNamespace.EndsWith(oldNamespace))
+                return originalNamespace.RemoveSuffix("." + oldNamespace) + "." + newNamespace;
+            else
+                return originalNamespace;
+            //return originalNamespace.RemoveSuffix("." + PresenterNamespace) + "." + newNamespace;
+        }
+
+        /// <summary>
+        /// Same as <see cref="ChangeNamespace(string, string, string)"/> 
+        /// where <paramref name="originalNamespace"/> is the conventional namespace.
+        /// </summary>
+        /// <param name="originalNamespace"></param>
+        /// <param name="newNamespace"></param>
+        /// <returns></returns>
+        protected virtual string ChangePresenterNamespace(string originalNamespace, string newNamespace)
+        {
+            return ChangeNamespace(originalNamespace, PresenterNamespace, newNamespace);
+        }
+
         #endregion
 
         /*
@@ -77,10 +120,10 @@ namespace MvpFramework
         /// <typeparam name="TPresenter"></typeparam>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="presenterActionType"></param>
-        /// <param name="modelType"></param>
-        /// <param name="model"></param>
+        /// <param name="modelType">The type of the model.</param>
+        /// <param name="model">The model instance (must be assignable to <paramref name="modelType"/>).</param>
         /// <returns></returns>
-        public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model)
+        public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model = default(TModel))
             where TPresenter : class
         {
             //TODO
@@ -219,10 +262,26 @@ namespace MvpFramework
         {
             Contract.Requires(presenterType != null);
 
+            // form the conventional simple name:
+            string simpleName = presenterType.Name.RemoveSuffix(PresenterSuffix) + ViewSuffix;
+                // {namespace}.["I"]{Name}["Presenter"] -> ["I"]{Name}"View"
+                // e.g. "namespace.IEditContactPresenter"  -> "IEditContactView"
+            if (presenterType.IsInterface)
+                simpleName = simpleName.RemovePrefix(InterfacePrefix);   // remove leading "I" if it in an interface
+
             // Get the View interface name by naming convention:
+            // Try the same namespace as the Presenter:
             string viewInterfaceName = presenterType.Namespace + "."
-                + InterfacePrefix + presenterType.Name.RemovePrefix(InterfacePrefix).RemoveSuffix(PresenterSuffix) + ViewSuffix;
+                + InterfacePrefix + simpleName;
             Type viewInterfaceType = GetTypeByName(viewInterfaceName, presenterType.Assembly);      // get the interface type for this name
+
+            if (viewInterfaceType == null)       // if not found, try the conventional separate namespace
+            {
+                viewInterfaceName = ChangePresenterNamespace(presenterType.Namespace, ViewInterfaceNamespace) + "."
+                    + InterfacePrefix + simpleName;
+                viewInterfaceType = GetTypeByName(viewInterfaceName, presenterType.Assembly);      // get the interface type for this name
+            }
+
             if (viewInterfaceType != null)
             {
                 var result = GetInstance<TView>(viewInterfaceType);              // get an implementation of this interface
@@ -231,8 +290,7 @@ namespace MvpFramework
             }
 
             // Get the View class name by naming convention:
-            string viewClassName = presenterType.Namespace + "."
-                + presenterType.Name.RemovePrefix(InterfacePrefix).RemoveSuffix(PresenterSuffix) + ViewSuffix;
+            string viewClassName = ChangePresenterNamespace(presenterType.Namespace,ViewNamespace) + "." + simpleName;
             Type viewClassType = GetTypeByName(viewClassName, presenterType.Assembly);      // get the type for this name
             if (viewClassType != null)
             {
@@ -276,28 +334,45 @@ namespace MvpFramework
                 where TAttribute : MvpAttribute
                 where TRequiredInterface: class
         {
-            Type resolvedInterface = null;
+            // look for attribute first:
+            Type resolvedInterface = classType.GetCustomAttribute<TAttribute>() ?. Interface;
 
+            /*
             var attribute = classType.GetCustomAttribute<TAttribute>();
             if (attribute != null)
             {
                 if (attribute.Interface != null)
                     resolvedInterface = attribute.Interface;
             }
+            */
 
-            if (resolvedInterface == null)
+            if (resolvedInterface == null)     // if not resolved by the attribute
             {
+                string simpleName = InterfacePrefix + classType.Name;
+
                 string targetNamespace = classType.Namespace;
 
-                // form the conventional name for the presenter interface:
-                string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + classType.Name;
-                resolvedInterface = GetTypeByName(presenterInterfaceName, classType.Assembly);
+                // form the conventional name for the interface:
+                string interfaceName = targetNamespace + "." + simpleName;
+                resolvedInterface = GetTypeByName(interfaceName, classType.Assembly);
+
+                if (resolvedInterface == null)    
+                {
+                     targetNamespace = classType.Namespace + InterfaceSuffix;  // e.g. "namespace.View" => "namespace.ViewInterface"
+
+                    // form the conventional name for the interface:
+                    interfaceName = targetNamespace + "." + simpleName;
+                    resolvedInterface = GetTypeByName(interfaceName, classType.Assembly);
+                }
             }
 
-            if (!resolvedInterface.IsInterface)
-                throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
-            if (!typeof(TRequiredInterface).IsAssignableFrom(resolvedInterface))
-                throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
+            if (resolvedInterface != null)
+            {
+                if (!resolvedInterface.IsInterface)
+                    throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
+                if (!typeof(TRequiredInterface).IsAssignableFrom(resolvedInterface))
+                    throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
+            }
 
             // may be null
 

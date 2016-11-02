@@ -172,6 +172,12 @@ namespace DiExtension.SimpleInject
             new DiContextConfigurer(this).ScanAssembly(assm, filter);
         }
 
+        public virtual void ScanAssemblies(IEnumerable<Assembly> assemblies, BooleanExpression<Type> filter = null)
+        {
+            foreach (var assm in assemblies)
+                ScanAssembly(assm);
+        }
+
         /// <summary>
         /// Resolve a ConfigInject value.
         /// </summary>
