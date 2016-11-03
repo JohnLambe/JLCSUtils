@@ -48,6 +48,8 @@ namespace MvpFramework.Menu
                             Order = attribute.Order,
                             DisplayName = attribute.DisplayName,
                             HotKey = attribute.HotKey,
+                            Filter = attribute.Filter,
+                            Attribute = attribute,
                         };
                         allItems.Add(id, item);
                     }
@@ -72,6 +74,10 @@ namespace MvpFramework.Menu
                                 HandlerType = type,                //| not applicable to Menu ?
                                 Params = attribute.Params,
                                 Rights = attribute.Rights,
+                                Filter = attribute.Filter,
+                                Attribute = attribute,
+                                //TODO: Move this (and the version above) to a method.
+                                // Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
                             };
                             allItems.Add(id, item);
                         }
@@ -107,7 +113,11 @@ namespace MvpFramework.Menu
             //TODO: Other types: "Execute" method ?
         }
 
-        protected void MenuItemPresenter_Invoked(MenuItem item)
+        /// <summary>
+        /// Called when a menu item for a Presenter is invoked.
+        /// </summary>
+        /// <param name="item">The invoked menu item.</param>
+        protected virtual void MenuItemPresenter_Invoked(MenuItem item)
         {
             Resolver.GetPresenterByType<IPresenter,object>(item.HandlerType, item.Params[0]).Show();
         }
@@ -117,6 +127,9 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual string MenuSetId { get; set; } = MenuAttributeBase.DefaultMenuSetId;
 
+        /// <summary>
+        /// MVP resolver used for resolving factories of presenters invoked by menu items.
+        /// </summary>
         public virtual MvpResolver Resolver { get; set; }
     }
 }

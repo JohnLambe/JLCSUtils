@@ -71,6 +71,11 @@ namespace MvpFramework.Menu
         /// (So elements of the array are ORed, but rights may be ANDed within each element.)
         /// </summary>
         public virtual string[] Rights { get; set; }
+
+        /// <summary>
+        /// Expression or value to filter on.
+        /// </summary>
+        public virtual string Filter { get; set; }
     }
 
     /// <summary>

@@ -7,6 +7,10 @@ using JohnLambe.Util.Encoding;
 
 namespace MvpFramework.Menu
 {
+    /// <summary>
+    /// Model of a menu item.
+    /// This is mutable: Its state could change in response to user actions, etc. (by menu or the handler for the item).
+    /// </summary>
     public class MenuItem
     {
         public MenuItem(Dictionary<string, MenuItem> allItems, string id)
@@ -48,8 +52,14 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual KeyboardKey HotKey { get; set; }
 
+        /// <summary>
+        /// <see cref="MenuAttributeBase.Parent"/>
+        /// </summary>
         public virtual MenuItem Parent { get; set; }
 
+        /// <summary>
+        /// <see cref="MenuAttributeBase.IsMenu"/>
+        /// </summary>
         public virtual bool IsMenu { get; set; }
 
         /// <summary>
@@ -58,19 +68,40 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual Type HandlerType { get; set; }
 
+        /// <summary>
+        /// <see cref="MenuAttributeBase.Params"/>.
+        /// </summary>
         public virtual object[] Params { get; set; }
 
+        /// <summary>
+        /// <see cref="MenuAttributeBase.Rights"/>.
+        /// </summary>
         public virtual string[] Rights { get; set; }
 
+        /// <summary>
+        /// <see cref="MenuAttributeBase.Filter"/>
+        /// </summary>
+        public virtual string Filter { get; set; }
+
+        /// <summary>
+        /// Ordered list of the immediate children of this item.
+        /// Never null. Empty if this is a leaf menu item (not a menu).
+        /// </summary>
         public virtual IEnumerable<MenuItem> Children
-            => _allItems.Values.Where( m => m.Parent == this )
-            .OrderBy( m => SortStringCalculator.IntToSortString(m.Order) + m.DisplayName );
+            => _allItems.Values.Where(m => m.Parent == this)
+            .OrderBy(m => SortStringCalculator.IntToSortString(m.Order) + m.DisplayName);
 
-        public readonly Dictionary<string, MenuItem> _allItems;
+        /// <summary>
+        /// Collection of menu items, including this one and its children.
+        /// </summary>
+        protected readonly Dictionary<string, MenuItem> _allItems;
 
+        /// <summary>
+        /// Do the action of this menu item.
+        /// </summary>
         public virtual void Invoke()
         {
-
+            Invoked?.Invoke(this);
         }
 
         public delegate void MenuItemInvokeDelegate(MenuItem item);
@@ -91,6 +122,12 @@ namespace MvpFramework.Menu
         public override string ToString()
             => CodeDescription;
 
+        /// <summary>
+        /// Return a text representation of the menu tree of this item and all its children (including indirect children).
+        /// (For diagnostic use).
+        /// </summary>
+        /// <param name="indent"></param>
+        /// <returns></returns>
         public virtual string MenuHierarchyText(string indent = "")
         {
             StringBuilder output = new StringBuilder(1024);
@@ -102,9 +139,27 @@ namespace MvpFramework.Menu
             }
             return output.ToString();
         }
+
+        /// <summary>
+        /// Identifier of the icon of the menu.
+        /// null for no icon.
+        /// </summary>
+        public virtual string Icon { get; set; }  //TODO
+        // From attribute, OR separately mapped to ID.
+
+        //TODO: Could copy attribute to property:
+        public virtual MenuAttributeBase Attribute { get; set; }  // may be null
+        // so that properties of subclasses of the attribute can be used by a consumer of this class.
+        // Attributes are not the only way to populate this.
+
+        //TODO: Toggle/check state.
+
     }
 
 
+    /// <summary>
+    /// Model details of a collection of menus.
+    /// </summary>
     public class MenuModel
     {
         public MenuModel(Dictionary<string, MenuItem> allItems)
@@ -113,6 +168,11 @@ namespace MvpFramework.Menu
         }
 
         public virtual MenuItem GetRootMenu(string menuId)
+        {
+            return _allItems[menuId];
+        }
+
+        public virtual MenuItem GetMenuItem(string menuId)
         {
             return _allItems[menuId];
         }

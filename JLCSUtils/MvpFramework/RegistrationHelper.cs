@@ -36,8 +36,8 @@ namespace MvpFramework
     {
         public RegistrationHelper(MvpResolver resolver, IDiTypeRegistrar diContext)
         {
-            this.Resolver = resolver;
-            this.DiContext = diContext;
+            this._resolver = resolver;
+            this._diContext = diContext;
         }
 
         public virtual void ScanAssemblies(params Assembly[] assemblies)
@@ -56,7 +56,7 @@ namespace MvpFramework
                     assembly.GetExportedTypes().Where(t => t.IsDefined<ViewAttribute>())
                     )
                 {
-                    RegisterType(Resolver.ResolveInterfaceForViewType(view), view);
+                    RegisterType(_resolver.ResolveInterfaceForViewType(view), view);
                     //                    RegisterType(Resolver.ResolveInterfaceForViewType(view), () => ReflectionUtils.Create<IView>(view));
                 }
 
@@ -64,7 +64,7 @@ namespace MvpFramework
                     assembly.GetExportedTypes().Where( t => t.IsDefined<PresenterAttribute>() )
                     )
                 {
-                    var presenterInterface = Resolver.ResolveInterfaceForPresenterType(presenter);
+                    var presenterInterface = _resolver.ResolveInterfaceForPresenterType(presenter);
                     RegisterType(presenterInterface, presenter);
 
                     var factoryInterfaceType = typeof(IPresenterFactory<>).MakeGenericType(presenterInterface);
@@ -116,11 +116,11 @@ namespace MvpFramework
             Debug.Assert(serviceType != null);
             if(serviceType != null && implementationType != null)
             {
-                DiContext.RegisterType(serviceType, implementationType);
+                _diContext.RegisterType(serviceType, implementationType);
             }
         }
 
-        protected readonly MvpResolver Resolver;
-        protected readonly IDiTypeRegistrar DiContext;
+        protected readonly MvpResolver _resolver;
+        protected readonly IDiTypeRegistrar _diContext;
     }
 }

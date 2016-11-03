@@ -18,8 +18,10 @@ namespace MvpFramework
     public interface IView
     {
         void Show();
-        //* return value?
-        //* should Show() be on base interface at all? A View could be for a non-form (panel, etc.).
+        //|TODO: return value?
+        //|  Rename to avoid name conflicts in implementing classes.
+        //|  Change to:  object ShowView()  ?
+        //| should Show() be on base interface at all? A View could be for a non-form (panel, etc.).
 
         void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory);
 
@@ -35,5 +37,6 @@ namespace MvpFramework
             // return value?
     }
     */
+
 
 }
