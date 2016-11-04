@@ -2,7 +2,7 @@
 
 Each module of a system has its own namespace (under the system's namespace), with the following sub-namespaces:
   View
-  ViewInterface (OR items that would go here could just be in the module's namespace): The interface of the View and types related to the View shared between View and Presenter.
+  ViewInterface (OR could be called "Common" OR items that would go here could just be in the module's namespace): The interface of the View and types related to the View shared between View and Presenter.
   Presenter
   Model
 Anything else in the module's namespace can be referenced by all of these namespaces.

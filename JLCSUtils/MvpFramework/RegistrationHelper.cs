@@ -56,18 +56,21 @@ namespace MvpFramework
                     assembly.GetExportedTypes().Where(t => t.IsDefined<ViewAttribute>())
                     )
                 {
-                    RegisterType(_resolver.ResolveInterfaceForViewType(view), view);
+                    RegisterType(_resolver.ResolveInterfaceForViewType(view), view);    // register the View class to be resolved from its interface
                     //                    RegisterType(Resolver.ResolveInterfaceForViewType(view), () => ReflectionUtils.Create<IView>(view));
                 }
 
+                // Presenters:
                 foreach ( var presenter in
                     assembly.GetExportedTypes().Where( t => t.IsDefined<PresenterAttribute>() )
                     )
                 {
                     var presenterInterface = _resolver.ResolveInterfaceForPresenterType(presenter);
-                    RegisterType(presenterInterface, presenter);
+                    RegisterType(presenterInterface, presenter);             // register the Presenter class to be resolved from its interface
 
                     var factoryInterfaceType = typeof(IPresenterFactory<>).MakeGenericType(presenterInterface);
+
+                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
 /*TODO
                     var constructor = GetConstructor(presenter);
                     IList<Type> argTypes = new List<Type>();

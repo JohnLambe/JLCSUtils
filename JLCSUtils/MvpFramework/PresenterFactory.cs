@@ -6,6 +6,7 @@ using System.Reflection;
 
 using DiExtension;
 using JohnLambe.Util;
+using DiExtension.Attributes;
 
 namespace MvpFramework
 {
@@ -171,43 +172,79 @@ namespace MvpFramework
 
             // Populate the constructor arguments:
             int parameterIndex = 0;
+            int createMethodParameterIndex = 0;
+            bool? createParam = null;
             foreach (var parameter in parameters)
             {
                 //                if(parameter.ParameterType.IsAssignableFrom(typeof(TView)))
                 if (parameterIndex == 0)
                 {   // first parameter is always the View
                     view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                    //| Could provide parameters for context-based injection of View.
                     UiManager.AfterCreateView(ref view);
                     args[parameterIndex] = view;
                 }
-                else if (parameterIndex < param.Length + 1)
-                {   // the next parameters (if present) are the Create method parameters (possibly including the Model)
-                    args[parameterIndex] = param[parameterIndex-1];
-                }
                 else
-                {   // other parameters are injected from the DI container
-                    args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
+                {
+                    var attribute = parameter.GetCustomAttribute<InjectAttribute>();
+                    if (attribute != null)
+                    {
+                        createParam = attribute is MvpInjectAttribute;
+                    }
+                    else
+                    {
+                        createParam = parameterIndex < param.Length + 1;
+                    }
+
+                    if(createParam.Value)
+                    {   // Create method parameters (possibly including the Model)
+                        args[parameterIndex] = param[createMethodParameterIndex];
+                        createMethodParameterIndex++;   // next parameter
+                    }
+                    else
+                    {   // other parameters are injected from the DI container
+                        args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
+                    }
                 }
                 parameterIndex++;
+
+                /*
+                                if (parameterIndex == 0)
+                                {   // first parameter is always the View
+                                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                                        //| Could provide parameters for context-based injection of View.
+                                    UiManager.AfterCreateView(ref view);
+                                    args[parameterIndex] = view;
+                                }
+                                else if (parameterIndex < param.Length + 1)
+                                {   // the next parameters (if present) are the Create method parameters (possibly including the Model)
+                                    args[parameterIndex] = param[parameterIndex-1];
+                                }
+                                else
+                                {   // other parameters are injected from the DI container
+                                    args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
+                                }
+                                parameterIndex++;
+                */
             }
 
             var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
-            DiResolver.BuildUp(presenter);                                 // inject properties
+                            DiResolver.BuildUp(presenter);                                 // inject properties
 
-            UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
-            /*
-            if (UiManager != null)
-            {
-                var newPresenter = UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
-                if(!presenter.Equals(newPresenter))
-                {
-                    MiscUtil.TryDispose(presenter);
-                    presenter = newPresenter;
-                }
-            }
-            */
+                            UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
+                            /*
+                            if (UiManager != null)
+                            {
+                                var newPresenter = UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
+                                if(!presenter.Equals(newPresenter))
+                                {
+                                    MiscUtil.TryDispose(presenter);
+                                    presenter = newPresenter;
+                                }
+                            }
+                            */
 
-            return presenter;
+                return presenter;
         }
 
         /// <summary>
