@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using JohnLambe.Util.Text;
+using System.Diagnostics.Contracts;
 
 namespace JohnLambe.Util
 {
@@ -455,7 +456,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="count">The number of times to repeat.
-        /// 0 is valid (return "").</param>
+        /// 0 is valid (returns "").</param>
         /// <returns><paramref name="s"/> repeated <paramref name="count"/> times.</returns>
         /// <exception cref="ArgumentException">If count is negative.</exception>
         public static string Repeat(this string s, int count)
@@ -540,5 +541,45 @@ namespace JohnLambe.Util
         }
 
         #endregion
+
+        /// <summary>
+        /// Return the part of the string before the separator,
+        /// or the whole string if the separator is not present.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator. Undefined for null.</param>
+        /// <returns></returns>
+        public static string SplitBefore(this string s, string separator)
+        {
+            separator.ArgNotNull(nameof(separator));
+            if (s == null)
+                return null;
+            int splitPoint = s.IndexOf(separator);
+            if (splitPoint == -1)
+                return s;
+            else
+                return s.Substring(0, splitPoint);
+        }
+        //TODO: Define behavoir for null `separator`
+
+        /// <summary>
+        /// Return the part of the string after the separator.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator. Undefined for null.</param>
+        /// <returns>The part of the string after the separator,
+        /// or null if the separator is not present.</returns>
+        public static string SplitAfter(this string s, string separator)
+        {
+            separator.ArgNotNull(nameof(separator));
+            if (s == null)
+                return null;
+            int splitPoint = s.IndexOf(separator);
+            if (splitPoint == -1)
+                return null;
+            else
+                return s.Substring(splitPoint + separator.Length);
+        }
+
     }
 }

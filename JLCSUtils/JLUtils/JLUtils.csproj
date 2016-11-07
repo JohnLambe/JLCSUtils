@@ -41,8 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Misc\IIconRepository.cs" />
     <Compile Include="Reflection\AssemblyUtils.cs" />
     <Compile Include="Reflection\AttributeUtils.cs" />
+    <Compile Include="Reflection\GenericTypeUtils.cs" />
     <Compile Include="Text\CaptionUtils.cs" />
     <Compile Include="Types\ID.cs" />
     <Compile Include="LazyInitialize.cs" />
@@ -93,9 +95,7 @@
     <Compile Include="Threading\ThreadSafe.cs" />
     <Compile Include="Var.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Misc\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

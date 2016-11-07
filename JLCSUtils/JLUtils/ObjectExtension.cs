@@ -92,7 +92,7 @@ namespace JohnLambe.Util
         /// <param name="message">Error message to be given if null.</param>
         /// <returns>value (the object this is called on).</returns>
         /// <exception cref="NullReferenceException">If this is not null.</exception>
-        public static T NotNull<T>(this T value, string message = null)
+        public static T NotNull<T>(this T value, string message = null, Type exceptionType = null)
             where T: class
         {
             if (value == null)

@@ -47,6 +47,7 @@
     <Compile Include="Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="IResolverExtension.cs" />
+    <Compile Include="KeyboardKey.cs" />
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Menu\MenuAttribute.cs" />
     <Compile Include="Menu\MenuBuilder.cs" />

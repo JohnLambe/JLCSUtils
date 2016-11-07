@@ -1,9 +1,12 @@
-﻿using System;
+﻿using JohnLambe.Util.Reflection;
+using MvpFramework.Binding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MvpFramework.Menu;
 
 namespace MvpFramework
 {
@@ -55,6 +58,12 @@ namespace MvpFramework
         public virtual string Icon { get; set; }
 
         /// <summary>
+        /// Identifier of an image related to the message (rather than the type (error, warning, etc.)).
+        /// (It might be displayed in the background of the dialog.)
+        /// </summary>
+        public virtual string MessageImage { get; set; }
+
+        /// <summary>
         /// What type of UI to use to show the message.
         /// </summary>
         public virtual MessageDisplayType DisplayType { get; set; } = MessageDisplayType.Default;
@@ -85,7 +94,7 @@ namespace MvpFramework
         /// The buttons or options that the user can choose, in the order in which they are displayed.
         /// null for default based on MessageType.
         /// </summary>
-        public virtual IEnumerable<DialogOption> Options { get; set; }
+        public virtual OptionCollection Options { get; set; }
 
         /// <summary>
         /// Event that is fired when an option is chosen.
@@ -106,42 +115,68 @@ namespace MvpFramework
     /// Details of an option that may be available in a message dialog
     /// (typically displayed as a button).
     /// </summary>
-    public class DialogOption
+    public class DialogOption : MvpFramework.Menu.MenuItem
     {
-        /// <summary>
-        /// ID of the option, unique within a set of options.
-        /// </summary>
-        // Same type as return value of IMessageDialog.ShowMessage.
-        public virtual object Id { get; set; }
+        public DialogOption(Dictionary<string, Menu.MenuItem> allItems, string id) : base(allItems, id)
+        {
+        }
 
-        /// <summary>
-        /// The text displayed in the UI (on the button etc.).
-        /// </summary>
-        public virtual string Caption { get; set; }
+        /*        /// <summary>
+       /// ID of the option, unique within a set of options.
+       /// </summary>
+       // Same type as return value of IMessageDialog.ShowMessage.
+       public virtual object Id { get; set; }
 
-        /// <summary>
-        /// Identifier of an icon on the UI element (e.g. button) that displays this option.
-        /// May be null (to include no icon on the button).
-        /// </summary>
-        public virtual string Icon { get; set; }
+       /// <summary>
+       /// The text displayed in the UI (on the button etc.).
+       /// </summary>
+       public virtual string Caption { get; set; }  //| Rename "DisplayName" ?
 
-        /// <summary>
-        /// Identifier of an image related to the message (rather than the type (error, warning, etc.)).
-        /// (It might be displayed in the background of the dialog.)
-        /// </summary>
-        public virtual string MessageImage { get; set; }
+       /// <summary>
+       /// Identifier of an icon on the UI element (e.g. button) that displays this option.
+       /// May be null (to include no icon on the button).
+       /// </summary>
+       public virtual string IconId { get; set; }
 
-        /// <summary>
-        /// Accelerator key to choose this option, if any.
-        /// </summary>
-        public virtual Keys AcceleratorKey { get; set; } = Keys.None;
-            //| Replace type to avoid referencing WinForms ?
+       /// <summary>
+       /// Accelerator key to choose this option, if any.
+       /// </summary>
+       public virtual KeyboardKey AcceleratorKey { get; set; } = KeyboardKey.None;
+       //TODO: Make Char Or rename.
+
+       /// <summary>
+       /// Sorting order. (Used when options are added to an existing collection).
+       /// </summary>
+       public int Order { get; set; }
+*/
 
         /// <summary>
         /// True iff this is the default option.
         /// Only one (or zero) option in a set should have this set to true.
         /// </summary>
         public virtual bool IsDefault { get; set; }
+    }
+    //TODO: Use Menu instead ?
+
+    public class OptionCollection
+    {
+        /// <summary>
+        /// The buttons or options that the user can choose, in the order in which they are displayed.
+        /// null for default based on MessageType.
+        /// </summary>
+        public virtual IEnumerable<DialogOption> Options { get; set; }
+
+        /// <summary>
+        /// The default option.
+        /// null if there is no default.
+        /// </summary>
+        public virtual DialogOption Default
+            => Options.FirstOrDefault(o => o.IsDefault);
+    }
+
+    public class MutableOptionCollection : OptionCollection
+    {
+
     }
 
 
@@ -230,6 +265,46 @@ namespace MvpFramework
         /// Show a modal dialog.
         /// </summary>
         Modal,
+    }
+
+
+    public class OptionCollectionBuilder
+    {
+        public OptionCollection Build(object target, string filter)
+        {
+            /*
+            type.GetMethods()
+                .Where(m => m.GetCustomAttribute<MvpHandlerAttribute>()?.Filter?.Contains(filter) ?? false)
+                .OrderBy(m => m.GetCustomAttribute<MvpHandlerAttribute>()?.Order);
+                */
+            var options = new Dictionary<string,Menu.MenuItem>();
+            foreach(var method in target.GetType().GetMethods())
+            {
+                var attrib = method.GetCustomAttribute<MvpHandlerAttribute>();
+                //TODO: Support multiple handlers on same method.
+                if (attrib != null 
+                    && ((filter == null) || (attrib.Filter?.Contains(filter) ?? false) )
+                    )
+                {
+                    var option = new DialogOption(options, attrib.Name)
+                    {
+                        DisplayName = attrib.DisplayName,
+                        HotKey = attrib.HotKey,
+                        IconId = attrib.IconId,
+                        IsDefault = attrib.IsDefault,
+                        Order = attrib.Order,
+                    };
+                    option.Invoked += item => method.Invoke(null, new object[] { });
+                    options[attrib.Name] = option;
+                }
+            }
+            var optionSet = new OptionCollection()
+            {
+                Options = (IEnumerable<DialogOption>)options.Values.OrderBy(o => o.Order)
+            };
+            return optionSet;
+        }
+
     }
 
 }

@@ -144,15 +144,21 @@ namespace MvpFramework.Menu
         /// Identifier of the icon of the menu.
         /// null for no icon.
         /// </summary>
-        public virtual string Icon { get; set; }  //TODO
+        public virtual string IconId { get; set; }  //TODO
         // From attribute, OR separately mapped to ID.
+
+        /// <summary>
+        /// True iff this item is currently displayed (or would be displayed when the menu is shown).
+        /// (False if it is hidden, for example, due not being applicable in the current state or configuration.)
+        /// </summary>
+        public virtual bool Visible { get; set; } = true;
 
         //TODO: Could copy attribute to property:
         public virtual MenuAttributeBase Attribute { get; set; }  // may be null
         // so that properties of subclasses of the attribute can be used by a consumer of this class.
         // Attributes are not the only way to populate this.
 
-        //TODO: Toggle/check state.
+        //TODO: Toggle/check state ?
 
     }
 

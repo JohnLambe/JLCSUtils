@@ -70,7 +70,7 @@ namespace MvpFramework
 
                     var factoryInterfaceType = typeof(IPresenterFactory<>).MakeGenericType(presenterInterface);
 
-                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
+//                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
 /*TODO
                     var constructor = GetConstructor(presenter);
                     IList<Type> argTypes = new List<Type>();
