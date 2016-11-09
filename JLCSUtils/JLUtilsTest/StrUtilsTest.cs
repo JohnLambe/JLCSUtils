@@ -230,5 +230,21 @@ namespace JohnLambe.Tests.JLUtilsTest
             Assert.AreEqual(null, StrUtils.ExtractEnclosed("]a[", '[', ']'));
             Assert.AreEqual(null, StrUtils.ExtractEnclosed(null, '[', ']'),"null");
         }
+
+        [TestMethod]
+        public void SplitBefore()
+        {
+            Assert.AreEqual(null, StrUtils.SplitBefore(null, ":"));
+            Assert.AreEqual("first", "first/second".SplitBefore("/"));
+            Assert.AreEqual("a:b:c", "a:b:c::d:e:f::g".SplitBefore("::"));
+        }
+
+        [TestMethod]
+        public void SplitAfter()
+        {
+            Assert.AreEqual(null, StrUtils.SplitAfter(null, "a"));
+            Assert.AreEqual("second", "firstzsecond".SplitAfter("z"));
+            Assert.AreEqual("d:e:f::g", "a:b:c::d:e:f::g".SplitAfter("::"));
+        }
     }
 }

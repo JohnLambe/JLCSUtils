@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\GeneralControlBinder.cs" />
+    <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="IResolverExtension.cs" />
     <Compile Include="KeyboardKey.cs" />

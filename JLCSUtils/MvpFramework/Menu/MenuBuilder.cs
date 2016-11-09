@@ -29,7 +29,7 @@ namespace MvpFramework.Menu
             if (assemblies == null)
                 assemblies = AssemblyUtils.GetReferencedAssemblies(Assembly.GetCallingAssembly(), true);
 
-            var allItems = new Dictionary<string, MenuItem>();
+            var allItems = new Dictionary<string, MenuItemModel>();
 
             // find all types to be registered:
             foreach (var assm in assemblies)                // for each given assembly
@@ -41,7 +41,7 @@ namespace MvpFramework.Menu
                     if (/*filter.TryEvaluate(type) &&*/ (attribute.MenuSetId ?? defaultMenuSetId) == MenuSetId)                   // apply the given filter
                     {
                         string id = attribute.Id;
-                        var item = new MenuItem(allItems, id)       // create a menu item from the attribute
+                        var item = new MenuItemModel(allItems, id)       // create a menu item from the attribute
                         {
                             ParentId = attribute.ParentId,
                             AcceleratorChar = attribute.AcceleratorChar,
@@ -62,7 +62,7 @@ namespace MvpFramework.Menu
                         if (filter.TryEvaluate(type) && (attribute.MenuSetId ?? defaultMenuSetId) == MenuSetId)                   // apply the given filter
                         {
                             string id = attribute.Id ?? Guid.NewGuid().ToString("N");   // generate a GUID ID if no ID is given
-                            var item = new MenuItem(allItems,
+                            var item = new MenuItemModel(allItems,
                                 id)       // create a menu item from the attribute
                             {
                                 ParentId = attribute.ParentId,
@@ -103,7 +103,7 @@ namespace MvpFramework.Menu
         /// <para>Subclasses can provide custom strategies for handling specific handler class types.</para>
         /// </summary>
         /// <param name="item">The new menu item.</param>
-        protected virtual void AddInvokeDelegate(MenuItem item)
+        protected virtual void AddInvokeDelegate(MenuItemModel item)
         {
             if (item.HandlerType is IPresenter)
             {
@@ -117,7 +117,7 @@ namespace MvpFramework.Menu
         /// Called when a menu item for a Presenter is invoked.
         /// </summary>
         /// <param name="item">The invoked menu item.</param>
-        protected virtual void MenuItemPresenter_Invoked(MenuItem item)
+        protected virtual void MenuItemPresenter_Invoked(MenuItemModel item)
         {
             Resolver.GetPresenterByType<IPresenter,object>(item.HandlerType, item.Params[0]).Show();
         }

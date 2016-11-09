@@ -89,7 +89,7 @@ namespace MvpFrameworkTest
 
     public class Test1Presenter : ITest1Presenter
     {
-        public void Show()
+        public object Show()
         {
             throw new NotImplementedException();
         }

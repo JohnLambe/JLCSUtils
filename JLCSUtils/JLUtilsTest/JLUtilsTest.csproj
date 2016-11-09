@@ -107,6 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceCountedObjectTest.cs" />
     <Compile Include="Reflection\AttributeUtilsTest.cs" />
+    <Compile Include="Reflection\GenericTypeUtilsTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\EventChainTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\ForTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEventTest.cs" />

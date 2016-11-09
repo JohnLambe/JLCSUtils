@@ -11,9 +11,9 @@ namespace MvpFramework.Menu
     /// Model of a menu item.
     /// This is mutable: Its state could change in response to user actions, etc. (by menu or the handler for the item).
     /// </summary>
-    public class MenuItem
+    public class MenuItemModel
     {
-        public MenuItem(Dictionary<string, MenuItem> allItems, string id)
+        public MenuItemModel(Dictionary<string, MenuItemModel> allItems, string id)
         {
             _allItems = allItems;
             Id = id;
@@ -55,7 +55,7 @@ namespace MvpFramework.Menu
         /// <summary>
         /// <see cref="MenuAttributeBase.Parent"/>
         /// </summary>
-        public virtual MenuItem Parent { get; set; }
+        public virtual MenuItemModel Parent { get; set; }
 
         /// <summary>
         /// <see cref="MenuAttributeBase.IsMenu"/>
@@ -84,17 +84,23 @@ namespace MvpFramework.Menu
         public virtual string Filter { get; set; }
 
         /// <summary>
+        /// True iff this is the default option.
+        /// Only one (or zero) option in a set should have this set to true.
+        /// </summary>
+        public virtual bool IsDefault { get; set; }
+
+        /// <summary>
         /// Ordered list of the immediate children of this item.
         /// Never null. Empty if this is a leaf menu item (not a menu).
         /// </summary>
-        public virtual IEnumerable<MenuItem> Children
+        public virtual IEnumerable<MenuItemModel> Children
             => _allItems.Values.Where(m => m.Parent == this)
             .OrderBy(m => SortStringCalculator.IntToSortString(m.Order) + m.DisplayName);
 
         /// <summary>
         /// Collection of menu items, including this one and its children.
         /// </summary>
-        protected readonly Dictionary<string, MenuItem> _allItems;
+        protected readonly Dictionary<string, MenuItemModel> _allItems;
 
         /// <summary>
         /// Do the action of this menu item.
@@ -104,7 +110,7 @@ namespace MvpFramework.Menu
             Invoked?.Invoke(this);
         }
 
-        public delegate void MenuItemInvokeDelegate(MenuItem item);
+        public delegate void MenuItemInvokeDelegate(MenuItemModel item);
 
         /// <summary>
         /// Fired when the menu item is invoked (typically when chosen from the menu).
@@ -168,22 +174,22 @@ namespace MvpFramework.Menu
     /// </summary>
     public class MenuModel
     {
-        public MenuModel(Dictionary<string, MenuItem> allItems)
+        public MenuModel(Dictionary<string, MenuItemModel> allItems)
         {
             _allItems = allItems;
         }
 
-        public virtual MenuItem GetRootMenu(string menuId)
+        public virtual MenuItemModel GetRootMenu(string menuId)
         {
             return _allItems[menuId];
         }
 
-        public virtual MenuItem GetMenuItem(string menuId)
+        public virtual MenuItemModel GetMenuItem(string menuId)
         {
             return _allItems[menuId];
         }
 
-        protected readonly Dictionary<string, MenuItem> _allItems;
+        protected readonly Dictionary<string, MenuItemModel> _allItems;
     }
 
 }

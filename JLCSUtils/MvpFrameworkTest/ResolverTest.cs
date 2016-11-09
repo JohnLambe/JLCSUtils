@@ -57,7 +57,7 @@ namespace MvpFrameworkTest
 
     public class EditTestPresenter : IEditPresenter
     {
-        public void Show()
+        public object Show()
         {
             throw new NotImplementedException();
         }

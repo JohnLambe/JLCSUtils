@@ -46,7 +46,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -56,6 +58,7 @@
     <Compile Include="RegistrationHelperTest.cs" />
     <Compile Include="ResolverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="OptionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">

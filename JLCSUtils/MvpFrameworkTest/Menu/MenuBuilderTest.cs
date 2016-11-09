@@ -35,7 +35,7 @@ namespace MvpFrameworkTest.Menu
     [MenuItem("#MainMenu")]
     public class PresenterInMenu : IPresenter
     {
-        public void Show()
+        public object Show()
         {
             throw new NotImplementedException();
         }
@@ -44,7 +44,7 @@ namespace MvpFrameworkTest.Menu
     [MenuItem("#MainMenu", "Presenter2")]
     public class Presenter2InMenu : IPresenter
     {
-        public void Show()
+        public object Show()
         {
             throw new NotImplementedException();
         }
