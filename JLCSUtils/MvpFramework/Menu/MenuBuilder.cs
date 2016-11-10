@@ -24,7 +24,7 @@ namespace MvpFramework.Menu
         /// <param name="assemblies">Assembly to scan. Defaults to the calling assembly and all assemblies directly referenced by it.</param>
         /// <param name="filter"></param>
         /// <returns>The collection of menus.</returns>
-        public virtual MenuModel BuildMenu(IEnumerable<Assembly> assemblies = null, BooleanExpression<Type> filter = null)
+        public virtual MenuCollection BuildMenu(IEnumerable<Assembly> assemblies = null, BooleanExpression<Type> filter = null)
         {
             if (assemblies == null)
                 assemblies = AssemblyUtils.GetReferencedAssemblies(Assembly.GetCallingAssembly(), true);
@@ -95,7 +95,7 @@ namespace MvpFramework.Menu
                 AddInvokeDelegate(item.Value);
             }
 
-            return new MenuModel(allItems);
+            return new MenuCollection(allItems);
         }
 
         /// <summary>

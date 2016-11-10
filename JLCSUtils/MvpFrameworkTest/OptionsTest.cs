@@ -13,10 +13,14 @@ namespace MvpFrameworkTest
         [TestMethod]
         public void OptionCollectionBuilder()
         {
-            var optionCollection = new OptionCollectionBuilder().Build(new TestClassForOptionSet(), "filter1");
+            // Act:
+            var target = new TestClassForOptionSet();
+            var optionCollection = new OptionCollectionBuilder().Build(target, "filter1");
+            optionCollection.Options.First().Invoke();
 
             Assert.AreEqual("Handler 1b display name", optionCollection.Options.First().DisplayName);
-
+            Assert.AreEqual(3, optionCollection.Options.Count());
+            Assert.AreEqual("Method1;", target.Output);
         }
 
         [TestMethod]
@@ -34,13 +38,40 @@ namespace MvpFrameworkTest
             // Assert:
             Assert.AreEqual("Method3;Method1;Method3;",target.Output);
         }
+
+        [TestMethod]
+        public void AddOption()
+        {
+            // Arrange:
+            var target = new TestClassForOptionSet();
+            var optionCollection = new OptionCollectionBuilder().Build(target, "filter1");
+
+            // Act:
+            //            var newItem = optionCollection.NewOption("new");
+            var newItem = optionCollection.AddOption(
+                new MvpFramework.Menu.MenuItemModel(null,"new")
+                {
+                    DisplayName = "New Item",
+                    Order = 5
+                }
+                );
+            Console.Out.WriteLine();
+
+            // Assert:
+            Assert.AreEqual(4, optionCollection.Options.Count());
+            Assert.AreEqual(newItem, optionCollection.Options.ToArray()[2]);
+        }
     }
 
     public class TestClassForOptionSet
     {
+        /// <summary>
+        /// Methods of this class append to this.
+        /// Used to test which ones fired, and in what order.
+        /// </summary>
         public string Output;
 
-        [MvpHandler("Handler1", DisplayName = "Handler 1 display name", Filter = new string[] { "filter1" })]
+        [MvpHandler("Handler1", DisplayName = "Handler 1 display name", Order = 50, Filter = new string[] { "filter1" })]
         [MvpHandler("Handler1b", DisplayName = "Handler 1b display name", Order = -100, Filter = new string[] { "asd", "filter1" })]
         [MvpHandler("A")]
         public virtual void Method1()

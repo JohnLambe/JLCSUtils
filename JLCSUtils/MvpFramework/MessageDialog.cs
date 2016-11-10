@@ -94,7 +94,7 @@ namespace MvpFramework
         /// The buttons or options that the user can choose, in the order in which they are displayed.
         /// null for default based on MessageType.
         /// </summary>
-        public virtual OptionCollection Options { get; set; }
+        public virtual IOptionCollection Options { get; set; }
 
         /// <summary>
         /// Event that is fired when an option is chosen.
@@ -110,89 +110,67 @@ namespace MvpFramework
         public delegate void RespondedDelegate (MessageDialogParameters dialog, object messageDialogResult);
     }
 
-    /*
-/// <summary>
-/// Details of an option that may be available in a message dialog
-/// (typically displayed as a button).
-/// </summary>
-public class DialogOption : MvpFramework.Menu.MenuItemModel
-{
-    public MenuItemModel(Dictionary<string, Menu.MenuItemModel> allItems, string id) : base(allItems, id)
-    {
-    }
 
-   /// <summary>
-   /// ID of the option, unique within a set of options.
-   /// </summary>
-   // Same type as return value of IMessageDialog.ShowMessage.
-   public virtual object Id { get; set; }
-
-   /// <summary>
-   /// The text displayed in the UI (on the button etc.).
-   /// </summary>
-   public virtual string Caption { get; set; }  //| Rename "DisplayName" ?
-
-   /// <summary>
-   /// Identifier of an icon on the UI element (e.g. button) that displays this option.
-   /// May be null (to include no icon on the button).
-   /// </summary>
-   public virtual string IconId { get; set; }
-
-   /// <summary>
-   /// Accelerator key to choose this option, if any.
-   /// </summary>
-   public virtual KeyboardKey AcceleratorKey { get; set; } = KeyboardKey.None;
-   //TODO: Make Char Or rename.
-
-   /// <summary>
-   /// Sorting order. (Used when options are added to an existing collection).
-   /// </summary>
-   public int Order { get; set; }
-
-    /// <summary>
-    /// True iff this is the default option.
-    /// Only one (or zero) option in a set should have this set to true.
-    /// </summary>
-    public virtual bool IsDefault { get; set; }
-    }
-*/
-
-    public class OptionCollection
+    public interface IOptionCollection
     {
         /// <summary>
         /// The buttons or options that the user can choose, in the order in which they are displayed.
         /// null for default based on MessageType.
         /// </summary>
-        public virtual IEnumerable<MenuItemModel> Options { get; set; }
+//        public virtual IDictionary<string, MenuItemModel> Options { get; set; }
+        IEnumerable<MenuItemModel> Options { get; }
 
         /// <summary>
         /// The default option.
         /// null if there is no default.
         /// </summary>
-        public virtual MenuItemModel Default
-            => Options.FirstOrDefault(o => o.IsDefault);
+        MenuItemModel Default { get; }
+
+        event EventHandler Changed;
     }
 
-    public class MutableOptionCollection : OptionCollection
+    public class OptionCollection : IOptionCollection
     {
-        public virtual void AddOption(MenuItemModel option)
+        public OptionCollection(IDictionary<string, MenuItemModel> options)
         {
-            _options.Add(option);
-            _options = _options.OrderBy(o => o.Order).ToList();
+            _options = options;
+        }
+
+        public virtual event EventHandler Changed; //TODO
+
+        public virtual MenuItemModel AddOption(MenuItemModel option)
+        {
+            _options[option.Id] = option;
+            return option;
+//            _options = _options.OrderBy(o => o.Order).ToList();
         }
 
         public virtual bool RemoveOption(MenuItemModel option)
         {
-            return _options.Remove(option);
+            return _options.Remove(option.Id);
         }
 
-        public override IEnumerable<MenuItemModel> Options
+        public virtual MenuItemModel NewOption(string id)
         {
-            get { return _options; }
-            set { _options = value.ToList(); }
+            var item = new MenuItemModel(_options, id);
+            AddOption(item);
+            return item;
         }
 
-        protected List<MenuItemModel> _options { get; set; }
+        public virtual IEnumerable<MenuItemModel> Options
+            => _options.Values.OrderBy(o => o.Order);
+
+        public virtual MenuItemModel Default
+            => Options.FirstOrDefault(o => o.IsDefault);
+
+        /*
+                public override IDictionary<string, MenuItemModel> Options
+                {
+                    get { return _options; }
+                    set { _options = value; }
+                }
+                */
+        protected IDictionary<string,MenuItemModel> _options { get; set; }
     }
 
 
@@ -292,41 +270,34 @@ public class DialogOption : MvpFramework.Menu.MenuItemModel
         /// <param name="target"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public virtual MutableOptionCollection Build(object target, string filter)
+        public virtual OptionCollection Build(object target, string filter)
         {
-            /*
-            type.GetMethods()
-                .Where(m => m.GetCustomAttribute<MvpHandlerAttribute>()?.Filter?.Contains(filter) ?? false)
-                .OrderBy(m => m.GetCustomAttribute<MvpHandlerAttribute>()?.Order);
-                */
             var options = new Dictionary<string,Menu.MenuItemModel>();
-            foreach(var method in target.GetType().GetMethods())
+
+            foreach(var handlerInfo in _handlerResolver.GetHandlersInfo(target,null))
             {
-                var attrib = method.GetCustomAttribute<MvpHandlerAttribute>();
-                //TODO: Support multiple handlers on same method.
-                if (attrib != null 
-                    && ((filter == null) || (attrib.Filter?.Contains(filter) ?? false) )
+                if (handlerInfo.Attribute != null
+                    && ((filter == null) || (handlerInfo.Attribute.Filter?.Contains(filter) ?? false))
                     )
                 {
-                    var option = new MenuItemModel(options, attrib.Name)
+                    var option = new MenuItemModel(options, handlerInfo.Attribute.Name)
                     {
-                        DisplayName = attrib.DisplayName,
-                        HotKey = attrib.HotKey,
-                        IconId = attrib.IconId,
-                        IsDefault = attrib.IsDefault,
-                        Order = attrib.Order,
+                        DisplayName = handlerInfo.Attribute.DisplayName,
+                        HotKey = handlerInfo.Attribute.HotKey,
+                        IconId = handlerInfo.Attribute.IconId,
+                        IsDefault = handlerInfo.Attribute.IsDefault,
+                        Order = handlerInfo.Attribute.Order,
                     };
-                    option.Invoked += item => method.Invoke(null, new object[] { });
-                    options[attrib.Name] = option;
+                    option.Invoked += item => handlerInfo.Method.Invoke(target, new object[] { });
+                    options[handlerInfo.Attribute.Name] = option;
                 }
             }
-            var optionSet = new MutableOptionCollection()
-            {
-                Options = (IEnumerable<MenuItemModel>)options.Values.OrderBy(o => o.Order)
-            };
+
+            var optionSet = new OptionCollection(options);
             return optionSet;
         }
 
+        protected readonly HandlerResolver _handlerResolver = new HandlerResolver();
     }
 
 }

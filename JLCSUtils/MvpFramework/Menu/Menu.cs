@@ -13,7 +13,7 @@ namespace MvpFramework.Menu
     /// </summary>
     public class MenuItemModel
     {
-        public MenuItemModel(Dictionary<string, MenuItemModel> allItems, string id)
+        public MenuItemModel(IDictionary<string, MenuItemModel> allItems, string id)
         {
             _allItems = allItems;
             Id = id;
@@ -100,7 +100,7 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Collection of menu items, including this one and its children.
         /// </summary>
-        protected readonly Dictionary<string, MenuItemModel> _allItems;
+        protected readonly IDictionary<string, MenuItemModel> _allItems;
 
         /// <summary>
         /// Do the action of this menu item.
@@ -172,9 +172,9 @@ namespace MvpFramework.Menu
     /// <summary>
     /// Model details of a collection of menus.
     /// </summary>
-    public class MenuModel
+    public class MenuCollection
     {
-        public MenuModel(Dictionary<string, MenuItemModel> allItems)
+        public MenuCollection(Dictionary<string, MenuItemModel> allItems)
         {
             _allItems = allItems;
         }

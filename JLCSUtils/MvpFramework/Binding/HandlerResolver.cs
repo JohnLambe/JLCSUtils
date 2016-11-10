@@ -39,13 +39,19 @@ namespace MvpFramework.Binding
             };
         }
 
+        /// <summary>
+        /// Return details of handlers for the given ID.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="handlerId">Handler ID, null to return all handlers.</param>
+        /// <returns></returns>
         public IEnumerable<Handler> GetHandlersInfo(object target, string handlerId)
         {
             var handlers = new List<Handler>();                                // to hold a list of all handlers for the handlerId
             foreach (var method in target?.GetType().GetMethods())             // all methods
             {
                 foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()
-                    .Where(a => a.Name.Equals(handlerId)))              // attributes for the specified handler on this method
+                    .Where(a => handlerId == null || a.Name.Equals(handlerId)))              // attributes for the specified handler on this method
                 {
                     handlers.Add(new Handler()
                     {
