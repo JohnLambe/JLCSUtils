@@ -23,26 +23,25 @@ namespace MvpFramework.Binding
             this.Model = model;
         }
 
-        /*
-        public virtual void BindProperty(string propertyName  ...,  ) //TODO
-        {
+        // Methods obsoleted. Use GetProp instead:
 
-        }
-        */
-
+        [Obsolete]
         public virtual object GetValue(string propertyName)
         {
             //            return GetProperty(propertyName)?.GetValue(Model);
             return ReflectionUtils.TryGetPropertyValue<object>(Model, propertyName);
         }
 
+        [Obsolete]
         public virtual void SetValue(string propertyName, object value)
             //            => GetProperty(propertyName)?.SetValue(Model, value);
             => ReflectionUtils.TrySetPropertyValue<object>(Model, propertyName, value);
 
+        [Obsolete]
         public virtual bool CanRead(string propertyName)
             => GetProperty(propertyName)?.CanRead ?? false;
 
+        [Obsolete]
         public virtual bool CanWrite(string propertyName)
             => GetProperty(propertyName)?.CanWrite ?? false;
 
@@ -52,14 +51,62 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="propertyName"></param>
         /// <returns></returns>
+        [Obsolete]
         public virtual PropertyInfo GetProperty(string propertyName)
-            => ReflectionUtils.GetProperty(Model,propertyName);
+        {
+            var model = Model; 
+            return ReflectionUtils.GetProperty(ref model, propertyName);
+        }
 
+        [Obsolete]
         public virtual string GetCaptionForProperty(string propertyName)
         {
             return CaptionUtils.GetDisplayName(GetProperty(propertyName));
         }
 
+ /*
+        /// <summary>
+        /// Provides attributes of the property, which may include details
+        /// related to binding or validation.
+        /// This may (in subclasses or future versions) return attributes even if 
+        /// <see cref="GetProperty(string)"/> returns null, so it is recommended to use this instead of using it
+        /// as <see cref="ICustomAttributeProvider"/>.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public virtual ICustomAttributeProvider GetAttributes(string propertyName)
+        {
+            return GetProperty(propertyName);
+        }
+*/
+
+        public virtual IEnumerable<ModelPropertyBinder> Properties
+        {
+            get
+            {
+                return Model.GetType().GetProperties()
+                    .Select(p => new ModelPropertyBinder(Model, p));
+            }
+        }
+
+        public virtual ModelPropertyBinder GetProp(string propertName)
+        {
+            return new ModelPropertyBinder(Model, propertName);
+        }
+
         protected readonly object Model;
     }
+
+
+    public class ModelPropertyBinder : BoundProperty<object, object>
+    {
+        public ModelPropertyBinder(object target, PropertyInfo property) : base(target, property)
+        {
+        }
+
+        public ModelPropertyBinder(object target, string propertyName) : base(target, propertyName)
+        {
+        }
+    }
+
 }

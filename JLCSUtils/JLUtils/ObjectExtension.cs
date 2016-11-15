@@ -95,9 +95,23 @@ namespace JohnLambe.Util
         public static T NotNull<T>(this T value, string message = null, Type exceptionType = null)
             where T: class
         {
+            return CheckNotNull(value, message, exceptionType);
+        }
+
+        /// <summary>
+        /// Same as NotNull, except that this can be called with any type.
+        /// This can be used for generic types which may or may not be nullable.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="message"></param>
+        /// <param name="exceptionType"></param>
+        /// <returns></returns>
+        public static T CheckNotNull<T>(T value, string message = null, Type exceptionType = null)
+        {
             if (value == null)
             {
-                if(message != null)
+                if (message != null)
                     throw new NullReferenceException(message);
                 else
                     throw new NullReferenceException("Null reference of type " + typeof(T).Name + " (checked with ObjectExtension.NotNull)");
@@ -116,6 +130,11 @@ namespace JohnLambe.Util
         /// <exception cref="ArgumentNullException">If this is not null.</exception>
         public static T ArgNotNull<T>(this T value, string parameterName = null, string message = null)
             where T : class
+        {
+            return CheckArgNotNull(value, parameterName, message);
+        }
+
+        public static T CheckArgNotNull<T>(T value, string parameterName = null, string message = null)
         {
             if (value == null)
             {

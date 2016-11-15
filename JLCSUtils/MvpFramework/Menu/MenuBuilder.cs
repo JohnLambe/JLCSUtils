@@ -36,22 +36,11 @@ namespace MvpFramework.Menu
             {
                 var defaultMenuSetId = assm.GetCustomAttribute<DefaultMenuSetId>()?.MenuSetId ?? MenuAttributeBase.DefaultMenuSetId;
 
-                foreach (var attribute in assm.GetCustomAttributes<MenuAttribute>())    // all MenuAttribute attributes on each class
+                foreach (var attribute in assm.GetCustomAttributes<MenuAttributeBase>())    // all MenuAttributeBase attributes on the assembly
                 {
                     if (/*filter.TryEvaluate(type) &&*/ (attribute.MenuSetId ?? defaultMenuSetId) == MenuSetId)                   // apply the given filter
                     {
-                        string id = attribute.Id;
-                        var item = new MenuItemModel(allItems, id)       // create a menu item from the attribute
-                        {
-                            ParentId = attribute.ParentId,
-                            AcceleratorChar = attribute.AcceleratorChar,
-                            Order = attribute.Order,
-                            DisplayName = attribute.DisplayName,
-                            HotKey = attribute.HotKey,
-                            Filter = attribute.Filter,
-                            Attribute = attribute,
-                        };
-                        allItems.Add(id, item);
+                        BuildItem(allItems, attribute, null);
                     }
                 }
 
@@ -61,25 +50,7 @@ namespace MvpFramework.Menu
                     {
                         if (filter.TryEvaluate(type) && (attribute.MenuSetId ?? defaultMenuSetId) == MenuSetId)                   // apply the given filter
                         {
-                            string id = attribute.Id ?? Guid.NewGuid().ToString("N");   // generate a GUID ID if no ID is given
-                            var item = new MenuItemModel(allItems,
-                                id)       // create a menu item from the attribute
-                            {
-                                ParentId = attribute.ParentId,
-                                AcceleratorChar = attribute.AcceleratorChar,
-                                Order = attribute.Order,
-                                DisplayName = attribute.DisplayName ?? CaptionUtils.GetDisplayName(type),
-                                HotKey = attribute.HotKey,
-                                IsMenu = attribute.IsMenu,
-                                HandlerType = type,                //| not applicable to Menu ?
-                                Params = attribute.Params,
-                                Rights = attribute.Rights,
-                                Filter = attribute.Filter,
-                                Attribute = attribute,
-                                //TODO: Move this (and the version above) to a method.
-                                // Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
-                            };
-                            allItems.Add(id, item);
+                            BuildItem(allItems, attribute, type);
                         }
                     }
                 }
@@ -96,6 +67,37 @@ namespace MvpFramework.Menu
             }
 
             return new MenuCollection(allItems);
+        }
+
+        /// <summary>
+        /// Create a menu item and add it to the collection of items.
+        /// </summary>
+        /// <param name="allItems">The collection of menu item in this set.
+        /// The new item is added to this.</param>
+        /// <param name="attribute">The attribute that defines this item.</param>
+        /// <param name="handlerType">The class that handles invoking the menu item. May be null.</param>
+        /// <returns>The new item.</returns>
+        protected virtual MenuItemModel BuildItem(Dictionary<string,MenuItemModel> allItems, MenuAttributeBase attribute, Type handlerType)
+        {
+            string id = attribute.Id ?? Guid.NewGuid().ToString("N");   // generate a GUID ID if no ID is given
+            var item = new MenuItemModel(allItems,
+                id)       // create a menu item from the attribute
+            {
+                ParentId = attribute.ParentId,
+                AcceleratorChar = attribute.AcceleratorChar,
+                Order = attribute.Order,
+                DisplayName = attribute.DisplayName ?? CaptionUtils.GetDisplayName(handlerType),
+                HotKey = attribute.HotKey,
+                IsMenu = attribute.IsMenu,
+                HandlerType = (attribute as MenuItemInstanceAttribute)?.Handler ?? handlerType,   // not applicable to Menu (will be null)
+                Params = attribute.Params,
+                Rights = attribute.Rights,
+                Filter = attribute.Filter,
+                Attribute = attribute,
+                // Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
+            };
+            allItems.Add(id, item);
+            return item;
         }
 
         /// <summary>

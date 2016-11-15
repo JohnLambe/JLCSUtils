@@ -9,7 +9,7 @@ namespace DiExtension.Attributes
     /// Injecting a field is not supported. (And public fields are not recommended.)
     /// </para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Parameter,
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Parameter | AttributeTargets.Constructor,
         AllowMultiple = false, Inherited = true)]
     //TODO: Allow on methods - to cause the method to be called with each parameter resolved similarly to a constructor parameter. ? 
     // The Key and ByType properties would not be used (so use different class with a common base class?). Throw exception if non-default values supplied?
@@ -29,7 +29,7 @@ namespace DiExtension.Attributes
         /// <summary>
         /// Name/key of the value to be injected in the DI context.
         /// <para>
-        /// Iff <see cref="CodeName"/>, the name of the item (property or parameter) is ued.
+        /// Iff <see cref="CodeName"/>, the name of the item (property or parameter) is used.
         /// Iff null (the default), it is not resolved by key.
         /// Must not contain control codes / invisible characters except by using constants of this class.
         /// </para>

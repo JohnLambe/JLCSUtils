@@ -25,7 +25,7 @@ namespace MvpFramework
                     if (binder != null)
                     {
                         Binders.Add(binder);
-                        binder.BindModel(modelBinder);
+                        binder.BindModel(modelBinder, presenter);
                     }
                 }
             }

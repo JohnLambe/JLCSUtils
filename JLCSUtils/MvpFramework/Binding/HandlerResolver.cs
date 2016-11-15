@@ -26,7 +26,7 @@ namespace MvpFramework.Binding
         /// <param name="target"></param>
         /// <param name="handlerId"></param>
         /// <returns></returns>
-        public VoidDelegate GetHandler(object target, string handlerId)
+        public virtual VoidDelegate GetHandler(object target, string handlerId)
         {
             var handlerSorted = GetHandlersInfo(target,handlerId).Select(h => h.Method);  // get list of handlers
             // Make a delegate to invoke them in order:
@@ -45,7 +45,7 @@ namespace MvpFramework.Binding
         /// <param name="target"></param>
         /// <param name="handlerId">Handler ID, null to return all handlers.</param>
         /// <returns></returns>
-        public IEnumerable<Handler> GetHandlersInfo(object target, string handlerId)
+        public virtual IEnumerable<Handler> GetHandlersInfo(object target, string handlerId)
         {
             var handlers = new List<Handler>();                                // to hold a list of all handlers for the handlerId
             foreach (var method in target?.GetType().GetMethods())             // all methods

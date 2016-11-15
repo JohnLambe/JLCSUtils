@@ -153,6 +153,7 @@ namespace DiExtension.SimpleInject
             Provider = new CompositeProvider(ProviderChain);
             Dictionary = new DictionaryConfigProvider<object>();
             ProviderChain.RegisterProvider(Dictionary);
+            ConstructorResolutionBehavior.RegisterWith(Container.Options);
 
             PropertyInjectionBehavior = PropertyInjectionDiBehavior.RegisterWith(Container.Options,this);
             CacheValues = true;

@@ -75,6 +75,8 @@
     <Compile Include="IExtendedDiContext.cs" />
     <Compile Include="SimpleInject\AutoEventHandler.cs" />
     <Compile Include="SimpleInject\ChainableContext.cs" />
+    <Compile Include="SimpleInject\ConstructorInjectionBehavior.cs" />
+    <Compile Include="SimpleInject\ConstructorResolutionBehavior.cs" />
     <Compile Include="SimpleInject\DiSimpleInjectorExtension.cs" />
     <Compile Include="SimpleInject\EventAutoWirer.cs" />
     <Compile Include="SimpleInject\InjectPropertySelectionBehavior.cs" />

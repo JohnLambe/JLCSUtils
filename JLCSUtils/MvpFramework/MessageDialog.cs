@@ -76,7 +76,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Low-level details (not shown to the user, except possibly by their requesting it by a UI interaction
-        /// (expanding a panel, etc.)).
+        /// (expanding a panel, clicking a 'Detail' button, etc.)).
         /// May be null.
         /// </summary>
         public virtual string DiagnosticMessage { get; set; }
@@ -163,13 +163,6 @@ namespace MvpFramework
         public virtual MenuItemModel Default
             => Options.FirstOrDefault(o => o.IsDefault);
 
-        /*
-                public override IDictionary<string, MenuItemModel> Options
-                {
-                    get { return _options; }
-                    set { _options = value; }
-                }
-                */
         protected IDictionary<string,MenuItemModel> _options { get; set; }
     }
 

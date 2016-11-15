@@ -94,6 +94,10 @@ namespace MvpFramework.Menu
         public override bool IsMenu => true;
     }
 
+    /// <summary>
+    /// Type or style of a menu or sub-menu.
+    /// These specify different ways or styles of displaying the menu.
+    /// </summary>
     public enum MenuStyle
     {
         /// <summary>
@@ -111,7 +115,11 @@ namespace MvpFramework.Menu
         /// A group of items within a menu, such as a panel within a tab in a ribbon,
         /// or a group of items separated by a separator line in a vertical menu.
         /// </summary>
-        Group
+        Group,
+
+        ToolBar,
+
+        Custom
     };
 
     /// <summary>
@@ -128,6 +136,24 @@ namespace MvpFramework.Menu
         }
 
         public override bool IsMenu => false;
+    }
+
+    /// <summary>
+    /// An attribute that can be placed on an assembly or any class to register any class as a menu item.
+    /// Can be used to register a class from another assembly, possibly with parameters.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    public class MenuItemInstanceAttribute : MenuItemAttribute
+    {
+        public MenuItemInstanceAttribute(string parentId, string displayName = null) : base(parentId, displayName)
+        {
+        }
+
+        /// <summary>
+        /// The class that handles the menu item.
+        /// May be null. If null, and this is defined on a class, the class that it is defined on is used.
+        /// </summary>
+        public virtual Type Handler { get; set; }
     }
 
     /// <summary>

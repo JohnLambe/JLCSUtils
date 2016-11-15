@@ -90,6 +90,7 @@
     <Compile Include="Di\AutoRegistration\DiContextConfigurerTest.cs" />
     <Compile Include="Di\AutoRegistration\ForTest.cs" />
     <Compile Include="Di\ConfigInject\ConfigInjectTest.cs" />
+    <Compile Include="Di\ConstructorResolutionTest.cs" />
     <Compile Include="Di\ForTest.cs" />
     <Compile Include="Di\ParameterInjection.cs" />
     <Compile Include="Di\SiExtensionTest.cs" />

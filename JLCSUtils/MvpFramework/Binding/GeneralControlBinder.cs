@@ -39,7 +39,7 @@ namespace MvpFramework.Binding
         /// Bind this control to the given model.
         /// </summary>
         /// <param name="modelBinder"></param>
-        public virtual void BindModel(ModelBinderWrapper modelBinder)
+        public virtual void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {
             if (_controlProperty != null)
             {

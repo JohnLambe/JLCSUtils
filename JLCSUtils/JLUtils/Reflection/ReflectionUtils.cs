@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 
 using System.Reflection;
-
+using System.Diagnostics.Contracts;
+using JohnLambe.Util.Text;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -116,7 +117,7 @@ namespace JohnLambe.Util.Reflection
 
         private enum PropertyAction { GetProperty, GetValue, SetValue };
 
-        private static PropertyInfo GetSetProperty(object target, string propertyName, PropertyAction action, ref object value)
+        private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value)
         { 
             PropertyInfo property = null;
             string[] levels = propertyName.Split('.');
@@ -146,10 +147,10 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target"></param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <returns>The requested property, or null if it does not exist (if any property in the chain doesn't exist).</returns>
-        public static PropertyInfo GetProperty(object target, string propertyName)
+        public static PropertyInfo GetProperty(ref object target, string propertyName)
         {
             object dummy = null;
-            return GetSetProperty(target, propertyName, PropertyAction.GetProperty, ref dummy);
+            return GetSetProperty(ref target, propertyName, PropertyAction.GetProperty, ref dummy);
         }
 
         /// <summary>
@@ -162,7 +163,8 @@ namespace JohnLambe.Util.Reflection
         public static T TryGetPropertyValue<T>(object target, string propertyName)
         {
             object value = null;
-            GetSetProperty(target, propertyName, PropertyAction.GetValue, ref value);
+            GetSetProperty(ref target, propertyName, PropertyAction.GetValue, ref value);
+            // Note: target is passed by value to this method. Any change to it is ignored.
             return (T)value;
         }
 
@@ -177,10 +179,124 @@ namespace JohnLambe.Util.Reflection
         public static void TrySetPropertyValue<T>(object target, string propertyName, T value)
         {
             object valueObject = value;
-            GetSetProperty(target, propertyName, PropertyAction.SetValue, ref valueObject);
+            GetSetProperty(ref target, propertyName, PropertyAction.SetValue, ref valueObject);
+            // Note: target is passed by value to this method. Any change to it is ignored.
         }
 
         #endregion
+    }
+
+
+    /// <summary>
+    /// Metadata of a property (of a class, struct, interface, dictionary, etc.),
+    /// and the object it is defined on.
+    /// </summary>
+    /// <typeparam name="TTarget"></typeparam>
+    /// <typeparam name="TProperty"></typeparam>
+    public class BoundProperty<TTarget,TProperty> : ICustomAttributeProvider
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target">The object on which the property is defined.
+        /// </param>
+        /// <param name="propertyName">The name of the property. This may be a nested property name (with ".").</param>
+        public BoundProperty(TTarget target, string propertyName)
+        {
+            object targetObject = target;
+            Property = ReflectionUtils.GetProperty(ref targetObject, propertyName);
+            this.Target = (TTarget)targetObject;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target">The object on which the property is defined.</param>
+        /// <param name="property">The property itself.</param>
+        public BoundProperty(TTarget target, PropertyInfo property)
+        {
+            ObjectExtension.CheckArgNotNull(target, nameof(target));
+            property.ArgNotNull(nameof(property));
+            Contract.Requires(property.DeclaringType.IsAssignableFrom(target.GetType()));
+            this.Target = target;
+            this.Property = property;
+        }
+
+        /// <summary>
+        /// True if the property is readable (not write-only).
+        /// </summary>
+        public virtual bool CanRead
+            => Property?.CanRead ?? false;
+
+        /// <summary>
+        /// True if the property is settable (not read-only).
+        /// </summary>
+        public virtual bool CanWrite
+            => Property?.CanWrite ?? false;
+
+        /// <summary>
+        /// The value of this property on the bound object.
+        /// </summary>
+        public virtual TProperty Value
+        {
+            get
+            {
+                return (TProperty)Property?.GetValue(Target);
+            }
+            set
+            {
+                Property?.SetValue(Target, value);
+            }
+        }
+
+        /// <summary>
+        /// The name of the property (as used in code).
+        /// </summary>
+        public virtual string Name
+            => Property.Name;
+
+        /// <summary>
+        /// A caption or name of the property for display to a user.
+        /// </summary>
+        public virtual string DisplayName
+            => CaptionUtils.GetDisplayName(Property);
+
+        /// <summary>
+        /// The object that declares this property.
+        /// If this object was created using a nested property name, this returns the nested object.
+        /// </summary>
+        public virtual TTarget Target { get; }
+
+        /// <summary>
+        /// The Property metadata. This may be null if this object does not represent a class/struct/interface
+        /// (e.g. it could be a dictionary or XML file).
+        /// </summary>
+        public virtual PropertyInfo Property { get; }
+
+
+        #region ICustomAttributeProvider
+        // Delegates to Property.
+
+        public object[] GetCustomAttributes(Type attributeType, bool inherit)
+        {
+            return ((ICustomAttributeProvider)Property).GetCustomAttributes(attributeType, inherit);
+        }
+
+        public object[] GetCustomAttributes(bool inherit)
+        {
+            return ((ICustomAttributeProvider)Property).GetCustomAttributes(inherit);
+        }
+
+        public bool IsDefined(Type attributeType, bool inherit)
+        {
+            return ((ICustomAttributeProvider)Property).IsDefined(attributeType, inherit);
+        }
+
+        #endregion
+
+        //| Could, alternatively, subclass PropertyInfo.
+        //| Most members would have to delegate to an underlying PropertyInfo (the Reflection calls can return any subclass; PropertInfo is abstract).
+        //| That could be broken by changes to PropertyInfo in future .NET framework versions.
     }
 
 }

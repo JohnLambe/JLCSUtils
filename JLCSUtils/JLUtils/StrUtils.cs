@@ -459,6 +459,7 @@ namespace JohnLambe.Util
         /// 0 is valid (returns "").</param>
         /// <returns><paramref name="s"/> repeated <paramref name="count"/> times.</returns>
         /// <exception cref="ArgumentException">If count is negative.</exception>
+        // SQL: Replicate
         public static string Repeat(this string s, int count)
         {
             if (count < 0)
@@ -560,7 +561,7 @@ namespace JohnLambe.Util
             else
                 return s.Substring(0, splitPoint);
         }
-        //TODO: Define behavoir for null `separator`
+        //TODO: Define behavior for null `separator`
 
         /// <summary>
         /// Return the part of the string after the separator.
