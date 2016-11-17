@@ -11,7 +11,7 @@ namespace MvpFramework
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
-    public class ViewBase : Form, IView
+    public class ViewBase : UserControl, IView
     {
         public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {
@@ -50,6 +50,18 @@ namespace MvpFramework
         void IView.Show()
         {
             base.Show();
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // ViewBase
+            // 
+            this.Name = "ViewBase";
+            //            this.Size = new System.Drawing.Size(500, 300);
+            this.ResumeLayout(false);
+
         }
     }
 }

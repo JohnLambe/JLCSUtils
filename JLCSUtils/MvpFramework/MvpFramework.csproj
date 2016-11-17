@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,6 +49,8 @@
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="IResolverExtension.cs" />
+    <Compile Include="IWindowPresenter.cs" />
+    <Compile Include="IWindowView.cs" />
     <Compile Include="KeyboardKey.cs" />
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Menu\MenuAttribute.cs" />
@@ -67,8 +70,15 @@
     <Compile Include="ViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="WindowPresenterBase.cs" />
     <Compile Include="WinForms\Types.cs" />
     <Compile Include="WinForms\UiController.cs" />
+    <Compile Include="WinForms\WindowViewBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\WindowViewBase.Designer.cs">
+      <DependentUpon>WindowViewBase.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">
@@ -87,7 +97,11 @@
   <ItemGroup>
     <Content Include="MvpFramework.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="ViewBase.resx">
+      <DependentUpon>ViewBase.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
