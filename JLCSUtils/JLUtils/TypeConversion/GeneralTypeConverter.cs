@@ -28,15 +28,18 @@ namespace JohnLambe.Util.TypeConversion
             }
             */
 
-            try
-            {
-                return (T)source;
-            }
-            catch
-            {
-                return (T)System.Convert.ChangeType(source, requiredType);
-            }
+            return (T)System.Convert.ChangeType(source, requiredType);
+        }
 
+        /// <summary>
+        /// Same as Convert&lt;object&gt;.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="requiredType"></param>
+        /// <returns></returns>
+        public static object Convert(object source, Type requiredType)
+        {
+            return Convert<object>(source, requiredType);
         }
     }
 }

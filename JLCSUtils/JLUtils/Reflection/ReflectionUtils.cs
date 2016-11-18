@@ -6,6 +6,7 @@ using System.Text;
 using System.Reflection;
 using System.Diagnostics.Contracts;
 using JohnLambe.Util.Text;
+using JohnLambe.Util.TypeConversion;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -117,6 +118,15 @@ namespace JohnLambe.Util.Reflection
 
         private enum PropertyAction { GetProperty, GetValue, SetValue };
 
+        /// <summary>
+        /// Get/Set the value of a property, and read the property metadata.
+        /// </summary>
+        /// <param name="target">The object on which to evaluate the property.
+        /// For nested properties, this is the innermost object on exit.</param>
+        /// <param name="propertyName">Property name. Can be a nested property.</param>
+        /// <param name="action"></param>
+        /// <param name="value">The value to set; or a reference to receive the value (on Get). Ignored for <see cref="PropertyAction.GetProperty"/>.</param>
+        /// <returns>The details of the innermost property.</returns>
         private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value)
         { 
             PropertyInfo property = null;
@@ -135,7 +145,7 @@ namespace JohnLambe.Util.Reflection
                     value = property.GetValue(target);
                     break;
                 case PropertyAction.SetValue:
-                    property.SetValue(target, value);
+                    property.SetValue(target, GeneralTypeConverter.Convert<object>(value,property.PropertyType));
                     break;
             }
             return property;

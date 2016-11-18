@@ -245,12 +245,40 @@ namespace JohnLambe.Util
         /// Split a string into parts, separated by a given separator.
         /// If the separator does not occur, the whole string is the first part.
         /// If the given string is null, all parts are null.
+        /// The last part is terminated by the separator if there is another separator.
+        /// <para>e.g. "a|b|c|d".SplitToVars('|',out a, out b) will assign `a` to "a" and `b` to "b".</para>
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
         /// <param name="p1">the first part. null if `s` is null.</param>
         /// <param name="p2">the second part, or null if there is only one or no parts.</param>
         public static void SplitToVars(this string s, char separator, out string p1, out string p2)
+        {   // separate implementation, rather than calling the other overload, for efficiency.
+            if (s == null)
+            {
+                p1 = null;
+                p2 = null;
+            }
+            else
+            {
+                string[] parts = s.Split(separator);
+                p1 = parts[0];
+                p2 = parts.Length > 1 ? parts[1] : null;
+            }
+        }
+
+        /// <summary>
+        /// Split a string into parts, separated by a given separator.
+        /// If the separator does not occur, the whole string is the first part.
+        /// If the given string is null, all parts are null.
+        /// The last part is terminated by the separator if there is another separator.
+        /// <para>e.g. "a|b|c|d".SplitToVars('|',out a, out b) will assign `a` to "a" and `b` to "b".</para>
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator</param>
+        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p2">the second part, or null if there is only one or no parts.</param>
+        public static void SplitToVars(this string s, char[] separator, out string p1, out string p2)
         {
             if (s == null)
             {
@@ -286,6 +314,97 @@ namespace JohnLambe.Util
             else
             {
                 string[] parts = s.Split(separator);
+                p1 = parts[0];
+                p2 = parts.Length > 1 ? parts[1] : null;
+                p3 = parts.Length > 2 ? parts[2] : null;
+            }
+        }
+
+        /// <summary>
+        /// Split a string into parts, separated by a given separator.
+        /// If the separator does not occur, the whole string is the first part.
+        /// If the given string is null, all parts are null.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator</param>
+        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p2">the second part, or null if there is only one part.</param>
+        /// <param name="p3">the third part, or null if there is fewer than three parts.</param>
+        /// <param name="p4">the fourth part, or null if there is fewer than four parts.</param>
+        public static void SplitToVars(this string s, char separator, out string p1, out string p2, out string p3, out string p4)
+        {
+            if (s == null)
+            {
+                p1 = null;
+                p2 = null;
+                p3 = null;
+                p4 = null;
+            }
+            else
+            {
+                string[] parts = s.Split(separator);
+                p1 = parts[0];
+                p2 = parts.Length > 1 ? parts[1] : null;
+                p3 = parts.Length > 2 ? parts[2] : null;
+                p4 = parts.Length > 3 ? parts[3] : null;
+            }
+        }
+
+
+        /// <summary>
+        /// Split a string into parts, separated by a given separator.
+        /// If the separator does not occur, the whole string is the first part.
+        /// If the given string is null, all parts are null.
+        /// <para>The last part is everything after the first occurrence of the separator, even if there are more occurrences of separators characters.
+        /// Otherwise, the result is the same as <see cref="SplitToVars(string, char, out string, out string)"/>.
+        /// </para>
+        /// <para>e.g. "a|b|c|d".SplitToVars('|',out a, out b) will assign `a` to "a" and `b` to "b|c|d".</para>
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator</param>
+        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p2">the second part, or null if there is only one or no parts.</param>
+        public static void SplitWholeToVars(this string s, char[] separator, out string p1, out string p2)
+        {
+            if (s == null)
+            {
+                p1 = null;
+                p2 = null;
+            }
+            else
+            {
+                string[] parts = s.Split(separator, 2);
+                p1 = parts[0];
+                p2 = parts.Length > 1 ? parts[1] : null;
+            }
+        }
+
+        public static void SplitWholeToVars(this string s, char separator, out string p1, out string p2)
+        {
+            SplitWholeToVars(s, new char[] { separator }, out p1, out p2);
+        }
+
+        /// <summary>
+        /// Split a string into parts, separated by a given separator.
+        /// If the separator does not occur, the whole string is the first part.
+        /// If the given string is null, all parts are null.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator</param>
+        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p2">the second part, or null if there is only one part.</param>
+        /// <param name="p3">the third part, or null if there is fewer than three parts.</param>
+        public static void SplitWholeToVars(this string s, char[] separator, out string p1, out string p2, out string p3)
+        {
+            if (s == null)
+            {
+                p1 = null;
+                p2 = null;
+                p3 = null;
+            }
+            else
+            {
+                string[] parts = s.Split(separator,3);
                 p1 = parts[0];
                 p2 = parts.Length > 1 ? parts[1] : null;
                 p3 = parts.Length > 2 ? parts[2] : null;
@@ -582,5 +701,64 @@ namespace JohnLambe.Util
                 return s.Substring(splitPoint + separator.Length);
         }
 
+        /// <summary>
+        /// Replace a section of a string with another string (which may be a different length).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
+        // SQL: Stuff
+        public static string ReplaceSubstring(this string s, int start, int length, string newValue)
+        {
+            return s.Substring(0, start) + newValue.NullToBlank() + s.Substring(start + length);
+        }
+
+        /*
+        public static string ReplaceSubstringBetween(this string s, string start, string end, string newValue)
+        {
+        }
+        */
+
+        /// <summary>
+        /// Replace a section of a string with another string of the same length.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="start"></param>
+        /// <param name="newValue"></param>
+        /// <param name="allowExtend">Iff true and <paramref name="newValue"/> is longer than the rest of the string, after <paramref name="start"/>,
+        /// the string is extended to fit it;
+        /// otherwise, newValue is truncated to fit in the length of the original string.</param>
+        /// <returns></returns>
+        public static string OverwriteSubstring(this string s, int start, string newValue, bool allowExtend = true)
+        {
+            return s.SafeSubstring(0, start) 
+                + (allowExtend ?
+                    newValue + s.SafeSubstring(start + newValue.Length) 
+                    : newValue.SafeSubstring(0, s.Length - start) + s.SafeSubstring(start + newValue.Length, s.Length - start - newValue.Length)
+                    );
+        }
+
+        public static string SafeSubstring(this string s, int start, int length)
+        {
+            if (s == null)
+                return null;
+            if (start >= s.Length || length <= 0)       // start is beyond the end or length is zero or negative
+                return "";
+            if (start + length >= s.Length)             // length is beyond the end
+                return s.Substring(start);
+            return s.Substring(start, length);
+            //TOOD: start < 0 ?
+        }
+
+        public static string SafeSubstring(this string s, int start)
+        {
+            if (s == null)
+                return null;
+            if (start >= s.Length)
+                return "";
+            return s.Substring(start);
+        }
     }
 }

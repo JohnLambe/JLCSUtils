@@ -41,11 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
+    <Compile Include="Misc\ValidationAttribute.cs" />
     <Compile Include="Reflection\AssemblyUtils.cs" />
     <Compile Include="Reflection\AttributeUtils.cs" />
     <Compile Include="Reflection\GenericTypeUtils.cs" />
+    <Compile Include="Security\HashedPassword.cs" />
     <Compile Include="Text\CaptionUtils.cs" />
+    <Compile Include="Text\EncoderExtension.cs" />
     <Compile Include="Types\ID.cs" />
     <Compile Include="LazyInitialize.cs" />
     <Compile Include="Text\CharacterUtils.cs" />
