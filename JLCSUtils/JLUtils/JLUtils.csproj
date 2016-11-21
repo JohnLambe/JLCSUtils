@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Documentation\DocumentationAttribute.cs" />
+    <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
     <Compile Include="Misc\ValidationAttribute.cs" />
     <Compile Include="Reflection\AssemblyUtils.cs" />
