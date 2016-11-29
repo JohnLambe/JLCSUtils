@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Misc
@@ -13,11 +14,16 @@ namespace JohnLambe.Util.Misc
 
     public class StringValidationAttribute : ValidationAttributeBase
     {
+        /// <summary>
+        /// Characters allowed in the string. null for all.
+        /// </summary>
+        public virtual string AllowedCharacters { get; set; }
     }
 
     /// <summary>
     /// The data item holds a phone number.
     /// </summary>
+    [Obsolete("Use DataAnnotations")]
     public class PhoneNumberValidationAttribute : StringValidationAttribute
     {
     }
@@ -36,7 +42,8 @@ namespace JohnLambe.Util.Misc
     public class RegexValidationAttribute : StringValidationAttribute
     {
         public virtual string Regex { get; set; }
-        //TODO: Regex Options ?
+
+        public virtual RegexOptions Options { get; set; } = RegexOptions.None;
     }
 
     public class NumberValidationAttribute : ValidationAttributeBase
@@ -66,8 +73,33 @@ namespace JohnLambe.Util.Misc
     {
         //TODO: Reference a (possibly dynamic) provider/dataset of values that may be chosen.
 
-        public virtual bool AllowFreeText { get; set;}
+        public virtual bool AllowFreeText { get; set; }
     }
 
+    public class DateTimeAttribute : ValidationAttributeBase
+    {
+        public virtual TimePrecision TimeParts { get; set;}
+
+        /// <summary>
+        /// Number of decimal places in seconds (for display and entry).
+        /// </summary>
+        public virtual int DecimalPlaces { get; set; }
+    }
+
+    [Flags]
+    public enum TimePrecision
+    {
+        Year = 0x80,
+        Month = 0x40,
+        Day = 0x20,
+        Hour = 0x10,
+        Minute = 0x08,
+        Second = 0x04,
+        SecondsFraction = 0x02,
+
+        Date = Year | Month | Day,
+        TimeOfDay = Hour | Minute | Second | SecondsFraction,
+        Full = Date | TimeOfDay
+    }
 
 }

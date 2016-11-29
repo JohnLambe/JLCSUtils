@@ -22,7 +22,7 @@ namespace DiExtension
             RegisterInstance(this);
         }
 
-        public IDiContext BuildUp<T>(T target, params ResolverOverride[] resolverOverride)
+        public virtual IDiContext BuildUp<T>(T target, params ResolverOverride[] resolverOverride)
         {
             Container.BuildUp(target.GetType(), target, resolverOverride);
 //            Container.BuildUp<T>(target, resolverOverride);
@@ -34,16 +34,19 @@ namespace DiExtension
             Container.RegisterType(type, name, i);
             return this;
         }
+
         public virtual IDiContext RegisterType(Type from, Type to, params InjectionMember[] i)
         {
             Container.RegisterType(from, to, i);
             return this;
         }
+
         public virtual IDiContext RegisterInstance(object instance)
         {
             Container.RegisterInstance(instance);
             return this;
         }
+
         public virtual void RegisterInstance(string name, object instance, bool buildUp = true)
         {
             if (name == null)
@@ -59,12 +62,12 @@ namespace DiExtension
 //            return this;
         }
 
-        protected void AutoBuildUp(object instance)
+        protected virtual void AutoBuildUp(object instance)
         {
             BuildUp(instance);
         }
 
-        protected UnityContainer Container { get; set; }
+        protected virtual UnityContainer Container { get; set; }
 
         T IDiContext.BuildUp<T>(T target)
         {
@@ -78,6 +81,7 @@ namespace DiExtension
                 + " Container: " + Container.Registrations.ToString();
         }
     }
+
 
     public class ExtendedDiContext : DiContext, IExtendedDiContext
     {
@@ -124,12 +128,12 @@ namespace DiExtension
             }
         }
 
-        public void RegisterType(Type serviceType, Type implementationType)
+        public virtual void RegisterType(Type serviceType, Type implementationType)
         {
             base.RegisterType(serviceType, implementationType);
         }
 
-        public void RegisterType(Type serviceType, string name)
+        public virtual void RegisterType(Type serviceType, string name)
         {
             RegisterType(serviceType, name, new InjectionMember[] { });
         }

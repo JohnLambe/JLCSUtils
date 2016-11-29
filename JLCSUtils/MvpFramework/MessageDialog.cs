@@ -118,8 +118,8 @@ namespace MvpFramework
         /// null for default based on MessageType.
         /// </summary>
 //        public virtual IDictionary<string, MenuItemModel> Options { get; set; }
-        IEnumerable<MenuItemModel> Options { get; }
-
+        IEnumerable<MenuItemModel> Children { get; }
+  
         /// <summary>
         /// The default option.
         /// null if there is no default.
@@ -129,41 +129,38 @@ namespace MvpFramework
         event EventHandler Changed;
     }
 
-    public class OptionCollection : IOptionCollection
+    public class OptionCollection : MenuItemModel, IOptionCollection
     {
-        public OptionCollection(IDictionary<string, MenuItemModel> options)
+        public OptionCollection(IDictionary<string, MenuItemModel> options, string id = "")
+            : base(options, id)
         {
-            _options = options;
         }
 
         public virtual event EventHandler Changed; //TODO
 
         public virtual MenuItemModel AddOption(MenuItemModel option)
         {
-            _options[option.Id] = option;
+            _allItems[option.Id] = option;
             return option;
 //            _options = _options.OrderBy(o => o.Order).ToList();
         }
 
         public virtual bool RemoveOption(MenuItemModel option)
         {
-            return _options.Remove(option.Id);
+            return _allItems.Remove(option.Id);
         }
 
         public virtual MenuItemModel NewOption(string id)
         {
-            var item = new MenuItemModel(_options, id);
+            var item = new MenuItemModel(_allItems, id);
             AddOption(item);
             return item;
         }
 
-        public virtual IEnumerable<MenuItemModel> Options
-            => _options.Values.OrderBy(o => o.Order);
+//        public virtual IEnumerable<MenuItemModel> Options
+//            => base.Children; //.OrderBy(o => o.Order);
 
-        public virtual MenuItemModel Default
-            => Options.FirstOrDefault(o => o.IsDefault);
-
-        protected IDictionary<string,MenuItemModel> _options { get; set; }
+//        protected IDictionary<string,MenuItemModel> _options { get; set; }
     }
 
 
@@ -186,7 +183,7 @@ namespace MvpFramework
 
         /// <summary>
         /// A warning.
-        /// By default has only one option (typically called "Ok") - to dismiss it.
+        /// By default, has only one option (typically called "Ok") - to dismiss it.
         /// </summary>
         Warning = 3000,
 
@@ -200,7 +197,7 @@ namespace MvpFramework
 
         /// <summary>
         /// An error.
-        /// By default has only one option (typically called "Ok") - to dismiss it.
+        /// By default, has only one option (typically called "Ok") - to dismiss it.
         /// </summary>
         Error = 4000,
 

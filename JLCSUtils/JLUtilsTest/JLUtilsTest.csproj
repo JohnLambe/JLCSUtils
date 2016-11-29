@@ -77,6 +77,7 @@
     <Compile Include="AutoFactory\AutoFactoryTestBase.cs" />
     <Compile Include="ByteArrayTest.cs" />
     <Compile Include="Collections\CachedSimpleLookupTest.cs" />
+    <Compile Include="Collections\EnumerationUtilsTest.cs" />
     <Compile Include="Db\EnumToSqlTest.cs" />
     <Compile Include="DependencyInjection\ConfigInject\ConfigInjectTest.cs" />
     <Compile Include="DependencyInjection\ConfigInject\ForTest.cs" />
@@ -113,9 +114,11 @@
     <Compile Include="Reflection\LooselyCoupledEvent\ForTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEventTest.cs" />
     <Compile Include="Reflection\ReflectionUtilsTest.cs" />
+    <Compile Include="Security\HashedPasswordTest.cs" />
     <Compile Include="StrUtilsTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="Text\CaptionUtilsTest.cs" />
+    <Compile Include="Text\StringCharacterSetTest.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />
     <Compile Include="MiscUtilTest.cs" />
     <Compile Include="TimeUtilities\DateTest.cs" />

@@ -88,11 +88,6 @@ namespace DiExtension.SimpleInject
                 }
             }
         }
-/*
-        public void Execute(int param1, string param2)
-        {
-        }
-*/
 
         /// <summary>
         /// Get the handler classes for a given delegate type.

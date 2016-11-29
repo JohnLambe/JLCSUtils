@@ -1,20 +1,24 @@
 ﻿TODO:
 
-Method injection.
+Method injection ? (How often would it be used? Can use SimpleInjector context-based injection instead.)
+	InjectAttribute on method.
+	On ExpressionBuilding, scan for relevant methods, sort, and build an Expression to invoke them, then the existing Expression ?
 
 *Config inject with delegate.
 Specify whether to cache for each registration.
 
-Resolve by type, then inject only property value of the resolved instance: ?
+Resolve by type, then inject only a property value of the resolved instance: ?
 	e.g.	[Inject(typeof(User),"Name")]  // inject the user name (User.Name)
 
 More automatic registration.
 
 ChainableContext
 
-Constructor Parameter Injection with [Inject]
+*Constructor Parameter Injection with [Inject]
 
 Locating Presenter for Model:
 	- Attribute on presenter to indicate supported Model types.
 	- Attributed constructor parameter (to flag a parameter as the model).
 	- Generic type parameter?
+
+Change exceptions to ActivationException ?

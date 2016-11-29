@@ -128,6 +128,9 @@ namespace MvpFramework.Menu
         public override string ToString()
             => CodeDescription;
 
+        public virtual MenuItemModel Default
+            => Children.FirstOrDefault(o => o.IsDefault);
+
         /// <summary>
         /// Return a text representation of the menu tree of this item and all its children (including indirect children).
         /// (For diagnostic use).

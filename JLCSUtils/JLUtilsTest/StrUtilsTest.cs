@@ -246,5 +246,31 @@ namespace JohnLambe.Tests.JLUtilsTest
             Assert.AreEqual("second", "firstzsecond".SplitAfter("z"));
             Assert.AreEqual("d:e:f::g", "a:b:c::d:e:f::g".SplitAfter("::"));
         }
+
+        [TestMethod]
+        public void OverwriteSubstring()
+        {
+            Assert.AreEqual("qweABCDiop", StrUtils.OverwriteSubstring("qwertyuiop",3,"ABCD"));
+            Assert.AreEqual("qweABCDEFGHIJK", StrUtils.OverwriteSubstring("qwertyuiop", 3, "ABCDEFGHIJK"));
+
+            //TODO: null
+        }
+
+        [TestMethod]
+        public void OverwriteSubstringNoExtend()
+        {
+            Assert.AreEqual("qweABCDiop", StrUtils.OverwriteSubstring("qwertyuiop", 3, "ABCD", false));
+            Assert.AreEqual("qweABCDEFG", StrUtils.OverwriteSubstring("qwertyuiop", 3, "ABCDEFGHIJK", false));
+
+            //TODO: null
+        }
+
+        [TestMethod]
+        public void ReplaceSubstring()
+        {
+            Assert.AreEqual("qweABCDyuiop", StrUtils.ReplaceSubstring("qwertyuiop", 3, 2, "ABCD"));
+
+            //TODO: null
+        }
     }
 }
