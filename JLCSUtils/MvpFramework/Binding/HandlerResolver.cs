@@ -51,7 +51,7 @@ namespace MvpFramework.Binding
             foreach (var method in target?.GetType().GetMethods())             // all methods
             {
                 foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()
-                    .Where(a => handlerId == null || a.Name.Equals(handlerId)))              // attributes for the specified handler on this method
+                    .Where(a => a.Enabled && (handlerId == null || a.Name.Equals(handlerId)) ))              // attributes for the specified handler on this method
                 {
                     handlers.Add(new Handler()
                     {
