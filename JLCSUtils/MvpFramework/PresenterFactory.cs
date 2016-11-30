@@ -146,7 +146,7 @@ namespace MvpFramework
                     //TODO: if multiple constructors, choose one.
                     //   Evaluate which are compatible? Use Attribute.
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new DependencyInjectionException("Failed to resolve Presenter type or constructor: " + ex.Message, ex);
                 }
@@ -159,7 +159,7 @@ namespace MvpFramework
         }
 
         protected virtual TPresenter CreatePresenter(params object[] param)
-        { 
+        {
             Init();
 
             var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(param);
@@ -196,7 +196,7 @@ namespace MvpFramework
                         createParam = parameterIndex < param.Length + 1;
                     }
 
-                    if(createParam.Value)
+                    if (createParam.Value)
                     {   // Create method parameters (possibly including the Model)
                         args[parameterIndex] = param[createMethodParameterIndex];
                         createMethodParameterIndex++;   // next parameter
@@ -229,22 +229,22 @@ namespace MvpFramework
             }
 
             var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
-                            DiResolver.BuildUp(presenter);                                 // inject properties
+            DiResolver.BuildUp(presenter);                                 // inject properties
 
-                            UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
-                            /*
-                            if (UiManager != null)
-                            {
-                                var newPresenter = UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
-                                if(!presenter.Equals(newPresenter))
-                                {
-                                    MiscUtil.TryDispose(presenter);
-                                    presenter = newPresenter;
-                                }
-                            }
-                            */
+            UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
+            /*
+            if (UiManager != null)
+            {
+                var newPresenter = UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
+                if(!presenter.Equals(newPresenter))
+                {
+                    MiscUtil.TryDispose(presenter);
+                    presenter = newPresenter;
+                }
+            }
+            */
 
-                return presenter;
+            return presenter;
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace MvpFramework
         IPresenterFactory<TPresenter, TParam1>
         where TPresenter : IPresenter
     {
-        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
         {
         }
 
@@ -295,13 +295,9 @@ namespace MvpFramework
         IPresenterFactory<TPresenter>,
         IPresenterFactory<TPresenter, TParam1>,
         IPresenterFactory<TPresenter, TParam1, TParam2>
-        /*                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>,
-                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>,
-                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
-        */
         where TPresenter : IPresenter
     {
-        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
         {
         }
 
@@ -316,13 +312,9 @@ namespace MvpFramework
         IPresenterFactory<TPresenter, TParam1>,
         IPresenterFactory<TPresenter, TParam1, TParam2>,
         IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>
-        /*
-                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>,
-                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
-        */
         where TPresenter : IPresenter
     {
-        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
         {
         }
 
@@ -338,12 +330,9 @@ namespace MvpFramework
         IPresenterFactory<TPresenter, TParam1, TParam2>,
         IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>,
         IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>
-        /*
-                IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
-        */
         where TPresenter : IPresenter
     {
-        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
         {
         }
 
@@ -362,7 +351,7 @@ namespace MvpFramework
         IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
         where TPresenter : IPresenter
     {
-        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver) : base(resolver, diResolver)
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
         {
         }
 

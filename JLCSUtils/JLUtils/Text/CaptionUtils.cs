@@ -68,15 +68,18 @@ namespace JohnLambe.Util.Text
         /// Get a caption (for display to a user) for the given property.
         /// This uses the <see cref="DescriptionAttribute"/> if there is one, otherwise the property name.
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns>The caption for the property. null if <paramref name="property"/> is null.</returns>
-        public static string GetDisplayName(PropertyInfo property)
+        /// <param name="member">An item (usually a property or method) that may have a name or attribute that can
+        /// be converted to a display name.</param>
+        /// <param name="prefix">Prefix of the member name which should not be part of the display name (it is removed, if present).</param>
+        /// <param name="suffix">Suffix of the member name which should not be part of the display name (it is removed, if present).</param>
+        /// <returns>The caption for the property. null if <paramref name="member"/> is null.</returns>
+        public static string GetDisplayName(MemberInfo member, string prefix = null, string suffix = null)
         {
-            if (property == null)
+            if (member == null)
                 return null;
             else
-                return GetDisplayNameFromAttribute(property)
-                    ?? PascalCaseToCaption(property.Name);
+                return GetDisplayNameFromAttribute(member)
+                    ?? PascalCaseToCaption(member.Name.RemovePrefix(prefix).RemoveSuffix(suffix));
         }
 
         [Obsolete("Use GetDisplayName")]

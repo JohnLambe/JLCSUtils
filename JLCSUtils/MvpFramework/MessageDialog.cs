@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Menu;
+using JohnLambe.Util.Text;
 
 namespace MvpFramework
 {
@@ -21,7 +22,7 @@ namespace MvpFramework
         /// <param name="parameters">Details of the message to be shown.</param>
         /// <returns>Indicates which option was chosen, when the message has multiple options (e.g. buttons).</returns>
         object ShowMessage(MessageDialogParameters parameters);
-            //| Create custom type for response ?
+        //| Create custom type for response ?
     }
 
 
@@ -42,7 +43,7 @@ namespace MvpFramework
         public virtual string Message { get; set; }
 
         public virtual MessageType MessageType { get; set; }
-            //| Inferred from MessageTypeId ?
+        //| Inferred from MessageTypeId ?
 
         /// <summary>
         /// Hierarchical ID of the type of message (parts separated by "/").
@@ -107,7 +108,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="dialog">The <see cref="MessageDialogParameters"/> to which the response relates.</param>
         /// <param name="messageDialogResult">The chosen option - the same as the return value from <see cref="IMessageDialog.ShowMessage(MessageDialogParameters)"/>.</param>
-        public delegate void RespondedDelegate (MessageDialogParameters dialog, object messageDialogResult);
+        public delegate void RespondedDelegate(MessageDialogParameters dialog, object messageDialogResult);
     }
 
 
@@ -119,7 +120,7 @@ namespace MvpFramework
         /// </summary>
 //        public virtual IDictionary<string, MenuItemModel> Options { get; set; }
         IEnumerable<MenuItemModel> Children { get; }
-  
+
         /// <summary>
         /// The default option.
         /// null if there is no default.
@@ -134,6 +135,11 @@ namespace MvpFramework
         public OptionCollection(IDictionary<string, MenuItemModel> options, string id = "")
             : base(options, id)
         {
+            foreach (var option in options.Values)
+            {
+                option.Parent = this;
+                option.ParentId = Id;
+            }
         }
 
         public virtual event EventHandler Changed; //TODO
@@ -141,8 +147,10 @@ namespace MvpFramework
         public virtual MenuItemModel AddOption(MenuItemModel option)
         {
             _allItems[option.Id] = option;
+            option.Parent = this;
+            option.ParentId = Id;
             return option;
-//            _options = _options.OrderBy(o => o.Order).ToList();
+            //            _options = _options.OrderBy(o => o.Order).ToList();
         }
 
         public virtual bool RemoveOption(MenuItemModel option)
@@ -157,10 +165,8 @@ namespace MvpFramework
             return item;
         }
 
-//        public virtual IEnumerable<MenuItemModel> Options
-//            => base.Children; //.OrderBy(o => o.Order);
-
-//        protected IDictionary<string,MenuItemModel> _options { get; set; }
+        //        public virtual IEnumerable<MenuItemModel> Options
+        //            => base.Children; //.OrderBy(o => o.Order);
     }
 
 
@@ -252,6 +258,9 @@ namespace MvpFramework
     }
 
 
+    /// <summary>
+    /// Builds a collection of options (a type of menu model) from attributed methods.
+    /// </summary>
     public class OptionCollectionBuilder
     {
         /// <summary>
@@ -262,9 +271,9 @@ namespace MvpFramework
         /// <returns></returns>
         public virtual OptionCollection Build(object target, string filter)
         {
-            var options = new Dictionary<string,Menu.MenuItemModel>();
+            var options = new Dictionary<string, Menu.MenuItemModel>();
 
-            foreach(var handlerInfo in _handlerResolver.GetHandlersInfo(target,null))
+            foreach (var handlerInfo in _handlerResolver.GetHandlersInfo(target, null))
             {
                 if (handlerInfo.Attribute != null
                     && ((filter == null) || (handlerInfo.Attribute.Filter?.Contains(filter) ?? false))
@@ -272,7 +281,9 @@ namespace MvpFramework
                 {
                     var option = new MenuItemModel(options, handlerInfo.Attribute.Name)
                     {
-                        DisplayName = handlerInfo.Attribute.DisplayName,
+                        DisplayName = handlerInfo.Attribute.DisplayName ??
+                            CaptionUtils.GetDisplayName(handlerInfo.Method,"Handle_","Clicked"),
+                            //| Alternatively, we could use the ID.
                         HotKey = handlerInfo.Attribute.HotKey,
                         IconId = handlerInfo.Attribute.IconId,
                         IsDefault = handlerInfo.Attribute.IsDefault,

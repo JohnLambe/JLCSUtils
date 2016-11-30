@@ -204,14 +204,14 @@ namespace JohnLambe.Util
         /// If s starts with <see cref="prefix"/>, it is removed.
         /// </summary>
         /// <param name="s"></param>
-        /// <param name="prefix"></param>
-        /// <param name="comparison"></param>
-        /// <returns></returns>
+        /// <param name="prefix">The prefix to be removed. If this is null, the original string is returned.</param>
+        /// <param name="comparison">How the prefix is compared to the string.</param>
+        /// <returns>The string after removing the prefix.</returns>
         public static string RemovePrefix(this string s, string prefix, StringComparison comparison = StringComparison.InvariantCulture)
         {
             if (s == null)
                 return null;
-            if (s.StartsWith(prefix, comparison))
+            if (prefix != null && s.StartsWith(prefix, comparison))
                 return s.Substring(prefix.Length);
             else
                 return s;
@@ -221,14 +221,14 @@ namespace JohnLambe.Util
         /// If s ends with <see cref="suffix"/>, it is removed.
         /// </summary>
         /// <param name="s"></param>
-        /// <param name="suffix"></param>
+        /// <param name="suffix">The suffix to be removed. If this is null, the original string is returned.</param>
         /// <param name="comparison"></param>
         /// <returns></returns>
         public static string RemoveSuffix(this string s, string suffix, StringComparison comparison = StringComparison.InvariantCulture)
         {
             if (s == null)
                 return null;
-            if (s.EndsWith(suffix, comparison))
+            if (suffix != null && s.EndsWith(suffix, comparison))
                 return s.Substring(0, s.Length - suffix.Length);
             else
                 return s;

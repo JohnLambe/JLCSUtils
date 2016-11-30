@@ -283,7 +283,6 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         public virtual PropertyInfo Property { get; }
 
-
         #region ICustomAttributeProvider
         // Delegates to Property.
 

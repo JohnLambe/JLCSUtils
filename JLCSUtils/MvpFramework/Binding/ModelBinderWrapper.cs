@@ -107,6 +107,16 @@ namespace MvpFramework.Binding
         public ModelPropertyBinder(object target, string propertyName) : base(target, propertyName)
         {
         }
+
+        /// <summary>
+        /// The data type of the property.
+        /// May be null if the provider of the data does not support it (it may not be a real object property).
+        /// </summary>
+        public virtual Type PropertyType
+        {
+            get { return Property?.PropertyType; }
+        }
+
     }
 
 }
