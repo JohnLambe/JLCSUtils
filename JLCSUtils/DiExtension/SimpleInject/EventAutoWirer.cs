@@ -22,6 +22,13 @@ namespace DiExtension.SimpleInject
     {
     }
 
+    /// <summary>
+    /// Enables handling of auto-wired events in the attributed class.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public class HasAutoWiredEventHandlerAttribute : Attribute
+    {
+    }
 
     /// <summary>
     /// Automatically assigns event handlers (on classes identified by attributes)
@@ -29,10 +36,10 @@ namespace DiExtension.SimpleInject
     /// </summary>
     public class EventAutoWirer
     {
-        /// <summary>
-        /// The name of the method of the handler class that implements the event delegate.
-        /// </summary>
-        protected const string HandlerMethodName = "Execute";
+        // /// <summary>
+        // /// The name of the method of the handler class that implements the event delegate.
+        // /// </summary>
+        // protected const string HandlerMethodName = "Execute";
 
         public EventAutoWirer(Container container /*, IExtendedDiContext context*/)
         {
@@ -42,7 +49,7 @@ namespace DiExtension.SimpleInject
                 new Action<IHasAutoWiredEvent>(obj => AutoWireEvents(obj));
             container.RegisterInitializer<IHasAutoWiredEvent>(action);
 
-            _handlerMappings = new CachedSimpleLookup<Type, IEnumerable<Type>>( t => FindHandlersForDelegate(t) );
+            _handlerMappings = new CachedSimpleLookup<Type, IEnumerable<MethodInfo>>( t => FindHandlersForDelegate(t) );
         }
 
         /// <summary>
@@ -74,14 +81,19 @@ namespace DiExtension.SimpleInject
                             + " (No handlers found)");
                     }
 
-                    foreach (Type handlerType in handlers)
+                    foreach (MethodInfo handler in handlers)
                     {
-                        var handlerInstance = Container.GetInstance(handlerType);  // get instance of handler class
+                        Delegate handlerDelegate;   // the delegate that fires the handler
 
-                        //TODO: make parameter type list for handler (from delegate's parameters), so that class can implement multiple delegates.
-                        // Type[] args =
-
-                        var handlerDelegate = Delegate.CreateDelegate(eventType, handlerInstance, HandlerMethodName);  // make a delegate that calls the method
+                        if (handler.IsStatic)    // if the handler is a static method
+                        {
+                            handlerDelegate = Delegate.CreateDelegate(eventType, handler);  // make a delegate that calls the method
+                        }
+                        else
+                        {
+                            var handlerInstance = Container.GetInstance(handler.DeclaringType);  // get instance of handler class
+                            handlerDelegate = Delegate.CreateDelegate(eventType, handlerInstance, handler);  // make a delegate that calls the method
+                        }
 
                         evt.AddEventHandler(obj, handlerDelegate);     // add it to the event of the object being created
                     }
@@ -94,7 +106,7 @@ namespace DiExtension.SimpleInject
         /// </summary>
         /// <param name="eventType"></param>
         /// <returns></returns>
-        protected virtual IEnumerable<Type> GetHandlersForDelegate(Type eventType)
+        protected virtual IEnumerable<MethodInfo> GetHandlersForDelegate(Type eventType)
         {
             return _handlerMappings[eventType];
         }
@@ -104,16 +116,25 @@ namespace DiExtension.SimpleInject
         /// </summary>
         /// <param name="eventType">The delegate type for which to find handlers.</param>
         /// <returns></returns>
-        protected virtual IEnumerable<Type> FindHandlersForDelegate(Type eventType)
+        protected virtual IEnumerable<MethodInfo> FindHandlersForDelegate(Type eventType)
         {
-            IList<Type> handlersList = new List<Type>();
+            return Assemblies.SelectMany(assembly => assembly.GetTypes()           // all types in all assemblies
+                        .Where(type1 => !type1.IsAbstract && type1.IsDefined<HasAutoWiredEventHandlerAttribute>())
+                        .SelectMany(type2 => type2.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public).Where(method => method.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType))  // selected methods for each type
+                )
+                .OrderBy(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.Priority);
+/*
+            IList<MethodInfo> handlersList = new List<MethodInfo>();
             foreach (var assembly in Assemblies)
             {
                 handlersList.AddAll(
-                    assembly.GetTypes().Where(t => t.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType)
+                    assembly.GetTypes()
+                        
+                        .SelectMany(t => t.GetMethods().Where(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType))
                 );
             }
-            return handlersList.OrderBy(t => t.GetCustomAttribute<AutoEventHandlerAttribute>()?.Priority);
+            return handlersList.OrderBy(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.Priority);
+            */
         }
 
 
@@ -129,6 +150,6 @@ namespace DiExtension.SimpleInject
         /// <summary>
         /// Mapping from delegate type to a collection of handlers for it.
         /// </summary>
-        protected readonly ISimpleLookup<Type, IEnumerable<Type>> _handlerMappings;
+        protected readonly ISimpleLookup<Type, IEnumerable<MethodInfo>> _handlerMappings;
     }
 }

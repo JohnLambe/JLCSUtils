@@ -38,7 +38,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
 
             // Assert:
 
-            Assert.AreEqual("TestEventHandler2(1,a)\nTestEventHandler(1,a)\n", TestEventHandler.Log);
+            Assert.AreEqual("TestEventHandler2(1,a)\nTestEventHandler(1,a)\nStaticHandlerClass(1,a)\n", TestEventHandler.Log);
 
         }
 
@@ -60,32 +60,65 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
 
     }
 
-    [AutoEventHandler(typeof(TestDelegate))]
+    //[AutoEventHandler(typeof(TestDelegate))]
+    [HasAutoWiredEventHandler]
     public class TestEventHandler
     {
-        public void Execute(int param1, string param2)
+        [AutoEventHandler(typeof(TestDelegate))]
+        public void HandlerMethod(int param1, string param2)
         {
             Log = Log + "TestEventHandler(" + param1 + "," + param2
                 + ")\n";
         }
 
+        public void NonHandlerMethod()  // test that unattributed method is NOT fired
+        {
+        }
+
+        [AutoEventHandler(typeof(EventHandler))]
+        public void OtherEventHandler()  // test that this method is NOT fired
+        {
+        }
+
         public static string Log;  // Event handlers append to this
     }
 
-    [AutoEventHandler(typeof(TestDelegate),-100)]   // Low Priority value: This fires first
+    //[AutoEventHandler(typeof(TestDelegate),-100)]   // Low Priority value: This fires first
+    [HasAutoWiredEventHandler]
     public class TestEventHandler2
     {
+        [AutoEventHandler(typeof(TestDelegate), -100)]   // Low Priority value: This fires first
         public void Execute(int param1, string param2)
         {
             TestEventHandler.Log = TestEventHandler.Log + 
-                "TestEventHandler2(" + param1 + "," + param2
+                GetType().Name + "(" + param1 + "," + param2
                 + ")\n";
         }
     }
 
 
-    public class TestEventHandler2B : TestEventHandler2  // Not registered because the attribute is hot inherited
+    public class TestEventHandler2B : TestEventHandler2  // Not registered because the HasAutoWiredEventHandler attribute is hot inherited
     {
     }
+
+    [HasAutoWiredEventHandler]
+    public class TestEventHandler2C : TestEventHandler2  // Not registered because the HasAutoWiredEventHandler attribute is hot inherited
+    {
+    }
+
+
+    [HasAutoWiredEventHandler]
+    public class StaticHandlerClass
+    {
+        [AutoEventHandler(typeof(TestDelegate), 1000)]   // High Priority value: This fires last
+        public static void StaticHandler(int param1, string param2)
+        {
+            TestEventHandler.Log = TestEventHandler.Log +
+               "StaticHandlerClass(" + param1 + "," + param2
+                + ")\n";
+        }
+    }
+
+    //TODO: Test two handlers on same instance.
 
 }

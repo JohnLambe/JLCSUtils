@@ -22,7 +22,7 @@ namespace DiExtension.SimpleInject
     /// <summary>
     /// Registers a handler for an event.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public class AutoEventHandlerAttribute : Attribute
     {
         public AutoEventHandlerAttribute(Type eventType, int priority = 0)
