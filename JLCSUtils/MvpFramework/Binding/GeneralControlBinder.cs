@@ -47,13 +47,13 @@ namespace MvpFramework.Binding
 
                 Refresh();
 
-                if (modelBinder.CanWrite(_modelPropertyName))
+                if (modelBinder.GetProp(_modelPropertyName).CanWrite)
                     BoundControl.TextChanged += BoundControl_ValueChanged;
                 //modelBinder.BindProperty(_propertyName);
 
                 if (BoundControl is TextBox)
                 {
-                    var property = modelBinder.GetProperty(_modelPropertyName);
+                    var property = modelBinder.GetProp(_modelPropertyName).Property;
                     var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
                     if(attrib != null)
                         ((TextBox)BoundControl).MaxLength = attrib.Length;
@@ -81,8 +81,8 @@ namespace MvpFramework.Binding
                 EventEnabled = false;
                 try
                 {
-                    if (Model.CanRead(_modelPropertyName))
-                        _controlProperty.SetValue(BoundControl, Model.GetValue(_modelPropertyName));
+                    if (Model.GetProp(_modelPropertyName).CanRead)
+                        _controlProperty.SetValue(BoundControl, Model.GetProp(_modelPropertyName).Value);
                 }
                 finally
                 {
@@ -104,7 +104,7 @@ namespace MvpFramework.Binding
         protected virtual void BoundControl_ValueChanged(object sender, EventArgs e)
         {
             if(EventEnabled)
-                Model.SetValue(_modelPropertyName, _controlProperty.GetValue(BoundControl));
+                Model.GetProp(_modelPropertyName).Value = _controlProperty.GetValue(BoundControl);
         }
 
         /// <summary>

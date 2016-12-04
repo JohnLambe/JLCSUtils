@@ -8,6 +8,9 @@ using System.Diagnostics.Contracts;
 
 namespace JohnLambe.Util
 {
+    /// <summary>
+    /// Non-domain specific utilities for working with strings (including extension methods of System.String).
+    /// </summary>
     public static class StrUtils
     {
 
@@ -78,15 +81,61 @@ namespace JohnLambe.Util
             return sb.ToString();
         }
 
+        /// <summary>
+        /// If any of the parameters is null or "" or there are no parameters, "" is returned,
+        /// otherwise the concatentation of the strings is returned.
+        /// </summary>
+        /// <param name="parts"></param>
+        /// <returns></returns>
+        public static string BlankPropagate(params string[] parts)
+        {
+            int totalLength = 0;
+            if (parts.Length == 0)
+                return null;
+            foreach (string s in parts)
+            {
+                if (string.IsNullOrEmpty(s))
+                    return "";
+                totalLength += s.Length;
+            }
+            StringBuilder sb = new StringBuilder(totalLength);
+            sb.AppendArray(parts);
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Converts the object to a string, but returns "" is it is null.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        public static string ToNonNullString(object o)
+        {
+            return (o?.ToString()).NullToBlank();
+        }
+
         #endregion
 
         #region Concatenation
 
+        /// <summary>
+        /// Concatenates all strings in the enumerable, with a separator.
+        /// The separator is included even between blank parts.
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="parts"></param>
+        /// <returns></returns>
         public static string ConcatWithSeparatorIncludeBlanks(string separator, params string[] parts)
         {
             return ConcatWithSeparatorIncludeBlanks(separator, parts);
         }
 
+        /// <summary>
+        /// Concatenates all strings in the enumerable, with a separator.
+        /// The separator is included even between blank parts.
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="parts"></param>
+        /// <returns></returns>
         public static string ConcatWithSeparatorIncludeBlanks(string separator, IEnumerable<object> parts)
         {
             StringBuilder sb = new StringBuilder(TotalLength(separator.Length, parts));
@@ -113,6 +162,54 @@ namespace JohnLambe.Util
         public static string ConcatWithSeparator(string separator, params string[] parts)
         {
             return ConcatWithSeparatorIncludeBlanks(separator, parts.Where(p => !string.IsNullOrEmpty(p)));
+        }
+
+        public static string ConcatWithSeparatorsTrim(params object[] parts)
+        {
+            return ConcatWithSeparatorsTrimEnclosed(null, parts);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="parts"></param>
+        /// <returns></returns>
+        public static string ConcatWithSeparatorsTrimEnclosed(object leader, params object[] parts)
+        {
+            string[] partsString = new string[parts.Length];
+            int totalLength = 0;   // maximum total length
+            int index = 0;
+
+            // convert all to strings:
+            foreach(var p in parts)
+            {
+                partsString[index] = ToNonNullString(p);
+                if(index % 2 == 0)            // if not a separator or the trailer
+                    partsString[index] = partsString[index].Trim();
+                totalLength += partsString[index].Length;
+                index++;
+            }
+            leader = ToNonNullString(leader);
+            totalLength += ((string)leader).Length;
+
+            StringBuilder builder = new StringBuilder(totalLength);
+            for(index = 0; index < partsString.Length; index += 2)
+            {
+                if (!string.IsNullOrEmpty(partsString[index]))   // if this part is not blank
+                {
+                    if(builder.Length == 0)               // if this is the first non-blank one
+                        builder.Append(leader);           // add the leader (prefix) part
+                    builder.Append(partsString[index]);   // add this part
+                    if (builder.Length > 0 && !string.IsNullOrEmpty(partsString.ElementAtOrDefault(index + 2)))  // if result is not blank so far, and next part is not null or blank
+                    {
+                        builder.Append(partsString[index + 1]);  // add the separator
+                    }
+                }
+            }
+            if ((partsString.Length % 2) == 0 && builder.Length > 0)  // if even number of parts (then the last one is a suffix for the whole string), and not blank so far
+                builder.Append(partsString[partsString.Length-1]);    // add the suffix
+            return builder.ToString();
         }
 
         /// <summary>
@@ -236,10 +333,31 @@ namespace JohnLambe.Util
 
         #endregion
 
-        #region SplitToVars
+        /// <summary>
+        /// Equivalent to s.StartsWith("" + prefix).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException">If <paramref name="s"/> is null.</exception>
+        public static bool StartsWith(this string s, char prefix)
+        {
+            return s != "" && s[0] == prefix;
+        }
 
-        //TODO: Replace with one method with a params parameter.
-        // Option to put rest of string in last parameter.
+        /// <summary>
+        /// Equivalent to s.EndsWith("" + prefix).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException">If <paramref name="s"/> is null.</exception>
+        public static bool EndsWith(this string s, char prefix)
+        {
+            return s != "" && s[s.Length-1] == prefix;
+        }
+
+        #region SplitToVars
 
         /// <summary>
         /// Split a string into parts, separated by a given separator.
@@ -413,6 +531,8 @@ namespace JohnLambe.Util
 
         #endregion
 
+        #region Other splitting
+
         /// <summary>
         /// Split a string on a separator, returning the first part and setting the string the rest.
         /// Repeated calls can extract a series of parts, one at a time.
@@ -420,16 +540,87 @@ namespace JohnLambe.Util
         /// <param name="separator"></param>
         /// <param name="value">On entry: The string to be split.
         /// On exit: The remaining part of the string (after the separator). If nothing remains (i.e. there was no separator), this is null on exit.</param>
-        /// <returns>The part before the separator.</returns>
+        /// <returns>The part before the separator. null if <paramref name="value"/> is null.</returns>
         public static string SplitFirst(char separator, ref string value)
         {
-            string[] parts = value.Split(new char[] { separator }, 2);
+            if (value == null)
+                return null;
+            string[] parts = value.Split(new char[] { separator }, 2);     // split into two parts on the given separator
             if (parts.Length > 1)
-                value = parts[1];
-            else
+                value = parts[1];      // everything after first part
+            else                       // nothing remaining
                 value = null;
-            return parts[0];
+            return parts[0];           // return first part
         }
+
+        /// <summary>
+        /// Splits the string into two parts, at a specified character position.
+        /// The specified character is not included in either part.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="index"></param>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        public static void SplitOn(this string s, int index, out string first, out string second)
+        {
+            first = s.Substring(0, index);
+            second = s.Substring(index+1);
+        }
+
+        /// <summary>
+        /// Splits the string into two parts, at a specified character position.
+        /// The specified character is included in the second part.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="index"></param>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        public static void SplitAtInclusive(this string s, int index, out string first, out string second)
+        {
+            first = s.Substring(0, index);
+            second = s.Substring(index);
+        }
+
+        /// <summary>
+        /// Return the part of the string before the separator,
+        /// or the whole string if the separator is not present.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator. Undefined for null.</param>
+        /// <returns></returns>
+        public static string SplitBefore(this string s, string separator)
+        {
+            separator.ArgNotNull(nameof(separator));
+            if (s == null)
+                return null;
+            int splitPoint = s.IndexOf(separator);
+            if (splitPoint == -1)
+                return s;
+            else
+                return s.Substring(0, splitPoint);
+        }
+        //TODO: Define behavior for null `separator`
+
+        /// <summary>
+        /// Return the part of the string after the separator.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator">the separator. Undefined for null.</param>
+        /// <returns>The part of the string after the separator,
+        /// or null if the separator is not present.</returns>
+        public static string SplitAfter(this string s, string separator)
+        {
+            separator.ArgNotNull(nameof(separator));
+            if (s == null)
+                return null;
+            int splitPoint = s.IndexOf(separator);
+            if (splitPoint == -1)
+                return null;
+            else
+                return s.Substring(splitPoint + separator.Length);
+        }
+
+        #endregion
 
         #region Quoting
 
@@ -522,6 +713,12 @@ namespace JohnLambe.Util
         /// <param name="defaultValue">Value to return if the string is null or <see cref="index"/> is out of range.</param>
         /// <returns></returns>
         public static char CharAt(this string s, int index, char defaultValue = '\0')
+        {
+            return CharAtNullable(s, index, defaultValue).Value;
+                // this won't be null because we gave a non-null defaultValue.
+        }
+
+        public static char? CharAtNullable(this string s, int index, char? defaultValue = null)
         {
             if (s == null || index >= s.Length || index < 0)
                 return defaultValue;
@@ -663,46 +860,8 @@ namespace JohnLambe.Util
         #endregion
 
         /// <summary>
-        /// Return the part of the string before the separator,
-        /// or the whole string if the separator is not present.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="separator">the separator. Undefined for null.</param>
-        /// <returns></returns>
-        public static string SplitBefore(this string s, string separator)
-        {
-            separator.ArgNotNull(nameof(separator));
-            if (s == null)
-                return null;
-            int splitPoint = s.IndexOf(separator);
-            if (splitPoint == -1)
-                return s;
-            else
-                return s.Substring(0, splitPoint);
-        }
-        //TODO: Define behavior for null `separator`
-
-        /// <summary>
-        /// Return the part of the string after the separator.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="separator">the separator. Undefined for null.</param>
-        /// <returns>The part of the string after the separator,
-        /// or null if the separator is not present.</returns>
-        public static string SplitAfter(this string s, string separator)
-        {
-            separator.ArgNotNull(nameof(separator));
-            if (s == null)
-                return null;
-            int splitPoint = s.IndexOf(separator);
-            if (splitPoint == -1)
-                return null;
-            else
-                return s.Substring(splitPoint + separator.Length);
-        }
-
-        /// <summary>
         /// Replace a section of a string with another string (which may be a different length).
+        /// <para>Similar to SQL 'stuff' function.</para>
         /// </summary>
         /// <param name="s"></param>
         /// <param name="start"></param>
@@ -715,11 +874,29 @@ namespace JohnLambe.Util
             return s.Substring(0, start) + newValue.NullToBlank() + s.Substring(start + length);
         }
 
-        /*
+        /// <summary>
+        /// Replace a section of a string between the given delimieters with a given string.
+        /// The delimiters themselves are not replaced.
+        /// If either of the delimiters are not found, the original string is returned.
+        /// </summary>
+        /// <param name="s">the original string.</param>
+        /// <param name="start">the starting delimiter (the string to be replaced starts immediately after the first occurrence of this).
+        /// null for the start of the string.</param>
+        /// <param name="end">the ending delimiter. The first occurrence of this after the end of <paramref name="start"/> marks the end of the substring to be replaced.
+        /// null for the end of the string.</param>
+        /// <param name="newValue">The value to replace with.</param>
+        /// <returns>The modified string after replacing the substring.</returns>
         public static string ReplaceSubstringBetween(this string s, string start, string end, string newValue)
         {
+            int startIndex = start == null ? 0 : s.IndexOf(start);
+            int startLength = start == null ? 0 : start.Length;
+            int endIndex = end == null ? s.Length : s.IndexOf(end, startIndex + startLength);
+
+            if (startIndex < 0 || endIndex < 0)
+                return s;
+            else
+                return ReplaceSubstring(s, startIndex + (start?.Length ?? 0), endIndex - startIndex - startLength, newValue);
         }
-        */
 
         /// <summary>
         /// Replace a section of a string with another string of the same length.

@@ -125,6 +125,7 @@
     <Compile Include="TimeUtilities\TimeTest.cs" />
     <Compile Include="TimeUtilities\TimeUtilsTest.cs" />
     <Compile Include="Types\IDTest.cs" />
+    <Compile Include="Types\PersonName.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">

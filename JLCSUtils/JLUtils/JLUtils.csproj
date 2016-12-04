@@ -41,10 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ArrayUtils.cs" />
     <Compile Include="Collections\EnumeratorUtils.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
+    <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
     <Compile Include="Misc\LoggingAttribute.cs" />
     <Compile Include="Misc\ValidationAttribute.cs" />
@@ -102,6 +104,8 @@
     <Compile Include="Text\FormatCollection.cs" />
     <Compile Include="Threading\ThreadBase.cs" />
     <Compile Include="Threading\ThreadSafe.cs" />
+    <Compile Include="Types\PersonName.cs" />
+    <Compile Include="Types\PhoneNumber.cs" />
     <Compile Include="Var.cs" />
   </ItemGroup>
   <ItemGroup />

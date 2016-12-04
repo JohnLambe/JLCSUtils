@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Text;
-
 namespace JohnLambe.Util.Text
 {/*
     public static class EncoderExtension

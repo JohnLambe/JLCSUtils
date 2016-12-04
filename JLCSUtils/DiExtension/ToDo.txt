@@ -11,11 +11,12 @@ Specify whether to cache for each registration.
 Resolve by type, then inject only a property value of the resolved instance: ?
 	e.g.	[Inject(typeof(User),"Name")]  // inject the user name (User.Name)
 
-More automatic registration.
-
 ChainableContext
 
 *Constructor Parameter Injection with [Inject]
+
+More automatic registration.
+
 
 Locating Presenter for Model:
 	- Attribute on presenter to indicate supported Model types.

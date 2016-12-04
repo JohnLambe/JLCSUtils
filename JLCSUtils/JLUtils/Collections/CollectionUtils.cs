@@ -30,5 +30,6 @@ namespace JohnLambe.Util.Collections
             }
             return collection;
         }
+
     }
 }
