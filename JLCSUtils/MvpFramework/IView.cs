@@ -13,7 +13,7 @@ namespace MvpFramework
     /// <summary>
     /// Base interface for Views - the interface to the View from the Presenter.
     /// </summary>
-    // Note: Presenters reference only their own View. Any reference to other forms is through the Presenters of those forms.
+    // Note: Presenters reference only their own View. Any reference to other Views is through the Presenters of those Views.
     //  Models cannot reference Views.
     public interface IView
     {

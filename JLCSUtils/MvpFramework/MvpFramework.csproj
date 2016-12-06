@@ -48,6 +48,7 @@
     <Compile Include="Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
+    <Compile Include="GridAttributes.cs" />
     <Compile Include="IResolverExtension.cs" />
     <Compile Include="IWindowPresenter.cs" />
     <Compile Include="IWindowView.cs" />
