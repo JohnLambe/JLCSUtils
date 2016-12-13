@@ -126,9 +126,8 @@ namespace MvpFramework
         public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model = default(TModel))
             where TPresenter : class
         {
-            //TODO
-
-            Type presenterType = ResolvePresenterType(presenterActionType, modelType);
+            Type presenterType = ResolvePresenterTypeForAction(presenterActionType, modelType)
+                ?? ResolvePresenterType(presenterActionType, modelType);
             if (presenterType != null)
                 return GetInstance<TPresenter>(presenterType);
 
@@ -190,6 +189,40 @@ namespace MvpFramework
 
             throw new MvpResolverException("Resolution failed for Presenter type: " + presenterInterface.FullName + ", " + modelType?.FullName);
         }
+
+        public virtual Type ResolvePresenterTypeForAction(Type actionInterface, Type modelType)
+        {
+            // Initial inefficient implementation.
+            //TODO: Does not currently support multiple PresenterForActionAttributes on the same type.
+            //      Does not currently recognise a presenter that handles a superclass (or other type is assignable from) the target one.
+            //TODO: Cache mappings.
+
+            if (Assemblies == null)
+                return null;
+/*
+            var a1 = Assemblies.SelectMany(a => a.GetTypes())
+                .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() });
+            var b = a1
+                .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType);
+            var c = b
+                .Select(at1 => at1.DeclaringType)
+                .FirstOrDefault()
+//                ?.DeclaringType;
+;
+*/
+            return Assemblies.SelectMany(a => a.GetTypes())
+                .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() })
+                .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType)
+                .Select(at1 => at1.DeclaringType)
+                .FirstOrDefault()
+//                ?.DeclaringType;
+            ;
+        }
+
+        /// <summary>
+        /// Assemblies to scan for resolving by Action / Model.
+        /// </summary>
+        public virtual Assembly[] Assemblies { get; set; }
 
         /*
         /// <summary>
@@ -453,6 +486,14 @@ namespace MvpFramework
         }
 
         protected readonly IDiResolver Context;
+    }
+
+
+    public class AttributeAndType<T>
+        where T : Attribute
+    {
+        public Type DeclaringType;
+        public T Attribute;
     }
 
 }

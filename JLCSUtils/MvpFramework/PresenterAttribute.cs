@@ -15,17 +15,35 @@ namespace MvpFramework
 
     }
 
+    /// <summary>
+    /// Flags a Presenter for automatic registration with the DI system.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class PresenterAttribute : MvpAttribute
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
 //        public Type ViewInterface { get; set; }
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    public class PresenterForActionAttribute : MvpAttribute
+    {
+        public PresenterForActionAttribute(Type forModel, Type forAction)
+        {
+            ForAction = forAction;
+            ForModel = forModel;
+        }
 
+        //        public Type ViewInterface { get; set; }
+
+        public Type ForModel { get; set; }
+
+        public Type ForAction { get; set; }
+    }
+
+
+    /// <summary>
+    /// Flags a View for automatic registration with the DI system.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ViewAttribute : MvpAttribute
     {

@@ -35,7 +35,7 @@ namespace MvpFramework.Binding
 
         public string DisplayName { get; set; }
         public KeyboardKey HotKey { get; set; }  
-        //TODO: AcceleratorChar ?  Instead of HotKey ?
+        public char AcceleratorChar { get; set; }
         public string IconId { get; set; }
         public bool IsDefault { get; set; }
     }
