@@ -129,8 +129,8 @@ namespace MvpFramework
             Type presenterType = /*ResolvePresenterTypeForAction(presenterActionType, modelType)
                 ?? */ ResolvePresenterType(presenterActionType, modelType);
             if (presenterType != null)
-                return CreatePresenter<TPresenter,TModel>(presenterType,model);
-//                return GetInstance<TPresenter>(presenterType);
+                return CreatePresenter<TPresenter, TModel>(presenterType, model);
+            //                return GetInstance<TPresenter>(presenterType);
 
             throw new MvpResolverException("Resolution failed for Model: " + modelType.FullName);
 
@@ -150,7 +150,7 @@ namespace MvpFramework
         /// <param name="presenterType"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        protected virtual TPresenter CreatePresenter<TPresenter,TModel>(Type presenterType, TModel model)
+        protected virtual TPresenter CreatePresenter<TPresenter, TModel>(Type presenterType, TModel model)
             where TPresenter : class, IPresenter
         {
             return GetInstance<TPresenter>(presenterType);
@@ -177,15 +177,15 @@ namespace MvpFramework
 
                 // form components of the conventional name:
                 string actionName = presenterInterface.Name.RemovePrefix(InterfacePrefix).RemoveSuffix(PresenterSuffix);
-                    // name describing the action of the required presenter, e.g. a presenter action interface of 'IViewDetailPresenter' would yield an action of "ViewDetail".
+                // name describing the action of the required presenter, e.g. a presenter action interface of 'IViewDetailPresenter' would yield an action of "ViewDetail".
                 string modelName = modelType.Name.RemoveSuffix(ModelSuffix);
-                    // name describing the model that this presenter acts on. e.g. a class called 'ArticleModel' or 'Article' would yield a model name of "Article".
-                    //TODO: attribute on model to override modelName
+                // name describing the model that this presenter acts on. e.g. a class called 'ArticleModel' or 'Article' would yield a model name of "Article".
+                //TODO: attribute on model to override modelName
                 string targetNamespace = presenterInterface.Namespace;  //TODO
 
                 // form the conventional name for the presenter interface:
                 string presenterInterfaceName = targetNamespace + "." + InterfacePrefix + actionName + modelName + PresenterSuffix;
-                    // I{Action}{Model}Presenter
+                // I{Action}{Model}Presenter
                 Type resolvedPresenterInterface = GetTypeByName(presenterInterfaceName, presenterInterface.Assembly);
                 if (resolvedPresenterInterface != null)                   // if an interface with this name exists
                 {
@@ -219,23 +219,23 @@ namespace MvpFramework
 
             if (Assemblies == null)
                 return null;
-/*
-            var a1 = Assemblies.SelectMany(a => a.GetTypes())
-                .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() });
-            var b = a1
-                .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType);
-            var c = b
-                .Select(at1 => at1.DeclaringType)
-                .FirstOrDefault()
-//                ?.DeclaringType;
-;
-*/
+            /*
+                        var a1 = Assemblies.SelectMany(a => a.GetTypes())
+                            .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() });
+                        var b = a1
+                            .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType);
+                        var c = b
+                            .Select(at1 => at1.DeclaringType)
+                            .FirstOrDefault()
+            //                ?.DeclaringType;
+            ;
+            */
             return Assemblies.SelectMany(a => a.GetTypes())
                 .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() })
                 .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType)
                 .Select(at1 => at1.DeclaringType)
                 .FirstOrDefault()
-//                ?.DeclaringType;
+            //                ?.DeclaringType;
             ;
         }
 
@@ -311,14 +311,14 @@ namespace MvpFramework
         /// <param name="presenterType"></param>
         /// <returns></returns>
         public virtual TView GetViewForPresenterType<TView>(Type presenterType)
-            where TView: IView
+            where TView : IView
         {
             Contract.Requires(presenterType != null);
 
             // form the conventional simple name:
             string simpleName = presenterType.Name.RemoveSuffix(PresenterSuffix) + ViewSuffix;
-                // {namespace}.["I"]{Name}["Presenter"] -> ["I"]{Name}"View"
-                // e.g. "namespace.IEditContactPresenter"  -> "IEditContactView"
+            // {namespace}.["I"]{Name}["Presenter"] -> ["I"]{Name}"View"
+            // e.g. "namespace.IEditContactPresenter"  -> "IEditContactView"
             if (presenterType.IsInterface)
                 simpleName = simpleName.RemovePrefix(InterfacePrefix);   // remove leading "I" if it in an interface
 
@@ -343,7 +343,7 @@ namespace MvpFramework
             }
 
             // Get the View class name by naming convention:
-            string viewClassName = ChangePresenterNamespace(presenterType.Namespace,ViewNamespace) + "." + simpleName;
+            string viewClassName = ChangePresenterNamespace(presenterType.Namespace, ViewNamespace) + "." + simpleName;
             Type viewClassType = GetTypeByName(viewClassName, presenterType.Assembly);      // get the type for this name
             if (viewClassType != null)
             {
@@ -362,7 +362,7 @@ namespace MvpFramework
         /// <returns></returns>
         public virtual Type ResolveInterfaceForPresenterType(Type presenterType)
         {
-            return ResolveInterfaceForClass<IPresenter,PresenterAttribute>(presenterType);
+            return ResolveInterfaceForClass<IPresenter, PresenterAttribute>(presenterType);
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace MvpFramework
         /// <returns></returns>
         public virtual Type ResolveInterfaceForViewType(Type viewType)
         {
-            return ResolveInterfaceForClass<IView,ViewAttribute>(viewType);
+            return ResolveInterfaceForClass<IView, ViewAttribute>(viewType);
         }
 
         /// <summary>
@@ -383,12 +383,12 @@ namespace MvpFramework
         /// <typeparam name="TAttribute">An attribute that may be on the class, specifying the interface type.</typeparam>
         /// <param name="classType">A presenter or view class.</param>
         /// <returns>The presenter/view interface type.</returns>
-        protected virtual Type ResolveInterfaceForClass<TRequiredInterface,TAttribute>(Type classType)
+        protected virtual Type ResolveInterfaceForClass<TRequiredInterface, TAttribute>(Type classType)
                 where TAttribute : MvpAttribute
-                where TRequiredInterface: class
+                where TRequiredInterface : class
         {
             // look for attribute first:
-            Type resolvedInterface = classType.GetCustomAttribute<TAttribute>() ?. Interface;
+            Type resolvedInterface = classType.GetCustomAttribute<TAttribute>()?.Interface;
 
             /*
             var attribute = classType.GetCustomAttribute<TAttribute>();
@@ -409,9 +409,9 @@ namespace MvpFramework
                 string interfaceName = targetNamespace + "." + simpleName;
                 resolvedInterface = GetTypeByName(interfaceName, classType.Assembly);
 
-                if (resolvedInterface == null)    
+                if (resolvedInterface == null)
                 {
-                     targetNamespace = classType.Namespace + InterfaceSuffix;  // e.g. "namespace.View" => "namespace.ViewInterface"
+                    targetNamespace = classType.Namespace + InterfaceSuffix;  // e.g. "namespace.View" => "namespace.ViewInterface"
 
                     // form the conventional name for the interface:
                     interfaceName = targetNamespace + "." + simpleName;
@@ -472,13 +472,13 @@ namespace MvpFramework
         {
             // Make the generic factory type:
             Type factoryType = typeof(PresenterFactory<,>).MakeGenericType(presenterType, param.GetType());
-            
+
             // Get its constructor:
             var factoryConstructor = factoryType.GetConstructor(new Type[] { GetType(), typeof(IDiResolver) });
 
             // Invoke the constructor to get the factory:
-            var factory = factoryConstructor.Invoke( new object[] { this, Context } );
-            
+            var factory = factoryConstructor.Invoke(new object[] { this, Context });
+
             // Get the factory method:
             var createMethod = factoryType.GetMethod("Create", new Type[] { param.GetType() });
 
@@ -492,9 +492,9 @@ namespace MvpFramework
             {
                 return Context.GetInstance<T>(forType);
             }
-            catch(Exception /* ex*/)    //TODO: Filter exception type (currently depends on IDiResolver implementation)
+            catch (Exception /* ex*/)    //TODO: Filter exception type (currently depends on IDiResolver implementation)
             {   // could either have failed to resolve the type or to cast it to the required type
-//                Console.WriteLine(ex);
+                //                Console.WriteLine(ex);
                 return default(T);
             }
         }

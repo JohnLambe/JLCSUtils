@@ -177,7 +177,14 @@ namespace MvpFramework
                 //                if(parameter.ParameterType.IsAssignableFrom(typeof(TView)))
                 if (parameterIndex == 0)
                 {   // first parameter is always the View
-                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                    try
+                    {
+                        view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                    }
+                    catch (Exception)   //TODO: Exception type
+                    {
+                        view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                    }
                     //| Could provide parameters for context-based injection of View.
                     UiManager.AfterCreateView(ref view);
                     args[parameterIndex] = view;
@@ -195,12 +202,12 @@ namespace MvpFramework
                     }
 
                     if (createParam.Value)
-                    {   // `Create` method parameters (possibly including the Model):
+                    {   // Create method parameters (possibly including the Model)
                         args[parameterIndex] = param[createMethodParameterIndex];
                         createMethodParameterIndex++;   // next parameter
                     }
                     else
-                    {   // other parameters are injected from the DI container:
+                    {   // other parameters are injected from the DI container
                         args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
                     }
                 }
@@ -282,14 +289,14 @@ namespace MvpFramework
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
     /// <typeparam name="TParam1"></typeparam>
-    public class KnownPresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter,TParam1>,
+    public class KnownPresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter, TParam1>,
             IPresenterFactory<TPresenter, TParam1>
         where TPresenter : IPresenter
     {
         public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
             IResolverExtension uiManager,
             Type targetClass
-            ) : base(resolver,diResolver,uiManager)
+            ) : base(resolver, diResolver, uiManager)
         {
             this.TargetClass = targetClass;
         }
