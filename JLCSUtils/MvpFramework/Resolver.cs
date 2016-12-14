@@ -108,7 +108,7 @@ namespace MvpFramework
         /// <param name="model"></param>
         /// <returns></returns>
         public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(TModel model)
-            where TPresenter : class
+            where TPresenter : class, IPresenter
         {
             return GetPresenterForModel<TPresenter, TModel>(typeof(TPresenter), typeof(TModel), model);
         }
@@ -124,12 +124,13 @@ namespace MvpFramework
         /// <param name="model">The model instance (must be assignable to <paramref name="modelType"/>).</param>
         /// <returns></returns>
         public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model = default(TModel))
-            where TPresenter : class
+            where TPresenter : class, IPresenter
         {
-            Type presenterType = ResolvePresenterTypeForAction(presenterActionType, modelType)
-                ?? ResolvePresenterType(presenterActionType, modelType);
+            Type presenterType = /*ResolvePresenterTypeForAction(presenterActionType, modelType)
+                ?? */ ResolvePresenterType(presenterActionType, modelType);
             if (presenterType != null)
-                return GetInstance<TPresenter>(presenterType);
+                return CreatePresenter<TPresenter,TModel>(presenterType,model);
+//                return GetInstance<TPresenter>(presenterType);
 
             throw new MvpResolverException("Resolution failed for Model: " + modelType.FullName);
 
@@ -142,6 +143,21 @@ namespace MvpFramework
         }
 
         /// <summary>
+        /// Create a Presenter of a known type.
+        /// </summary>
+        /// <typeparam name="TPresenter"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="presenterType"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        protected virtual TPresenter CreatePresenter<TPresenter,TModel>(Type presenterType, TModel model)
+            where TPresenter : class, IPresenter
+        {
+            return GetInstance<TPresenter>(presenterType);
+            //TODO: model ?
+        }
+
+        /// <summary>
         /// Get the concrete Presenter type for a given Presenter interface, and optionally, Model type.
         /// </summary>
         /// <param name="presenterInterface">The Presenter interface to be resolved.
@@ -151,6 +167,10 @@ namespace MvpFramework
         public virtual Type ResolvePresenterType(Type presenterInterface, Type modelType = null)
         {
             Contract.Requires(presenterInterface != null);
+
+            var resolvedPresenterType = ResolvePresenterTypeForAction(presenterInterface, modelType);
+            if (resolvedPresenterType != null)
+                return resolvedPresenterType;
 
             if (modelType != null)
             {   // try to find an interface or class based on the names of the interface and the model:
@@ -183,7 +203,7 @@ namespace MvpFramework
             }
 
             // if no model type given, or if the above (using the model type failed), just use DI to get the type for the given Presenter interface:
-            var resolvedPresenterType = ResolveType(presenterInterface);
+            resolvedPresenterType = ResolveType(presenterInterface);
             if (resolvedPresenterType != null)
                 return resolvedPresenterType;
 
@@ -483,6 +503,15 @@ namespace MvpFramework
         {
             return Context.ResolveType(serviceType);
             //TODO null if not resolved
+        }
+
+        protected override TPresenter CreatePresenter<TPresenter, TModel>(Type presenterType, TModel model)
+        {
+            // Create a factory to create the required Presenter type:
+            IPresenterFactory<TPresenter, TModel> factory = new KnownPresenterFactory<TPresenter, TModel>(this, Context, GetInstance<IResolverExtension>(typeof(IResolverExtension)), presenterType);
+
+            // Create the Presenter:
+            return factory.Create(model);
         }
 
         protected readonly IDiResolver Context;

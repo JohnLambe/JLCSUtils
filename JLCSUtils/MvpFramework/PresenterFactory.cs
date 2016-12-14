@@ -103,7 +103,6 @@ namespace MvpFramework
     {
         public PresenterFactory(MvpResolver resolver, IDiResolver diResolver,
             IResolverExtension uiManager = null
-            /*, Type targetClass*/
             )
         // To remove service locators:
         //   MvpResolver:
@@ -126,11 +125,9 @@ namespace MvpFramework
         //     We could move the work of actually populating the parameters to the DI system:
         //       Instead of calling GetInstance and BuildUp, we would call a single method, providing the View, and the Model and/or other parameters.
         {
-            //            this.Navigator = navigator;
             this.DiResolver = diResolver;
             this.Resolver = resolver;
             this.UiManager = uiManager ?? new NullUiManager();
-            //this.TargetClass = targetClass;
         }
 
         protected virtual void Init()
@@ -140,7 +137,8 @@ namespace MvpFramework
             {
                 try
                 {
-                    this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter));
+                    if (TargetClass == null)              // if target class is not already known (it can be assigned by a subclass)
+                        TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter));
                     //                this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter), typeof(TParam1));
                     TargetConstructor = TargetClass.GetConstructors().First();
                     //TODO: if multiple constructors, choose one.
@@ -197,12 +195,12 @@ namespace MvpFramework
                     }
 
                     if (createParam.Value)
-                    {   // Create method parameters (possibly including the Model)
+                    {   // `Create` method parameters (possibly including the Model):
                         args[parameterIndex] = param[createMethodParameterIndex];
                         createMethodParameterIndex++;   // next parameter
                     }
                     else
-                    {   // other parameters are injected from the DI container
+                    {   // other parameters are injected from the DI container:
                         args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
                     }
                 }
@@ -248,14 +246,16 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// The type of the Presenter created by this factorys.
+        /// The type of the Presenter created by this factory.
+        /// This must not be null if <see cref="TargetConstructor"/> is not null.
         /// </summary>
-        protected Type TargetClass { get; private set; }
+        protected virtual Type TargetClass { get; set; }
 
         /// <summary>
-        /// The constructor of `TargetClass` to be used.
+        /// The constructor of <see cref="TargetClass"/> to be used.
+        /// Must be null if <see cref="TargetClass"/> is null.
         /// </summary>
-        protected ConstructorInfo TargetConstructor { get; private set; }
+        protected virtual ConstructorInfo TargetConstructor { get; set; }
 
         /// <summary>
         /// Interface to the dependency injection container.
@@ -274,6 +274,25 @@ namespace MvpFramework
         /// Non null. May be a null object.
         /// </summary>
         protected readonly IResolverExtension UiManager;
+    }
+
+
+    /// <summary>
+    /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
+    /// </summary>
+    /// <typeparam name="TPresenter"></typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    public class KnownPresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter,TParam1>,
+            IPresenterFactory<TPresenter, TParam1>
+        where TPresenter : IPresenter
+    {
+        public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
+            IResolverExtension uiManager,
+            Type targetClass
+            ) : base(resolver,diResolver,uiManager)
+        {
+            this.TargetClass = targetClass;
+        }
     }
 
 
