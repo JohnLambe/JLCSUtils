@@ -8,10 +8,10 @@ namespace JohnLambe.Util.Reflection
 {
     public static class GenericTypeUtils
     {
-        const string GenericIndicator = "`";
+        public const string GenericIndicator = "`";
 
         /// <summary>
-        /// Looks for a type with the same name (including namespace) as the given one, with a different number of generic type parameters
+        /// Looks for an (open generic) type with the same name (including namespace) as the given one, with a different number of generic type parameters
         /// (in the same assembly).
         /// </summary>
         /// <param name="baseType"></param>
@@ -27,6 +27,23 @@ namespace JohnLambe.Util.Reflection
             return baseType.Assembly.GetType(typeName)
                 .NotNull("Generic type not found: " + typeName);
             //TODO: Exception type
+        }
+
+        /// <summary>
+        /// Return a (closed) generic type with the same name as the given one,
+        /// but with the given generic type arguments.
+        /// There can be a different number of type arguments given to what the given type has.
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <param name="genericParameters">The new generic parameters. If an empty list is given, a non-generic type is returned.</param>
+        /// <returns></returns>
+        public static Type ChangeGenericParameters(Type baseType, params Type[] genericParameters)
+        {
+            var openGenericType = ChangeGenericParameterCount(baseType, genericParameters.Length);
+            if (genericParameters.Length == 0)
+                return openGenericType;            // in this case, it is non-generic
+            else
+                return openGenericType.MakeGenericType(genericParameters);
         }
     }
 }

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AutoEventAttributes.cs" />
     <Compile Include="Attributes\InjectAttribute.cs" />
     <Compile Include="AutoFactory\AutoFactory.cs" />
     <Compile Include="AutoFactory\AutoFactoryAttribute.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="IDiContext.cs" />
     <Compile Include="IDiResolver.cs" />
     <Compile Include="IExtendedDiContext.cs" />
-    <Compile Include="SimpleInject\AutoEventHandler.cs" />
+    <Compile Include="Attributes\AutoEventHandlerAttribute.cs" />
     <Compile Include="SimpleInject\ChainableContext.cs" />
     <Compile Include="SimpleInject\ConstructorInjectionBehavior.cs" />
     <Compile Include="SimpleInject\ConstructorResolutionBehavior.cs" />

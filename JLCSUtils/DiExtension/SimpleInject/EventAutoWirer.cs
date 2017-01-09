@@ -16,23 +16,13 @@ using DiExtension.Attributes;
 namespace DiExtension.SimpleInject
 {
     /// <summary>
-    /// Tags a class that can have auto-wired events.
-    /// </summary>
-    public interface IHasAutoWiredEvent
-    {
-    }
-
-    /// <summary>
-    /// Enables handling of auto-wired events in the attributed class.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class HasAutoWiredEventHandlerAttribute : Attribute
-    {
-    }
-
-    /// <summary>
     /// Automatically assigns event handlers (on classes identified by attributes)
     /// to events (identified by attributes) on objects created by the DI container.
+    /// <para>
+    /// The handler class must have the attribute <see cref="IHasAutoWiredEvent"/>, and have a method
+    /// with the <see cref="AutoEventHandlerAttribute"/> attribute to handle the event.
+    /// Instances of handler classes are resolved from the DI container in the usual way (so it determines their lifecycle).
+    /// </para>
     /// </summary>
     public class EventAutoWirer
     {
@@ -102,7 +92,7 @@ namespace DiExtension.SimpleInject
         }
 
         /// <summary>
-        /// Get the handler classes for a given delegate type.
+        /// Get the handler methods for a given delegate type.
         /// </summary>
         /// <param name="eventType"></param>
         /// <returns></returns>

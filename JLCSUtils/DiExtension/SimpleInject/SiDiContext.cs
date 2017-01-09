@@ -56,9 +56,18 @@ namespace DiExtension.SimpleInject
 
         public virtual T BuildUp<T>(T target)
         {
-            // From SI documentation:
-            InstanceProducer producer =
-                Container.GetRegistration(target.GetType(), throwOnFailure: true);
+            InstanceProducer producer;
+            try
+            {
+                // From SI documentation:
+                producer = Container.GetRegistration(target.GetType(), throwOnFailure: true);
+            }
+            catch (ActivationException)
+            {
+                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.ServiceType)).First();
+//                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.Registration.ImplementationType)).First();
+            }
+
             Registration registration = producer.Registration;
             registration.InitializeInstance(target);
 

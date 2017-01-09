@@ -6,7 +6,7 @@ namespace DiExtension.Attributes
     /// Attribute to indicate that a property may be injected, or to provide more information about how 
     /// something (including constructor parameters) is injected.
     /// <para>
-    /// Injecting a field is not supported. (And public fields are not recommended.)
+    /// Injecting a field is not supported (and public fields are not recommended).
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Parameter | AttributeTargets.Constructor,
@@ -27,6 +27,15 @@ namespace DiExtension.Attributes
         }
 
         /// <summary>
+        /// If false, this attribute and any other <see cref="InjectAttribute"/> attributes on the same item
+        /// are ignored.
+        /// This can be used to override (and disable) an attribute on the overridden member in a base class.
+        /// </summary>
+        //| Use of this (set to false) could arguably be considered a violation of the Liskov Substitution Principle. Maybe shouldn't be supported.
+        //| The same could be said of allowing overriding at all.
+        public virtual bool Enabled { get; set; } = true;
+
+        /// <summary>
         /// Name/key of the value to be injected in the DI context.
         /// <para>
         /// Iff <see cref="CodeName"/>, the name of the item (property or parameter) is used.
@@ -37,7 +46,7 @@ namespace DiExtension.Attributes
         //| The default behaviour is to resolve by type (principle of least surprise).
         //| It might be useful to make the default to resolve by the member name when the type is a primitive,
         //| but handling primitives differently could be counter-intuitive - it would be easy for a developer to
-        //| think that that is the default for everything.
+        //| think that that is the default behavior for everything.
         public virtual string Key { get; set; }
 
         /// <summary>
@@ -59,13 +68,12 @@ namespace DiExtension.Attributes
         /// </summary>
         public virtual bool ByType { get; set; } = true;
 
+        /*
         /// <summary>
-        /// If false, this attribute and any other <see cref="InjectAttribute"/> attributes on the same item
-        /// are ignored.
-        /// This can be used to override an attribute on base class.
+        /// Iff false, a different instance is used each time.
         /// </summary>
-        //| Use of this (set to false) could arguably be considered a violation of the Liskov Substitution Principle. Maybe shouldn't be supported.
-        //| The same could be said of allowing overriding at all.
-        public virtual bool Enabled { get; set; } = true;
+        [Obsolete("Not implemented yet")]
+        public virtual bool Shared { get; set; } = true;
+        */
     }
 }

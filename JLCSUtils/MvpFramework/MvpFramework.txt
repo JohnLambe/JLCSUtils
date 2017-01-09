@@ -4,14 +4,15 @@ Each module of a system has its own namespace (under the system's namespace), wi
   View
   ViewInterface (OR could be called "Common" OR items that would go here could just be in the module's namespace): The interface of the View and types related to the View shared between View and Presenter.
   Presenter
+  PresenterInterface (optional) ?
   Model
 Anything else in the module's namespace can be referenced by all of these namespaces.
 
 Access Rules (to prevent MVP violations):
   Model (anything in a 'Model' namespace) cannot reference View or Presenter (namespaces).
-  Presesnter can't reference View (but references ViewInterface).
+  Presenter can't reference View (but references ViewInterface).
   Model can't reference UI system (WinForms in this case).
-  Maybe: Presenter can't reference UI system (WinForms in this case).
+  Maybe: Presenter can't directly reference UI system (WinForms in this case).
   Only designated namespaces (ORM framework and specified custom code (probably a library)) can directly access the database system.
 
 Automated enforcement:

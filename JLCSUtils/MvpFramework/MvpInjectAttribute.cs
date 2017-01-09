@@ -11,4 +11,9 @@ namespace MvpFramework
     {
         
     }
+
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    public class MvpParamAttribute : Attribute
+    {
+    }
 }

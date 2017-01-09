@@ -40,6 +40,10 @@ namespace MvpFramework
             this._diContext = diContext;
         }
 
+        /// <summary>
+        /// Scan a list of assemblies and register types/instances.
+        /// </summary>
+        /// <param name="assemblies">The list of assemblies to scan. If empty, the calling assembly is scanned.</param>
         public virtual void ScanAssemblies(params Assembly[] assemblies)
         {
             if (assemblies.Length == 0)
@@ -71,26 +75,33 @@ namespace MvpFramework
                     var factoryInterfaceType = typeof(IPresenterFactory<>).MakeGenericType(presenterInterface);
 
 //                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
-/*TODO
+/*TODO*/
                     var constructor = GetConstructor(presenter);
                     IList<Type> argTypes = new List<Type>();
+                    argTypes.Add(presenterInterface);                   // first argument is always the returned presenter type
                     foreach(var arg in constructor.GetParameters())
                     {
-                        if(!arg.HasCustomAttribute<InjectAttribute>())   // if not injected by DI
+//                        if(!arg.IsDefined<InjectAttribute>())   // if not injected by DI
+                        if(arg.IsDefined<MvpParamAttribute>())
                         {
                             argTypes.Add(arg.ParameterType);
                         }
                     }
-*/
 
+                    var argTypesArray = argTypes.ToArray();
+                    factoryInterfaceType = GenericTypeUtils.ChangeGenericParameters(typeof(IPresenterFactory<>), argTypesArray);
+                    RegisterType(factoryInterfaceType, GenericTypeUtils.ChangeGenericParameters(typeof(PresenterFactory<>), argTypesArray));
+
+                    /*
                     //TODO: Determine Model or Parameters:
-                    Console.WriteLine(presenter.BaseType);
-                    Type modelType = presenter.BaseType.GenericTypeArguments[1];
+                                        Console.WriteLine(presenter.BaseType);
+                                        Type modelType = presenter.BaseType.GenericTypeArguments[1];
 
-                    RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, typeof(object)));
+                                        RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, typeof(object)));
 
-                    factoryInterfaceType = typeof(IPresenterFactory<,>).MakeGenericType(presenterInterface, modelType);
-                    RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, modelType));
+                                        factoryInterfaceType = typeof(IPresenterFactory<,>).MakeGenericType(presenterInterface, modelType);
+                                        RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, modelType));
+                    */
                 }
             }
         }

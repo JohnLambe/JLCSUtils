@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiExtension;
 using MvpFramework.Binding;
+using DiExtension.Attributes;
 
 namespace MvpFramework
 {
@@ -32,13 +33,17 @@ namespace MvpFramework
     /// </summary>
     /// <typeparam name="TView">The type of the View. Should be an interface.</typeparam>
     /// <typeparam name="TModel">The type of the Model.
-    /// Can be anything. Maybe not a primitive type?</typeparam>
+    /// Can be anything. Using primitive types is not recommended and may not be supported in future versions.</typeparam>
     public class PresenterBase<TView, TModel> : IPresenter
         where TView : IView
     {
 //        public static Type ModelType => typeof(TModel);
 
-        public PresenterBase(TView view, TModel model = default(TModel), IControlBinderFactory binderFactory = null)
+        public PresenterBase(
+            TView view,                                                   // resolved by MVP framework
+            TModel model = default(TModel),                               // from parameter when creating
+            [Inject] IControlBinderFactory binderFactory = null           // injected by DI
+            )
         {
             Contract.Requires(view != null);
             View = view;

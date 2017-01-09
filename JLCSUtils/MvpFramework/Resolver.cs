@@ -352,7 +352,7 @@ namespace MvpFramework
                     return result;
             }
 
-            throw new MvpResolverException("Resolution failed for Presenter: " + presenterType.FullName);
+            throw new MvpResolverException("Resolution failed on resolving View for Presenter: " + presenterType.FullName);
         }
 
         /// <summary>
