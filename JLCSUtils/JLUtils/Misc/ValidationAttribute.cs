@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Misc
 {
+    //TODO: Remove "Validation" from these names, except RegexValidationAttribute.
+
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)] //TODO: Review
     public class ValidationAttributeBase : Attribute
     {
@@ -35,6 +37,10 @@ namespace JohnLambe.Util.Misc
     {
     }
 
+    /// <summary>
+    /// The data item holds a password.
+    /// It is recommended that it is masked/hidden on entering in the user interface.
+    /// </summary>
     public class PasswordAttribute : StringValidationAttribute
     {
     }
@@ -65,6 +71,9 @@ namespace JohnLambe.Util.Misc
     {
     }
 
+    /// <summary>
+    /// A currecny amount, in the base unit of the currency (e.g. euro, dollar, yuan).
+    /// </summary>
     public class CurrencyValidationAttribute : NumberValidationAttribute
     {
     }

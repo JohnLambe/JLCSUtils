@@ -44,6 +44,7 @@
     <Compile Include="Collections\ArrayUtils.cs" />
     <Compile Include="Collections\EnumeratorUtils.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
+    <Compile Include="Db\IOrmDatabaseContext.cs" />
     <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />

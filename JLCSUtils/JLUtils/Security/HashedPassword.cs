@@ -315,6 +315,9 @@ namespace JohnLambe.Util.Security
     }
 
 
+    /// <summary>
+    /// Hashed password which is entered on a client of the machine that validates it.
+    /// </summary>
     public class RemoteHashedPassword : HashedPassword
     {
         /// <summary>

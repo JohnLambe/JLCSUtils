@@ -27,4 +27,4 @@ Change exceptions to ActivationException ?
 
 Event injection:
 	- On creating event handler object, add it to relevant event handlers on existing objects previously created by DI container.
-	- Shared handler (InjectAttribute.Shared)?: On injecting, look for existing handler (created by the same container), before creating a new one.
+	- Shared handler: On injecting, look for existing handler (created by the same container), before creating a new one.
