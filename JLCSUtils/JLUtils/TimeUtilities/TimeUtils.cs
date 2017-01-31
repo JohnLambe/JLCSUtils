@@ -140,5 +140,68 @@ namespace JohnLambe.Util.TimeUtilities
         }
 
         #endregion
+
+        #region End of Day/Month
+
+        /// <summary>
+        /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns>The end of the day of the date represented by the given value, or null if passed null.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime? EndOfDay(this DateTime? time)
+            => time == null ? (DateTime?)null
+                : EndOfDay(time);
+
+        /// <summary>
+        /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
+        /// </summary>
+        /// <param name="time">The end of the day of the date represented by the given value.</param>
+        /// <returns></returns>
+        public static DateTime EndOfDay(this DateTime time)
+            => time.Date + EndOfDayTime;
+
+        /// <summary>
+        /// Returns midnight on the first day of the month of the given date (or null if passed null).
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime? StartOfMonth(this DateTime? datetime)
+            => datetime == null ? (DateTime?)null
+                : StartOfMonth(datetime);
+
+        /// <summary>
+        /// Returns midnight on the first day of the month of the given date.
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static DateTime StartOfMonth(this DateTime datetime)
+            => new DateTime(datetime.Year, datetime.Month, 1);
+
+        /// <summary>
+        /// Returns the end of the last day of month of the given date (or null if passed null).
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime? EndOfMonth(DateTime? datetime)
+            => datetime == null ? (DateTime?)null
+                : EndOfMonth(datetime);
+
+        /// <summary>
+        /// Returns the end of the last day of month of the given date.
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static DateTime EndOfMonth(DateTime datetime)
+            => datetime.Date + EndOfDayTime;
+
+        /// <summary>
+        /// A time just less than one day (currently one millisecond less than a day).
+        /// </summary>
+        public static readonly TimeSpan EndOfDayTime = new TimeSpan(0,23,59,59,999);
+
+        #endregion
     }
 }

@@ -8,17 +8,24 @@ using JohnLambe.Util.Text;
 
 namespace JohnLambe.Util.Types
 {
+    //[ComplexType]
     public class PersonName
     {
         #region The parts of the name, as stored
 
         /// <summary>
-        /// First name. May 
+        /// First name, and possibly middle name(s).
         /// </summary>
         public virtual string FirstNames { get; set; }
         public virtual string Surname { get; set; }
+        /// <summary>
+        /// Title/prefix.
+        /// </summary>
         public virtual string Title { get; set; }
         public virtual string Suffix { get; set; }
+        /// <summary>
+        /// Qualifications that appear after the name.
+        /// </summary>
         public virtual string Qualifications { get; set; }
 
         #endregion
@@ -26,6 +33,7 @@ namespace JohnLambe.Util.Types
         /// <summary>
         /// Everything before the first SPACE in <see cref="FirstNames"/>, or all of it if there are no SPACEs.
         /// </summary>
+        //[NotMapped]
         public virtual string FirstName
         {
             get
@@ -43,6 +51,7 @@ namespace JohnLambe.Util.Types
         /// or "" of there are no SPACEs.
         /// <para>Setting this replaces all middle names. null is treated the same as "".</para>
         /// </summary>
+        //[NotMapped]
         public virtual string MiddleNames
         {
             get
@@ -59,6 +68,7 @@ namespace JohnLambe.Util.Types
         /// The first letter of the middle name (the second name if there are multiple middle names).
         /// Assigning this overwrites the middle name(s) with an initial.
         /// </summary>
+        //[NotMapped]
         public virtual char? MiddleInitial
         {
             get
@@ -71,6 +81,7 @@ namespace JohnLambe.Util.Types
             }
         }
 
+        //[NotMapped]
         public virtual string FullName
         {
             get
@@ -91,6 +102,7 @@ namespace JohnLambe.Util.Types
             */
         }
 
+        //[NotMapped]
         public virtual string FormalFullName
         {
             get
@@ -115,6 +127,7 @@ namespace JohnLambe.Util.Types
         /// Name in the format: '{Firstnames} {Surname}'.
         /// Assigning this overwrites <see cref="FirstNames"/> and <see cref="Surname"/>.
         /// </summary>
+        //[NotMapped]
         public virtual string SimpleName
         {
             get
@@ -133,6 +146,7 @@ namespace JohnLambe.Util.Types
         /// <summary>
         /// A string value that encodes the full state of this instance.
         /// </summary>
+        //[NotMapped]
         public virtual string EncodedString
         {
             get

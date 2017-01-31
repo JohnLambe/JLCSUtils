@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\ArrayUtils.cs" />
+    <Compile Include="Collections\CompareUtil.cs" />
     <Compile Include="Collections\EnumeratorUtils.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Db\IOrmDatabaseContext.cs" />
@@ -49,7 +50,8 @@
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
-    <Compile Include="Misc\LoggingAttribute.cs" />
+    <Compile Include="Logging\LoggingAttribute.cs" />
+    <Compile Include="Misc\Range.cs" />
     <Compile Include="Misc\ValidationAttribute.cs" />
     <Compile Include="Reflection\AssemblyUtils.cs" />
     <Compile Include="Reflection\AttributeUtils.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Text\CaptionUtils.cs" />
     <Compile Include="Text\CharacterSet.cs" />
     <Compile Include="Text\EncoderExtension.cs" />
+    <Compile Include="TimeUtilities\DateClass.cs" />
     <Compile Include="Types\ID.cs" />
     <Compile Include="LazyInitialize.cs" />
     <Compile Include="Text\CharacterUtils.cs" />
