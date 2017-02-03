@@ -46,6 +46,16 @@ namespace JohnLambe.Util.Db
         {
             return EfDbContext.SaveChanges();
         }
+
+        public override void SetState<TEntity>(TEntity entity, EntityState state)
+        {
+            EfDbContext.Entry<TEntity>(entity).State = state;
+        }
+
+        public override EntityState GetState<TEntity>(TEntity entity)
+        {
+            return EfDbContext.Entry<TEntity>(entity).State;
+        }
     }
 
 }
