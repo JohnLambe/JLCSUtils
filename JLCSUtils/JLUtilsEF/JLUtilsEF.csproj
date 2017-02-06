@@ -50,7 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db\EfDatabaseContext.cs" />
+    <Compile Include="Db\EfDbRepository.cs" />
+    <Compile Include="Db\IDbRepository.cs" />
     <Compile Include="Db\IOrmDatabaseContext.cs" />
+    <Compile Include="Db\MockDbRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

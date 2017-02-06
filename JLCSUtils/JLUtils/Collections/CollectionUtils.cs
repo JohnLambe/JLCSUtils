@@ -31,5 +31,28 @@ namespace JohnLambe.Util.Collections
             return collection;
         }
 
+        /// <summary>
+        /// Returns a string containing a string representation of each item in the collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="separator"></param>
+        /// <returns>The string representation of the contents of the collection, or null if <paramref name="collection"/> is null.</returns>
+        public static string CollectionToString<T>(ICollection<T> collection, string separator = ", ")
+        {
+            if (collection == null)
+                return null;
+            StringBuilder result = new StringBuilder();
+            int index = 0;
+            foreach(var item in collection)
+            {
+                if (index > 0)   // if not the first item
+                    result.Append(separator);
+                if(item != null)
+                    result.Append(item.ToString());
+                index++;
+            }
+            return result.ToString();
+        }
     }
 }
