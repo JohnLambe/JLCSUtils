@@ -128,6 +128,10 @@ namespace MvpFramework.Menu
         public override string ToString()
             => CodeDescription;
 
+        /// <summary>
+        /// The default item in this menu / collection.
+        /// null if there is no default.
+        /// </summary>
         public virtual MenuItemModel Default
             => Children.FirstOrDefault(o => o.IsDefault);
 
@@ -155,6 +159,11 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual string IconId { get; set; }  //TODO
         // From attribute, OR separately mapped to ID.
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual object Tag { get; set; }
 
         /// <summary>
         /// True iff this item is currently displayed (or would be displayed when the menu is shown).
@@ -196,3 +205,4 @@ namespace MvpFramework.Menu
     }
 
 }
+

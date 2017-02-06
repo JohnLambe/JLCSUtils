@@ -14,25 +14,18 @@ namespace JohnLambe.Util.Db
         where TEntity : class
     {
         //TODO: tracking entity state (e.g. whether attached entities are modified).
+        //  The behaviour of this does not fully match Entity Framework.
 
-        #region Log
-
-        public enum Action
+        public MockDbRepository(ICollection<TEntity> initialData)
         {
-            Add,
-            Remove,
-            Save
+            if (initialData != null)
+            {
+                foreach(var item in initialData)
+                {
+                    AddInternal(item);
+                }
+            }
         }
-
-        public class LogEntry
-        {
-            public Action Action { get; set; }
-            public string Entity { get; set; }
-        }
-
-        public virtual LinkedList<LogEntry> Log { get; protected set; } = new LinkedList<LogEntry>();
-
-        #endregion
 
         #region IDbRepositoryBase
 
@@ -63,7 +56,7 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Add(TEntity entity)
         {
-            Log.AddLast(new LogEntry() { Action = Action.Remove, Entity = entity.ToString() });
+            AddToLog(Action.Remove,entity);
             ChangesCount++;
             return AddInternal(entity);
         }
@@ -85,9 +78,10 @@ namespace JohnLambe.Util.Db
             return ReflectionUtils.Create<TDerivedEntity>(typeof(TDerivedEntity));
         }
 
+        // What does IDbSet.Remove do when the entity does not exist?
         public virtual TEntity Remove(TEntity entity)
         {
-            Log.AddLast(new LogEntry() { Action = Action.Remove, Entity = entity.ToString() });
+            AddToLog(Action.Remove, entity);
             ChangesCount++;
             return RemoveInternal(entity);
         }
@@ -101,7 +95,7 @@ namespace JohnLambe.Util.Db
         // THE RETURN VALUE MAY NOT BE CORRECT IN THIS VERSION.
         public virtual int SaveChanges()
         {
-            Log.AddLast(new LogEntry() { Action = Action.Save });
+            AddToLog(Action.Save);
             int result = ChangesCount;
             ChangesCount = 0;
             return result;
@@ -141,5 +135,39 @@ namespace JohnLambe.Util.Db
         protected IDictionary<object, TEntity> Data = new Dictionary<object, TEntity>();
 
         #endregion
+
+        #region Log
+
+        public enum Action
+        {
+            Add,
+            Remove,
+            Save
+        }
+
+        public class LogEntry
+        {
+            public Action Action { get; set; }
+            public string Entity { get; set; }
+        }
+
+        public virtual LinkedList<LogEntry> Log { get; protected set; } = new LinkedList<LogEntry>();
+
+        protected virtual void AddToLog(Action action, TEntity entity = null)
+        {
+            Log.AddLast(new LogEntry() { Action = Action.Remove, Entity = entity.ToString() });
+            OnChange?.Invoke(action, entity);
+        }
+
+        public delegate void RepositoryEvent(Action action, TEntity entity);
+        //| We could add a parameter to indicate whether an item was found.
+
+        /// <summary>
+        /// Fired when an action that can change the data is done.
+        /// </summary>
+        public event RepositoryEvent OnChange;
+
+        #endregion
+
     }
 }
