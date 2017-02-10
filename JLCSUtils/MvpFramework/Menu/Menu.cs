@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using JohnLambe.Util.Encoding;
+using System.Diagnostics;
 
 namespace MvpFramework.Menu
 {
@@ -124,7 +125,6 @@ namespace MvpFramework.Menu
         public virtual string CodeDescription
             => DisplayName + " (" + Id + ")";
 
-
         public override string ToString()
             => CodeDescription;
 
@@ -134,6 +134,25 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual MenuItemModel Default
             => Children.FirstOrDefault(o => o.IsDefault);
+
+        /// <summary>
+        /// The number of levels deep this item is in the hierarchy (0 if this is the root, i.e. <see cref="Parent"/> is null).
+        /// </summary>
+        public virtual int Level
+        {
+            get
+            {
+                int level = 0;
+                var current = this;
+                while(current.Parent != null)           // move up the hierarchy until 
+                {
+                    level++;
+                    current = current.Parent;
+                    Debug.Assert(current != this, "INTERNAL ERROR: MenuItemModel: Circular Parent reference");   // if this happened, and we continued, it would loop indfinitely.
+                }
+                return level;
+            }
+        }
 
         /// <summary>
         /// Return a text representation of the menu tree of this item and all its children (including indirect children).
@@ -161,7 +180,7 @@ namespace MvpFramework.Menu
         // From attribute, OR separately mapped to ID.
 
         /// <summary>
-        /// 
+        /// This can be used by a consumer of this library.
         /// </summary>
         public virtual object Tag { get; set; }
 
@@ -170,6 +189,8 @@ namespace MvpFramework.Menu
         /// (False if it is hidden, for example, due not being applicable in the current state or configuration.)
         /// </summary>
         public virtual bool Visible { get; set; } = true;
+
+        public virtual bool Enabled { get; set; } = true;
 
         //TODO: Could copy attribute to property:
         public virtual MenuAttributeBase Attribute { get; set; }  // may be null

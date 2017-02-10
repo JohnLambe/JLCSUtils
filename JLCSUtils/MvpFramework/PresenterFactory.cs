@@ -10,87 +10,6 @@ using DiExtension.Attributes;
 
 namespace MvpFramework
 {
-    public interface IPresenterFactory<TPresenter>
-        where TPresenter : IPresenter
-    {
-        TPresenter Create();
-    }
-
-    /// <summary>
-    /// Interface for factory that creates a Presenter.
-    /// Can be used for automatic factory creation on dependency injection.
-    /// </summary>
-    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam">Type of the parameter to the Create method.</typeparam>
-    public interface IPresenterFactory<TPresenter, TParam>
-        where TPresenter : IPresenter
-    {
-        /// <summary>
-        /// Create the Presenter.
-        /// </summary>
-        /// <param name="param"></param>
-        /// <returns></returns>
-        TPresenter Create(TParam param);
-    }
-
-    /// <summary>
-    /// Interface for factory that creates a Presenter.
-    /// Can be used for automatic factory creation on dependency injection.
-    /// </summary>
-    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    public interface IPresenterFactory<TPresenter, TParam1, TParam2>
-        where TPresenter : IPresenter
-    {
-        TPresenter Create(TParam1 param1, TParam2 param2);
-    }
-
-    /// <summary>
-    /// Interface for factory that creates a Presenter.
-    /// Can be used for automatic factory creation on dependency injection.
-    /// </summary>
-    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    /// <typeparam name="TParam3"></typeparam>
-    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>
-        where TPresenter : IPresenter
-    {
-        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3);
-    }
-
-    /// <summary>
-    /// Interface for factory that creates a Presenter.
-    /// Can be used for automatic factory creation on dependency injection.
-    /// </summary>
-    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    /// <typeparam name="TParam3"></typeparam>
-    /// <typeparam name="TParam4"></typeparam>
-    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>
-        where TPresenter : IPresenter
-    {
-        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4);
-    }
-
-    /// <summary>
-    /// Interface for factory that creates a Presenter.
-    /// Can be used for automatic factory creation on dependency injection.
-    /// </summary>
-    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    /// <typeparam name="TParam3"></typeparam>
-    /// <typeparam name="TParam4"></typeparam>
-    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
-        where TPresenter : IPresenter
-    {
-        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5);
-    }
-
-
     /// <summary>
     /// Generic factory for creating Presenters.
     /// Could be subclassed for custom presenter factory logic.
@@ -151,7 +70,8 @@ namespace MvpFramework
             }
         }
 
-        TPresenter IPresenterFactory<TPresenter>.Create()
+        //TPresenter IPresenterFactory<TPresenter>.Create()
+        public TPresenter Create()
         {
             return CreatePresenter();
         }
@@ -284,13 +204,37 @@ namespace MvpFramework
     }
 
 
+    #region KnownPresenterFactory
+
     /// <summary>
     /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
     /// <typeparam name="TParam1"></typeparam>
-    public class KnownPresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter, TParam1>,
-            IPresenterFactory<TPresenter, TParam1>
+    public class KnownPresenterFactory<TPresenter> : PresenterFactory<TPresenter>
+        where TPresenter : IPresenter
+    {
+        public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
+            IResolverExtension uiManager,
+            Type targetClass
+            ) : base(resolver, diResolver, uiManager)
+        {
+            this.TargetClass = targetClass;
+        }
+/*
+        public virtual TPresenter Create()
+        {
+            return CreatePresenter();
+        }
+        */
+    }
+
+    /// <summary>
+    /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
+    /// </summary>
+    /// <typeparam name="TPresenter"></typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    public class KnownPresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter, TParam1>
         where TPresenter : IPresenter
     {
         public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
@@ -302,6 +246,44 @@ namespace MvpFramework
         }
     }
 
+    /// <summary>
+    /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
+    /// </summary>
+    /// <typeparam name="TPresenter"></typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    public class KnownPresenterFactory<TPresenter, TParam1, TParam2> : PresenterFactory<TPresenter, TParam1, TParam2>
+        where TPresenter : IPresenter
+    {
+        public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
+            IResolverExtension uiManager,
+            Type targetClass
+            ) : base(resolver, diResolver, uiManager)
+        {
+            this.TargetClass = targetClass;
+        }
+    }
+
+    /// <summary>
+    /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
+    /// </summary>
+    /// <typeparam name="TPresenter"></typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    public class KnownPresenterFactory<TPresenter, TParam1, TParam2, TParam3> : PresenterFactory<TPresenter, TParam1, TParam2, TParam3>
+        where TPresenter : IPresenter
+    {
+        public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
+            IResolverExtension uiManager,
+            Type targetClass
+            ) : base(resolver, diResolver, uiManager)
+        {
+            this.TargetClass = targetClass;
+        }
+    }
+
+    #endregion
+
+
+    #region PresenterFactory generic types
 
     public class PresenterFactory<TPresenter, TParam1> : PresenterFactory<TPresenter>,
         IPresenterFactory<TPresenter, TParam1>
@@ -311,7 +293,8 @@ namespace MvpFramework
         {
         }
 
-        TPresenter IPresenterFactory<TPresenter, TParam1>.Create(TParam1 param)
+        public TPresenter Create(TParam1 param)
+//        TPresenter IPresenterFactory<TPresenter, TParam1>.Create(TParam1 param)
         {
             return CreatePresenter(param);
         }
@@ -327,7 +310,8 @@ namespace MvpFramework
         {
         }
 
-        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2>.Create(TParam1 param1, TParam2 param2)
+        public TPresenter Create(TParam1 param1, TParam2 param2)
+        //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2>.Create(TParam1 param1, TParam2 param2)
         {
             return CreatePresenter(param1, param2);
         }
@@ -344,7 +328,8 @@ namespace MvpFramework
         {
         }
 
-        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>.Create(TParam1 param1, TParam2 param2, TParam3 param3)
+        public TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3)
+        //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>.Create(TParam1 param1, TParam2 param2, TParam3 param3)
         {
             return CreatePresenter(param1, param2, param3);
         }
@@ -362,7 +347,8 @@ namespace MvpFramework
         {
         }
 
-        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        public TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
         {
             return CreatePresenter(param1, param2, param3, param4);
         }
@@ -381,9 +367,12 @@ namespace MvpFramework
         {
         }
 
-        TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        public TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
         {
             return CreatePresenter(param1, param2, param3, param4, param5);
         }
     }
+
+    #endregion
 }

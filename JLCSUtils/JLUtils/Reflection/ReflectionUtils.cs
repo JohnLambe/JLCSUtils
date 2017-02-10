@@ -114,6 +114,23 @@ namespace JohnLambe.Util.Reflection
             return (T)type.GetConstructor(argumentTypes).Invoke(arguments);
         }
 
+        /// <summary>
+        /// Returns an array in which each element is the type of the corresponding element in the given array.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns>Array of types, or null if <paramref name="values"/> is null.</returns>
+        public static Type[] ArrayOfTypes(params object[] values)
+        {
+            if (values == null)
+                return null;
+            Type[] result = new Type[values.Length];    // same length as given array
+            for(int i = 0; i < values.Length; i++)
+            {
+                result[i] = values[i]?.GetType();
+            }
+            return result;
+        }
+
         #region GetProperty
 
         private enum PropertyAction { GetProperty, GetValue, SetValue };

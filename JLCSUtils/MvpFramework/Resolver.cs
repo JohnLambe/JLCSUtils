@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiExtension;
 using JohnLambe.Util;
+using JohnLambe.Util.Reflection;
 
 namespace MvpFramework
 {
@@ -99,6 +100,15 @@ namespace MvpFramework
         /// </summary>
         /// <returns></returns>
         public abstract TPresenter GetPresenterByType<TPresenter, TParam>(Type presenterType, TParam param);
+
+        /// <summary>
+        /// Get a presenter of a known concrete type.
+        /// </summary>
+        /// <typeparam name="TPresenter"></typeparam>
+        /// <param name="presenterType">The concrete presenter type to be returned. Must be assignable to <typeparamref name="TPresenter"/>.</param>
+        /// <param name="param">The parameters to the 'Create' method of the factory for the required presenter.</param>
+        /// <returns>The requested Presenter.</returns>
+        public abstract TPresenter GetPresenterByType<TPresenter>(Type presenterType, params object[] param);
 
         /// <summary>
         /// Get the Presenter for a given action on a given model.
@@ -460,6 +470,11 @@ namespace MvpFramework
     public class DiMvpResolver : MvpResolver
     {
         /// <summary>
+        /// The name of the 'Create' method of <see cref="IPresenterFactory{TPresenter}"/> (and other generic variants).
+        /// </summary>
+        protected const string CreateMethodName = "Create";
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="diContext">Interface to the dependency injection container for resolving.</param>
@@ -468,6 +483,7 @@ namespace MvpFramework
             this.Context = diContext;
         }
 
+        ///
         public override TPresenter GetPresenterByType<TPresenter, TParam>(Type presenterType, TParam param)
         {
             // Make the generic factory type:
@@ -484,6 +500,31 @@ namespace MvpFramework
 
             // Invoke the factory method to get the instance:
             return (TPresenter)createMethod.Invoke(factory, new object[] { param });
+        }
+
+        public override TPresenter GetPresenterByType<TPresenter>(Type presenterType, params object[] param)
+        {
+            if (param == null)
+                param = new object[] { };
+            Type[] paramTypes = ReflectionUtils.ArrayOfTypes(param);   // the types of the parameters to the factory's Create method
+            //TODO: Test with runtime types different to (but assignable to) the actual types.
+
+            // Make the generic factory type:
+            Type factoryType = GenericTypeUtils.ChangeGenericParameters(typeof(KnownPresenterFactory<>), 
+                (new Type[] { presenterType }).Concat(paramTypes).ToArray());
+            //typeof(PresenterFactory<,>).MakeGenericType(presenterType, param.GetType());
+
+            // Get its constructor:
+            var factoryConstructor = factoryType.GetConstructor(new Type[] { GetType(), typeof(IDiResolver), typeof(IResolverExtension), typeof(Type) });
+
+            // Invoke the constructor to get the factory:
+            var factory = factoryConstructor.Invoke(new object[] { this, Context, GetInstance<IResolverExtension>(typeof(IResolverExtension)), presenterType });
+
+            // Get the factory method:
+            var createMethod = factoryType.GetMethod(CreateMethodName, paramTypes);
+
+            // Invoke the factory method to get the instance:
+            return (TPresenter)createMethod.Invoke(factory, param);
         }
 
         protected override T GetInstance<T>(Type forType)

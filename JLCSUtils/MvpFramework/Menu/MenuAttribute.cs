@@ -91,7 +91,7 @@ namespace MvpFramework.Menu
 
         public virtual MenuStyle Style { get; set; }
 
-        public override bool IsMenu => true;
+        public override bool IsMenu => false;
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ namespace MvpFramework.Menu
             DisplayName = displayName;
         }
 
-        public override bool IsMenu => false;
+        public override bool IsMenu => true;
     }
 
     /// <summary>
@@ -168,7 +168,7 @@ namespace MvpFramework.Menu
             this.MenuSetId = menuSetId;
         }
 
-        public string MenuSetId { get; set; }
+        public virtual string MenuSetId { get; set; }
     }
 
 }

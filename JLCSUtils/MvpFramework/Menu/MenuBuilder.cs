@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util;
+﻿using DiExtension.Attributes;
+using JohnLambe.Util;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Encoding;
 using JohnLambe.Util.FilterDelegates;
@@ -18,6 +19,23 @@ namespace MvpFramework.Menu
     /// </summary>
     public class MenuBuilder
     {
+        /// <summary>
+        /// Create without an MVP resolver. Presenters will not be invoked automatically.
+        /// </summary>
+        public MenuBuilder()
+        {
+        }
+
+        /// <summary>
+        /// Create, with a resolver for invoking Presenters.
+        /// </summary>
+        /// <param name="resolver"></param>
+        [Inject]
+        public MenuBuilder(MvpResolver resolver)
+        {
+            this.Resolver = resolver;
+        }
+
         /// <summary>
         /// Scans assemblies and builds menus based on attributes on handler classes.
         /// </summary>
@@ -107,12 +125,17 @@ namespace MvpFramework.Menu
         /// <param name="item">The new menu item.</param>
         protected virtual void AddInvokeDelegate(MenuItemModel item)
         {
-            if (item.HandlerType is IPresenter)
+            if (Resolver != null)
             {
-                item.Invoked += MenuItemPresenter_Invoked;
+                if (typeof(IPresenter).IsAssignableFrom(item.HandlerType) || item.HandlerType.IsDefined<PresenterAttribute>())  // if the handler it is a Presenter
+                {
+                    item.Invoked += MenuItemPresenter_Invoked;
+                }
             }
 
-            //TODO: Other types: "Execute" method ?
+            //TODO: Other types: If instance method "Execute" exists, get instance from DI, and call it.
+            // if Static Method 'MenuExecute' exists, invoke it, populating parameters by DI.
+            // Support special parameters for menu state ?
         }
 
         /// <summary>
@@ -121,7 +144,8 @@ namespace MvpFramework.Menu
         /// <param name="item">The invoked menu item.</param>
         protected virtual void MenuItemPresenter_Invoked(MenuItemModel item)
         {
-            Resolver.GetPresenterByType<IPresenter,object>(item.HandlerType, item.Params[0]).Show();
+            //            Resolver.GetPresenterByType<IPresenter,object>(item.HandlerType, item.Params[0]).Show();
+            Resolver.GetPresenterByType<IPresenter>(item.HandlerType, item.Params).Show();
         }
 
         /// <summary>

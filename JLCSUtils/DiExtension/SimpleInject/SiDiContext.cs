@@ -26,6 +26,10 @@ namespace DiExtension.SimpleInject
         {
         }
 
+        /// <summary>
+        /// Initialise with an existing <see cref="global::SimpleInjector.Container"/>.
+        /// </summary>
+        /// <param name="container"></param>
         public SiDiContext(Container container)
         {
             Container = container;
