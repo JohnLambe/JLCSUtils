@@ -24,7 +24,7 @@ namespace MvpFramework.Menu
         /// Identifies the menu item.
         /// Can be injected on invoking, so that the handler can tell where it was invoked from (if it appears in multiple menus).
         /// </summary>
-        public virtual string Id { get; set; }
+        public virtual string Id { get; protected set; }
 
         /// <summary>
         /// Id of the parent menu.
@@ -36,7 +36,16 @@ namespace MvpFramework.Menu
         /// Name as displayed in the menu.
         /// null for default (based on the class name).
         /// </summary>
-        public virtual string DisplayName { get; set; }
+        public virtual string DisplayName
+        {
+            get { return _displayName; }
+            set
+            {
+                _displayName = value;
+                Changed?.Invoke(this, new ChangedEventArgs(MenuItemChangeType.Name)); 
+            }
+        }
+        protected string _displayName;
 
         /// <summary>
         /// Character that can be typed to choose this item while in the parent menu.
@@ -108,15 +117,8 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual void Invoke()
         {
-            Invoked?.Invoke(this);
+            Invoked?.Invoke(this, InvokedEventArgs.EmptyMenuItemInvokedEventArgs);
         }
-
-        public delegate void MenuItemInvokeDelegate(MenuItemModel item);
-
-        /// <summary>
-        /// Fired when the menu item is invoked (typically when chosen from the menu).
-        /// </summary>
-        public virtual event MenuItemInvokeDelegate Invoked;
 
         /// <summary>
         /// Name of this item for display to developers (e.g. in error messages).
@@ -144,7 +146,7 @@ namespace MvpFramework.Menu
             {
                 int level = 0;
                 var current = this;
-                while(current.Parent != null)           // move up the hierarchy until 
+                while(current.Parent != null)           // move up the hierarchy until the root is reached
                 {
                     level++;
                     current = current.Parent;
@@ -181,6 +183,9 @@ namespace MvpFramework.Menu
 
         /// <summary>
         /// This can be used by a consumer of this library.
+        /// It must not be used within this library.
+        /// Systems that use this must have their own rules for how it is used.
+        /// It is recommended that use of this proprty is controlled by the View. It could be used to point to the UI object of the menu item in the view.
         /// </summary>
         public virtual object Tag { get; set; }
 
@@ -188,16 +193,102 @@ namespace MvpFramework.Menu
         /// True iff this item is currently displayed (or would be displayed when the menu is shown).
         /// (False if it is hidden, for example, due not being applicable in the current state or configuration.)
         /// </summary>
-        public virtual bool Visible { get; set; } = true;
+        public virtual bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                _visible = value;
+                Changed?.Invoke(this, new ChangedEventArgs(MenuItemChangeType.Visible));
+            }
+        }
+        protected bool _visible = true;
 
-        public virtual bool Enabled { get; set; } = true;
+        /// <summary>
+        /// Whether the menu item is enabled.
+        /// Iff false, it should appear in a disabled (usually greyed) state in the user interface, and the UI should not allow invoking it.
+        /// </summary>
+        public virtual bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                _enabled = value;
+                Changed?.Invoke(this, new ChangedEventArgs(MenuItemChangeType.Enabled));
+            }
+        }
+        protected bool _enabled = true;
+
+        /// <summary>
+        /// The state of a check box or toggle state of this menu item.
+        /// null if this item does not support it.
+        /// </summary>
+        public virtual bool? Checked { get; set; }  = null;
 
         //TODO: Could copy attribute to property:
         public virtual MenuAttributeBase Attribute { get; set; }  // may be null
-        // so that properties of subclasses of the attribute can be used by a consumer of this class.
-        // Attributes are not the only way to populate this.
+                                                                  // so that properties of subclasses of the attribute can be used by a consumer of this class.
+                                                                  // Attributes are not the only way to populate this.
 
-        //TODO: Toggle/check state ?
+
+        #region Events
+
+        /// <summary>
+        /// A type of change to a menu item.
+        /// </summary>
+        public enum MenuItemChangeType
+        {
+            /// <summary>
+            /// No change.
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// A change other than those indicated by members of this enum.
+            /// </summary>
+            Other = 1,
+            /// <summary>
+            /// The DisplayName has changed.
+            /// </summary>
+            Name = 2,
+            /// <summary>
+            /// The Enabled state has changed.
+            /// </summary>
+            Enabled = 4,
+            /// <summary>
+            /// The Visible state has changed.
+            /// </summary>
+            Visible = 8
+        };
+
+        public class ChangedEventArgs : EventArgs
+        {
+            public ChangedEventArgs(MenuItemChangeType changeType)
+            {
+                ChangeType = changeType;
+            }
+            public MenuItemChangeType ChangeType { get; protected set; }
+        }
+
+        public class InvokedEventArgs : EventArgs
+        {
+            public static readonly InvokedEventArgs EmptyMenuItemInvokedEventArgs = new InvokedEventArgs();
+        }
+
+        public delegate void InvokeDelegate(MenuItemModel item, InvokedEventArgs args);
+
+        /// <summary>
+        /// Fired when the menu item is invoked (typically when chosen from the menu).
+        /// </summary>
+        public virtual event InvokeDelegate Invoked;
+
+        public delegate void ChangedDelegate(MenuItemModel sender, ChangedEventArgs args);
+
+        /// <summary>
+        /// Fired when certain properties of this class change.
+        /// </summary>
+        public virtual event ChangedDelegate Changed;
+
+        #endregion
 
     }
 
@@ -226,4 +317,3 @@ namespace MvpFramework.Menu
     }
 
 }
-

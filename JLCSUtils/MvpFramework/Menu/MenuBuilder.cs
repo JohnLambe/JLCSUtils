@@ -1,8 +1,10 @@
-﻿using DiExtension.Attributes;
+﻿using DiExtension;
+using DiExtension.Attributes;
 using JohnLambe.Util;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Encoding;
 using JohnLambe.Util.FilterDelegates;
+using JohnLambe.Util.Misc;
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Text;
 using System;
@@ -31,21 +33,22 @@ namespace MvpFramework.Menu
         /// </summary>
         /// <param name="resolver"></param>
         [Inject]
-        public MenuBuilder(MvpResolver resolver)
+        public MenuBuilder(MvpResolver resolver, IDiResolver diResolver = null)
         {
             this.Resolver = resolver;
+            this.DiResolver = diResolver;
         }
 
         /// <summary>
         /// Scans assemblies and builds menus based on attributes on handler classes.
         /// </summary>
-        /// <param name="assemblies">Assembly to scan. Defaults to the calling assembly and all assemblies directly referenced by it.</param>
+        /// <param name="assemblies">Assemblies to scan. Defaults to the <see cref="Assemblies"/> property, and it if it is null, the calling assembly and all assemblies directly referenced by it.</param>
         /// <param name="filter"></param>
         /// <returns>The collection of menus.</returns>
         public virtual MenuCollection BuildMenu(IEnumerable<Assembly> assemblies = null, BooleanExpression<Type> filter = null)
         {
             if (assemblies == null)
-                assemblies = AssemblyUtils.GetReferencedAssemblies(Assembly.GetCallingAssembly(), true);
+                assemblies = Assemblies ?? AssemblyUtils.GetReferencedAssemblies(Assembly.GetCallingAssembly(), true);
 
             var allItems = new Dictionary<string, MenuItemModel>();
 
@@ -119,18 +122,55 @@ namespace MvpFramework.Menu
         }
 
         /// <summary>
+        /// Name of static method to be invoked (if present) on invoking a menu item.
+        /// </summary>
+        protected const string MenuExecuteMethodName = "MenuExecute";
+        protected const string MenuExecuteInstanceMethodName = "Execute";
+
+        /// <summary>
         /// Add delegate(s) to the item for when it is invoked.
         /// <para>Subclasses can provide custom strategies for handling specific handler class types.</para>
         /// </summary>
         /// <param name="item">The new menu item.</param>
         protected virtual void AddInvokeDelegate(MenuItemModel item)
         {
-            if (Resolver != null)
+            if (Resolver != null && item.HandlerType != null)
             {
+                MenuItemModel.InvokeDelegate instanceExecute = null;
+
+                // Instance methods:
+
                 if (typeof(IPresenter).IsAssignableFrom(item.HandlerType) || item.HandlerType.IsDefined<PresenterAttribute>())  // if the handler it is a Presenter
                 {
-                    item.Invoked += MenuItemPresenter_Invoked;
+                    instanceExecute = MenuItemPresenter_Invoked;
                 }
+
+                /*
+                var instanceExecuteMethod = GeneralUtils.IgnoreException(
+                    () => item.HandlerType.GetMethod(MenuExecuteInstanceMethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreReturn),
+                    typeof(AmbiguousMatchException)
+                    );
+                */
+
+
+                // Static method:
+
+                var staticExecuteMethod =
+                    DiResolver == null ? null :                    // if no DiResover, don't try to use this method (alternatively, we could allow it if it doesn't have any parameters to be injected by DI)
+                    GeneralUtils.IgnoreException(
+                    () => item.HandlerType.GetMethod(MenuExecuteMethodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.IgnoreReturn),
+                    typeof(AmbiguousMatchException)
+                    );
+
+                if (staticExecuteMethod != null)          // if there is a static execute method
+                {
+                    item.Invoked += (menuItem,args) => MenuItemExecute_Invoked(menuItem, args, staticExecuteMethod, instanceExecute);
+                }
+                else if (instanceExecute != null)                  // if instance method only
+                {
+                    item.Invoked += instanceExecute;               // call instance method directly
+                }
+
             }
 
             //TODO: Other types: If instance method "Execute" exists, get instance from DI, and call it.
@@ -138,13 +178,25 @@ namespace MvpFramework.Menu
             // Support special parameters for menu state ?
         }
 
+        protected virtual void MenuItemExecute_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args, MethodInfo method, MenuItemModel.InvokeDelegate invoke)
+        {
+            var result = DiUtils.CallMethod<object>(DiResolver,method,null, new object[] { item, args });
+            if (result is bool && !(bool)result)
+            {
+                // suppress creating an instance
+            }
+            else
+            {
+                invoke?.Invoke(item, args);
+            }
+        }
+
         /// <summary>
         /// Called when a menu item for a Presenter is invoked.
         /// </summary>
         /// <param name="item">The invoked menu item.</param>
-        protected virtual void MenuItemPresenter_Invoked(MenuItemModel item)
+        protected virtual void MenuItemPresenter_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args)
         {
-            //            Resolver.GetPresenterByType<IPresenter,object>(item.HandlerType, item.Params[0]).Show();
             Resolver.GetPresenterByType<IPresenter>(item.HandlerType, item.Params).Show();
         }
 
@@ -156,6 +208,16 @@ namespace MvpFramework.Menu
         /// <summary>
         /// MVP resolver used for resolving factories of presenters invoked by menu items.
         /// </summary>
-        public virtual MvpResolver Resolver { get; set; }
+        public virtual MvpResolver Resolver { get; protected set; }
+
+        /// <summary>
+        /// DI resolver. Used for resolving parameters on invoking handlers.
+        /// </summary>
+        public virtual IDiResolver DiResolver { get; protected set; }
+
+        /// <summary>
+        /// Assemblies to scan.
+        /// </summary>
+        public virtual IEnumerable<Assembly> Assemblies { get; set; }
     }
 }

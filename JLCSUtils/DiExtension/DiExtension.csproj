@@ -64,12 +64,15 @@
     <Compile Include="ConfigInject\Providers\CompositeProvider.cs" />
     <Compile Include="ConfigInject\Providers\DictionaryConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\EnvironmentVarConfigProvider.cs" />
+    <Compile Include="ConfigInject\Providers\FileConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\ObjectValueProvider.cs" />
+    <Compile Include="ConfigInject\Providers\PropertiesFileConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\RegistryConfigProvider.cs" />
     <Compile Include="ConfigInject\RegisterProviderAttribute.cs" />
     <Compile Include="DiContext.cs" />
     <Compile Include="DiContextConfigurer.cs" />
     <Compile Include="DiRegisterAttribute.cs" />
+    <Compile Include="DiUtils.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="IDiContext.cs" />
     <Compile Include="IDiResolver.cs" />

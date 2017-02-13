@@ -48,6 +48,7 @@
     <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
+    <Compile Include="Misc\GeneralUtils.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
     <Compile Include="Logging\LoggingAttribute.cs" />
     <Compile Include="Misc\Range.cs" />

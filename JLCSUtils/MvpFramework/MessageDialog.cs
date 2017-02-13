@@ -289,7 +289,7 @@ namespace MvpFramework
                         IsDefault = handlerInfo.Attribute.IsDefault,
                         Order = handlerInfo.Attribute.Order,
                     };
-                    option.Invoked += item => handlerInfo.Method.Invoke(target, new object[] { });
+                    option.Invoked += (item,args) => handlerInfo.Method.Invoke(target, new object[] { });
                     options[handlerInfo.Attribute.Name] = option;
                 }
             }

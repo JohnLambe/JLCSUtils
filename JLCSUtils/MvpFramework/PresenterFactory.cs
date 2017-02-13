@@ -76,6 +76,11 @@ namespace MvpFramework
             return CreatePresenter();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param">Arguments to the 'Create' method.</param>
+        /// <returns>the new Presenter.</returns>
         protected virtual TPresenter CreatePresenter(params object[] param)
         {
             Init();
@@ -85,13 +90,49 @@ namespace MvpFramework
                 return existingPresenter;
 
             var parameters = TargetConstructor.GetParameters();   // constructor parameters
+
+            var args = DiUtils.PopulateArgs(DiResolver, parameters, param,
+                parameter =>
+                {
+                    bool? fromCreateParam = null;
+                    var attribute = parameter.GetCustomAttribute<InjectAttribute>();
+                    if (attribute != null)
+                    {
+                        fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
+                        // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
+                    }
+                    // still null if there was no InjectAttribute.
+                    return fromCreateParam;
+            },
+                1    // skip the first parameter (its for the View)
+                );
+
+            // Populate the view:
+            IView view = null;
+            if (parameters.Count() > 0)
+            {
+                try
+                {
+                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                }
+                catch (Exception)   //TODO: Exception type
+                {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
+                    view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                }
+                //| Could provide parameters for context-based injection of View.
+                UiManager.AfterCreateView(ref view);
+                args[0] = view;
+            }
+
+
+            /*
             object[] args = new object[parameters.Count()];       // constructor arguments
             IView view = null;
 
             // Populate the constructor arguments:
-            int parameterIndex = 0;
+            int parameterIndex = 0;                               // index of the constructor parameter
             int createMethodParameterIndex = 0;
-            bool? createParam = null;
+            bool? createParam = null;                             // true iff the current parameter is to be populated from the arguments to the 'Create' method
             foreach (var parameter in parameters)
             {
                 //                if(parameter.ParameterType.IsAssignableFrom(typeof(TView)))
@@ -102,7 +143,7 @@ namespace MvpFramework
                         view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
                     }
                     catch (Exception)   //TODO: Exception type
-                    {
+                    {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
                         view = Resolver.GetViewForPresenterType<IView>(TargetClass);
                     }
                     //| Could provide parameters for context-based injection of View.
@@ -114,11 +155,12 @@ namespace MvpFramework
                     var attribute = parameter.GetCustomAttribute<InjectAttribute>();
                     if (attribute != null)
                     {
-                        createParam = attribute is MvpInjectAttribute;
+                        createParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
                     }
                     else
                     {
-                        createParam = parameterIndex < param.Length + 1;
+                        createParam = parameterIndex < param.Length + 1;   // not specified as a 'Create' parameter, and its index is beyond the range of the 'Create' parameters
+                        //TODO: To support [Inject] before last create parameter: createParam = createMethodParameterIndex < param.Length + 1;
                     }
 
                     if (createParam.Value)
@@ -132,26 +174,8 @@ namespace MvpFramework
                     }
                 }
                 parameterIndex++;
-
-                /*
-                                if (parameterIndex == 0)
-                                {   // first parameter is always the View
-                                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
-                                        //| Could provide parameters for context-based injection of View.
-                                    UiManager.AfterCreateView(ref view);
-                                    args[parameterIndex] = view;
-                                }
-                                else if (parameterIndex < param.Length + 1)
-                                {   // the next parameters (if present) are the Create method parameters (possibly including the Model)
-                                    args[parameterIndex] = param[parameterIndex-1];
-                                }
-                                else
-                                {   // other parameters are injected from the DI container
-                                    args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
-                                }
-                                parameterIndex++;
-                */
             }
+            */
 
             var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
             DiResolver.BuildUp(presenter);                                 // inject properties

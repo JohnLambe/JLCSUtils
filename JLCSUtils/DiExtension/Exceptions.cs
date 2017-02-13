@@ -77,5 +77,14 @@ namespace DiExtension
         public InjectionFailedException(string message, Exception innerException) : base(message, innerException)
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targetType">The class being injected.</param>
+        /// <param name="memberName">The name of the member (parameter or property) that could not be populated.</param>
+        /// <param name="innerException"></param>
+        public InjectionFailedException(string message, Type targetType, string memberName, Exception innerException) : base(message, innerException)
+        { }
     }
 }

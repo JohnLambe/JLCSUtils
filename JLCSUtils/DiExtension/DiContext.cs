@@ -25,7 +25,7 @@ namespace DiExtension
         public virtual IDiContext BuildUp<T>(T target, params ResolverOverride[] resolverOverride)
         {
             Container.BuildUp(target.GetType(), target, resolverOverride);
-//            Container.BuildUp<T>(target, resolverOverride);
+            //            Container.BuildUp<T>(target, resolverOverride);
             return this;
         }
 
@@ -59,7 +59,7 @@ namespace DiExtension
             }
             if (buildUp)
                 AutoBuildUp(instance);
-//            return this;
+            //            return this;
         }
 
         protected virtual void AutoBuildUp(object instance)
@@ -71,7 +71,7 @@ namespace DiExtension
 
         T IDiContext.BuildUp<T>(T target)
         {
-            BuildUp<T>(target, new ResolverOverride[] {});
+            BuildUp<T>(target, new ResolverOverride[] { });
             return target;
         }
 
@@ -80,6 +80,7 @@ namespace DiExtension
             return base.ToString()
                 + " Container: " + Container.Registrations.ToString();
         }
+
     }
 
 
@@ -139,8 +140,15 @@ namespace DiExtension
         }
 
         public virtual ConfigProviderChain ProviderChain { get; protected set; }
+
+        /// <summary>
+        /// Prefix in [Inject] keys to use ConfigInject.
+        /// </summary>
         public virtual string ConfigNamePrefix { get; set; } = DefaultConfigNamePrefix;
 
+        /// <summary>
+        /// Default value for <see cref="ConfigNamePrefix"/>.
+        /// </summary>
         public const string DefaultConfigNamePrefix = "Config:";
     }
 

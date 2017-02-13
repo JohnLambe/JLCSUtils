@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DiExtension
+        // should be in DiExtension.Attributes
 {
     /// <summary>
     /// Base class for attributes that specify something to be registered with the DI container.

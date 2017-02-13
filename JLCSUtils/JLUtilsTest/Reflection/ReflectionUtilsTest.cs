@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.Reflection;
+﻿using JohnLambe.Util.Collections;
+using JohnLambe.Util.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,22 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.AreEqual("new value", x.Property1.Property1.Property3);
         }
 
+        [TestMethod]
+        public void ArrayOfTypes()
+        {
+            var result = ReflectionUtils.ArrayOfTypes(10, "a", null, new object(), DateTime.Now);
+            Console.Out.WriteLine(CollectionUtils.CollectionToString(result));
+
+            // Assert:
+            Assert.AreEqual(CollectionUtils.CollectionToString(new Type[] { typeof(int), typeof(string), null, typeof(object), typeof(DateTime) }),
+                CollectionUtils.CollectionToString(result));
+        }
+
+        [TestMethod]
+        public void ArrayOfTypes_Null()
+        {
+            Assert.AreEqual(null, ReflectionUtils.ArrayOfTypes(null));
+        }
 
     }
 

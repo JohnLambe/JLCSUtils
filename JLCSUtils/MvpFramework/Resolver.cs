@@ -96,12 +96,6 @@ namespace MvpFramework
         */
 
         /// <summary>
-        /// Given a presenter type, create an instance of it.
-        /// </summary>
-        /// <returns></returns>
-        public abstract TPresenter GetPresenterByType<TPresenter, TParam>(Type presenterType, TParam param);
-
-        /// <summary>
         /// Get a presenter of a known concrete type.
         /// </summary>
         /// <typeparam name="TPresenter"></typeparam>
@@ -481,25 +475,6 @@ namespace MvpFramework
         public DiMvpResolver(IDiResolver diContext)
         {
             this.Context = diContext;
-        }
-
-        ///
-        public override TPresenter GetPresenterByType<TPresenter, TParam>(Type presenterType, TParam param)
-        {
-            // Make the generic factory type:
-            Type factoryType = typeof(PresenterFactory<,>).MakeGenericType(presenterType, param.GetType());
-
-            // Get its constructor:
-            var factoryConstructor = factoryType.GetConstructor(new Type[] { GetType(), typeof(IDiResolver) });
-
-            // Invoke the constructor to get the factory:
-            var factory = factoryConstructor.Invoke(new object[] { this, Context });
-
-            // Get the factory method:
-            var createMethod = factoryType.GetMethod("Create", new Type[] { param.GetType() });
-
-            // Invoke the factory method to get the instance:
-            return (TPresenter)createMethod.Invoke(factory, new object[] { param });
         }
 
         public override TPresenter GetPresenterByType<TPresenter>(Type presenterType, params object[] param)

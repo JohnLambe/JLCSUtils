@@ -118,7 +118,8 @@ namespace JohnLambe.Util.Reflection
         /// Returns an array in which each element is the type of the corresponding element in the given array.
         /// </summary>
         /// <param name="values"></param>
-        /// <returns>Array of types, or null if <paramref name="values"/> is null.</returns>
+        /// <returns>Array of types, or null if <paramref name="values"/> is null.
+        /// Where there is a null value in the input, the corresponding type is output as null.</returns>
         public static Type[] ArrayOfTypes(params object[] values)
         {
             if (values == null)

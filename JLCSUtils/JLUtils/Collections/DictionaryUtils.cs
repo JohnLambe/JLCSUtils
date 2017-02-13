@@ -2,6 +2,7 @@
 //   See licence.
 ////////////////////////////////////////
 
+using JohnLambe.Util.TypeConversion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -99,6 +100,31 @@ namespace JohnLambe.Util.Collections
             dictionary.Add(key, value);
         }
 
+        /// <summary>
+        /// Import an array of string in '<key> "=" <value>' format to the dictionary.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="data"></param>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public static IDictionary<TKey, TValue> ImportText<TKey,TValue>(IDictionary<TKey, TValue> dictionary, string[] data, string prefix = null, char separator = '=')
+        {
+            if (prefix == null)
+                prefix = "";
+
+            foreach (var record in data)
+            {
+                string key, value;
+                record.SplitWholeToVars(separator, out key, out value);  // parse as '<key> "=" <value>'
+                if (key.StartsWith(prefix))
+                {
+                    dictionary.Add(GeneralTypeConverter.Convert<TKey>(key), GeneralTypeConverter.Convert<TValue>(value));
+                }
+            }
+            return dictionary;
+        }
     }
 
 }
