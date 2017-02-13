@@ -77,7 +77,7 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// 
+        /// Create the Presenter (with its View).
         /// </summary>
         /// <param name="param">Arguments to the 'Create' method.</param>
         /// <returns>the new Presenter.</returns>
@@ -85,7 +85,7 @@ namespace MvpFramework
         {
             Init();
 
-            var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(param);
+            var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass,param);
             if (existingPresenter != null)
                 return existingPresenter;
 
@@ -120,7 +120,15 @@ namespace MvpFramework
                     view = Resolver.GetViewForPresenterType<IView>(TargetClass);
                 }
                 //| Could provide parameters for context-based injection of View.
-                UiManager.AfterCreateView(ref view);
+                try
+                {
+                    UiManager.AfterCreateView(TargetClass, param, ref view);
+                }
+                catch(Exception)
+                {
+                    MiscUtil.TryDispose(view);
+                    throw;
+                }
                 args[0] = view;
             }
 
@@ -180,18 +188,16 @@ namespace MvpFramework
             var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
             DiResolver.BuildUp(presenter);                                 // inject properties
 
-            UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
-            /*
-            if (UiManager != null)
+            try
             {
-                var newPresenter = UiManager.AfterCreatePresenter<TPresenter>(ref presenter, view);
-                if(!presenter.Equals(newPresenter))
-                {
-                    MiscUtil.TryDispose(presenter);
-                    presenter = newPresenter;
-                }
+                UiManager.AfterCreatePresenter<TPresenter>(ref presenter, param, view);
             }
-            */
+            catch(Exception)
+            {
+                MiscUtil.TryDispose(presenter);
+                MiscUtil.TryDispose(view);
+                throw;
+            }
 
             return presenter;
         }

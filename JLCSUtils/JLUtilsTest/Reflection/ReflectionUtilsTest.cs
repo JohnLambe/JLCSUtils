@@ -52,6 +52,8 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.AreEqual("new value", x.Property1.Property1.Property3);
         }
 
+        #region ArrayOfTypes
+
         [TestMethod]
         public void ArrayOfTypes()
         {
@@ -69,6 +71,45 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.AreEqual(null, ReflectionUtils.ArrayOfTypes(null));
         }
 
+        #endregion
+
+        #region Call Method
+
+        [TestMethod]
+        public void CallStaticMethod()
+        {
+            Assert.AreEqual(1234, ReflectionUtils.CallStaticMethod<int>(GetType(), "TestMethod", 1000, 234));
+        }
+
+        /// <summary>
+        /// Call a static method, giving an instance target.
+        /// </summary>
+        [TestMethod]
+        public void CallMethod_Static()
+        {
+            Assert.AreEqual(1234, ReflectionUtils.CallMethod<int>(new ReflectionUtilsTest(), "TestMethod", 1000, 234));
+        }
+
+        /// <summary>
+        /// Call an instance method.
+        /// </summary>
+        [TestMethod]
+        public void CallMethod()
+        {
+            Assert.AreEqual("str50", ReflectionUtils.CallMethod<string>(new ReflectionUtilsTest(), "TestInstanceMethod", "str", 50));
+        }
+
+        public static int TestMethod(int x, int y)
+        {
+            return x + y;
+        }
+
+        public string TestInstanceMethod(string x, int y)
+        {
+            return x + y;
+        }
+
+        #endregion
     }
 
     public class ClassForTest

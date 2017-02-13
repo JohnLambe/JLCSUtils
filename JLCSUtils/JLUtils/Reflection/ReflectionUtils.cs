@@ -132,6 +132,36 @@ namespace JohnLambe.Util.Reflection
             return result;
         }
 
+        /// <summary>
+        /// Call a static method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <param name="methodName"></param>
+        /// <param name="arguments">Arguments to the method to be called.</param>
+        /// <returns></returns>
+        public static T CallStaticMethod<T>(Type target, string methodName, params object[] arguments)
+        {
+            //TODO: if there are overloads, find the one that matches arguments
+            var method = target.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public); //, new Type[] { });
+            return (T)method.Invoke(target, arguments);
+        }
+
+        /// <summary>
+        /// Call a static or instance method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <param name="methodName"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        public static T CallMethod<T>(object target, string methodName, params object[] arguments)
+        {
+            //TODO: if there are overloads, find the one that matches arguments
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public); //, new Type[] { });
+            return (T)method.Invoke(target, arguments);
+        }
+
         #region GetProperty
 
         private enum PropertyAction { GetProperty, GetValue, SetValue };

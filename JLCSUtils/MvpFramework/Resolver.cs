@@ -425,6 +425,7 @@ namespace MvpFramework
 
             if (resolvedInterface != null)
             {
+                // Validate the interface to be returned:
                 if (!resolvedInterface.IsInterface)
                     throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
                 if (!typeof(TRequiredInterface).IsAssignableFrom(resolvedInterface))

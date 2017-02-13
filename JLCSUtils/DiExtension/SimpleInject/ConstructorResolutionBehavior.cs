@@ -49,6 +49,7 @@ namespace DiExtension.SimpleInject
             if (attributedCtors.Count() == 1)       // only one constructor with Inject attribute
                 return attributedCtors.First();
 
+            // Otherwise, fall back on the default behaviour. (It will fail unless there is another extension that resolves it).
             return Existing.GetConstructor(serviceType, implementationType);
 
 /*
