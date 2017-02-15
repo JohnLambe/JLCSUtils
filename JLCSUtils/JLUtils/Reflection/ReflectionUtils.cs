@@ -158,8 +158,112 @@ namespace JohnLambe.Util.Reflection
         public static T CallMethod<T>(object target, string methodName, params object[] arguments)
         {
             //TODO: if there are overloads, find the one that matches arguments
-            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public); //, new Type[] { });
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public); //, ArrayOfTypes(arguments), );
+            if (method.IsStatic)
+                target = null;      // necessary for static constructors only
             return (T)method.Invoke(target, arguments);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TReturn">The return type. It can match methods whose return type is assignable to this.</typeparam>
+        /// <param name="target">The instance on which to call the method. Static methods on its type can also be called.</param>
+        /// <param name="methodName">The name of the method to call (case-sensitive).</param>
+        /// <param name="arguments">The arguments to pass to the method to be called.</param>
+        /// <returns>The return value of the called method.</returns>
+        public static TReturn CallMethodVarArgs<TReturn>(object target, string methodName, params object[] arguments)
+        {
+            return CallMethodVarArgsEx<TReturn>(target, methodName, BindingFlagsExt.Instance | BindingFlagsExt.Static | BindingFlagsExt.Public, arguments);
+        }
+
+        public static TReturn CallStaticMethodVarArgs<TReturn>(Type target, string methodName, params object[] arguments)
+        {
+            return CallMethodVarArgsEx<TReturn>(target, methodName, BindingFlagsExt.CallStatic | BindingFlagsExt.Static | BindingFlagsExt.Public, arguments);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TReturn">The return type. It can match methods whose return type is assignable to this.</typeparam>
+        /// <param name="target"></param>
+        /// <param name="methodName"></param>
+        /// <param name="flags"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
+        public static TReturn CallMethodVarArgsEx<TReturn>(object target, string methodName, BindingFlagsExt flags, params object[] arguments)
+        {
+            Type targetType = flags.HasFlag(BindingFlagsExt.CallStatic) ? (Type)target      // if static, `target` is the type
+                : target.GetType();                                                         // otherwise, get the type of `target`
+            foreach (var method in targetType.GetMethods(flags.BindingFlags()))
+            {   // for each overload/method
+                if( method.Name.Equals(methodName) )     // if the method has the requested name
+                {
+                    bool fail = false;
+                    var parameters = method.GetParameters();
+                    int paramCount = parameters.Count();
+                    //if (!flags.HasFlag(BindingFlagsExt.PartMatch) && paramCount < arguments.Length)    // if this method has to few parameters
+                    //{
+                    //    fail = true;
+                    //
+                    //}
+
+                    var args = new object[paramCount];    // to be populated with the arguments for this method
+                    var argIndex = 0;
+
+                    if (typeof(TReturn).IsAssignableFrom(method.ReturnType))    // if the return type is compatible
+                    {
+                        foreach (var parameter in parameters)
+                        {
+                            bool noArg = argIndex >= arguments.Length;
+                            // if(!noArg)
+                            //   if( (flags.HasFlag(BindingFlagsExt.NullForDefault) && arguments[argIndex]==null) || arguments[argIndex]==DefaultValue))
+                            //     arguments[argIndex] == null);
+
+                            if (parameter.HasDefaultValue && noArg)  // 
+                            {
+                                args[argIndex] = parameter.DefaultValue;
+                            }
+                            else if (IsAssignableFromValue(parameter.ParameterType, arguments[argIndex]))
+                            {
+                                args[argIndex] = arguments[argIndex];
+                            }
+                            else
+                            {
+                                fail = true;
+                                break;
+                            }
+                            argIndex++;
+                        }
+                        if (!fail)
+                        {
+                            return (TReturn)method.Invoke(target, args);
+                        }
+                    }
+                }
+            }
+
+            throw new ArgumentException("No matching method found for '" + methodName + "' (no overload has compatible parameters)");
+            //TODO: Better exceptions
+        }
+
+        /// <summary>
+        /// Passed as an argument value to certain methods (that call a method by reflection) to use the default value for that parameter.
+        /// </summary>
+        public static readonly object DefaultValue = new object();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        /// <returns>True iff this type can be assigned the given value.</returns>
+        public static bool IsAssignableFromValue(this Type type, object value)
+        {
+            if (value == null)
+                return !type.IsValueType;     // assignable to null iff not a value type
+            else
+                return type.IsAssignableFrom(value.GetType());
         }
 
         #region GetProperty
@@ -243,6 +347,136 @@ namespace JohnLambe.Util.Reflection
 
         #endregion
     }
+
+    #region BindingFlagsExt
+
+    public enum BindingFlagsExt : long
+    {
+        #region
+        //
+        // Summary:
+        //     Specifies no binding flag.
+        Default = 0,
+        //
+        // Summary:
+        //     Specifies that the case of the member name should not be considered when binding.
+        IgnoreCase = 1,
+        //
+        // Summary:
+        //     Specifies that only members declared at the level of the supplied type's hierarchy
+        //     should be considered. Inherited members are not considered.
+        DeclaredOnly = 2,
+        //
+        // Summary:
+        //     Specifies that instance members are to be included in the search.
+        Instance = 4,
+        //
+        // Summary:
+        //     Specifies that static members are to be included in the search.
+        Static = 8,
+        //
+        // Summary:
+        //     Specifies that public members are to be included in the search.
+        Public = 16,
+        //
+        // Summary:
+        //     Specifies that non-public members are to be included in the search.
+        NonPublic = 32,
+        //
+        // Summary:
+        //     Specifies that public and protected static members up the hierarchy should be
+        //     returned. Private static members in inherited classes are not returned. Static
+        //     members include fields, methods, events, and properties. Nested types are not
+        //     returned.
+        FlattenHierarchy = 64,
+        //
+        // Summary:
+        //     Specifies that a method is to be invoked. This must not be a constructor or a
+        //     type initializer.
+        InvokeMethod = 256,
+        //
+        // Summary:
+        //     Specifies that Reflection should create an instance of the specified type. Calls
+        //     the constructor that matches the given arguments. The supplied member name is
+        //     ignored. If the type of lookup is not specified, (Instance | Public) will apply.
+        //     It is not possible to call a type initializer.
+        CreateInstance = 512,
+        //
+        // Summary:
+        //     Specifies that the value of the specified field should be returned.
+        GetField = 1024,
+        //
+        // Summary:
+        //     Specifies that the value of the specified field should be set.
+        SetField = 2048,
+        //
+        // Summary:
+        //     Specifies that the value of the specified property should be returned.
+        GetProperty = 4096,
+        //
+        // Summary:
+        //     Specifies that the value of the specified property should be set. For COM properties,
+        //     specifying this binding flag is equivalent to specifying PutDispProperty and
+        //     PutRefDispProperty.
+        SetProperty = 8192,
+        //
+        // Summary:
+        //     Specifies that the PROPPUT member on a COM object should be invoked. PROPPUT
+        //     specifies a property-setting function that uses a value. Use PutDispProperty
+        //     if a property has both PROPPUT and PROPPUTREF and you need to distinguish which
+        //     one is called.
+        PutDispProperty = 16384,
+        //
+        // Summary:
+        //     Specifies that the PROPPUTREF member on a COM object should be invoked. PROPPUTREF
+        //     specifies a property-setting function that uses a reference instead of a value.
+        //     Use PutRefDispProperty if a property has both PROPPUT and PROPPUTREF and you
+        //     need to distinguish which one is called.
+        PutRefDispProperty = 32768,
+        //
+        // Summary:
+        //     Specifies that types of the supplied arguments must exactly match the types of
+        //     the corresponding formal parameters. Reflection throws an exception if the caller
+        //     supplies a non-null Binder object, since that implies that the caller is supplying
+        //     BindToXXX implementations that will pick the appropriate method.
+        ExactBinding = 65536,
+        //
+        // Summary:
+        //     Not implemented.
+        SuppressChangeType = 131072,
+        //
+        // Summary:
+        //     Returns the set of members whose parameter count matches the number of supplied
+        //     arguments. This binding flag is used for methods with parameters that have default
+        //     values and methods with variable arguments (varargs). This flag should only be
+        //     used with System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[]).
+        OptionalParamBinding = 262144,
+        //
+        // Summary:
+        //     Used in COM interop to specify that the return value of the member can be ignored.
+        IgnoreReturn = 16777216,
+
+        #endregion
+
+        PartMatch = 0x100000000,
+        NullForDefault = 0x200000000,
+        CallStatic     = 0x400000000
+    }
+
+    public static class BindingFlagsExtension
+    {
+        /// <summary>
+        /// Return the <see cref="System.Reflection.BindingFlags"/> part of this value.
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public static BindingFlags BindingFlags(this BindingFlagsExt flags)
+        {
+            return (BindingFlags)((int)flags & 0xFFFFFFFF);
+        }
+    }
+
+    #endregion
 
 
     /// <summary>

@@ -78,7 +78,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallStaticMethod()
         {
-            Assert.AreEqual(1234, ReflectionUtils.CallStaticMethod<int>(GetType(), "TestMethod", 1000, 234));
+            Assert.AreEqual(1234, ReflectionUtils.CallStaticMethod<int>(GetType(), "TestStaticMethod", 1000, 234));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallMethod_Static()
         {
-            Assert.AreEqual(1234, ReflectionUtils.CallMethod<int>(new ReflectionUtilsTest(), "TestMethod", 1000, 234));
+            Assert.AreEqual(1234, ReflectionUtils.CallMethod<int>(new ReflectionUtilsTest(), "TestStaticMethod", 1000, 234));
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.AreEqual("str50", ReflectionUtils.CallMethod<string>(new ReflectionUtilsTest(), "TestInstanceMethod", "str", 50));
         }
 
-        public static int TestMethod(int x, int y)
+        public static int TestStaticMethod(int x, int y = 1000)
         {
             return x + y;
         }
@@ -108,6 +108,43 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         {
             return x + y;
         }
+
+        #endregion
+
+        #region CallMethodVarArgs
+
+        [TestMethod]
+        public void CallStaticMethodVarArgs()
+        {
+            Assert.AreEqual(30, ReflectionUtils.CallStaticMethodVarArgs<int>(GetType(), "TestStaticMethod", 10, 20));
+        }
+
+        /// <summary>
+        /// Call a static method, using the parameter default value for one parameter.
+        /// </summary>
+        [TestMethod]
+        public void CallStaticMethodVarArgs_DefaultParam()
+        {
+            Assert.AreEqual(1010, ReflectionUtils.CallStaticMethodVarArgs<int>(GetType(), "TestStaticMethod", 10));  // only one argument supplied
+        }
+
+        [TestMethod]
+        public void CallMethodVarArgs()
+        {
+            Assert.AreEqual("a100", ReflectionUtils.CallMethodVarArgs<string>(this, "TestInstanceMethod", "a", 100));
+        }
+
+        /// <summary>
+        /// A parameter without a default value is not supplied.
+        /// </summary>
+        [TestMethod]
+        public void CallMethodVarArgs_MissingParam()
+        {
+            TestUtil.AssertThrows(typeof(Exception),
+                    () => ReflectionUtils.CallMethodVarArgs<string>(this, "TestInstanceMethod", "a"));
+        }
+
+        //TODO: Several cases not covered.
 
         #endregion
     }

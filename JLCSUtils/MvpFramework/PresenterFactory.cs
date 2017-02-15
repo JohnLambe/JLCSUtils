@@ -91,7 +91,7 @@ namespace MvpFramework
 
             var parameters = TargetConstructor.GetParameters();   // constructor parameters
 
-            var args = DiUtils.PopulateArgs(DiResolver, parameters, param,
+            var args = DiUtil.PopulateArgs(DiResolver, parameters, param,
                 parameter =>
                 {
                     bool? fromCreateParam = null;

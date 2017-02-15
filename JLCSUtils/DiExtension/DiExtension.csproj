@@ -72,7 +72,7 @@
     <Compile Include="DiContext.cs" />
     <Compile Include="DiContextConfigurer.cs" />
     <Compile Include="DiRegisterAttribute.cs" />
-    <Compile Include="DiUtils.cs" />
+    <Compile Include="DiUtil.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="IDiContext.cs" />
     <Compile Include="IDiResolver.cs" />

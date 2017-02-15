@@ -180,7 +180,7 @@ namespace MvpFramework.Menu
 
         protected virtual void MenuItemExecute_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args, MethodInfo method, MenuItemModel.InvokeDelegate invoke)
         {
-            var result = DiUtils.CallMethod<object>(DiResolver,method,null, new object[] { item, args });
+            var result = DiUtil.CallMethod<object>(DiResolver,method,null, new object[] { item, args });
             if (result is bool && !(bool)result)
             {
                 // suppress creating an instance
