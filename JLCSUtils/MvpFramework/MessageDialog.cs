@@ -127,7 +127,7 @@ namespace MvpFramework
         /// </summary>
         MenuItemModel Default { get; }
 
-        event EventHandler Changed;
+        event MenuItemModel.ChangedDelegate Changed;
     }
 
     public class OptionCollection : MenuItemModel, IOptionCollection
@@ -141,8 +141,6 @@ namespace MvpFramework
                 option.ParentId = Id;
             }
         }
-
-        public virtual event EventHandler Changed; //TODO
 
         public virtual MenuItemModel AddOption(MenuItemModel option)
         {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using JohnLambe.Util;
+using JohnLambe.Util.Misc;
 using System.Runtime.InteropServices;
 
 // V. 0.1

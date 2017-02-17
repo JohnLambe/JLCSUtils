@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using JohnLambe.Util;
+using JohnLambe.Util.Misc;
 
 namespace JohnLambe.Tests.JLUtilsTest
 {

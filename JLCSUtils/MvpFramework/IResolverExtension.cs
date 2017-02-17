@@ -54,6 +54,8 @@ namespace MvpFramework
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the p</exception>
         ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, object[] param, IView view)
             where TPresenter : IPresenter;
+
+        //TODO: Change `param` to an object which contains this (to enable future extension).
     }
 
 
@@ -71,7 +73,7 @@ namespace MvpFramework
     /// Base class for <see cref="IResolverExtension"/> implementations, with default implementation,
     /// the same as <see cref="NullUiManager"/>.
     /// </summary>
-    public class ResolverExtensionBase : IResolverExtension
+    public abstract class ResolverExtensionBase : IResolverExtension
     {
         public TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, params object[] param)
             where TPresenter : IPresenter
@@ -79,7 +81,7 @@ namespace MvpFramework
             return default(TPresenter);
         }
 
-        public ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, object[] param, ref TView view)
+        public virtual ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, object[] param, ref TView view)
             where TView : IView
         {
             return ResolverExtensionStatus.Default;

@@ -29,6 +29,8 @@ namespace MvpFramework
         /// (Re)populate the view from the model (to update it when the model changes).
         /// </summary>
         void Refresh();
+
+        //event EventHandler Opened;  // or 'Shown' ?
     }
     /* OR
     public interface IView<TResult>

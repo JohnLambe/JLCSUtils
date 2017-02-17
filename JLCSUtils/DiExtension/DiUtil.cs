@@ -55,7 +55,7 @@ namespace DiExtension
                     if (createParam.Value)
                     {   // Context parameter:
                         if (contextArgsIndex >= contextArgs.Length)
-                            throw new InjectionFailedException("To many parameters for injection from context", null, parameter.Name, null);
+                            throw new InjectionFailedException("Too many parameters for injection from context", null, parameter.Name, null);
                         args[parameterIndex] = contextArgs[contextArgsIndex];
                         contextArgsIndex++;   // next parameter
                     }

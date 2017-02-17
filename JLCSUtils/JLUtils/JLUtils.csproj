@@ -62,7 +62,7 @@
     <Compile Include="Text\EncoderExtension.cs" />
     <Compile Include="TimeUtilities\DateClass.cs" />
     <Compile Include="Types\ID.cs" />
-    <Compile Include="LazyInitialize.cs" />
+    <Compile Include="Misc\LazyInitialize.cs" />
     <Compile Include="Text\CharacterUtils.cs" />
     <Compile Include="Collections\CollectionUtils.cs" />
     <Compile Include="Collections\LazilyPopulatedDictionary.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Collections\MutableList.cs" />
     <Compile Include="Collections\WrapperMap.cs" />
     <Compile Include="Encoding\HexConverter.cs" />
-    <Compile Include="DynamicProxyBase.cs" />
+    <Compile Include="Misc\DynamicProxyBase.cs" />
     <Compile Include="Encoding\SortStringCalculator.cs" />
     <Compile Include="Math\RandomUtils.cs" />
     <Compile Include="Reflection\EnumUtils.cs" />
@@ -84,7 +84,7 @@
     <Compile Include="Io\PathUtils.cs" />
     <Compile Include="Math\MathUtils.cs" />
     <Compile Include="Math\OrdinalUtils.cs" />
-    <Compile Include="ReferenceCountedObject.cs" />
+    <Compile Include="Misc\ReferenceCountedObject.cs" />
     <Compile Include="Reflection\TypeUtils.cs" />
     <Compile Include="Text\StringBuilderExtension.cs" />
     <Compile Include="TimeUtilities\Date.cs" />

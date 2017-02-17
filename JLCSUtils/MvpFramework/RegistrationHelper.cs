@@ -30,6 +30,9 @@ using DiExtension.Attributes;
  * 
  */
 
+//TODO: Presenter Action and Model interface registration. (IPresenterAction<Model>)
+
+
 namespace MvpFramework
 {
     public class RegistrationHelper
