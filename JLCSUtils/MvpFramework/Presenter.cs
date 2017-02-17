@@ -29,6 +29,13 @@ namespace MvpFramework
     }
 
     /// <summary>
+    /// A presenter that implements <see cref="IDisposable"/>.
+    /// </summary>
+    public interface IDisposablePresenter : IPresenter, IDisposable
+    {
+    }
+
+    /// <summary>
     /// Base class for Presenters.
     /// </summary>
     /// <typeparam name="TView">The type of the View. Should be an interface.</typeparam>

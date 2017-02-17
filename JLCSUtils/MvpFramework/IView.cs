@@ -30,7 +30,8 @@ namespace MvpFramework
         /// </summary>
         void Refresh();
 
-        //event EventHandler Opened;  // or 'Shown' ?
+        //event EventHandler Opened;  // or 'Shown' ?  The arguments can indicate whether it is modal or not.
+        //event EventHandler Closed;
     }
     /* OR
     public interface IView<TResult>
