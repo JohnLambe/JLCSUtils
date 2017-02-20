@@ -30,8 +30,16 @@ namespace MvpFramework
         /// </summary>
         void Refresh();
 
-        //event EventHandler Opened;  // or 'Shown' ?  The arguments can indicate whether it is modal or not.
-        //event EventHandler Closed;
+        //event EventHandler ViewOpened;  // or 'Shown' ?  The arguments can indicate whether it is modal or not.
+
+        /// <summary>
+        /// Fired when the view is closing.
+        /// <para>It can be fired before closing (<see cref="ViewClosingEventArgs.Closed"/> is false), giving handlers the option of preventing it from closing.
+        /// Views are not required to support that.
+        /// If it is fired with <see cref="ViewClosingEventArgs.Closed"/>==false, it must still be fired again with <see cref="ViewClosingEventArgs.Closed"/>==true (when it is actually closed).
+        /// </para>
+        /// </summary>
+        event ViewClosingDelegate ViewClosing;
     }
     /* OR
     public interface IView<TResult>

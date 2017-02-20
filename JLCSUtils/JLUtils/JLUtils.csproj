@@ -111,6 +111,7 @@
     <Compile Include="Types\PersonName.cs" />
     <Compile Include="Types\PhoneNumber.cs" />
     <Compile Include="Var.cs" />
+    <Compile Include="Xml\XmlUtil.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

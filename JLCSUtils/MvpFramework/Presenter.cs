@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DiExtension;
 using MvpFramework.Binding;
 using DiExtension.Attributes;
+using JohnLambe.Util;
 
 namespace MvpFramework
 {
@@ -41,7 +42,7 @@ namespace MvpFramework
     /// <typeparam name="TView">The type of the View. Should be an interface.</typeparam>
     /// <typeparam name="TModel">The type of the Model.
     /// Can be anything. Using primitive types is not recommended and may not be supported in future versions.</typeparam>
-    public class PresenterBase<TView, TModel> : IPresenter
+    public class PresenterBase<TView, TModel> : IPresenter, INotifyOnDispose
         where TView : IView
     {
 //        public static Type ModelType => typeof(TModel);
@@ -59,6 +60,11 @@ namespace MvpFramework
         }
 
         /// <summary>
+        /// Iff true, this is disposed when the view is closed.
+        /// </summary>
+        public virtual bool DisposeOnClose { get; set; } = true;
+
+        /// <summary>
         /// Bind to the view.
         /// </summary>
         /// <param name="view"></param>
@@ -66,9 +72,25 @@ namespace MvpFramework
         protected virtual void Bind(TView view, IControlBinderFactory binderFactory)
         {
             View.Bind(Model, this, binderFactory);
-
+            view.ViewClosing += View_ViewClosing; ;
         }
 
+        /// <summary>
+        /// Handles the ViewClosing event of the View.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected virtual void View_ViewClosing(object sender, ViewClosingEventArgs args)
+        {
+            ViewClosing?.Invoke(sender, args);               // fire this Presenter's ViewClosing event
+            if (args.Closed && DisposeOnClose)
+                Dispose();
+        }
+
+        /// <summary>
+        /// Show the view.
+        /// </summary>
+        /// <returns></returns>
         public virtual object Show()
         {
             View.Show();
@@ -82,6 +104,7 @@ namespace MvpFramework
         {
             if(View is IDisposable)
                 ((IDisposable)View).Dispose();
+            Disposed?.Invoke(this, EventArgs.Empty);
         }
 
 
@@ -89,5 +112,15 @@ namespace MvpFramework
             // make readonly ?
 
         protected readonly TView View;
+
+        /// <summary>
+        /// Fired when this instance is disposed.
+        /// </summary>
+        public virtual event EventHandler Disposed;
+
+        /// <summary>
+        /// Fired when the view closes.
+        /// </summary>
+        public virtual event ViewClosingDelegate ViewClosing;
     }
 }

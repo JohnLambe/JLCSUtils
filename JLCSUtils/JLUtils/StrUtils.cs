@@ -168,7 +168,7 @@ namespace JohnLambe.Util
         {
             return ConcatWithSeparatorsTrimEnclosed(null, parts);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -182,10 +182,10 @@ namespace JohnLambe.Util
             int index = 0;
 
             // convert all to strings:
-            foreach(var p in parts)
+            foreach (var p in parts)
             {
                 partsString[index] = ToNonNullString(p);
-                if(index % 2 == 0)            // if not a separator or the trailer
+                if (index % 2 == 0)            // if not a separator or the trailer
                     partsString[index] = partsString[index].Trim();
                 totalLength += partsString[index].Length;
                 index++;
@@ -194,11 +194,11 @@ namespace JohnLambe.Util
             totalLength += ((string)leader).Length;
 
             StringBuilder builder = new StringBuilder(totalLength);
-            for(index = 0; index < partsString.Length; index += 2)
+            for (index = 0; index < partsString.Length; index += 2)
             {
                 if (!string.IsNullOrEmpty(partsString[index]))   // if this part is not blank
                 {
-                    if(builder.Length == 0)               // if this is the first non-blank one
+                    if (builder.Length == 0)               // if this is the first non-blank one
                         builder.Append(leader);           // add the leader (prefix) part
                     builder.Append(partsString[index]);   // add this part
                     if (builder.Length > 0 && !string.IsNullOrEmpty(partsString.ElementAtOrDefault(index + 2)))  // if result is not blank so far, and next part is not null or blank
@@ -208,7 +208,7 @@ namespace JohnLambe.Util
                 }
             }
             if ((partsString.Length % 2) == 0 && builder.Length > 0)  // if even number of parts (then the last one is a suffix for the whole string), and not blank so far
-                builder.Append(partsString[partsString.Length-1]);    // add the suffix
+                builder.Append(partsString[partsString.Length - 1]);    // add the suffix
             return builder.ToString();
         }
 
@@ -346,15 +346,15 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// Equivalent to s.EndsWith("" + prefix).
+        /// Equivalent to s.EndsWith("" + <paramref name="suffix"/>).
         /// </summary>
         /// <param name="s"></param>
-        /// <param name="prefix"></param>
+        /// <param name="suffix"></param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException">If <paramref name="s"/> is null.</exception>
-        public static bool EndsWith(this string s, char prefix)
+        public static bool EndsWith(this string s, char suffix)
         {
-            return s != "" && s[s.Length-1] == prefix;
+            return s != "" && s[s.Length - 1] == suffix;
         }
 
         #region SplitToVars
@@ -522,7 +522,7 @@ namespace JohnLambe.Util
             }
             else
             {
-                string[] parts = s.Split(separator,3);
+                string[] parts = s.Split(separator, 3);
                 p1 = parts[0];
                 p2 = parts.Length > 1 ? parts[1] : null;
                 p3 = parts.Length > 2 ? parts[2] : null;
@@ -564,7 +564,7 @@ namespace JohnLambe.Util
         public static void SplitOn(this string s, int index, out string first, out string second)
         {
             first = s.Substring(0, index);
-            second = s.Substring(index+1);
+            second = s.Substring(index + 1);
         }
 
         /// <summary>
@@ -715,7 +715,7 @@ namespace JohnLambe.Util
         public static char CharAt(this string s, int index, char defaultValue = '\0')
         {
             return CharAtNullable(s, index, defaultValue).Value;
-                // this won't be null because we gave a non-null defaultValue.
+            // this won't be null because we gave a non-null defaultValue.
         }
 
         public static char? CharAtNullable(this string s, int index, char? defaultValue = null)
@@ -843,7 +843,7 @@ namespace JohnLambe.Util
         {
             if (suffix == null)
                 suffix = prefix;
-            if (s.IsEnclosedIn(prefix,suffix))
+            if (s.IsEnclosedIn(prefix, suffix))
                 return s.Substring(prefix.Length, s.Length - suffix.Length - prefix.Length);
             else
                 return null;
@@ -910,9 +910,9 @@ namespace JohnLambe.Util
         /// <returns></returns>
         public static string OverwriteSubstring(this string s, int start, string newValue, bool allowExtend = true)
         {
-            return s.SafeSubstring(0, start) 
+            return s.SafeSubstring(0, start)
                 + (allowExtend ?
-                    newValue + s.SafeSubstring(start + newValue.Length) 
+                    newValue + s.SafeSubstring(start + newValue.Length)
                     : newValue.SafeSubstring(0, s.Length - start) + s.SafeSubstring(start + newValue.Length, s.Length - start - newValue.Length)
                     );
         }

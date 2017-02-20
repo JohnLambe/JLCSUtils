@@ -6,7 +6,7 @@ namespace MvpFramework.Binding
 {
     /// <summary>
     /// Interface implemented by a control or by a helper for the control,
-    /// to bind the model to it.
+    /// to bind the model and/or presenter to it.
     /// </summary>
     public interface IControlBinder
     {

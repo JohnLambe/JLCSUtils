@@ -103,8 +103,8 @@ namespace MvpFramework
                     }
                     // still null if there was no InjectAttribute.
                     return fromCreateParam;
-            },
-                1    // skip the first parameter (its for the View)
+                },
+                1    // skip the first parameter (it's for the View)
                 );
 
             // Populate the view:
@@ -201,6 +201,12 @@ namespace MvpFramework
 
             return presenter;
         }
+
+        /// <summary>
+        /// True iff views created by this factory are modal.
+        /// </summary>
+        public virtual bool Modal { get; set; } = true;
+        //| Could have an object with more settings relating to how a view is shown.
 
         /// <summary>
         /// The type of the Presenter created by this factory.
