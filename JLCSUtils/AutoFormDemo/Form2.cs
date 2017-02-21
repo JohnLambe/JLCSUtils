@@ -58,5 +58,15 @@ namespace AutoFormDemo
             form.Show();
             
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var c = new Button() { Text = "button", MaximumSize = new System.Drawing.Size(300, 400), MinimumSize = new System.Drawing.Size(100, 100) };
+            var f = new WrapperForm(c);
+            //f.ShowDialog();
+            //c.Visible = false;
+            c.Visible = true;
+
+        }
     }
 }
