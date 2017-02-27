@@ -72,6 +72,7 @@ namespace MvpFramework
                     assembly.GetExportedTypes().Where( t => t.IsDefined<PresenterAttribute>() )
                     )
                 {
+                    // Get the type (usually an interface) returned by the presenter factory:
                     var presenterInterface = _resolver.ResolveInterfaceForPresenterType(presenter);
                     RegisterType(presenterInterface, presenter);             // register the Presenter class to be resolved from its interface
 
@@ -79,7 +80,10 @@ namespace MvpFramework
 
 //                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
 /*TODO*/
+                    // Get the Presenter constructor to be invoked by the Presenter Factory:
                     var constructor = GetConstructor(presenter);
+
+                    // Get the type parameters of the generic factory interface:
                     IList<Type> argTypes = new List<Type>();
                     argTypes.Add(presenterInterface);                   // first argument is always the returned presenter type
                     foreach(var arg in constructor.GetParameters())
@@ -92,7 +96,9 @@ namespace MvpFramework
                     }
 
                     var argTypesArray = argTypes.ToArray();
+                    // Make the closed generic type of the factory interface:
                     factoryInterfaceType = GenericTypeUtils.ChangeGenericParameters(typeof(IPresenterFactory<>), argTypesArray);
+                    // Register a mapping from this generic factory interface to the concrete generic factory class:
                     RegisterType(factoryInterfaceType, GenericTypeUtils.ChangeGenericParameters(typeof(PresenterFactory<>), argTypesArray));
 
                     /*
@@ -128,6 +134,11 @@ namespace MvpFramework
             //TODO: Move to PresenterFactory.
         }
 
+        /// <summary>
+        /// Register a type mapping with the DI container.
+        /// </summary>
+        /// <param name="serviceType"></param>
+        /// <param name="implementationType"></param>
         protected virtual void RegisterType(Type serviceType, Type implementationType)
         {
             Debug.Assert(serviceType != null);

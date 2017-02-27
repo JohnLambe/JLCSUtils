@@ -9,7 +9,7 @@ namespace MvpFramework
     /// <summary>
     /// A presenter that has its own window.
     /// </summary>
-    public interface IWindowPresenter
+    public interface IWindowPresenter : IPresenter
     {
         /// <summary>
         /// Show window modally.

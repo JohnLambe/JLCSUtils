@@ -109,6 +109,15 @@ namespace MvpFramework
         /// <param name="dialog">The <see cref="MessageDialogParameters"/> to which the response relates.</param>
         /// <param name="messageDialogResult">The chosen option - the same as the return value from <see cref="IMessageDialog.ShowMessage(MessageDialogParameters)"/>.</param>
         public delegate void RespondedDelegate(MessageDialogParameters dialog, object messageDialogResult);
+
+        /// <summary>
+        /// Fire the <see cref="Responded"/> event.
+        /// </summary>
+        /// <param name="messageDialogResult">The 'messageDialogResult' parameter to <see cref="RespondedDelegate"/>.</param>
+        public virtual void FireResponded(object messageDialogResult)
+        {
+            Responded?.Invoke(this, messageDialogResult);
+        }
     }
 
 
@@ -130,6 +139,10 @@ namespace MvpFramework
         event MenuItemModel.ChangedDelegate Changed;
     }
 
+    /// <summary>
+    /// A collection of options, such as a list of commands (which might correspond to buttons etc.)
+    /// or a menu.
+    /// </summary>
     public class OptionCollection : MenuItemModel, IOptionCollection
     {
         public OptionCollection(IDictionary<string, MenuItemModel> options, string id = "")
@@ -185,6 +198,10 @@ namespace MvpFramework
         /// </summary>
         Confirmation = 2000,
 
+        // An error with a 'Retry' option:
+        // Could be a separate type, but it could be more useful to be able to classify the category of error
+        // (one of the values below), and specify the buttons separately.
+
         /// <summary>
         /// A warning.
         /// By default, has only one option (typically called "Ok") - to dismiss it.
@@ -201,7 +218,7 @@ namespace MvpFramework
 
         /// <summary>
         /// An error.
-        /// By default, has only one option (typically called "Ok") - to dismiss it.
+        /// By default, has only one option (typically called "Ok") - to dismiss it (the same applies to all type with names ending with "Error").
         /// </summary>
         Error = 4000,
 
@@ -228,7 +245,7 @@ namespace MvpFramework
     public enum MessageDisplayType
     {
         /// <summary>
-        /// To use a default based on other properties of the MessageDialogParameters.
+        /// To use a default based on other properties of the <see cref="MessageDialogParameters"/>.
         /// </summary>
         Default = 0,
         //| Could use Nullable<MessageDisplayType> instead ?
@@ -245,7 +262,7 @@ namespace MvpFramework
         Temporary,
 
         /// <summary>
-        /// Show a modeless dialog or message on the bottom or corner of a page/screen/window etc.
+        /// Show a modeless dialog or message, typically on the bottom or corner of a page/screen/window etc.
         /// </summary>
         NonModal,
 

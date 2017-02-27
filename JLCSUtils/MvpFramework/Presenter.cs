@@ -72,7 +72,7 @@ namespace MvpFramework
         protected virtual void Bind(TView view, IControlBinderFactory binderFactory)
         {
             View.Bind(Model, this, binderFactory);
-            view.ViewClosing += View_ViewClosing; ;
+            view.ViewVisibilityChanged += View_ViewClosing; ;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        protected virtual void View_ViewClosing(object sender, ViewClosingEventArgs args)
+        protected virtual void View_ViewClosing(object sender, ViewVisibilityChangedEventArgs args)
         {
             ViewClosing?.Invoke(sender, args);               // fire this Presenter's ViewClosing event
             if (args.Closed && DisposeOnClose)
@@ -121,6 +121,6 @@ namespace MvpFramework
         /// <summary>
         /// Fired when the view closes.
         /// </summary>
-        public virtual event ViewClosingDelegate ViewClosing;
+        public virtual event ViewVisibilityChangedDelegate ViewClosing;
     }
 }

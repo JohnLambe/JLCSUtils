@@ -51,7 +51,9 @@
     <Compile Include="Binding\PresenterBinderWrapper.cs" />
     <Compile Include="GridAttributes.cs" />
     <Compile Include="IPresenterFactory.cs" />
+    <Compile Include="Services\IRandomService.cs" />
     <Compile Include="IResolverExtension.cs" />
+    <Compile Include="Services\ITimeService.cs" />
     <Compile Include="IWindowPresenter.cs" />
     <Compile Include="IWindowView.cs" />
     <Compile Include="KeyboardKey.cs" />
@@ -70,8 +72,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationHelper.cs" />
     <Compile Include="Resolver.cs" />
+    <Compile Include="Services\IEnvironmentService.cs" />
     <Compile Include="ViewBase.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WindowPresenterBase.cs" />
     <Compile Include="WinForms\Types.cs" />
@@ -104,6 +107,11 @@
     <EmbeddedResource Include="ViewBase.resx">
       <DependentUpon>ViewBase.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Doc\ClassDiagram.cd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

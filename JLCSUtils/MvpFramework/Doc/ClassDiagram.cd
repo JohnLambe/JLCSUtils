@@ -1,0 +1,599 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MvpFramework.Binding.MvpHandlerAttribute" Collapsed="true">
+    <Position X="19.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAEQAAAEAAAIgAAAAAAAQAAhAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Binding\Attributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Binding.ControlBinderFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Binding\ControlBinder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MvpFramework.Binding.GeneralControlBinder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAhAAAAAAgAAAAAAAAAwAAoAIIgAIAAAAAA=</HashCode>
+      <FileName>Binding\GeneralControlBinder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MvpFramework.Binding.HandlerResolver" Collapsed="true">
+    <Position X="15.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAQAA=</HashCode>
+      <FileName>Binding\HandlerResolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Binding.ModelBinderWrapper" Collapsed="true">
+    <Position X="15.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAYAAAAgAAEAAAAAAAAAAAAAAAAAgAAAAKABA=</HashCode>
+      <FileName>Binding\ModelBinderWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Binding.ModelPropertyBinder" Collapsed="true">
+    <Position X="17.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Binding\ModelBinderWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Binding.PresenterBinderWrapper" Collapsed="true">
+    <Position X="21" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Binding\PresenterBinderWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.ColumnDisplayAttribute" Collapsed="true">
+    <Position X="17.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAACAAAMAAAAAAAAAAABAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GridAttributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.ResolverExtensionBase" Collapsed="true">
+    <Position X="3.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAABAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IResolverExtension.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.NullUiManager" Collapsed="true">
+    <Position X="3.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IResolverExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.WindowViewOpenedEventArgs" Collapsed="true">
+    <Position X="19.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IWindowView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.MessageDialogParameters" Collapsed="true">
+    <Position X="22.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAKAAEAEAAAAAAAAAEAAAAAAAAAABAIAFAQAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.OptionCollection" Collapsed="true">
+    <Position X="3.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.OptionCollectionBuilder" Collapsed="true">
+    <Position X="19.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.MvpInjectAttribute" Collapsed="true">
+    <Position X="21" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MvpInjectAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.MvpParamAttribute" Collapsed="true">
+    <Position X="22.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MvpInjectAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.MvpResolverException" Collapsed="true">
+    <Position X="15.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MvpResolutionException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.PresenterBase&lt;TView, TModel&gt;" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAACAAAAAAAAAAAAAAACCFAAAAABgAAAACAAA=</HashCode>
+      <FileName>Presenter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.MvpAttribute" Collapsed="true">
+    <Position X="11" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.PresenterAttribute" Collapsed="true">
+    <Position X="13.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.PresenterForActionAttribute" Collapsed="true">
+    <Position X="8.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.ViewAttribute" Collapsed="true">
+    <Position X="11" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.PresenterFactory&lt;TPresenter&gt;" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgQIAAAAAAAAAIAAEAAgAACAAAACAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.KnownPresenterFactory&lt;TPresenter&gt;" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.KnownPresenterFactory&lt;TPresenter, TParam1&gt;" Collapsed="true">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.KnownPresenterFactory&lt;TPresenter, TParam1, TParam2&gt;" Collapsed="true">
+    <Position X="9.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.KnownPresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3&gt;" Collapsed="true">
+    <Position X="7.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.PresenterFactory&lt;TPresenter, TParam1&gt;" Collapsed="true">
+    <Position X="6.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.PresenterFactory&lt;TPresenter, TParam1, TParam2&gt;" Collapsed="true">
+    <Position X="7.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.PresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3&gt;" Collapsed="true">
+    <Position X="6.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.PresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3, TParam4&gt;" Collapsed="true">
+    <Position X="4.5" Y="6.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.PresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5&gt;" Collapsed="true">
+    <Position X="4.75" Y="8" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>PresenterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.RegistrationHelper" Collapsed="true">
+    <Position X="22.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASBAAAAAAAAAAEAAAAABAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RegistrationHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.MvpResolver" Collapsed="true">
+    <Position X="6.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BRIAAAgAAABEBEAJIIAAAEQABAAkAIAAAgiEAEAAAAA=</HashCode>
+      <FileName>Resolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.DiMvpResolver" Collapsed="true">
+    <Position X="6.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAIAAAAAQABAAAAAIAAAgAAAAAAAA=</HashCode>
+      <FileName>Resolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.AttributeAndType&lt;T&gt;" Collapsed="true">
+    <Position X="15.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Resolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.ViewBase" Collapsed="true">
+    <Position X="0.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAgACAAAAAAgAACAAAAAACAAAAACAAAAAAAAAAAAQ=</HashCode>
+      <FileName>ViewBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.ViewVisibilityChangedEventArgs" Collapsed="true">
+    <Position X="17.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAgCAAAQ=</HashCode>
+      <FileName>ViewBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.WindowPresenterBase&lt;TView, TModel&gt;" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>WindowPresenterBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuItemModel" Collapsed="true">
+    <Position X="3.75" Y="9.25" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="MvpFramework.Menu.MenuItemModel.MenuItemChangeType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Class Name="MvpFramework.Menu.MenuItemModel.ChangedEventArgs" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="MvpFramework.Menu.MenuItemModel.InvokedEventArgs" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Delegate Name="MvpFramework.Menu.MenuItemModel.InvokeDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="MvpFramework.Menu.MenuItemModel.ChangedDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAECkQIACACqAIiEBAAEYAQAAhABAAAZAgDQAAAAAAE=</HashCode>
+      <FileName>Menu\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuCollection" Collapsed="true">
+    <Position X="21" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Menu\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuAttributeBase" Collapsed="true">
+    <Position X="1.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECkAIAAAAAAAAAAAAAAAAAAhAACAAAAgCQAAABAAA=</HashCode>
+      <FileName>Menu\MenuAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuItemAttribute" Collapsed="true">
+    <Position X="0.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Menu\MenuAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuAttribute" Collapsed="true">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Menu\MenuAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuItemInstanceAttribute" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Menu\MenuAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.DefaultMenuSetId" Collapsed="true">
+    <Position X="21" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Menu\MenuAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.Menu.MenuBuilder" Collapsed="true">
+    <Position X="19.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQABAAAAAAAAABABCAAABAAQAAIACCAAAAAAAAAACAA=</HashCode>
+      <FileName>Menu\MenuBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.WinForms.KeyboardKeyExt" Collapsed="true">
+    <Position X="17.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>WinForms\Types.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.WinForms.MvpWindowStateExt" Collapsed="true">
+    <Position X="17.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>WinForms\Types.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.WinForms.UiController" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAgAAAACAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>WinForms\UiController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MvpFramework.WinForms.WindowViewBase" Collapsed="true">
+    <Position X="0.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEACAAAAAAAACAAAACAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>WinForms\WindowViewBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="MvpFramework.Binding.IControlBinder" Collapsed="true">
+    <Position X="15.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Binding\ControlBinder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.Binding.IControlBinderFactory" Collapsed="true">
+    <Position X="17.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Binding\ControlBinder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenterFactory&lt;TPresenter&gt;" Collapsed="true">
+    <Position X="21" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenterFactory&lt;TPresenter, TParam&gt;" Collapsed="true">
+    <Position X="22.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenterFactory&lt;TPresenter, TParam1, TParam2&gt;" Collapsed="true">
+    <Position X="15.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3&gt;" Collapsed="true">
+    <Position X="17.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3, TParam4&gt;" Collapsed="true">
+    <Position X="19.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenterFactory&lt;TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5&gt;" Collapsed="true">
+    <Position X="21" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPresenterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IResolverExtension" Collapsed="true">
+    <Position X="22.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAABAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IResolverExtension.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IUiController" Collapsed="true">
+    <Position X="0.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>IUiController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.ISessionLockController" Collapsed="true">
+    <Position X="15.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQCAAAAAIAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IUiController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.ISessionLockSuspensionHandler" Collapsed="true">
+    <Position X="17.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>IUiController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.ISesson" Collapsed="true">
+    <Position X="19.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IUiController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IView" Collapsed="true">
+    <Position X="12.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgACAAABAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IWindowPresenter" Collapsed="true">
+    <Position X="21" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>IWindowPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IWindowView" Collapsed="true">
+    <Position X="12.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>IWindowView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IMessageDialog" Collapsed="true">
+    <Position X="0.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IOptionCollection" Collapsed="true">
+    <Position X="19.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAEIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IPresenter" Collapsed="true">
+    <Position X="9.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.IDisposablePresenter" Collapsed="true">
+    <Position X="9.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MvpFramework.ResolverExtensionStatus" Collapsed="true">
+    <Position X="15.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IResolverExtension.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MvpFramework.MvpWindowState" Collapsed="true">
+    <Position X="22.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAIAAAAAAgA=</HashCode>
+      <FileName>IUiController.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MvpFramework.KeyboardKey" Collapsed="true">
+    <Position X="15.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>A5ru5//VY8ooSswJUzETACoVGk1c1BsayKGo////aWM=</HashCode>
+      <FileName>KeyboardKey.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MvpFramework.MessageType" Collapsed="true">
+    <Position X="21" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAQAAAAAhCBAAAgAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MvpFramework.MessageDisplayType" Collapsed="true">
+    <Position X="19.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAIAAAAAAAAAIAgAAAAAEAAAA=</HashCode>
+      <FileName>MessageDialog.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MvpFramework.VisibilityChange" Collapsed="true">
+    <Position X="17.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>ViewBase.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MvpFramework.Menu.MenuStyle" Collapsed="true">
+    <Position X="17.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAgAAAAAAAAAAAAAAAQAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Menu\MenuAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="MvpFramework.ViewVisibilityChangedDelegate" Collapsed="true">
+    <Position X="15.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewBase.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

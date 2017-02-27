@@ -65,6 +65,7 @@ namespace MvpFramework
         void IView.Show()
         {
             base.Show();
+            InvokeViewVisibilityChanged(new ViewVisibilityChangedEventArgs(VisibilityChange.Opened));
         }
 
         private void InitializeComponent()
@@ -81,22 +82,24 @@ namespace MvpFramework
         protected void View_VisibleChanged(object sender, EventArgs e)
         {
             if(!Visible)
-                InvokeViewClosing(new ViewClosingEventArgs(true));
+                InvokeViewVisibilityChanged(new ViewVisibilityChangedEventArgs(VisibilityChange.Closed));
         }
 
         /// <summary>
-        /// Fires the <see cref="ViewClosing"/> event.
+        /// Fires the <see cref="ViewVisibilityChanged"/> event.
         /// </summary>
         /// <param name="args"></param>
-        protected virtual void InvokeViewClosing(ViewClosingEventArgs args)
+        protected virtual void InvokeViewVisibilityChanged(ViewVisibilityChangedEventArgs args)
         {
-            ViewClosing?.Invoke(this, args);
+            ViewVisibilityChanged?.Invoke(this, args);
         }
 
         /// <summary>
         /// Fired when the View is closing.
         /// </summary>
-        public virtual event ViewClosingDelegate ViewClosing;
+        public virtual event ViewVisibilityChangedDelegate ViewVisibilityChanged;
+
+        //public virtual event EventHandler ViewOpened;
     }
 
     /// <summary>
@@ -104,26 +107,46 @@ namespace MvpFramework
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="args"></param>
-    public delegate void ViewClosingDelegate(object sender, ViewClosingEventArgs args);
+    public delegate void ViewVisibilityChangedDelegate(object sender, ViewVisibilityChangedEventArgs args);
 
     /// <summary>
-    /// Arguments to the <see cref="ViewClosingDelegate"/> event.
+    /// Arguments to the <see cref="ViewVisibilityChangedDelegate"/> event.
     /// </summary>
-    public class ViewClosingEventArgs
+    public class ViewVisibilityChangedEventArgs
     {
-        public ViewClosingEventArgs(bool closed)
+        public ViewVisibilityChangedEventArgs(VisibilityChange action)
         {
-            this.Closed = closed;
+            this.Action = action;
         }
+
+        public virtual VisibilityChange Action { get; protected set; }
 
         /// <summary>
         /// Iff true, the form is closed.
         /// </summary>
-        public virtual bool Closed { get; protected set; }
+        public virtual bool Closed => Action == VisibilityChange.Closed;
 
         /// <summary>
         /// Set to true to prevent the view from closing.
         /// </summary>
-        public virtual bool Intercept { get; set; }
+        public virtual bool Intercept
+        {
+            get { return _intercept; }
+            set
+            {
+                if (Action != VisibilityChange.Closing)
+                    throw new InvalidOperationException("This ViewVisibilityChangedEvent is not interceptable");
+                _intercept = value;
+            }
+        }
+
+        protected bool _intercept = false;
+    }
+
+    public enum VisibilityChange
+    {
+        Opened = 10,
+        Closing = 20,
+        Closed = 25
     }
 }

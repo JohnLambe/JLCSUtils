@@ -26,7 +26,7 @@ namespace MvpFramework.Binding
         /// <param name="target"></param>
         /// <param name="handlerId"></param>
         /// <returns></returns>
-        public virtual VoidDelegate GetHandler(object target, string handlerId)
+        public virtual VoidDelegate GetHandler(object target, string handlerId, string filter = null)
         {
             var handlerSorted = GetHandlersInfo(target,handlerId).Select(h => h.Method);  // get list of handlers
             // Make a delegate to invoke them in order:
@@ -45,13 +45,15 @@ namespace MvpFramework.Binding
         /// <param name="target"></param>
         /// <param name="handlerId">Handler ID, null to return all handlers.</param>
         /// <returns></returns>
-        public virtual IEnumerable<Handler> GetHandlersInfo(object target, string handlerId)
+        public virtual IEnumerable<Handler> GetHandlersInfo(object target, string handlerId, string filter = null)
         {
             var handlers = new List<Handler>();                                // to hold a list of all handlers for the handlerId
             foreach (var method in target?.GetType().GetMethods())             // all methods
             {
-                foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()
-                    .Where(a => a.Enabled && (handlerId == null || a.Name.Equals(handlerId)) ))              // attributes for the specified handler on this method
+                foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()      // all attributes of each method
+                    .Where(a => a.Enabled && (handlerId == null || a.Name.Equals(handlerId))    // attributes for the specified handler on this method
+                    && FilterMatches(filter,a.Filter))                // apply the filter
+                    )              
                 {
                     handlers.Add(new Handler()
                     {
@@ -62,5 +64,24 @@ namespace MvpFramework.Binding
             }
             return handlers.OrderBy(h => h.Attribute.Order);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchFilter">The filter value to search for. null (no filter) matches anything - always returns true.</param>
+        /// <param name="targetFilters">The list of filters for an item. <paramref name="searchFilter"/> can match any of these.</param>
+        /// <returns>True iff the filter matches.</returns>
+        public virtual bool FilterMatches(string searchFilter, string[] targetFilters)
+        {
+            if (searchFilter == null)
+                return true;
+            foreach (var f in targetFilters)
+            {
+                if (f.Equals(searchFilter))
+                    return true;
+            }
+            return false;
+        }
+
     }
 }
