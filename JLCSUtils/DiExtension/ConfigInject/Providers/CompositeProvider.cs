@@ -19,11 +19,50 @@ namespace DiExtension.ConfigInject.Providers
             Provider = provider;
         }
 
-        public bool GetValue<T>(string key, Type requiredType, out T value)
+        public virtual bool GetValue<T>(string key, Type requiredType, out T value)
         {
+            var parts = key.Split(Separator);
+            var level = 0;                      // level in the heirarchical key (0 for top)
+            object currentValue = Provider;     // value at this level
+            foreach (var part in parts)
+            {
+                bool isLeaf = level == parts.Length - 1;      // true if we've reached the leaf node in the expression (key)
+                Type currentRequiredType = isLeaf ? requiredType : typeof(object);   // if this is the leaf, then we expect the requested type, otherwise we don't know the type
+
+                if (!isLeaf && currentValue == null)   // if this is not the leaf node and the value so far is null
+                {                                      // fail - we can't evaluate the next level
+                    value = default(T);
+                    return false;
+                }
+
+                // Evaluate the key at this level, replacing currentValue:
+                if (currentValue is IConfigProvider)
+                {
+                    if(! ((IConfigProvider)currentValue).GetValue(parts[level], currentRequiredType, out currentValue) )
+                    {
+                        value = default(T);
+                        return false;
+                    }
+                }   //TODO: try evaluating property if IConfigProvider lookup fails??
+                else
+                {
+                    if (!ObjectValueProvider.StaticGetValue<object>(currentValue, parts[level], currentRequiredType, out currentValue))
+                    {
+                        value = default(T);     
+                        return false;
+                    }
+                }
+
+                level++;
+            }
+
+            value = (T)currentValue;
+            return true;
+
+            /*
             string parentKey, childKey;
             key.SplitToVars(Separator, out parentKey, out childKey);
-            //TODO: Support mulitple levels
+            //TODO: Support multiple levels
             if (childKey == null)
             {
                 return Provider.GetValue<T>(key, requiredType, out value);
@@ -48,12 +87,13 @@ namespace DiExtension.ConfigInject.Providers
                     return false;
                 }
             }
+            */
         }
 
         /// <summary>
         /// The wrapped provider.
         /// </summary>
-        protected IConfigProvider Provider { get; private set; }
+        protected virtual IConfigProvider Provider { get; private set; }
 
         /// <summary>
         /// Separator for levels of hierarchical keys.

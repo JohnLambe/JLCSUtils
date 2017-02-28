@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace MvpFramework.Binding
 {
@@ -19,24 +20,35 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Set to false to disable a handler attribute on a base class.
         /// </summary>
-        public bool Enabled { get; set; } = true;
+        public virtual bool Enabled { get; set; } = true;
 
         /// <summary>
         /// Sorting order in a list of handlers.
         /// </summary>
-        public int Order { get; set; }
+        public virtual int Order { get; set; }
 
-        public string[] Filter { get; set; }
+        public virtual string[] Filter { get; set; }
 
 
         // Details for generating a UI item:
 
-        public bool AutoGenerate { get; set; } = false;
+        public virtual bool AutoGenerate { get; set; } = false;
 
-        public string DisplayName { get; set; }
-        public KeyboardKey HotKey { get; set; }  
-        public char AcceleratorChar { get; set; }
-        public string IconId { get; set; }
-        public bool IsDefault { get; set; }
+        public virtual string DisplayName { get; set; }
+        public virtual KeyboardKey HotKey { get; set; }  
+        public virtual char AcceleratorChar { get; set; }
+        public virtual string IconId { get; set; }
+        public virtual bool IsDefault { get; set; }
+    }
+
+
+    /// <summary>
+    /// Attribute for any item that provides a name for displaying in a user interface.
+    /// For use when there is code to use it for this purpose, e.g. this can be used on enum values, and a user interface
+    /// for displaying or inputting a value of that type could use them.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+    public class DisplayNameAnyAttribute : DisplayNameAttribute
+    {
     }
 }

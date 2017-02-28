@@ -110,7 +110,17 @@ namespace JohnLambe.Util
             }
         }
 
-        
+        public override int GetHashCode()
+        {
+            return CalcHashCode(Low) ^ CalcHashCode(High);
+        }
+
+        protected int CalcHashCode(T value)
+        {
+            return (value.Equals(default(T)) ? 0 : value.GetHashCode());
+        }
+
+
         /// <summary>
         /// Returns the intersion of this range and the other one (i.e. a range which contains all values common to both).
         /// Returns NoneRange is the ranges do not intersect.

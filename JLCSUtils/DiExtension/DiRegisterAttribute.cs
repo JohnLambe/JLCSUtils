@@ -25,6 +25,7 @@ namespace DiExtension
 
         /// <summary>
         /// The (requested) type that resolves to the item being registered.
+        /// If null, it is just registered for its own type.
         /// </summary>
         public virtual Type ForType { get; set; }
 

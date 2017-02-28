@@ -14,21 +14,15 @@ namespace JohnLambe.Util.TypeConversion
     {
         public static T Convert<T>(object source)
         {
-            return (T)System.Convert.ChangeType(source, typeof(T));
+            return Convert<T>(source, typeof(T));
         }
 
         public static T Convert<T>(object source, Type requiredType)
         {
-            /*
-            if ((source is int && requiredType == typeof(int))
-                || (source is long && requiredType == typeof(long))
-                )
-            {
-                return (T)source;
-            }
-            */
-
-            return (T)System.Convert.ChangeType(source, requiredType);
+            if (typeof(T).IsAssignableFrom(requiredType))        // if it can be cast (this has to be tried first, since ChangeType supports only IConvertible)
+                return (T)source;                                // cast it
+            else
+                return (T)System.Convert.ChangeType(source, requiredType);
         }
 
         /// <summary>

@@ -257,12 +257,6 @@ namespace MvpFramework
         {
             this.TargetClass = targetClass;
         }
-/*
-        public virtual TPresenter Create()
-        {
-            return CreatePresenter();
-        }
-        */
     }
 
     /// <summary>
@@ -329,11 +323,41 @@ namespace MvpFramework
         {
         }
 
-        public TPresenter Create(TParam1 param)
+        public virtual TPresenter Create(TParam1 param)
 //        TPresenter IPresenterFactory<TPresenter, TParam1>.Create(TParam1 param)
         {
             return CreatePresenter(param);
         }
+
+        public virtual TPresenter Show(TParam1 param)
+        {
+            var presenter = Create(param);
+            presenter.Show();
+            return presenter;
+        }
+
+        /*
+        /// <summary>
+        /// Create and show the presenter modally, and dispose it if necessary.
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public virtual object ShowModal(TParam1 param)
+        {
+            object result = null;
+            var presenter = Create(param);
+            try
+            {
+                result = presenter.ShowModal();
+            }
+            finally
+            {
+                if (presenter is IDisposable)
+                    ((IDisposable)presenter).Dispose();
+            }
+            return result;
+        }
+        */
     }
 
     public class PresenterFactory<TPresenter, TParam1, TParam2> : PresenterFactory<TPresenter, TParam1>,
@@ -346,7 +370,7 @@ namespace MvpFramework
         {
         }
 
-        public TPresenter Create(TParam1 param1, TParam2 param2)
+        public virtual TPresenter Create(TParam1 param1, TParam2 param2)
         //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2>.Create(TParam1 param1, TParam2 param2)
         {
             return CreatePresenter(param1, param2);
@@ -364,7 +388,7 @@ namespace MvpFramework
         {
         }
 
-        public TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3)
+        public virtual TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3)
         //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>.Create(TParam1 param1, TParam2 param2, TParam3 param3)
         {
             return CreatePresenter(param1, param2, param3);
@@ -383,7 +407,7 @@ namespace MvpFramework
         {
         }
 
-        public TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        public virtual TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
         //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
         {
             return CreatePresenter(param1, param2, param3, param4);
@@ -403,7 +427,7 @@ namespace MvpFramework
         {
         }
 
-        public TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        public virtual TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
         //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
         {
             return CreatePresenter(param1, param2, param3, param4, param5);
