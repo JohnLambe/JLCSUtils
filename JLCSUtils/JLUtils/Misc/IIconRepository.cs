@@ -33,9 +33,18 @@ namespace JohnLambe.Util.Misc
         /// this may return the closest available state,
         /// or the Normal state.
         /// </summary>
-        /// <param name="iconId"></param>
+        /// <param name="iconId">Identifier of the icon. default(<typeparamref name="TKeyType"/>) and "" (when <typeparamref name="TKeyType"/> is <see cref="string"/>) are valid and cause default(<typeparamref name="TImageType"/>) to be returned.</param>
         /// <param name="state"></param>
-        /// <returns></returns>
+        /// <returns>The requested icon, or default(<typeparamref name="TImageType"/>) if no icon is available.</returns>
         TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal);
+    }
+
+
+    /// <summary>
+    /// Flags an item as holding an IconId, as used by <see cref="IIconRepository"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class IconIdAttribute : Attribute
+    {
     }
 }

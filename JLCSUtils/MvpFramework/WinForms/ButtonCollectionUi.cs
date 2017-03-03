@@ -10,22 +10,11 @@ using System.Windows.Forms;
 
 namespace MvpFramework.WinForms
 {
-    public partial class WindowViewBase : ViewBase, IWindowView
+    public partial class ButtonCollectionUi : UserControl
     {
-        public WindowViewBase()
+        public ButtonCollectionUi()
         {
             InitializeComponent();
         }
-
-        public virtual void Close()
-        {
-            //TODO
-        }
-
-        public virtual object ShowModal()
-        {
-            return null;
-        }
-
     }
 }

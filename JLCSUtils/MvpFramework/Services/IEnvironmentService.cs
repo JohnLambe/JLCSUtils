@@ -8,6 +8,9 @@ using static System.Environment;
 
 namespace MvpFramework.Services
 {
+    /// <summary>
+    /// A service that provides details of the current system (details provided by the <see cref="System.Environment"/> class.
+    /// </summary>
     public interface IEnvironmentBasicService
     {
         string MachineName { get; }
@@ -51,6 +54,10 @@ namespace MvpFramework.Services
         void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target);
     }
 
+
+    /// <summary>
+    /// Implementation <see cref="IEnvironmentService"/> that returns environment details of the current system.
+    /// </summary>
     public class EnvironmentService : IEnvironmentBasicService
     {
         public virtual bool HasShutdownStarted => Environment.HasShutdownStarted;

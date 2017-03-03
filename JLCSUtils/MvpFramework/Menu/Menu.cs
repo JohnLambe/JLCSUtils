@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using JohnLambe.Util.Encoding;
 using System.Diagnostics;
+using JohnLambe.Util;
 
 namespace MvpFramework.Menu
 {
@@ -94,6 +95,12 @@ namespace MvpFramework.Menu
         public virtual string Filter { get; set; }
 
         /// <summary>
+        /// The use of this depends on the consumer of the menu.
+        /// It is generally for a value returned as a result when showing something modally.
+        /// </summary>
+        public virtual object ReturnValue { get; set; }
+
+        /// <summary>
         /// True iff this is the default option.
         /// Only one (or zero) option in a set should have this set to true.
         /// </summary>
@@ -135,7 +142,35 @@ namespace MvpFramework.Menu
         /// null if there is no default.
         /// </summary>
         public virtual MenuItemModel Default
-            => Children.FirstOrDefault(o => o.IsDefault);
+        {
+            get { return Children.FirstOrDefault(o => o.IsDefault); }
+            set
+            {
+                ClearDefault();
+                value.IsDefault = true;
+            }
+        }
+
+        /// <summary>
+        /// Make the item (in the children of this item) with the given <see cref="MenuItemModel.ReturnValue"/> the default.
+        /// </summary>
+        /// <param name="returnValue"></param>
+        public virtual void SetDefaultByReturnValue(object returnValue)
+        {
+            ClearDefault();
+            Children.FirstOrDefault(o => o.ReturnValue == returnValue).IsDefault = true;
+        }
+
+        /// <summary>
+        /// Clear the default item (in the children of this item), so that there is no default in this menu.
+        /// </summary>
+        public virtual void ClearDefault()
+        {
+            foreach (var o in Children.Where(o => o.IsDefault))
+            {
+                o.IsDefault = false;
+            }
+        }
 
         /// <summary>
         /// The number of levels deep this item is in the hierarchy (0 if this is the root, i.e. <see cref="Parent"/> is null).

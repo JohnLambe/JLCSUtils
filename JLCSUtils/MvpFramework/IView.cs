@@ -28,18 +28,8 @@ namespace MvpFramework
         /// <summary>
         /// (Re)populate the view from the model (to update it when the model changes).
         /// </summary>
-        void Refresh();
+        void RefreshView();
 
-        //event EventHandler ViewOpened;  // or 'Shown' ?  The arguments can indicate whether it is modal or not.
-
-        /// <summary>
-        /// Fired when the view is closing.
-        /// <para>It can be fired before closing (<see cref="ViewVisibilityChangedEventArgs.Closed"/> is false), giving handlers the option of preventing it from closing.
-        /// Views are not required to support that.
-        /// If it is fired with <see cref="ViewVisibilityChangedEventArgs.Closed"/>==false, it must still be fired again with <see cref="ViewVisibilityChangedEventArgs.Closed"/>==true (when it is actually closed).
-        /// </para>
-        /// </summary>
-        event ViewVisibilityChangedDelegate ViewVisibilityChanged;
     }
     /* OR
     public interface IView<TResult>

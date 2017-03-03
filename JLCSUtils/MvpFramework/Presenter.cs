@@ -13,10 +13,14 @@ using JohnLambe.Util;
 namespace MvpFramework
 {
 
+    public interface IPresenterBase
+    {
+    }
+
     /// <summary>
     /// Interface of an MVP Presenter, as seen by other Presenters.
     /// </summary>
-    public interface IPresenter
+    public interface IPresenter : IPresenterBase
     {
         /// <summary>
         /// Show the Presenter.
@@ -43,7 +47,7 @@ namespace MvpFramework
     /// <typeparam name="TModel">The type of the Model.
     /// Can be anything. Using primitive types is not recommended and may not be supported in future versions.</typeparam>
     public class PresenterBase<TView, TModel> : IPresenter, INotifyOnDispose
-        where TView : IView
+        where TView : IWindowView
     {
 //        public static Type ModelType => typeof(TModel);
 

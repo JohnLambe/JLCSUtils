@@ -49,8 +49,15 @@
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="Binding\PresenterBinderWrapper.cs" />
+    <Compile Include="WinForms\BasicMessageDialogService.cs" />
+    <Compile Include="Dialog\MessageDialogPresenter.cs" />
+    <Compile Include="Dialog\MessageInterceptor.cs" />
     <Compile Include="GridAttributes.cs" />
+    <Compile Include="Dialog\IMessageDialogService.cs" />
     <Compile Include="IPresenterFactory.cs" />
+    <Compile Include="Dialog\MessageDialog_UiInterfaces.cs" />
+    <Compile Include="Menu\OptionCollection.cs" />
+    <Compile Include="Menu\OptionCollectionBuilder.cs" />
     <Compile Include="Services\IRandomService.cs" />
     <Compile Include="IResolverExtension.cs" />
     <Compile Include="Services\ITimeService.cs" />
@@ -60,7 +67,7 @@
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Menu\MenuAttribute.cs" />
     <Compile Include="Menu\MenuBuilder.cs" />
-    <Compile Include="MessageDialog.cs" />
+    <Compile Include="Dialog\MessageDialog.cs" />
     <Compile Include="IUiController.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="Binding\ControlBinder.cs" />
@@ -73,10 +80,24 @@
     <Compile Include="RegistrationHelper.cs" />
     <Compile Include="Resolver.cs" />
     <Compile Include="Services\IEnvironmentService.cs" />
-    <Compile Include="ViewBase.cs">
+    <Compile Include="Dialog\MessageDialogService.cs" />
+    <Compile Include="WinForms\ButtonCollectionUi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\ButtonCollectionUi.Designer.cs">
+      <DependentUpon>ButtonCollectionUi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\ResolverExtension.cs" />
+    <Compile Include="WinForms\ViewBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WindowPresenterBase.cs" />
+    <Compile Include="WinForms\MessageDialogView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\MessageDialogView.Designer.cs">
+      <DependentUpon>MessageDialogView.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinForms\Types.cs" />
     <Compile Include="WinForms\UiController.cs" />
     <Compile Include="WinForms\WindowViewBase.cs">
@@ -84,6 +105,12 @@
     </Compile>
     <Compile Include="WinForms\WindowViewBase.Designer.cs">
       <DependentUpon>WindowViewBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\WrapperForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\WrapperForm.Designer.cs">
+      <DependentUpon>WrapperForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -104,7 +131,13 @@
     <Content Include="MvpFramework.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ViewBase.resx">
+    <EmbeddedResource Include="WinForms\ButtonCollectionUi.resx">
+      <DependentUpon>ButtonCollectionUi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\MessageDialogView.resx">
+      <DependentUpon>MessageDialogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\ViewBase.resx">
       <DependentUpon>ViewBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -112,6 +145,9 @@
     <None Include="Doc\ClassDiagram.cd">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dialog\Dialogs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

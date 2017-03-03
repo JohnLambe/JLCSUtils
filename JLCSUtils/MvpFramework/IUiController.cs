@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvpFramework.Dialog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace MvpFramework
     /// <summary>
     /// Provides access to UI behaviours of the application or the main form.
     /// </summary>
-    public interface IUiController : IMessageDialog
+    public interface IUiController : IMessageDialogService
         // or IMainFormController ?
     {
         #region Main Window
@@ -52,7 +53,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Show a simple message dialog.
-        /// <para>See <see cref="IMessageDialog"/> for a message dialog with more options.</para>
+        /// <para>See <see cref="IMessageDialogService"/> for a message dialog with more options.</para>
         /// </summary>
         /// <param name="message"></param>
         /// <param name="title"></param>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MvpFramework.Dialog;
+using MvpFramework.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,11 @@ namespace MvpFramework.WinForms
     /// </summary>
     public class UiController : IUiController
     {
+        public UiController(IMessageDialogService messageDialogService = null)
+        {
+            MessageDialogService = messageDialogService ?? new BasicMessageDialogService();
+        }
+
         public virtual MvpWindowState MainFormState
         {
             get
@@ -32,17 +39,26 @@ namespace MvpFramework.WinForms
 
         public virtual void ShowMessage(string message, string title = "")
         {
-            MessageBox.Show(message, title);
+//            MessageBox.Show(message, title);
+            ShowMessage<object>(new MessageDialogModel<object>()
+            {
+                Message = message,
+                Title = title
+            });
         }
 
-        public virtual object ShowMessage(MessageDialogParameters parameters)
+        public virtual TResult ShowMessage<TResult>(IMessageDialogModel<TResult> messageModel)
         {
+            return MessageDialogService.ShowMessage<TResult>(messageModel);
+/*
             // Mock/placeholder implementation:
-            MessageBox.Show(parameters.Message, parameters.Title);
+            MessageBox.Show(messageModel.Message, messageModel.Title);
             //TOOD: support the other properties, with a better dialog box.
-            return null;
+            return default(TResult);
+*/
         }
 
         protected virtual Form MainForm { get { return Application.OpenForms[0]; } }
+        protected readonly IMessageDialogService MessageDialogService;
     }
 }

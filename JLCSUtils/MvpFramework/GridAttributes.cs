@@ -39,6 +39,11 @@ namespace MvpFramework
         /// 
         /// </summary>
         public virtual int DisplayWidth { get; set; }
+
+        /// <summary>
+        /// True iff this item should be shown in the grid.
+        /// </summary>
+        public virtual bool Visible { get; set; }
     }
 
     //| Attribute on class for Report/View -level settings ?

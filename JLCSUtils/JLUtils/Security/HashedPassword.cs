@@ -13,46 +13,82 @@ namespace JohnLambe.Util.Security
 {
     public class PasswordHashingAlgorithm
     {
+        public PasswordHashingAlgorithm()
+        {
+            KdfIterations = (int)(BaseInterationsCount * System.Math.Pow(AnnualIterationsMultiplier, System.Math.Max(0,DateTime.Now.Year - BaseYear)));
+        }
+
+        /// <summary>
+        /// The year to which <see cref="BaseInterationsCount"/> applies.
+        /// If the system year is earlier than this, the number of iterations for this year is used (to reduce the impact of the clock being wrong).
+        /// </summary>
+        public static int BaseYear = 2016;
+        /// <summary>
+        /// Number of interations to use in the year <see cref="BaseYear"/>.
+        /// </summary>
+        public static int BaseInterationsCount = 20000;   // this is low - chosen for speed
+        /// <summary>
+        /// Multiply the iterations count by this for each year after <see cref="BaseYear"/>.
+        /// </summary>
+        public static double AnnualIterationsMultiplier = 1.5;
+        // This is low, in case the hardware isn't being upgraded at the same rate as technological advancement.
+        // Moore's Law suggests a value of 2.
+
         /// <summary>
         /// Pepper - a static value combined with all passwords.
+        /// <para>Consumers of this library can assign their own value system-wide.</para>
         /// </summary>
         public virtual string Pepper { protected get; set; } = "a26d0f9ed7364c8684034e8eb80f76a1";
 
         /// <summary>
-        /// Number of iterations of the key derivation function to do.
+        /// Number of iterations of the key derivation function to do, when generating new hashes, and the default assumed number of iterations
+        /// for decoding, if the number of iterations is not specified.
+        /// <para>The default set in the constructor increases each year, but is low (for speed). You should choose a value according to your security requirements.</para>
         /// </summary>
-        public virtual int KdfIterations { get; set; } = 1500;
+        public virtual int KdfIterations { get; set; }
 
         /// <summary>
-        /// Hash size in bytes
+        /// Hash size in bytes.
         /// </summary>
         public virtual int HashSize { get; set; } = 384 / 8; // 384 bits
 
         /// <summary>
         /// Indentifies this algorithm/encoding.
         /// Future versions of this library may use simple integer IDs.
+        /// <para>
         /// Third party software (subclasses or systems that may store a password in the same field as one from this library)
         /// should use globally-unique values in one of the following formats:
         /// a standard GUID, represented as hexadecimal digits only, in lower case;
-        /// a name that would be valid as a conventional Java namespace or class name (backwards domain name which is owned by the creator of the implementation (or is used with permission of the domain owner));
+        /// a name that would be valid as a conventional Java namespace or class name (backwards domain name which is owned by the creator of the implementation
+        /// (or is used with permission of the domain owner));
         /// any of the above immediately followed by ":", ";" or "|", followed by any string.
+        /// Future versions of this library will not use values beginning with "#", so these can be in used in a closed system (where these IDs are controlled)
+        /// to ensure compatibility with future versions.
+        /// </para>
         /// </summary>
         protected const string EncodingType = "1";
 
+        /// <summary>
+        /// Separator used in encoding all required values (Encdoing, Hash and Salt) into a string.
+        /// </summary>
         protected const char Separator = ' ';
+        /// <summary>
+        /// Separator used with the value to be hashed, between the Password and Pepper.
+        /// </summary>
         protected const string HashSeparator = "\t";
 
         /// <summary>
         /// Returns how long to delay responding when a wrong password is entered.
         /// </summary>
         /// <param name="failedAttempts">Number of consecutive failed attempts, including the current one.
-        /// If the current attempt is successful, the number of previous failed attempts should be supplied.
+        /// If the current attempt is successful, the number of previous failed attempts should be supplied
+        /// (so that an attaacker cannot tell, from the delay, that it will fail).
         /// 0 if the current and previous attempts were successful.
         /// </param>
         /// <returns>the time to delay, in milliseconds.</returns>
         public virtual int GetWrongPasswordDelay(int failedAttempts)
         {
-            return System.Math.Min(failedAttempts * 500, 10000);
+            return System.Math.Min(failedAttempts * 500, 8000);
         }
 
         /// <summary>
@@ -61,16 +97,16 @@ namespace JohnLambe.Util.Security
         /// <returns></returns>
         public virtual byte[] GenerateSalt()
         {
-            return BinaryConverter.FromLong(RandomUtils.RandomPositiveLong() ^ DateTime.Now.Ticks);   // random value XORed with the time
+            return BinaryConverter.FromLong(RandomUtils.RandomLong() ^ DateTime.Now.Ticks);   // random value XORed with the time
         }
 
         /// <summary>
         /// Parses the encoding value.
         /// </summary>
-        /// <param name="encoding"></param>
+        /// <param name="encoding">Specifies the algorithm/encoding and parameters to the algorithm.</param>
         /// <param name="iterations"></param>
-        /// <returns></returns>
-        protected string ParseEncoding(string encoding, out int iterations)
+        /// <returns>The encoding ID (identifies the algorithm/encoding).</returns>
+        protected virtual string ParseEncoding(string encoding, out int iterations)
         {
             string encodingType, iterationsString;
             encoding.SplitToVars(';', out encodingType, out iterationsString);
@@ -93,10 +129,17 @@ namespace JohnLambe.Util.Security
         /// <param name="encoding"></param>
         protected virtual void ValidateEncoding(string encoding)
         {
-            int iterations;
+            int iterations;   // dummy value
             ParseEncoding(encoding, out iterations);
         }
 
+        /// <summary>
+        /// Calculate a hash.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <param name="salt"></param>
+        /// <param name="password"></param>
+        /// <returns>The hashed salted (with pepper applied) password.</returns>
         public virtual byte[] HashPassword(string encoding, byte[] salt, string password)
         {
             int iterations;
@@ -121,6 +164,10 @@ namespace JohnLambe.Util.Security
             return GetHashAlgorithm().ComputeHash(System.Text.Encoding.UTF8.GetBytes(password + HashSeparator + Pepper));
         }
 
+        /// <summary>
+        /// Returns an instance of the hash algorithm class.
+        /// </summary>
+        /// <returns></returns>
         protected virtual HashAlgorithm GetHashAlgorithm()
         {
             return SHA384.Create();
@@ -145,6 +192,13 @@ namespace JohnLambe.Util.Security
             return Convert.ToBase64String(GetHashAsBytes(hashMetadata, password));
         }
 
+        /// <summary>
+        /// Convert to the string encoding (as held in <see cref="HashedPassword.EncodedValue"/>).
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <param name="Salt"></param>
+        /// <param name="hash"></param>
+        /// <returns></returns>
         public virtual string StringEncode(string encoding, byte[] Salt, byte[] hash = null)
         {
             return (encoding ?? EncodingType)
@@ -155,6 +209,13 @@ namespace JohnLambe.Util.Security
                 );
         }
 
+        /// <summary>
+        /// Convert from the string encoding (as held in <see cref="HashedPassword.EncodedValue"/>)
+        /// to the three parts.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <param name="Salt"></param>
+        /// <param name="hash"></param>
         public virtual void StringDecode(string value, out string encoding, out byte[] salt, out byte[] hash)
         {
             string saltString, hashString = null;

@@ -15,7 +15,7 @@ namespace JohnLambe.Util.Math
     /// </summary>
     public static class RandomUtils
     {
-        private static readonly Random _random = new System.Random((int)(DateTime.Now.Ticks & 0xFFFFFFFF) ^ System.Environment.MachineName.GetHashCode() ^ System.Threading.Thread.CurrentThread.ManagedThreadId);
+        private static readonly Random _random = new System.Random(Environment.TickCount ^ System.Environment.MachineName.GetHashCode() ^ System.Threading.Thread.CurrentThread.ManagedThreadId);
             // seeded with the time, machine name and thread ID.
 
         /// <summary>
@@ -45,16 +45,17 @@ namespace JohnLambe.Util.Math
         /// <returns></returns>
         public static long RandomPositiveLong()
         {
-            return _random.Next() | (_random.Next() << 32);
+            return _random.Next() | (_random.Next() << 31) | (_random.Next(2) << 62);
         }
 
         /// <summary>
-        /// Positive 64-bit random number.
+        /// 64-bit random number (positive or negative).
         /// </summary>
         /// <returns></returns>
         public static long RandomLong()
         {
-            return _random.Next() ^ (_random.Next() << 32);
+            return _random.Next() | (_random.Next() << 31) | (_random.Next(4) << 62);
+            // random.Next() returns 31 random bits (always positive), so we call a third time for another 2 bits.
         }
 
         /// <summary>
@@ -97,9 +98,22 @@ namespace JohnLambe.Util.Math
             return (T)values.GetValue(Next(values.Length));
         }
 
+        /// <summary>
+        /// Returns a random byte value.
+        /// </summary>
+        /// <returns></returns>
         public virtual byte RandomByte()
         {
             return (byte)Next(256);
+        }
+
+        /// <summary>
+        /// Returns a random boolean value (50% chance of true).
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool RandomBool()
+        {
+            return Next(2) == 0;
         }
     }
 }

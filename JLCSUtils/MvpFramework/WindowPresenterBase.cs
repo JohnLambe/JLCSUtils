@@ -8,7 +8,7 @@ using MvpFramework.Binding;
 namespace MvpFramework
 {
     public class WindowPresenterBase<TView, TModel> : PresenterBase<TView, TModel>, IWindowPresenter
-            where TView : IView
+            where TView : IWindowView
     {
         public WindowPresenterBase(TView view, TModel model = default(TModel), IControlBinderFactory binderFactory = null) : base(view, model, binderFactory)
         {
