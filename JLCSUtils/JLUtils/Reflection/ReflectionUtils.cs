@@ -268,7 +268,24 @@ namespace JohnLambe.Util.Reflection
 
         #region GetProperty
 
-        private enum PropertyAction { GetProperty, GetValue, SetValue };
+        /// <summary>
+        /// An action to be done on a property.
+        /// </summary>
+        private enum PropertyAction
+        {
+            /// <summary>
+            /// Return the property metadata only.
+            /// </summary>
+            GetProperty,
+            /// <summary>
+            /// Get the value of the property.
+            /// </summary>
+            GetValue,
+            /// <summary>
+            /// Set the value of the property.
+            /// </summary>
+            SetValue
+        };
 
         /// <summary>
         /// Get/Set the value of a property, and read the property metadata.
@@ -277,8 +294,13 @@ namespace JohnLambe.Util.Reflection
         /// For nested properties, this is the innermost object on exit.</param>
         /// <param name="propertyName">Property name. Can be a nested property.</param>
         /// <param name="action"></param>
-        /// <param name="value">The value to set; or a reference to receive the value (on Get). Ignored for <see cref="PropertyAction.GetProperty"/>.</param>
-        /// <returns>The details of the innermost property.</returns>
+        /// <param name="value">The value to set; or a reference to receive the value (on Get).
+        /// Ignored for <see cref="PropertyAction.GetProperty"/>.
+        /// </param>
+        /// <para>This is modified if and only if <paramref name="action"/> is <see cref="PropertyAction.SetValue"/>.
+        /// In this case, it is set to null on failure (if a property does not exist, or nested value that this property is on, is null).
+        /// </para>
+        /// <returns>The details of the innermost property. null if the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
         private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value)
         { 
             PropertyInfo property = null;
@@ -286,10 +308,22 @@ namespace JohnLambe.Util.Reflection
             for (int level = 0; level < levels.Length; level++)
             {
                 property = target.GetType().GetProperty(levels[level]);
-                if (property == null)
+                if (property == null)               // property does not exist
+                {
+                    if(action == PropertyAction.GetValue)               
+                        value = null;
                     return null;
-                if (level < levels.Length - 1)
+                }
+                if (level < levels.Length - 1)  // not last (innermost) level
+                {   // dereference object at this level:
+                    if(target == null)         // trying to dereference a null (before the last level)
+                    {
+                        if (action == PropertyAction.GetValue)
+                            value = null;
+                        return null;
+                    }
                     target = property.GetValue(target);
+                }
             }
             switch(action)
             {

@@ -4,6 +4,15 @@
 
 namespace JohnLambe.Util
 {
+    public static class DelegateUtil
+    {
+        /// <summary>
+        /// A delegate that does nothing.
+        /// </summary>
+        public static readonly VoidDelegate NullDelegate = () => {};
+    }
+
+
     // Common delegates:
 
     /// <summary>

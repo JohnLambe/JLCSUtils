@@ -59,6 +59,9 @@
     <Compile Include="Reflection\AttributeUtils.cs" />
     <Compile Include="Reflection\GenericTypeUtils.cs" />
     <Compile Include="Security\HashedPassword.cs" />
+    <Compile Include="Services\EnvironmentService.cs" />
+    <Compile Include="Services\RandomService.cs" />
+    <Compile Include="Services\TimeService.cs" />
     <Compile Include="Text\CaptionUtils.cs" />
     <Compile Include="Text\CharacterSet.cs" />
     <Compile Include="Text\EncoderExtension.cs" />
@@ -84,7 +87,7 @@
     <Compile Include="Reflection\EnumUtils.cs" />
     <Compile Include="Io\FilingUtils.cs" />
     <Compile Include="Io\PathUtils.cs" />
-    <Compile Include="Math\MathUtils.cs" />
+    <Compile Include="Math\MathUtil.cs" />
     <Compile Include="Math\OrdinalUtils.cs" />
     <Compile Include="Misc\ReferenceCountedObject.cs" />
     <Compile Include="Reflection\TypeUtils.cs" />
@@ -116,7 +119,9 @@
     <Compile Include="Var.cs" />
     <Compile Include="Xml\XmlUtil.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Services\ReadMe.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

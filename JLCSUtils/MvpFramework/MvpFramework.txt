@@ -22,5 +22,13 @@ Automated enforcement:
 
 
 
-  TODO:
+TODO:
     Interfaces for [Model/Presenter]BinderWrapper
+
+To Test:
+	RefreshView(Control)  - to refresh control and children from model.
+	Provide a way of declaring a mapping from properties of the View class (such as the title) to Model properties.
+	Provide the ability to declare a property on the View to recieve the model (without the View having a type parameter).
+
+Done:
+	ViewBase.Bind: Could move most of the binding code from the View to the framework.

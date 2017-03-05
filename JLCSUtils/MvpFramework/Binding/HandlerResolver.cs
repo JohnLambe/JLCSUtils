@@ -7,16 +7,25 @@ using JohnLambe.Util.Reflection;
 using JohnLambe.Util;
 using System.Reflection;
 using JohnLambe.Util.Collections;
+using JohnLambe.Util.Text;
 
 namespace MvpFramework.Binding
 {
     
     public class HandlerResolver
     {
-        public struct Handler
+        public class Handler
         {
             public MvpHandlerAttribute Attribute;
             public MethodInfo Method;
+            public object Target;
+
+            public VoidDelegate HandlerDelegate
+                => Target == null ? DelegateUtil.NullDelegate
+                : () => Method.Invoke(Target, Array.Empty<object>());
+
+            public virtual string DisplayName
+                => Attribute?.DisplayName ?? CaptionUtils.GetDisplayName(Method);
         }
 
         /// <summary>
@@ -58,7 +67,8 @@ namespace MvpFramework.Binding
                     handlers.Add(new Handler()
                     {
                         Attribute = attrib,
-                        Method = method
+                        Method = method,
+                        Target = target
                     });
                 }
             }
@@ -75,6 +85,8 @@ namespace MvpFramework.Binding
         {
             if (searchFilter == null)
                 return true;
+            if (targetFilters == null)
+                targetFilters = DefaultFilter;
             foreach (var f in targetFilters)
             {
                 if (f.Equals(searchFilter))
@@ -82,6 +94,8 @@ namespace MvpFramework.Binding
             }
             return false;
         }
+
+        protected readonly string[] DefaultFilter = new string[] { "" };
 
     }
 }

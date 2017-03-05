@@ -46,7 +46,7 @@ namespace MvpFramework
         {
             this.DiResolver = diResolver;
             this.Resolver = resolver;
-            this.UiManager = uiManager ?? new NullUiManager();
+            this.UiManager = uiManager ?? new NullResolverExtension();
         }
 
         protected virtual void Init()

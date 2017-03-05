@@ -71,7 +71,7 @@ namespace MvpFramework
 
     /// <summary>
     /// Base class for <see cref="IResolverExtension"/> implementations, with default implementation,
-    /// the same as <see cref="NullUiManager"/>.
+    /// the same as <see cref="NullResolverExtension"/>.
     /// </summary>
     public abstract class ResolverExtensionBase : IResolverExtension
     {
@@ -98,8 +98,12 @@ namespace MvpFramework
     /// <summary>
     /// null object implementation of <see cref="IResolverExtension"/>.
     /// </summary>
-    public sealed class NullUiManager : ResolverExtensionBase
+    public sealed class NullResolverExtension : ResolverExtensionBase
     {
     }
 
+    [Obsolete("Use NullResolverExtension")]  // renamed
+    public sealed class NullUiManager : ResolverExtensionBase
+    {
+    }
 }

@@ -8,6 +8,11 @@ namespace MvpFramework
 {
     public interface IWindowView : IView
     {
+        void Show();
+        //|TODO: return value?
+        //|  Rename to avoid name conflicts in implementing classes.
+        //|  Change to:  object ShowView()  ?
+
         /// <summary>
         /// Show the window modally.
         /// </summary>

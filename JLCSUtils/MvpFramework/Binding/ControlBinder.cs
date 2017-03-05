@@ -21,15 +21,21 @@ namespace MvpFramework.Binding
         /// Update the control from the model.
         /// </summary>
         void Refresh();
-        //TODO: Add a parameter to bind a specific control (or group of controls)?
-        // (Specify the property updated.)
+    }
+
+    public interface IControlBinderExt : IControlBinder
+    {
+        /// <summary>
+        /// The control bound by this binder.
+        /// </summary>
+        Control Control { get; }
     }
 
     /// <summary>
     /// Interface to return a binder for a given controls and presenter.
     /// May return null if the control does not bind to anything.
     /// </summary>
-    public interface IControlBinderFactory : IFactory<IControlBinder, Control, IPresenter>
+    public interface IControlBinderFactory : IFactory<IControlBinderExt, Control, IPresenter>
     {
     }
 
@@ -39,16 +45,17 @@ namespace MvpFramework.Binding
     /// </summary>
     public class ControlBinderFactory : IControlBinderFactory
     {
-        public virtual IControlBinder Create(Control control, IPresenter presenter)
+        public virtual IControlBinderExt Create(Control control, IPresenter presenter)
         {
-            if (control is IControlBinder)                   // if the control implements the interface itself
-                return control as IControlBinder;            // use it
+            if (control is IControlBinderExt)                   // if the control implements the interface itself
+                return control as IControlBinderExt;            // use it
             else
                 return new GeneralControlBinder(control, presenter);
+            //TODO:
             // We could return different classes based on a mapping from Control classes to IControlBinder implementations.
-            // - by a naming convention.
-            // - by type mapping in DI container (get implementation of IControlBinder<T> where T is the control type).
-            // - scanning for an IControlBinder implementation with an attribute referencing the control type.
+            // - by a naming convention;
+            // - by type mapping in DI container (get implementation of IControlBinder<T> where T is the control type); or
+            // - by scanning for an IControlBinder implementation with an attribute referencing the control type.
         }
     }
 

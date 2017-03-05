@@ -32,6 +32,10 @@ Event injection:
 Injection of Static Properties.
 Injection of Static Methods.
 
-Automatically creating and invoking a factory when its return type is required.
+Factories:
+	Automatically creating and invoking a factory when its return type is requested from DI.
+	When interface return type of factory (or delegate to create instance) is requested from DI, generate proxy (dyanmic object, implementing interface using Impromptu Interface) that creates instance on first call to a member.
+	When a factory or delegate of any type that could be resolved is requested, return a factory/delegate that invokes the DI container to resolve the item.
 
 Injection of owner (the instance receiving the item being injected) on property/method injection.
+

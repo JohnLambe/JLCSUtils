@@ -38,7 +38,7 @@ namespace MvpFramework.WinForms
             child.Disposed += Child_Disposed;
 
 //            SizeChanged += WrapperForm_SizeChanged;
-            VisibleChanged += WrapperForm_VisibleChanged;
+//            VisibleChanged += WrapperForm_VisibleChanged;
 
             if (Child is IWindowView)
             {
@@ -50,27 +50,48 @@ namespace MvpFramework.WinForms
             }
         }
 
+        /*
         private void WrapperForm_VisibleChanged(object sender, EventArgs e)
         {
             
         }
 
-        /*
         private void WrapperForm_SizeChanged(object sender, EventArgs e)
         {
 
         }
         */
 
+        /// <summary>
+        /// Handles the size of the wrapped control changing.
+        /// This may be as a result of this form changing size, or the size of the wrapped contol
+        /// being assigned directly. Only the latter case actually requires handling, to adjust the
+        /// window size to match the new child size.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected virtual void Child_SizeChanged(object sender, EventArgs e)
         {
             // When the child's size changes:
             // Synchronise the minimum and maximum sizes (they could have changed since we last checked):
-            MaximumSize = SizeFromClientSize(Child.MaximumSize);
-            MinimumSize = SizeFromClientSize(Child.MinimumSize);
+            MaximumSize = SizeFromChildSize(Child.MaximumSize);
+            MinimumSize = SizeFromChildSize(Child.MinimumSize);
 
             // Synchronise the size of this form with the child:
             ClientSize = Child.Size;
+        }
+
+        /// <summary>
+        /// Calculate the size of this form from the size of the wrapped control.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual Size SizeFromChildSize(Size childSize)
+        {
+            if (childSize.IsEmpty)
+                return childSize;
+            else
+                return SizeFromClientSize(childSize);
         }
 
         protected virtual void WrapperForm_ViewVisibilityChanged(object sender, ViewVisibilityChangedEventArgs args)

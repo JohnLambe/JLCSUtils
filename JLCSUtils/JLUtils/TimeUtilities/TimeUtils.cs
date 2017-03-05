@@ -41,6 +41,10 @@ namespace JohnLambe.Util.TimeUtilities
             get { return TimeSpan.Zero; }
         }
 
+        // Formats:
+        public const string MetricFormat = "yyyy-MM-dd hh:mm:ss";
+        public const string Iso8601Format = "yyyyMMdd'T'hhmmss";
+
         #endregion
 
         #region TimeOfDay

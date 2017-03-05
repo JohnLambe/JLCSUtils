@@ -58,9 +58,7 @@
     <Compile Include="Dialog\MessageDialog_UiInterfaces.cs" />
     <Compile Include="Menu\OptionCollection.cs" />
     <Compile Include="Menu\OptionCollectionBuilder.cs" />
-    <Compile Include="Services\IRandomService.cs" />
     <Compile Include="IResolverExtension.cs" />
-    <Compile Include="Services\ITimeService.cs" />
     <Compile Include="IWindowPresenter.cs" />
     <Compile Include="IWindowView.cs" />
     <Compile Include="KeyboardKey.cs" />
@@ -79,15 +77,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationHelper.cs" />
     <Compile Include="Resolver.cs" />
-    <Compile Include="Services\IEnvironmentService.cs" />
     <Compile Include="Dialog\MessageDialogService.cs" />
-    <Compile Include="WinForms\ButtonCollectionUi.cs">
+    <Compile Include="WinForms\Binding\ControlBinderExtension.cs" />
+    <Compile Include="WinForms\ButtonContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WinForms\ButtonCollectionUi.Designer.cs">
-      <DependentUpon>ButtonCollectionUi.cs</DependentUpon>
+    <Compile Include="WinForms\ButtonContainer.Designer.cs">
+      <DependentUpon>ButtonContainer.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForms\MvpFrameworkConstants.cs" />
     <Compile Include="WinForms\ResolverExtension.cs" />
+    <Compile Include="WinForms\Util\WinFormsUtil.cs" />
     <Compile Include="WinForms\ViewBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="WinForms\Types.cs" />
     <Compile Include="WinForms\UiController.cs" />
+    <Compile Include="WinForms\Binding\ViewBinder.cs" />
     <Compile Include="WinForms\WindowViewBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -129,10 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MvpFramework.txt" />
+    <Content Include="WinForms\!ReadMe.txt" />
+    <Content Include="WinForms\Util\!ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="WinForms\ButtonCollectionUi.resx">
-      <DependentUpon>ButtonCollectionUi.cs</DependentUpon>
+    <EmbeddedResource Include="WinForms\ButtonContainer.resx">
+      <DependentUpon>ButtonContainer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\MessageDialogView.resx">
       <DependentUpon>MessageDialogView.cs</DependentUpon>

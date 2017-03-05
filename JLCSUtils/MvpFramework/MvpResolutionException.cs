@@ -13,11 +13,11 @@ namespace MvpFramework
     {
         //
         // Summary:
-        //     Initializes a new instance of the System.Exception class.
+        //     Initializes a new instance of the MvpResolverException class.
         public MvpResolverException() { }
         //
         // Summary:
-        //     Initializes a new instance of the System.Exception class with a specified error
+        //     Initializes a new instance of the MvpResolverException class with a specified error
         //     message.
         //
         // Parameters:
@@ -26,7 +26,7 @@ namespace MvpFramework
         public MvpResolverException(string message) : base(message) { }
         //
         // Summary:
-        //     Initializes a new instance of the System.Exception class with a specified error
+        //     Initializes a new instance of the MvpResolverException class with a specified error
         //     message and a reference to the inner exception that is the cause of this exception.
         //
         // Parameters:

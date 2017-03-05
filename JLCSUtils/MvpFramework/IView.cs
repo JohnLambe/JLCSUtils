@@ -17,12 +17,6 @@ namespace MvpFramework
     //  Models cannot reference Views.
     public interface IView
     {
-        void Show();
-        //|TODO: return value?
-        //|  Rename to avoid name conflicts in implementing classes.
-        //|  Change to:  object ShowView()  ?
-        //| should Show() be on base interface at all? A View could be for a non-form (panel, etc.).
-
         void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory);
 
         /// <summary>
@@ -31,12 +25,5 @@ namespace MvpFramework
         void RefreshView();
 
     }
-    /* OR
-    public interface IView<TResult>
-    {
-        TResult Show();
-            // return value?
-    }
-    */
 
 }

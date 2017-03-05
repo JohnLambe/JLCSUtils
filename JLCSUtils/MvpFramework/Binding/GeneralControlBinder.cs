@@ -18,7 +18,7 @@ namespace MvpFramework.Binding
     /// <summary>
     /// Binds some common WinForms controls.
     /// </summary>
-    public class GeneralControlBinder : IControlBinder
+    public class GeneralControlBinder : IControlBinderExt
     {
         public GeneralControlBinder(Control control, IPresenter presenter)
         {
@@ -62,7 +62,7 @@ namespace MvpFramework.Binding
 
             // 'Click' event handler:
             var method = Presenter?.GetType().GetMethods().Where(
-                p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Name.Equals(_modelPropertyName)).Any())
+                p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Name?.Equals(_modelPropertyName) ?? false).Any())
                 ?.FirstOrDefault();
             if (method != null)
             {
@@ -111,6 +111,11 @@ namespace MvpFramework.Binding
         /// Iff false, the event to update the model is not fired.
         /// </summary>
         protected virtual bool EventEnabled { get; set; } = true;
+
+        /// <summary>
+        /// The control bound by this <see cref="IControlBinder"/>.
+        /// </summary>
+        public virtual Control Control => BoundControl;
 
         protected MethodInfo _eventHandlerMethod;
 

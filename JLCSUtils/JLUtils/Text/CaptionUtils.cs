@@ -65,7 +65,7 @@ namespace JohnLambe.Util.Text
         }
 
         /// <summary>
-        /// Get a caption (for display to a user) for the given property.
+        /// Get a caption (for display to a user) for the given type member.
         /// This uses the <see cref="DescriptionAttribute"/> if there is one, otherwise the property name.
         /// </summary>
         /// <param name="member">An item (usually a property or method) that may have a name or attribute that can
@@ -88,6 +88,7 @@ namespace JohnLambe.Util.Text
             return GetDisplayName(property);
         }
 
+        /*
         /// <summary>
         /// Return a display name for a given type.
         /// </summary>
@@ -101,6 +102,7 @@ namespace JohnLambe.Util.Text
                 return GetDisplayNameFromAttribute(type)
                     ?? PascalCaseToCaption(type.Name);
         }
+        */
 
         /// <summary>
         /// Returns a display name (for display to a user) for the attributed item
