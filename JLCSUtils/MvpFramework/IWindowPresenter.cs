@@ -9,13 +9,13 @@ namespace MvpFramework
     /// <summary>
     /// A presenter that has its own window.
     /// </summary>
-    public interface IWindowPresenter : IPresenter
+    public interface IWindowPresenter<TModelResult> : IPresenter
     {
         /// <summary>
         /// Show window modally.
         /// </summary>
         /// <returns>Depends on the presenter.</returns>
-        object ShowModal();
+        TModelResult ShowModal();
 
         /// <summary>
         /// Close the window.
@@ -27,6 +27,10 @@ namespace MvpFramework
         event EventHandler<WindowViewOpenedEventArgs> Opened;
         event EventHandler Closed;
         */
+    }
+
+    public interface IWindowPresenter : IWindowPresenter<object>
+    {
     }
 
 

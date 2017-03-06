@@ -24,6 +24,7 @@ Automated enforcement:
 
 TODO:
     Interfaces for [Model/Presenter]BinderWrapper
+	Method for Presenter to cause a refresh of View controls binding a specified property of the model.
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.
