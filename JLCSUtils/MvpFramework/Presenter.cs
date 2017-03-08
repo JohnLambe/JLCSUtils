@@ -28,7 +28,7 @@ namespace MvpFramework
         /// </summary>
         /// <returns>Depends on the Presenter (may be defined on the derived interface). May be null.</returns>
         object Show();    
-        //| TODO: Consider removing this (with derived interfaces having their own way to show them).
+        //| TODO: Consider moving this to IWindowPresenter  (with derived interfaces having their own way to show them).
         //| TODO: Consider using a different name, to avoid conflict with a 'Show' method of classes that may be used as base classes of implementations of this.
         //| This could use a generic type for the return value.
     }
@@ -49,8 +49,6 @@ namespace MvpFramework
     public class PresenterBase<TView, TModel> : IPresenter, INotifyOnDispose
         where TView : IWindowView
     {
-//        public static Type ModelType => typeof(TModel);
-
         public PresenterBase(
             TView view,                                                   // resolved by MVP framework
             TModel model = default(TModel),                               // from parameter when creating
@@ -76,7 +74,7 @@ namespace MvpFramework
         protected virtual void Bind(TView view, IControlBinderFactory binderFactory)
         {
             View.Bind(Model, this, binderFactory);
-            view.ViewVisibilityChanged += View_ViewClosing; ;
+            view.ViewVisibilityChanged += View_ViewVisibilityChanged;
         }
 
         /// <summary>
@@ -84,9 +82,9 @@ namespace MvpFramework
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        protected virtual void View_ViewClosing(object sender, ViewVisibilityChangedEventArgs args)
+        protected virtual void View_ViewVisibilityChanged(object sender, ViewVisibilityChangedEventArgs args)
         {
-            ViewClosing?.Invoke(sender, args);               // fire this Presenter's ViewClosing event
+            ViewVisibilityChanged?.Invoke(sender, args);               // fire this Presenter's ViewClosing event
             if (args.Closed && DisposeOnClose)
                 Dispose();
         }
@@ -101,6 +99,8 @@ namespace MvpFramework
             return null;
         }
 
+        #region Dispose
+
         /// <summary>
         /// <see cref="IDisposable.Dispose"/>
         /// </summary>
@@ -111,20 +111,21 @@ namespace MvpFramework
             Disposed?.Invoke(this, EventArgs.Empty);
         }
 
-
-        protected virtual TModel Model { get; private set; }
-            // make readonly ?
-
-        protected readonly TView View;
-
         /// <summary>
         /// Fired when this instance is disposed.
         /// </summary>
         public virtual event EventHandler Disposed;
 
+        #endregion
+
+        protected virtual TModel Model { get; private set; }
+
+        protected readonly TView View;
+        //protected virtual TView View { get; private set; }
+
         /// <summary>
-        /// Fired when the view closes.
+        /// Fired when the view opens or closes.
         /// </summary>
-        public virtual event ViewVisibilityChangedDelegate ViewClosing;
+        public virtual event ViewVisibilityChangedDelegate ViewVisibilityChanged;
     }
 }

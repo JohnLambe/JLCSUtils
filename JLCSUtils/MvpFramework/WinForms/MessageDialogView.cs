@@ -12,7 +12,8 @@ using MvpFramework.Dialog;
 
 namespace MvpFramework.WinForms
 {
-    public partial class MessageDialogView : WindowViewBase
+    [View(Interface = typeof(IMessageDialogView))]
+    public partial class MessageDialogView : WindowViewBase, IMessageDialogView
     {
         public MessageDialogView()
         {
@@ -28,7 +29,7 @@ namespace MvpFramework.WinForms
         public override void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {
             base.Bind(model, presenter, binderFactory);
-            Text = ((MessageDialogViewModel)model).Dialog.Title;
+            //Text = ((MessageDialogViewModel)model).Dialog?.Title;
         }
 
     }

@@ -12,9 +12,9 @@ namespace MvpFramework.Dialog
     /// </summary>
     public class MessageDialogService : IMessageDialogService
     {
-        public MessageDialogService(IMessageDialogPresenter dialogPresenter)
+        public MessageDialogService(IPresenterFactory<IMessageDialogPresenter> dialogPresenter)
         {
-            DialogPresenter = dialogPresenter;
+            DialogPresenter = dialogPresenter.Create();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace MvpFramework.Dialog
             if (!flags.HasFlag(MessageDialogInterceptFlags.AllowChangeDefault))
             {
                 eventArgs.Result = null;
-                //TODO: check the default hasn't changed
+                //TODO: check that the default hasn't changed
             }
 
             if (!eventArgs.Suppress)            // it not suppressed
@@ -63,7 +63,7 @@ namespace MvpFramework.Dialog
 
         protected virtual TResult ShowDialog<TResult>(IMessageDialogModel<TResult> messageModel)
         {
-            return (TResult)DialogPresenter.Show(messageModel);
+            return (TResult)DialogPresenter.ShowModal(messageModel);
         }
 
         /// <summary>

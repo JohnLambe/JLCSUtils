@@ -22,7 +22,6 @@ namespace MvpFramework
         /// </summary>
         void Close();
 
-
         /*TODO: Events:
         event EventHandler<WindowViewOpenedEventArgs> Opened;
         event EventHandler Closed;

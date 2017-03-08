@@ -49,6 +49,7 @@
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="Binding\PresenterBinderWrapper.cs" />
+    <Compile Include="Dialog\Dialogs\InformationDialog.cs" />
     <Compile Include="WinForms\BasicMessageDialogService.cs" />
     <Compile Include="Dialog\MessageDialogPresenter.cs" />
     <Compile Include="Dialog\MessageInterceptor.cs" />
@@ -149,9 +150,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dialog\Dialogs\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

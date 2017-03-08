@@ -26,17 +26,34 @@ namespace MvpFramework.WinForms
 
         public virtual object ShowModal()
         {
+            Modal = true;
+            DoShow();
             return null;
         }
 
         void IWindowView.Show()
         {
-            Opening = true;
-            base.Show();
-            Opening = false;
-            InvokeViewVisibilityChanged(new ViewVisibilityChangedEventArgs(VisibilityChange.Opened));
+            Modal = false;
+            DoShow();
         }
 
+        protected virtual void DoShow()
+        {
+            Opening = true;      // for event that fires in base class
+            try
+            {
+                base.Show();
+            }
+            finally
+            {
+                Opening = false;
+            }
+            InvokeViewVisibilityChanged(new ViewVisibilityChangedEventArgs(VisibilityChange.Opened) { IsModal = this.Modal });
+        }
+
+        /// <summary>
+        /// true while opening (in the <see cref="Show"/> method).
+        /// </summary>
         protected virtual bool Opening { get; private set; }
 
         protected virtual void View_VisibleChanged(object sender, EventArgs e)
@@ -66,7 +83,7 @@ namespace MvpFramework.WinForms
                 base.Text = value;
             }
         }
-        
+
         public virtual string Title
         {
             get
@@ -78,12 +95,26 @@ namespace MvpFramework.WinForms
                 base.Text = value;
             }
         }
-        
+
+        /*
+        protected virtual bool CanClose()
+        {
+//            ViewVisibilityChanged?.
+        }
+        */
+
 
         /// <summary>
         /// Fired when the View is Opened or closing.
         /// </summary>
         public virtual event ViewVisibilityChangedDelegate ViewVisibilityChanged;
 
+        /// <summary>
+        /// true iff the view was shown modally.
+        /// If the view is closed, this indicates the state of the last time it was shown.
+        /// If it was never shown, this is false.
+        /// </summary>
+        //| Named for consistency with System.Windows.Forms.Form.Modal.
+        public virtual bool Modal { get; private set; }
     }
 }

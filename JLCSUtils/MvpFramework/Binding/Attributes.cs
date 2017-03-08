@@ -18,19 +18,26 @@ namespace MvpFramework.Binding
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class MvpHandlerAttribute : System.Attribute
     {
-        public MvpHandlerAttribute(string name = null)
+        public MvpHandlerAttribute(string id = null)
         {
-            this.Name = name;
+            this.Id = id;
         }
 
         /// <summary>
         /// The ID of the handler, referenced in the user interface.
         /// null to derive from the method name (NOT IMPLEMENTED YET).
         /// </summary>
-        public string Name { get; set; }
+        public virtual string Id { get; set; }
+        
+        [Obsolete("Use Id")] // Renamed to Id. ('Name' could be confused with a name for display).
+        public virtual string Name
+        {
+            get { return Id; }
+            set { Id = value; }
+        }        
 
         /// <summary>
-        /// Set to false to disable a handler attribute on a base class.
+        /// Set to false on an attribute on an overridden member, to disable a handler attribute on a base class.
         /// </summary>
         public virtual bool Enabled { get; set; } = true;
 
@@ -39,6 +46,9 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual int Order { get; set; }
 
+        /// <summary>
+        /// Filters where this appears is accessible.
+        /// </summary>
         public virtual string[] Filter { get; set; }
 
 
@@ -46,12 +56,41 @@ namespace MvpFramework.Binding
 
         public virtual bool AutoGenerate { get; set; } = false;
 
+        /// <summary>
+        /// The name displayed on this item in the UI.
+        /// </summary>
         public virtual string DisplayName { get; set; }
+        //TODO?: Localisation.
+
+        /// <summary>
+        /// Keystroke to invoke this item.
+        /// </summary>
         public virtual KeyboardKey HotKey { get; set; }  
+
+        /// <summary>
+        /// Character to choose this item in the UI when in a list, or a WinForms accelerator character, etc.
+        /// </summary>
         public virtual char AcceleratorChar { get; set; }
+
+        /// <summary>
+        /// The icon to be displayed in the UI for this item.
+        /// </summary>
         [IconId]
         public virtual string IconId { get; set; }
+
+        /// <summary>
+        /// true iff this is the default button or default item in a list, etc.
+        /// </summary>
         public virtual bool IsDefault { get; set; }
+
+        /// <summary>
+        /// Rights or roles required to access this item.
+        /// To access this, the user must have one of the rights specified by an element of the array.
+        /// The format of the string depends on the consming system. It may specify a combination of rights/roles.
+        /// (So elements of the array are ORed, but rights may be ANDed within each element.)
+        /// </summary>
+        public virtual string[] Rights { get; set; }
+        //TODO?: Change type to an interface, IPrivilege (same for all similar 'Rights' properties).
     }
 
 
@@ -75,4 +114,5 @@ namespace MvpFramework.Binding
     public class ViewTitleAttribute : MvpAttribute
     {
     }
+
 }

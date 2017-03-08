@@ -149,6 +149,7 @@ namespace DiExtension.SimpleInject
                 if (TryGetExpression(consumer, consumer.Target.TargetType, out expr))
                     return expr;
                 // if not resolved here, the default behaviour (resolving by type) will be used.
+                //TODO?: Throw exception instead - it would make is easier to diagnose misconfigurations.
             }
 
             if (consumer.Target.Member.GetCustomAttribute<InjectAttribute>()?.ByType != false)   // if injecting by type is supported (if no attribute, it is)

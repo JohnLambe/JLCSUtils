@@ -98,7 +98,10 @@ namespace MvpFramework.WinForms
         {
             if(args.Action == VisibilityChange.Opened)
             {
-                Visible = true;
+                if (args.IsModal)
+                    ShowDialog();
+                else
+                    Visible = true;
             }
             else if (args.Action == VisibilityChange.Closed)
             {

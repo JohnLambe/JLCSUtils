@@ -300,13 +300,19 @@ namespace JohnLambe.Util.Reflection
         /// <para>This is modified if and only if <paramref name="action"/> is <see cref="PropertyAction.SetValue"/>.
         /// In this case, it is set to null on failure (if a property does not exist, or nested value that this property is on, is null).
         /// </para>
-        /// <returns>The details of the innermost property. null if the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
+        /// <returns>The details of the innermost property. null if <paramref name="target"/> or the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
         private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value)
         { 
             PropertyInfo property = null;
             string[] levels = propertyName.Split('.');
             for (int level = 0; level < levels.Length; level++)
             {
+                if (target == null)         // trying to dereference a null (before the last level)
+                {
+                    if (action == PropertyAction.GetValue)
+                        value = null;
+                    return null;
+                }
                 property = target.GetType().GetProperty(levels[level]);
                 if (property == null)               // property does not exist
                 {
@@ -316,12 +322,6 @@ namespace JohnLambe.Util.Reflection
                 }
                 if (level < levels.Length - 1)  // not last (innermost) level
                 {   // dereference object at this level:
-                    if(target == null)         // trying to dereference a null (before the last level)
-                    {
-                        if (action == PropertyAction.GetValue)
-                            value = null;
-                        return null;
-                    }
                     target = property.GetValue(target);
                 }
             }

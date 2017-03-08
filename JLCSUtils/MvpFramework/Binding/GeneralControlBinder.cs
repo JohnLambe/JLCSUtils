@@ -62,7 +62,7 @@ namespace MvpFramework.Binding
 
             // 'Click' event handler:
             var method = Presenter?.GetType().GetMethods().Where(
-                p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Name?.Equals(_modelPropertyName) ?? false).Any())
+                p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Id?.Equals(_modelPropertyName) ?? false).Any())
                 ?.FirstOrDefault();
             if (method != null)
             {

@@ -29,7 +29,7 @@ namespace MvpFramework.Menu
                     && ((filter == null) || (handlerInfo.Attribute.Filter?.Contains(filter) ?? false))
                     )
                 {
-                    var option = new MenuItemModel(options, handlerInfo.Attribute.Name)
+                    var option = new MenuItemModel(options, handlerInfo.Attribute.Id)
                     {
                         DisplayName = handlerInfo.Attribute.DisplayName ??
                             CaptionUtils.GetDisplayName(handlerInfo.Method, "Handle_", "Clicked"),
@@ -40,7 +40,7 @@ namespace MvpFramework.Menu
                         Order = handlerInfo.Attribute.Order,
                     };
                     option.Invoked += (item, args) => handlerInfo.Method.Invoke(target, new object[] { });
-                    options[handlerInfo.Attribute.Name] = option;
+                    options[handlerInfo.Attribute.Id] = option;
                 }
             }
 

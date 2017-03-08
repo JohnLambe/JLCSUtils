@@ -22,6 +22,11 @@ namespace MvpFramework.Dialog
     /// </summary>
     public class MessageDialogModel<TResult> : IMessageDialogModel<TResult>
     {
+        public MessageDialogModel()
+        {
+            MessageTypeId = GetType().Name;
+        }
+
         /// <summary>
         /// ID unique to an message/warning/error type and a place where it can occur.
         /// May be null.
@@ -36,6 +41,7 @@ namespace MvpFramework.Dialog
         /// Title of the message dialog. (For display).
         /// May be null. (If it is, it is recommended that the UI hide the title bar of the window etc.).
         /// </summary>
+        [ViewTitle]
         public virtual string Title { get; set; }
 
         /// <summary>
@@ -91,6 +97,9 @@ namespace MvpFramework.Dialog
         /// </summary>
         public virtual IOptionCollection Options { get; set; }
 
+        /// <summary>
+        /// Flags relating to what interceptors can do with this message.
+        /// </summary>
         public virtual MessageDialogInterceptFlags InterceptFlags => MessageDialogInterceptFlags.Default;
 
         /// <summary>

@@ -24,6 +24,9 @@ namespace MvpFramework
         /// </summary>
         void RefreshView();
 
+        //TODO: ID of embedded View. Separate interface?
+        //  Used to map to Presenter.
+        // string ViewId { get; }
     }
 
 }

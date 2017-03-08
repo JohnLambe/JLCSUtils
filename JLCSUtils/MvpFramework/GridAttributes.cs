@@ -13,7 +13,7 @@ namespace MvpFramework
     public class ColumnDisplayAttribute : Attribute
     {
         /// <summary>
-        /// Specifies which views etc. these settings apply to.
+        /// Specifies which views/grids etc. these settings apply to.
         /// </summary>
         public virtual string[] Filter { get; set; }
 

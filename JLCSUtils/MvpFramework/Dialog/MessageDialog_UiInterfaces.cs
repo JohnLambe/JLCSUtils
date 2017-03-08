@@ -10,8 +10,8 @@ namespace MvpFramework.Dialog
     {
     }
 
-    public interface IMessageDialogPresenter : IPresenter
+    public interface IMessageDialogPresenter : IWindowPresenter
     {
-        object Show(IMessageDialogModel messageDialog);
+        object ShowModal(IMessageDialogModel messageDialog);
     }
 }

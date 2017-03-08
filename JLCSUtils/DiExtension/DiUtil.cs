@@ -62,6 +62,7 @@ namespace DiExtension
                     else
                     {   // other parameters are injected from the DI container
                         args[parameterIndex] = diResolver.GetInstance<object>(parameter.ParameterType);
+                        //TODO: trap exception and throw more specific one
                     }
                 }
                 parameterIndex++;

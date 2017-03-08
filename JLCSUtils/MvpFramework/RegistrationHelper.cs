@@ -9,6 +9,7 @@ using JohnLambe.Util.Reflection;
 using DiExtension;
 using System.Diagnostics;
 using DiExtension.Attributes;
+using System.Diagnostics.Contracts;
 
 /* TODO:
  * 
@@ -63,7 +64,10 @@ namespace MvpFramework
                     assembly.GetExportedTypes().Where(t => t.IsDefined<ViewAttribute>())
                     )
                 {
-                    RegisterType(_resolver.ResolveInterfaceForViewType(view), view);    // register the View class to be resolved from its interface
+                    Type viewType = _resolver.ResolveInterfaceForViewType(view);
+                    if (viewType == null)
+                        throw new MvpResolverException("No interface found for view: " + view.FullName);
+                    RegisterType(viewType, view);    // register the View class to be resolved from its interface
                     //                    RegisterType(Resolver.ResolveInterfaceForViewType(view), () => ReflectionUtils.Create<IView>(view));
                 }
 
@@ -141,7 +145,7 @@ namespace MvpFramework
         /// <param name="implementationType"></param>
         protected virtual void RegisterType(Type serviceType, Type implementationType)
         {
-            Debug.Assert(serviceType != null);
+            Contract.Requires(serviceType != null, "INTERNAL ERROR: Trying to register null serviceType");
             if(serviceType != null && implementationType != null)
             {
                 _diContext.RegisterType(serviceType, implementationType);
