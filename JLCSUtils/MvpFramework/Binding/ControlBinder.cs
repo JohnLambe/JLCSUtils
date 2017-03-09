@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System.Windows.Forms;  //TODO remove
 
 using DiExtension.AutoFactory;
 
@@ -29,13 +29,15 @@ namespace MvpFramework.Binding
         /// The control bound by this binder.
         /// </summary>
         Control Control { get; }
+
+        //| Could add `void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)` for nested Views
     }
 
     /// <summary>
     /// Interface to return a binder for a given controls and presenter.
     /// May return null if the control does not bind to anything.
     /// </summary>
-    public interface IControlBinderFactory : IFactory<IControlBinderExt, Control, IPresenter>
+    public interface IControlBinderFactory : IFactory<IControlBinder, Control, IPresenter>
     {
     }
 
@@ -45,9 +47,9 @@ namespace MvpFramework.Binding
     /// </summary>
     public class ControlBinderFactory : IControlBinderFactory
     {
-        public virtual IControlBinderExt Create(Control control, IPresenter presenter)
+        public virtual IControlBinder Create(Control control, IPresenter presenter)
         {
-            if (control is IControlBinderExt)                   // if the control implements the interface itself
+            if (control is IControlBinder)                      // if the control implements the interface itself
                 return control as IControlBinderExt;            // use it
             else
                 return new GeneralControlBinder(control, presenter);

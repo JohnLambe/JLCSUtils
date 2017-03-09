@@ -50,6 +50,11 @@
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="Binding\PresenterBinderWrapper.cs" />
     <Compile Include="Dialog\Dialogs\InformationDialog.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="WinForms\BasicMessageDialogService.cs" />
     <Compile Include="Dialog\MessageDialogPresenter.cs" />
     <Compile Include="Dialog\MessageInterceptor.cs" />
@@ -85,6 +90,9 @@
     </Compile>
     <Compile Include="WinForms\ButtonContainer.Designer.cs">
       <DependentUpon>ButtonContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\EmbeddableView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WinForms\MvpFrameworkConstants.cs" />
     <Compile Include="WinForms\ResolverExtension.cs" />
@@ -135,6 +143,10 @@
     <Content Include="WinForms\Util\!ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="WinForms\ButtonContainer.resx">
       <DependentUpon>ButtonContainer.cs</DependentUpon>
     </EmbeddedResource>

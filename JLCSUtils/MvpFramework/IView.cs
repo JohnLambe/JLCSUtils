@@ -23,10 +23,20 @@ namespace MvpFramework
         /// (Re)populate the view from the model (to update it when the model changes).
         /// </summary>
         void RefreshView();
-
-        //TODO: ID of embedded View. Separate interface?
-        //  Used to map to Presenter.
-        // string ViewId { get; }
     }
 
+    /// <summary>
+    /// View which can be embedded in another View.
+    /// </summary>
+    public interface IEmbeddedView : IView
+    {
+        /// <summary>
+        /// ID of embedded View.
+        /// null or "" to not treat this as an embedded view (handled as an ordinary control).
+        /// <para>Mapped to Presenter and Model.</para>
+        /// </summary>
+        //TODO: For later version: "/" to map this view to the main Presenter and Model.
+        // String beginning with "/": "/" is removed and the rest of the string is mapped as if it was specified in a view embedded in the outer one (for views nested in nested ones).
+        string ViewId { get; }
+    }
 }

@@ -31,9 +31,12 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="binder"></param>
         /// <param name="control"></param>
         /// <returns>true if the control bound by this binder is <paramref name="control"/> or child (direct or indirect) of it.</returns>
-        public static bool IsInControl(this IControlBinderExt binder, Control control)
+        public static bool IsInControl(this IControlBinder binder, Control control)
         {
-            return WinFormsUtil.IsInControl(GetControl(binder), control);
+            if (binder is IControlBinderExt)
+                return WinFormsUtil.IsInControl(GetControl(binder as IControlBinderExt), control);
+            else
+                return false;
         }
     }
 

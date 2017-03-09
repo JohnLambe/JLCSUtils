@@ -28,7 +28,7 @@ namespace MvpFramework.WinForms.Binding
             {
                 var controls = view.Controls;
 
-                Binders = new List<IControlBinderExt>();
+                Binders = new List<IControlBinder>();
                 var modelBinder = new ModelBinderWrapper(model);
 
                 var viewTitle = modelBinder.Title;
@@ -38,6 +38,10 @@ namespace MvpFramework.WinForms.Binding
                 //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
                 foreach (Control control in controls)
                 {
+                    if(control is IEmbeddedView)
+                    {
+
+                    }
                     var binder = binderFactory.Create(control, presenter);
                     if (binder != null)
                     {
@@ -67,7 +71,7 @@ namespace MvpFramework.WinForms.Binding
         /// <summary>
         /// Collection of binders for the controls in this view.
         /// </summary>
-        protected virtual IList<IControlBinderExt> Binders { get; private set; }
+        protected virtual IList<IControlBinder> Binders { get; private set; }
     }
 
 }

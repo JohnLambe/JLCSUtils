@@ -91,6 +91,9 @@ namespace MvpFramework.WinForms
             */
         }
 
+        /// <summary>
+        /// Binds this View to the Model and Presenter.
+        /// </summary>
         protected virtual ViewBinder ViewBinder { get; private set; }
 
         #endregion
