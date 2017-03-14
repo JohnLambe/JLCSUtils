@@ -36,13 +36,21 @@ namespace MvpFramework.Menu
     /// </summary>
     public class OptionCollection : MenuItemModel, IOptionCollection
     {
-        public OptionCollection(IDictionary<string, MenuItemModel> options, string id = "")
+        public OptionCollection(MenuItemModel[] items, string id = "")
+            : base(items, id)
+        {
+        }
+
+        public OptionCollection(IDictionary<string, MenuItemModel> options = null, string id = "")
             : base(options, id)
         {
-            foreach (var option in options.Values)
+            if (options != null)
             {
-                option.Parent = this;
-                option.ParentId = Id;
+                foreach (var option in options.Values)
+                {
+                    option.Parent = this;
+                    option.ParentId = Id;
+                }
             }
         }
 

@@ -136,7 +136,7 @@ namespace MvpFramework
                 return CreatePresenter<TPresenter, TModel>(presenterType, model);
             //                return GetInstance<TPresenter>(presenterType);
 
-            throw new MvpResolverException("Resolution failed for Model: " + modelType.FullName);
+            throw new MvpResolutionException("Resolution failed for Model: " + modelType.FullName);
 
             /*            var presenterType = Type.GetType(model.GetType().FullName.RemoveSuffix(ModelSuffix)
                             + action + PresenterSuffix);    // change '<Name>[Model]' to '<Name><Action>Presenter'
@@ -211,7 +211,7 @@ namespace MvpFramework
             if (resolvedPresenterType != null)
                 return resolvedPresenterType;
 
-            throw new MvpResolverException("Resolution failed for Presenter type: " + presenterInterface.FullName + ", " + modelType?.FullName);
+            throw new MvpResolutionException("Resolution failed for Presenter type: " + presenterInterface.FullName + ", " + modelType?.FullName);
         }
 
         public virtual Type ResolvePresenterTypeForAction(Type actionInterface, Type modelType)
@@ -356,7 +356,7 @@ namespace MvpFramework
                     return result;
             }
 
-            throw new MvpResolverException("Resolution failed on resolving View for Presenter: " + presenterType.FullName + ".\n"
+            throw new MvpResolutionException("Resolution failed on resolving View for Presenter: " + presenterType.FullName + ".\n"
                 + (viewInterfaceType == null ? "Failed to resolve View Interface (Check that it is defined with a conventional name, e.g. " + viewInterfaceName + ")\n"
                 : "View Interface: " + viewInterfaceType.FullName + " (Check that there is a DI registration for this interface, or an implementing class with the [View] attribute)\n")
                 + (viewClassType != null ? "Tried getting class " + viewClassType.FullName + "from DI\n"
@@ -432,9 +432,9 @@ namespace MvpFramework
             {
                 // Validate the interface to be returned:
                 if (!resolvedInterface.IsInterface)
-                    throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
+                    throw new MvpResolutionException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not an interface");
                 if (!typeof(TRequiredInterface).IsAssignableFrom(resolvedInterface))
-                    throw new MvpResolverException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
+                    throw new MvpResolutionException("Invalid presenter/view interface: " + resolvedInterface.FullName + " - not derived from " + typeof(TRequiredInterface).FullName);
             }
 
             // may be null

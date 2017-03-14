@@ -38,7 +38,7 @@ namespace MvpFramework.Dialog
         [IconId]
         string MessageImage { get; set; }
 
-        MessageType MessageType { get; set; }
+        MessageDialogType MessageType { get; set; }
         string MessageTypeId { get; set; }
 
         Exception Exception { get; set; }

@@ -14,7 +14,7 @@ namespace MvpFramework
     /// Base interface for Views - the interface to the View from the Presenter.
     /// </summary>
     // Note: Presenters reference only their own View. Any reference to other Views is through the Presenters of those Views.
-    //  Models cannot reference Views.
+    //  Models cannot reference Views or Presenters.
     public interface IView
     {
         void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory);
@@ -35,7 +35,7 @@ namespace MvpFramework
         /// null or "" to not treat this as an embedded view (handled as an ordinary control).
         /// <para>Mapped to Presenter and Model.</para>
         /// </summary>
-        //TODO: For later version: "/" to map this view to the main Presenter and Model.
+        //TODO?: For later version: "/" to map this view to the main Presenter and Model.
         // String beginning with "/": "/" is removed and the rest of the string is mapped as if it was specified in a view embedded in the outer one (for views nested in nested ones).
         string ViewId { get; }
     }

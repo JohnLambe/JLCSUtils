@@ -1,6 +1,9 @@
-﻿using System.Windows.Forms;  //TODO remove
-
-using DiExtension.AutoFactory;
+﻿using DiExtension.AutoFactory;
+using System.Collections.Generic;
+using System;
+using JohnLambe.Util.Collections;
+using System.Reflection;
+using System.Linq;
 
 namespace MvpFramework.Binding
 {
@@ -28,7 +31,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// The control bound by this binder.
         /// </summary>
-        Control Control { get; }
+        object BoundControl { get; }
 
         //| Could add `void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)` for nested Views
     }
@@ -36,29 +39,13 @@ namespace MvpFramework.Binding
     /// <summary>
     /// Interface to return a binder for a given controls and presenter.
     /// May return null if the control does not bind to anything.
+    /// <para>
+    /// The <see cref="IFactory{IControlBinder, object, IPresenter}.Create(object, IPresenter)"/> method takes
+    /// parameters of a control and a presenter, and returns the control binder.
+    /// </para>
     /// </summary>
-    public interface IControlBinderFactory : IFactory<IControlBinder, Control, IPresenter>
+    public interface IControlBinderFactory : IFactory<IControlBinder, object, IPresenter>
+        //TODO: Remove presenter parameter
     {
     }
-
-
-    /// <summary>
-    /// Returns a control binder for a given control and presenter.
-    /// </summary>
-    public class ControlBinderFactory : IControlBinderFactory
-    {
-        public virtual IControlBinder Create(Control control, IPresenter presenter)
-        {
-            if (control is IControlBinder)                      // if the control implements the interface itself
-                return control as IControlBinderExt;            // use it
-            else
-                return new GeneralControlBinder(control, presenter);
-            //TODO:
-            // We could return different classes based on a mapping from Control classes to IControlBinder implementations.
-            // - by a naming convention;
-            // - by type mapping in DI container (get implementation of IControlBinder<T> where T is the control type); or
-            // - by scanning for an IControlBinder implementation with an attribute referencing the control type.
-        }
-    }
-
 }

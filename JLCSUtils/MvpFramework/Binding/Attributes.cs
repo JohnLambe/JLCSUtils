@@ -115,4 +115,22 @@ namespace MvpFramework.Binding
     {
     }
 
+
+    /// <summary>
+    /// Flags a control binder class for automatic registration.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    public class ControlBinderAttribute : MvpAttribute
+    {
+        public ControlBinderAttribute(Type forControl)
+        {
+            this.ForControl = forControl;
+        }
+
+        /// <summary>
+        /// The control class for which the annotated class is a binder.
+        /// </summary>
+        public virtual Type ForControl { get; set; }
+    }
+
 }

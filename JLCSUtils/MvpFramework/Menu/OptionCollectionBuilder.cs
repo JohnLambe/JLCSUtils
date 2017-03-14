@@ -29,9 +29,10 @@ namespace MvpFramework.Menu
                     && ((filter == null) || (handlerInfo.Attribute.Filter?.Contains(filter) ?? false))
                     )
                 {
-                    var option = new MenuItemModel(options, handlerInfo.Attribute.Id)
+                    var id = handlerInfo.Attribute?.Id ?? handlerInfo.Method?.Name;
+                    var option = new MenuItemModel(options, id)
                     {
-                        DisplayName = handlerInfo.Attribute.DisplayName ??
+                        DisplayName = handlerInfo.Attribute?.DisplayName ??
                             CaptionUtils.GetDisplayName(handlerInfo.Method, "Handle_", "Clicked"),
                         //| Alternatively, we could use the ID.
                         HotKey = handlerInfo.Attribute.HotKey,
@@ -40,7 +41,7 @@ namespace MvpFramework.Menu
                         Order = handlerInfo.Attribute.Order,
                     };
                     option.Invoked += (item, args) => handlerInfo.Method.Invoke(target, new object[] { });
-                    options[handlerInfo.Attribute.Id] = option;
+                    options[id] = option;
                 }
             }
 

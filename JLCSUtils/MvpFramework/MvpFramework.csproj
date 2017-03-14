@@ -45,11 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding\Attributes.cs" />
-    <Compile Include="Binding\GeneralControlBinder.cs" />
+    <Compile Include="Binding\ControlBinderFactory.cs" />
+    <Compile Include="WinForms\Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
     <Compile Include="Binding\PresenterBinderWrapper.cs" />
-    <Compile Include="Dialog\Dialogs\InformationDialog.cs" />
+    <Compile Include="Dialog\Dialogs\Dialogs.cs" />
+    <Compile Include="Dialog\MessageDialogType.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

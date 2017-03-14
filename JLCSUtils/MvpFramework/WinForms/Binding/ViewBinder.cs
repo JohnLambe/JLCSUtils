@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using MvpFramework.WinForms.Binding;
+using JohnLambe.Util.Reflection;
 
 namespace MvpFramework.WinForms.Binding
 {
@@ -24,31 +25,49 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="binderFactory"></param>
         public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory, Control view)
         {
+            View = view;
+            ModelBinder = new ModelBinderWrapper(model);
+
             if (binderFactory != null)
             {
-                var controls = view.Controls;
-
                 Binders = new List<IControlBinder>();
-                var modelBinder = new ModelBinderWrapper(model);
-
-                var viewTitle = modelBinder.Title;
-                if (viewTitle != null)
-                    view.Text = viewTitle;
 
                 //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
-                foreach (Control control in controls)
-                {
-                    if(control is IEmbeddedView)
-                    {
+                BindControl(view, binderFactory, presenter);   // bind the root control recursively
+            }
+        }
 
-                    }
-                    var binder = binderFactory.Create(control, presenter);
-                    if (binder != null)
-                    {
-                        Binders.Add(binder);
-                        binder.BindModel(modelBinder, presenter);
-                    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="binderFactory"></param>
+        /// <param name="presenter"></param>
+        protected void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
+        {
+            var binder = binderFactory.Create(control, presenter);
+            if (binder != null)
+            {
+                Binders.Add(binder);
+                /*
+                if (binder is IEmbeddedView)
+                {
+                    var viewId = ((IEmbeddedView)binder).ViewId;
+                    var subModel = ReflectionUtils.TryGetPropertyValue<object>(binder,viewId);
+                    IPresenter subPresenter = ReflectionUtils.TryGetPropertyValue<IPresenter>(presenter, viewId);
+                    ((IEmbeddedView)binder).Bind(subModel, subPresenter, binderFactory);
+                    //TODO
                 }
+                else */
+                {
+                    binder.BindModel(ModelBinder, presenter);
+                }
+            }
+
+            var controls = control.Controls;
+            foreach (Control childControl in controls)
+            {
+                BindControl(childControl, binderFactory, presenter);
             }
         }
 
@@ -58,6 +77,10 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
         public virtual void RefreshView(Control control)
         {
+            var viewTitle = ModelBinder.Title;
+            if (viewTitle != null)
+                View.Text = viewTitle;
+
             if (Binders != null)
             {
                 foreach (var binder in Binders)
@@ -72,6 +95,9 @@ namespace MvpFramework.WinForms.Binding
         /// Collection of binders for the controls in this view.
         /// </summary>
         protected virtual IList<IControlBinder> Binders { get; private set; }
+
+        protected virtual ModelBinderWrapper ModelBinder { get; set; }
+        protected virtual Control View { get; set; }
     }
 
 }

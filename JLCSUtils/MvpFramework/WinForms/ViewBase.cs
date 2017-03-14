@@ -67,7 +67,7 @@ namespace MvpFramework.WinForms
         /// <summary>
         /// (Re)populate the view from the model (to update it when the model changes).
         /// </summary>
-        public virtual void RefreshView()
+        public void RefreshView()
         {
             RefreshView(null);
         }

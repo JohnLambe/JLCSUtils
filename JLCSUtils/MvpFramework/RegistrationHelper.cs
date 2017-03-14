@@ -11,7 +11,7 @@ using System.Diagnostics;
 using DiExtension.Attributes;
 using System.Diagnostics.Contracts;
 
-/* TODO:
+/* TODO: Done.
  * 
  * Presenter Factory creation and registration:
  *   Each parameter of the Presenter class's constructor that does not have an [Inject] attribute becomes a parameter to the factory method.
@@ -66,7 +66,7 @@ namespace MvpFramework
                 {
                     Type viewType = _resolver.ResolveInterfaceForViewType(view);
                     if (viewType == null)
-                        throw new MvpResolverException("No interface found for view: " + view.FullName);
+                        throw new MvpResolutionException("No interface found for view: " + view.FullName);
                     RegisterType(viewType, view);    // register the View class to be resolved from its interface
                     //                    RegisterType(Resolver.ResolveInterfaceForViewType(view), () => ReflectionUtils.Create<IView>(view));
                 }

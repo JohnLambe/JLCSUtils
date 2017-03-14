@@ -15,8 +15,25 @@ namespace MvpFramework.Menu
     /// </summary>
     public class MenuItemModel
     {
+        public MenuItemModel(string id = "") : this((IDictionary<string, MenuItemModel>)null, id)
+        {
+        }
+
+        public MenuItemModel(MenuItemModel[] items, string id = "") : this((IDictionary < string, MenuItemModel > )null,id)
+        {
+            foreach(var item in items)
+            {
+                item.Parent = this;
+                item._allItems = _allItems;
+                _allItems[item.Id] = item;
+            }
+        }
+
         public MenuItemModel(IDictionary<string, MenuItemModel> allItems, string id)
         {
+            if (allItems == null)
+                allItems = new Dictionary<string, MenuItemModel>();
+
             _allItems = allItems;
             Id = id;
         }
@@ -117,7 +134,7 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Collection of menu items, including this one and its children.
         /// </summary>
-        protected readonly IDictionary<string, MenuItemModel> _allItems;
+        protected IDictionary<string, MenuItemModel> _allItems;
 
         /// <summary>
         /// Do the action of this menu item.

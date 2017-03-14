@@ -19,7 +19,7 @@ namespace MvpFramework.WinForms.Binding
         public static Control GetControl(this IControlBinderExt binder)
         {
             if (binder is IControlBinderExt)
-                return ((IControlBinderExt)binder).Control;
+                return ((IControlBinderExt)binder).BoundControl as Control;
             if (binder is Control)
                 return binder as Control;
             return null;

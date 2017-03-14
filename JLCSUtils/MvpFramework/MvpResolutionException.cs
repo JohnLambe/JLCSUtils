@@ -9,12 +9,12 @@ namespace MvpFramework
     /// <summary>
     /// Exception on resolving MVP classes or interfaces.
     /// </summary>
-    public class MvpResolverException : Exception
+    public class MvpResolutionException : Exception
     {
         //
         // Summary:
         //     Initializes a new instance of the MvpResolverException class.
-        public MvpResolverException() { }
+        public MvpResolutionException() { }
         //
         // Summary:
         //     Initializes a new instance of the MvpResolverException class with a specified error
@@ -23,7 +23,7 @@ namespace MvpFramework
         // Parameters:
         //   message:
         //     The message that describes the error.
-        public MvpResolverException(string message) : base(message) { }
+        public MvpResolutionException(string message) : base(message) { }
         //
         // Summary:
         //     Initializes a new instance of the MvpResolverException class with a specified error
@@ -36,6 +36,6 @@ namespace MvpFramework
         //   innerException:
         //     The exception that is the cause of the current exception, or a null reference
         //     (Nothing in Visual Basic) if no inner exception is specified.
-        public MvpResolverException(string message, Exception innerException) : base(message, innerException) { }
+        public MvpResolutionException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

@@ -12,11 +12,29 @@ namespace JohnLambe.Util.Misc
     [Flags]
     public enum IconState
     {
+        /// <summary>
+        /// The normal state of an icon.
+        /// </summary>
         Normal = 0,
+        /// <summary>
+        /// The 'Hot tracked' state, e.g. on for a mouse over.
+        /// </summary>
         HotTracked,
+        /// <summary>
+        /// An appearance like a button being pushed down, for when they mouse etc. is held down on the icon.
+        /// </summary>
         Pressed,
+        /// <summary>
+        /// An appearance that indicates that the action represented by the icon is not available.
+        /// </summary>
         Disabled,
+        /// <summary>
+        /// 'Selected' appearance, for when an item can be selected from a group/list of items.
+        /// </summary>
         Selected,
+        /// <summary>
+        /// Can be used by consumers of this library.
+        /// </summary>
         Custom
     }
 
@@ -46,5 +64,18 @@ namespace JohnLambe.Util.Misc
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class IconIdAttribute : Attribute
     {
+    }
+
+
+    /// <summary>
+    /// Null object implementation of <see cref="IIconRepository{TKeyType, TImageType}"/>.
+    /// </summary>
+    public sealed class NullIconRepository<TKeyType, TImageType> : IIconRepository<TKeyType, TImageType>
+    //| Sealed because if it did anything else, it wouldn't be a null object.
+    {
+        public TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal)
+        {
+            return default(TImageType);
+        }
     }
 }

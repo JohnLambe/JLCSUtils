@@ -24,7 +24,7 @@ namespace MvpFramework.Dialog
     {
         public MessageDialogModel()
         {
-            MessageTypeId = GetType().Name;
+            MessageTypeId = GetType().FullName;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MvpFramework.Dialog
         /// </summary>
         public virtual string Message { get; set; }
 
-        public virtual MessageType MessageType { get; set; } = MessageType.None;
+        public virtual MessageDialogType MessageType { get; set; } = MessageDialogType.Informational;
         //| Inferred from MessageTypeId ?
 
         /// <summary>
@@ -98,10 +98,24 @@ namespace MvpFramework.Dialog
         public virtual IOptionCollection Options { get; set; }
 
         /// <summary>
+        /// The minimum log detail level that at which this message should be logged.
+        /// </summary>
+        public virtual int LogLevel { get; set; }
+
+
+        /// <summary>
         /// Flags relating to what interceptors can do with this message.
         /// </summary>
         public virtual MessageDialogInterceptFlags InterceptFlags => MessageDialogInterceptFlags.Default;
 
+
+        /// <summary>
+        /// A human-readable desription of this type of message.
+        /// Can be used for showing configuration settings relating to it, etc.
+        /// </summary>
+        public virtual string Description { get; set; }
+
+        
         /// <summary>
         /// Event that is fired when an option is chosen.
         /// (For use with modeless dialogs, but fired whether modal or not).
@@ -119,69 +133,7 @@ namespace MvpFramework.Dialog
     }
 
 
-    /// <summary>
-    /// Category of message.
-    /// </summary>
-    public enum MessageType
-    {
-        /// <summary>
-        /// No type specified. Typically displayed with no icon etc. indicating the type of message.
-        /// </summary>
-        None  = 0,
-
-        /// <summary>
-        /// Information that is not an error or warning.
-        /// By default has only one option (typically called "Ok") - to dismiss it.
-        /// </summary>
-        Informational = 1000,
-
-        /// <summary>
-        /// Asks the user to confirm an action.
-        /// Default options are "Yes", "No" and "Cancel".
-        /// </summary>
-        Confirmation = 2000,
-
-        // An error with a 'Retry' option:
-        // Could be a separate type, but it could be more useful to be able to classify the category of error
-        // (one of the values below), and specify the buttons separately.
-
-        /// <summary>
-        /// A warning.
-        /// By default, has only one option (typically called "Ok") - to dismiss it.
-        /// </summary>
-        Warning = 3000,
-
-        /// <summary>
-        /// A warning that is more severe than the <see cref="Warning"/> option.
-        /// This may have a different UI style to draw attention to it, and/or different UI behaviours
-        /// (e.g. a delay of 1-2 seconds before allowing the user to respond, so that a user automatically pressing a key to dismiss when they couldn't possibly have read it won't be accepted).
-        /// By default has only one option (typically called "Ok") - to dismiss it.
-        /// </summary>
-        SevereWarning = 3500,
-
-        /// <summary>
-        /// An error.
-        /// By default, has only one option (typically called "Ok") - to dismiss it (the same applies to all type with names ending with "Error").
-        /// </summary>
-        Error = 4000,
-
-        /// <summary>
-        /// An error caused by a user, such as user input that failed validation.
-        /// </summary>
-        UserError = 4200,
-
-        /// <summary>
-        /// An system error, e.g. disc full, network connection failed.
-        /// </summary>
-        SystemError = 4600,
-
-        /// <summary>
-        /// An error that should never happen. An internal failure, such as an assertion failure.
-        /// </summary>
-        InternalError = 4800
-    }
-
-
+    //TODO: Refactor as a class:
     /// <summary>
     /// Specifies how (what type of dialog etc.) a message is displayed.
     /// </summary>
@@ -213,6 +165,20 @@ namespace MvpFramework.Dialog
         /// Show a modal dialog.
         /// </summary>
         Modal,
+
+        Custom
+    }
+
+
+    /// <summary>
+    /// Regsiter a message dialog type to be available for configuration.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public class RegisterMessageDialogAttribute : MvpAttribute
+    {
+        public virtual string[] Filter { get; set; }
+
+        public virtual string Category { get; set; }
     }
 
 }

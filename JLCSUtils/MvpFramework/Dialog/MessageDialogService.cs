@@ -63,7 +63,7 @@ namespace MvpFramework.Dialog
 
         protected virtual TResult ShowDialog<TResult>(IMessageDialogModel<TResult> messageModel)
         {
-            return (TResult)DialogPresenter.ShowModal(messageModel);
+            return (TResult)DialogPresenter.ShowDialog(messageModel);
         }
 
         /// <summary>

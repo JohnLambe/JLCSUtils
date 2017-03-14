@@ -7,6 +7,11 @@ using MvpFramework.Binding;
 
 namespace MvpFramework
 {
+    /// <summary>
+    /// Base class for Presenters that may show a window. (They can also have non-window views).
+    /// </summary>
+    /// <typeparam name="TView"></typeparam>
+    /// <typeparam name="TModel"></typeparam>
     public class WindowPresenterBase<TView, TModel> : PresenterBase<TView, TModel>, IWindowPresenter
             where TView : IWindowView
     {

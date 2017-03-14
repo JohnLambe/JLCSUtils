@@ -10,6 +10,8 @@ namespace JohnLambe.Util.Io
 {
     /// <summary>
     /// Utilities for working with file pathnames.
+    /// <para>
+    /// <seealso cref="DirectoryUtil"/> - for anything which involves scanning directories.</para>
     /// </summary>
     public static class PathUtils
     {
@@ -57,6 +59,5 @@ namespace JohnLambe.Util.Io
         {
             return Path.Combine(newDirectory, Path.GetFileName(path));
         }
-
     }
 }

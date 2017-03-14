@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using MvpFramework.Binding;
 using MvpFramework.WinForms.Util;
 using System.Diagnostics;
-
+using MvpFramework.Menu;
 
 namespace MvpFramework.WinForms
 {
@@ -34,8 +34,8 @@ namespace MvpFramework.WinForms
             // Dummy buttons to see the layout:
 
             SuspendLayout();
-
-            AddButton(new HandlerResolver.Handler()
+/*
+            AddButton(new MenuItemModel()
             {
                 Attribute = new MvpHandlerAttribute()
                 {
@@ -59,7 +59,7 @@ namespace MvpFramework.WinForms
                 }
             }
                 );
-
+                */
             ResumeLayout();
         }
 
@@ -79,53 +79,70 @@ namespace MvpFramework.WinForms
         /// Control bound by the <see cref="IControlBinder"/>.
         /// </summary>
         [Browsable(false)]
-        public virtual Control Control => this;
+        public virtual object BoundControl => this;
 
         #endregion
 
         #region Population
 
+        protected virtual void Populate()
+        {
+            if(!string.IsNullOrEmpty(Filter))
+            {
+
+            }
+            PopulateButtons(Buttons);
+        }
+
         protected virtual void PopulateButtons(PresenterBinderWrapper presenterBinder)
         {
+            PopulateButtons(new OptionCollectionBuilder().Build(presenterBinder.Presenter, Filter));
+        }
+
+        protected virtual void PopulateButtons(IOptionCollection buttons)
+        { 
             ClearButtons();
 
-            // Determine initial position:
-            var insideRectangle = this.ClientInsideMarginsRectangle();
-            switch (Orientation)
+            if (buttons != null)
             {
-                //TODO: ButtonAlignment; Expand width if size setting is 0.
-                case Orientation.Horizontal:
-                    _nextButtonCoords.Y = insideRectangle.Top;
-                    //CalcAlignedPosition(ButtonAlignment,insideRectangle.Height,EffectiveButtonHeight);
-                    if (!ReverseDirection)
-                        _nextButtonCoords.X = insideRectangle.Left;
-                    else
-                        _nextButtonCoords.X = insideRectangle.Right;
-                    break;
-                case Orientation.Vertical:
-                    _nextButtonCoords.X = insideRectangle.Left;
-                    if (!ReverseDirection)
-                        _nextButtonCoords.Y = insideRectangle.Top;
-                    else
-                        _nextButtonCoords.Y = insideRectangle.Bottom;
-                    break;
-            }
-
-            // Create the buttons:
-            SuspendLayout();
-            try
-            {
-                var controls = presenterBinder.GetHandlerMethods(Filter);
-                if (ReverseButtonOrder)
-                    controls = controls.Reverse();
-                foreach (var handler in controls)
+                // Determine initial position:
+                var insideRectangle = this.ClientInsideMarginsRectangle();
+                switch (Orientation)
                 {
-                    AddButton(handler);
+                    //TODO: ButtonAlignment; Expand width if size setting is 0.
+                    case Orientation.Horizontal:
+                        _nextButtonCoords.Y = insideRectangle.Top;
+                        //CalcAlignedPosition(ButtonAlignment,insideRectangle.Height,EffectiveButtonHeight);
+                        if (!ReverseDirection)
+                            _nextButtonCoords.X = insideRectangle.Left;
+                        else
+                            _nextButtonCoords.X = insideRectangle.Right;
+                        break;
+                    case Orientation.Vertical:
+                        _nextButtonCoords.X = insideRectangle.Left;
+                        if (!ReverseDirection)
+                            _nextButtonCoords.Y = insideRectangle.Top;
+                        else
+                            _nextButtonCoords.Y = insideRectangle.Bottom;
+                        break;
                 }
-            }
-            finally
-            {
-                ResumeLayout();
+
+                // Create the buttons:
+                SuspendLayout();
+                try
+                {
+                    var buttonSorted = buttons.Children;
+                    if (ReverseButtonOrder)
+                        buttonSorted = buttonSorted.Reverse();
+                    foreach (var button in buttonSorted)
+                    {
+                        AddButton(button);
+                    }
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
         }
 
@@ -144,17 +161,30 @@ namespace MvpFramework.WinForms
         /// <summary>
         /// Add a button to the collection.
         /// </summary>
-        /// <param name="handlerInfo"></param>
-        protected virtual void AddButton(HandlerResolver.Handler handlerInfo)
+        /// <param name="buttonModel"></param>
+        protected virtual void AddButton(MenuItemModel buttonModel)
         {
-            Control button = CreateButtonControl(handlerInfo);
+            Control button = CreateButtonControl(buttonModel);
 
-            button.Click += (sender, args) => handlerInfo.HandlerDelegate.Invoke();
+            button.Click += (sender, args) => Button_Click(sender, new ButtonClickedEventArgs(buttonModel));
 
-            PopulateButton(button, handlerInfo);
+            PopulateButton(button, buttonModel);
 
             if (button.Parent == null)   // if an overridden PopulateButton assigns Parent, keep its value
                 button.Parent = this;
+        }
+
+        /// <summary>
+        /// Handles a click on one of the buttons.
+        /// </summary>
+        /// <param name="sender">The button.</param>
+        /// <param name="args">Must be a <see cref="ButtonClickedEventArgs"/>.</param>
+        protected virtual void Button_Click(object sender, EventArgs args)
+        {
+            var buttonClickedEventArgs = (ButtonClickedEventArgs)args;
+            ButtonClicked?.Invoke(this, buttonClickedEventArgs);
+            if(!buttonClickedEventArgs.Intercept)
+                buttonClickedEventArgs.Button.Invoke();
         }
 
         /// <summary>
@@ -164,7 +194,7 @@ namespace MvpFramework.WinForms
         /// </summary>
         /// <param name="handlerInfo"></param>
         /// <returns></returns>
-        protected virtual Control CreateButtonControl(HandlerResolver.Handler handlerInfo)
+        protected virtual Control CreateButtonControl(MenuItemModel handlerInfo)
         {
             return new Button();
         }
@@ -176,8 +206,8 @@ namespace MvpFramework.WinForms
         /// (This can be used in subclasses to place it on a new control, such as a custom panel).</para>
         /// </summary>
         /// <param name="button"></param>
-        /// <param name="handlerInfo"></param>
-        protected virtual void PopulateButton(Control button, HandlerResolver.Handler handlerInfo)
+        /// <param name="buttonModel"></param>
+        protected virtual void PopulateButton(Control button, MenuItemModel buttonModel)
         {
             if (button is Button)
             {
@@ -190,7 +220,7 @@ namespace MvpFramework.WinForms
                 : Orientation == Orientation.Vertical ? this.ClientInsideMarginsRectangle().Width
                 : button.Width;
 
-            button.Text = handlerInfo.DisplayName;    // may cause resizing
+            button.Text = buttonModel.DisplayName;    // may cause resizing
 
             button.Height = EffectiveButtonHeight(button.Height);
 
@@ -262,7 +292,7 @@ namespace MvpFramework.WinForms
         #region Properties for Form Designer
 
         /// <summary>
-        /// Filters handles of the presenter.
+        /// Filters handlers of the presenter.
         /// </summary>
         [Category(MvpFrameworkConstants.MvpCategory)]
         [Description("Filters handles of the presenter.")]
@@ -300,7 +330,7 @@ namespace MvpFramework.WinForms
 
         [Description("Whether the buttons are positioned in a horizontal line or stacked vertically.")]
         protected virtual Orientation Orientation
-            => ButtonsLayout.HasFlag(TabAlignment.Left | TabAlignment.Right) ? Orientation.Horizontal : Orientation.Vertical;
+            => (ButtonsLayout == TabAlignment.Left || ButtonsLayout == TabAlignment.Right) ? Orientation.Horizontal : Orientation.Vertical;
 
         /// <summary>
         /// Place buttons from right to left or bottom to top (depending on <see cref="Orientation"/>).
@@ -327,8 +357,51 @@ namespace MvpFramework.WinForms
         [DefaultValue(0)]
         public virtual int ButtonHeight { get; set; } = 0;
 
+        [Category("Action")]
+        [Description("Fired when any of the buttons is clicked.")]
+        public virtual event ButtonClickedDelegate ButtonClicked;
+
         #endregion
 
+        /// <summary>
+        /// The collection of buttons.
+        /// </summary>
+        [Browsable(false)]
+        public virtual IOptionCollection Buttons
+        {
+            get { return _buttons; }
+            set
+            {
+                _buttons = value;
+                PopulateButtons(Buttons);
+            }
+        }
+        protected IOptionCollection _buttons;
+
+        /// <summary>
+        /// Arguments for <see cref="ButtonClickedDelegate"/>.
+        /// </summary>
+        public class ButtonClickedEventArgs : EventArgs
+        {
+            public ButtonClickedEventArgs(MenuItemModel button)
+            {
+                this.Button = button;
+            }
+
+            public virtual MenuItemModel Button { get; }
+
+            /// <summary>
+            /// Set to true to prevent the event from passed to later handlers.
+            /// </summary>
+            public virtual bool Intercept { get; set; }
+        }
+
+        /// <summary>
+        /// Event fired on clicking a button in a <see cref="ButtonContainer"/>.
+        /// </summary>
+        /// <param name="sender">The button container.</param>
+        /// <param name="args"></param>
+        public delegate void ButtonClickedDelegate(object sender, ButtonClickedEventArgs args);
     }
 
 }

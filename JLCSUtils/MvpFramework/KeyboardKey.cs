@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Util.Reflection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,20 @@ namespace MvpFramework
 {
     /// <summary>
     /// Equivalent to WinForms Sytem.Windows.Forms.Keys (avoids referencing WinForms).
+    /// Can be considered an extension of <see cref="System.ConsoleKey"/>.
+    /// This has all members defined on either of these (and where constant names differ, this has both).
+    /// <para><seealso cref="System.ConsoleKey"/> - doesn't have modifier keys, mouse buttons and some other keys.</para>
+    /// <para><seealso cref="KeyboardKeyExtension"/> - for conversion to/from <see cref="System.ConsoleKey"/>.</para>
     /// </summary>
     public enum KeyboardKey
     {
+        // This type only:
+        /// <summary>
+        /// Mask for the main key (without modifiers).
+        /// </summary>
+        BaseKey = 0xFF,
+
+        // WinForms only:
         //
         // Summary:
         //     The bitmask to extract modifiers from a key value.
@@ -43,6 +55,7 @@ namespace MvpFramework
         // Summary:
         //     The second x mouse button (five-button mouse).
         XButton2 = 6,
+
         //
         // Summary:
         //     The BACKSPACE key.
@@ -67,6 +80,8 @@ namespace MvpFramework
         // Summary:
         //     The ENTER key.
         Enter = 13,
+
+        // WinForms only:
         //
         // Summary:
         //     The SHIFT key.
@@ -79,10 +94,13 @@ namespace MvpFramework
         // Summary:
         //     The ALT key.
         Menu = 18,
+
         //
         // Summary:
         //     The PAUSE key.
         Pause = 19,
+
+        // WinForms only:
         //
         // Summary:
         //     The CAPS LOCK key.
@@ -119,10 +137,13 @@ namespace MvpFramework
         // Summary:
         //     The IME Kanji mode key.
         KanjiMode = 25,
+
         //
         // Summary:
         //     The ESC key.
         Escape = 27,
+
+        // WinForms only:
         //
         // Summary:
         //     The IME convert key.
@@ -143,6 +164,7 @@ namespace MvpFramework
         // Summary:
         //     The IME mode change key.
         IMEModeChange = 31,
+
         //
         // Summary:
         //     The SPACEBAR key.
@@ -367,14 +389,29 @@ namespace MvpFramework
         // Summary:
         //     The left Windows logo key (Microsoft Natural Keyboard).
         LWin = 91,
+        /// <summary>
+        /// The left Windows logo key (Microsoft Natural Keyboard).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        LeftWindows = 91,
         //
         // Summary:
         //     The right Windows logo key (Microsoft Natural Keyboard).
         RWin = 92,
+        /// <summary>
+        /// The left Windows logo key (Microsoft Natural Keyboard).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        RightWindows = 92,
         //
         // Summary:
         //     The application key (Microsoft Natural Keyboard).
         Apps = 93,
+        /// <summary>
+        /// The application key (Microsoft Natural Keyboard).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        Applications = 93,
         //
         // Summary:
         //     The computer sleep key.
@@ -539,6 +576,8 @@ namespace MvpFramework
         // Summary:
         //     The F24 key.
         F24 = 135,
+
+        // Not in System.ConsoleKey:
         //
         // Summary:
         //     The NUM LOCK key.
@@ -571,6 +610,7 @@ namespace MvpFramework
         // Summary:
         //     The right ALT key.
         RMenu = 165,
+
         //
         // Summary:
         //     The browser back key (Windows 2000 or later).
@@ -615,10 +655,20 @@ namespace MvpFramework
         // Summary:
         //     The media next track key (Windows 2000 or later).
         MediaNextTrack = 176,
+        /// <summary>
+        /// The media next track key (Windows 2000 or later).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        MediaNext = 176,
         //
         // Summary:
         //     The media previous track key (Windows 2000 or later).
         MediaPreviousTrack = 177,
+        /// <summary>
+        /// The media previous track key (Windows 2000 or later).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        MediaPrevious = 177,
         //
         // Summary:
         //     The media Stop key (Windows 2000 or later).
@@ -635,14 +685,29 @@ namespace MvpFramework
         // Summary:
         //     The select media key (Windows 2000 or later).
         SelectMedia = 181,
+        /// <summary>
+        /// The select media key (Windows 2000 or later).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        LaunchMediaSelect = 181,
         //
         // Summary:
         //     The start application one key (Windows 2000 or later).
         LaunchApplication1 = 182,
+        /// <summary>
+        /// The start application one key (Windows 2000 or later).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        LaunchApp1 = 182,
         //
         // Summary:
         //     The start application two key (Windows 2000 or later).
         LaunchApplication2 = 183,
+        /// <summary>
+        /// The start application two key (Windows 2000 or later).
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        LaunchApp2 = 183,
         //
         // Summary:
         //     The OEM Semicolon key on a US standard keyboard (Windows 2000 or later).
@@ -732,6 +797,11 @@ namespace MvpFramework
         // Summary:
         //     The PROCESS KEY key.
         ProcessKey = 229,
+        /// <summary>
+        /// The PROCESS KEY key.
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        Process = 229,
         //
         // Summary:
         //     Used to pass Unicode characters as if they were keystrokes. The Packet key value
@@ -741,6 +811,11 @@ namespace MvpFramework
         // Summary:
         //     The ATTN key.
         Attn = 246,
+        /// <summary>
+        ///     The ATTN key.
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        Attention = 246,
         //
         // Summary:
         //     The CRSEL key.
@@ -753,6 +828,11 @@ namespace MvpFramework
         // Summary:
         //     The ERASE EOF key.
         EraseEof = 249,
+        /// <summary>
+        ///     The ERASE EOF key.
+        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
+        /// </summary>
+        EraseEndOfFile = 249,
         //
         // Summary:
         //     The PLAY key.
@@ -773,6 +853,8 @@ namespace MvpFramework
         // Summary:
         //     The CLEAR key.
         OemClear = 254,
+
+        // WinForms only:
         //
         // Summary:
         //     The bitmask to extract a key code from a key value.
@@ -789,5 +871,37 @@ namespace MvpFramework
         // Summary:
         //     The ALT modifier key.
         Alt = 262144
+    }
+
+
+    /// <summary>
+    /// Extensions methods on or relating to <see cref="KeyboardKey"/>.
+    /// </summary>
+    public static class KeyboardKeyExtension
+    {
+        /// <summary>
+        /// Convert to a <see cref="System.ConsoleKey"/>, without the modifier keys.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException">If this key cannot be represented as a <see cref="System.ConsoleKey"/>.</exception>
+        public static ConsoleKey ToConsoleKey(this KeyboardKey value)
+        {
+            ConsoleKey result = (ConsoleKey)(value & KeyboardKey.BaseKey);
+            if (!result.ValidateEnumValue())
+                throw new InvalidCastException("This key cannot be converted to ConsoleKey: " + value);
+            return result;
+        }
+
+        /// <summary>
+        /// Convert to a <see cref="KeyboardKey"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static KeyboardKey ToKeyboardKey(ConsoleKey value)
+        {
+            return (KeyboardKey)value;
+        }
+
     }
 }

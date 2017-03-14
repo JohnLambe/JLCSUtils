@@ -13,7 +13,7 @@ namespace MvpFramework.WinForms
         /// <summary><see cref="IEmbeddedView.ViewId"/></summary>
         public virtual string ViewId { get; set; }
 
-        public virtual Control Control => this;
+        public virtual object BoundControl => this;
 
         public virtual void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {

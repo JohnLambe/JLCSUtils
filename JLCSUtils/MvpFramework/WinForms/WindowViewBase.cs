@@ -21,14 +21,23 @@ namespace MvpFramework.WinForms
 
         public virtual void Close()
         {
-            //TODO
+            var args = new ViewVisibilityChangedEventArgs(VisibilityChange.Closing);
+            InvokeViewVisibilityChanged(args);
+            if (args.Intercept)
+            {
+                //TODO
+            }
+            else
+            {
+                InvokeViewVisibilityChanged(new ViewVisibilityChangedEventArgs(VisibilityChange.Closed));
+            }
         }
 
         public virtual object ShowModal()
         {
             Modal = true;
             DoShow();
-            return null;
+            return ModalResult;
         }
 
         void IWindowView.Show()
@@ -68,6 +77,7 @@ namespace MvpFramework.WinForms
         /// <param name="args"></param>
         protected virtual void InvokeViewVisibilityChanged(ViewVisibilityChangedEventArgs args)
         {
+            args.IsModal = Modal;
             ViewVisibilityChanged?.Invoke(this, args);
         }
 
@@ -116,5 +126,7 @@ namespace MvpFramework.WinForms
         /// </summary>
         //| Named for consistency with System.Windows.Forms.Form.Modal.
         public virtual bool Modal { get; private set; }
+
+        protected virtual object ModalResult { get; set; }
     }
 }
