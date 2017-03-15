@@ -45,7 +45,7 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="presenter"></param>
         protected void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
         {
-            var binder = binderFactory.Create(control, presenter);
+            var binder = binderFactory.Create(control);
             if (binder != null)
             {
                 Binders.Add(binder);

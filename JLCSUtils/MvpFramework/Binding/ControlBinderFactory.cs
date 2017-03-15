@@ -13,12 +13,12 @@ namespace MvpFramework.Binding
     /// </summary>
     public class ControlBinderFactory : IControlBinderFactory
     {
-        public virtual IControlBinder Create(object control, IPresenter presenter)
+        public virtual IControlBinder Create(object control)
         {
             if (control is IControlBinder)                      // if the control implements the interface itself
                 return control as IControlBinder;               // use it
             else
-                return new GeneralControlBinder((Control)control, presenter);
+                return new GeneralControlBinder((Control)control);
             //TODO:
             // We could return different classes based on a mapping from Control classes to IControlBinder implementations.
             // - by a naming convention;

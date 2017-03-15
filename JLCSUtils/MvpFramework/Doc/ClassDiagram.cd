@@ -3,7 +3,7 @@
   <Class Name="MvpFramework.Binding.MvpHandlerAttribute" Collapsed="true">
     <Position X="19.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAEQAAAEAAAIgAAAAAAAQAAhAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAECEQAAAEAAAIgAAAAAAAQAAhAAAAAAAACQAAAAAAA=</HashCode>
       <FileName>Binding\Attributes.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -11,29 +11,29 @@
     <Position X="19.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
-      <FileName>Binding\ControlBinder.cs</FileName>
+      <FileName>Binding\ControlBinderFactory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="MvpFramework.Binding.GeneralControlBinder" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="22.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAhAAAAAAgAAAAAAAAAwAAoAIIgAIAAAAAA=</HashCode>
-      <FileName>Binding\GeneralControlBinder.cs</FileName>
+      <HashCode>AAAAAAAAAAhAAAAAAgAAAQAAAAAwAAoAIIgAIAAAAAA=</HashCode>
+      <FileName>WinForms\Binding\GeneralControlBinder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="MvpFramework.Binding.HandlerResolver" Collapsed="true">
     <Position X="15.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAQAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAIEAAAAAAAAAAAAAAAAAACAAAAAAAQAA=</HashCode>
       <FileName>Binding\HandlerResolver.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MvpFramework.Binding.ModelBinderWrapper" Collapsed="true">
     <Position X="15.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAYAAAAgAAEAAAAAAAAAAAAAAAAAgAAAAKABA=</HashCode>
+      <HashCode>EAAAAAAAYAAAAkAAEAAAAAAAAAAAAAAAAAgAAAAKABA=</HashCode>
       <FileName>Binding\ModelBinderWrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -47,14 +47,14 @@
   <Class Name="MvpFramework.Binding.PresenterBinderWrapper" Collapsed="true">
     <Position X="21" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAIIAEAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAA=</HashCode>
       <FileName>Binding\PresenterBinderWrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MvpFramework.ColumnDisplayAttribute" Collapsed="true">
     <Position X="17.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAACAAAMAAAAAAAAAAABAgAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAEAAAAAACAAAMAAAAAAAAAAABAgAAAIAAAAAAAAAAA=</HashCode>
       <FileName>GridAttributes.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -80,25 +80,10 @@
       <FileName>IWindowView.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MvpFramework.MessageDialogParameters" Collapsed="true">
+  <Class Name="MvpFramework.Dialog.MessageDialogParameters" Collapsed="true">
     <Position X="22.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAAKAAEAEAAAAAAAAAEAAAAAAAAAABAIAFAQAA=</HashCode>
-      <FileName>MessageDialog.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MvpFramework.OptionCollection" Collapsed="true">
-    <Position X="3.5" Y="10.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAAAAAAABAAA=</HashCode>
-      <FileName>MessageDialog.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="MvpFramework.OptionCollectionBuilder" Collapsed="true">
-    <Position X="19.25" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
       <FileName>MessageDialog.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -116,17 +101,10 @@
       <FileName>MvpInjectAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MvpFramework.MvpResolverException" Collapsed="true">
-    <Position X="15.75" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>MvpResolutionException.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="MvpFramework.PresenterBase&lt;TView, TModel&gt;" Collapsed="true">
     <Position X="10.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAACAAAAAAAAAAAAAAACCFAAAAABgAAAACAAA=</HashCode>
+      <HashCode>AAAAgACAACAAAAAAAAAAAAAAACAFEAAAAAgAAAACAAA=</HashCode>
       <FileName>Presenter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -198,7 +176,7 @@
   <Class Name="MvpFramework.PresenterFactory&lt;TPresenter, TParam1&gt;" Collapsed="true">
     <Position X="6.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAA=</HashCode>
       <FileName>PresenterFactory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -263,19 +241,11 @@
       <FileName>Resolver.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MvpFramework.ViewBase" Collapsed="true">
-    <Position X="0.5" Y="8.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAgAgACAAAAAAgAACAAAAAACAAAAACAAAAAAAAAAAAQ=</HashCode>
-      <FileName>ViewBase.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="MvpFramework.ViewVisibilityChangedEventArgs" Collapsed="true">
     <Position X="17.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAgCAAAQ=</HashCode>
-      <FileName>ViewBase.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAgAgCAAAQ=</HashCode>
+      <FileName>IWindowPresenter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MvpFramework.WindowPresenterBase&lt;TView, TModel&gt;" Collapsed="true">
@@ -288,35 +258,8 @@
   </Class>
   <Class Name="MvpFramework.Menu.MenuItemModel" Collapsed="true">
     <Position X="3.75" Y="9.25" Width="1.5" />
-    <NestedTypes>
-      <Enum Name="MvpFramework.Menu.MenuItemModel.MenuItemChangeType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Class Name="MvpFramework.Menu.MenuItemModel.ChangedEventArgs" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="MvpFramework.Menu.MenuItemModel.InvokedEventArgs" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Delegate Name="MvpFramework.Menu.MenuItemModel.InvokeDelegate" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-      <Delegate Name="MvpFramework.Menu.MenuItemModel.ChangedDelegate" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Menu\Menu.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAECkQIACACqAIiEBAAEYAQAAhABAAAZAgDQAAAAAAE=</HashCode>
+      <HashCode>AAECkQIACAGqAIiEBAAEYAQAEhABAAAZAgDQAAAAAAE=</HashCode>
       <FileName>Menu\Menu.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -386,7 +329,7 @@
   <Class Name="MvpFramework.WinForms.UiController" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="15.75" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgAAAgAAAACAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <HashCode>AAgAAAgAAAACAAAAAAAAAAAAAAAAAAAAAAAAgAAEAAA=</HashCode>
       <FileName>WinForms\UiController.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -394,10 +337,40 @@
   <Class Name="MvpFramework.WinForms.WindowViewBase" Collapsed="true">
     <Position X="0.5" Y="10" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEACAAAAAAAACAAAACAAAAAAAAAAAAAACAAAA=</HashCode>
+      <HashCode>IAgAAACEACAAgEAAAACAAAACAAAAgABAgAAACACAAAQ=</HashCode>
       <FileName>WinForms\WindowViewBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.WinForms.ViewBase" Collapsed="true">
+    <Position X="0.5" Y="8.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAABAAAACAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>WinForms\ViewBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.Menu.OptionCollection" Collapsed="true">
+    <Position X="3.5" Y="10.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Menu\OptionCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MvpFramework.Menu.OptionCollectionBuilder" Collapsed="true">
+    <Position X="19.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAACAAAAAAgAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Menu\OptionCollectionBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MvpFramework.MvpResolutionException" Collapsed="true">
+    <Position X="15.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MvpResolutionException.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Interface Name="MvpFramework.Binding.IControlBinder" Collapsed="true">
     <Position X="15.75" Y="5.75" Width="1.5" />
@@ -493,35 +466,28 @@
   <Interface Name="MvpFramework.IView" Collapsed="true">
     <Position X="12.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgACAAABAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>IView.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MvpFramework.IWindowPresenter" Collapsed="true">
     <Position X="21" Y="7.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IWindowPresenter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MvpFramework.IWindowView" Collapsed="true">
     <Position X="12.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <HashCode>AAAAAACEAAAAAAAAAAAAAAAAAAAEAAAAAAAAAACAAAA=</HashCode>
       <FileName>IWindowView.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="MvpFramework.IMessageDialog" Collapsed="true">
-    <Position X="0.5" Y="11.5" Width="1.5" />
+  <Interface Name="MvpFramework.Dialog.IMessageDialog" Collapsed="true">
+    <Position X="0.5" Y="11.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>MessageDialog.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="MvpFramework.IOptionCollection" Collapsed="true">
-    <Position X="19.25" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAABAAEIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MessageDialog.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -537,6 +503,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Presenter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MvpFramework.Menu.IOptionCollection" Collapsed="true">
+    <Position X="19.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAABAAEIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Menu\OptionCollection.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="MvpFramework.ResolverExtensionStatus" Collapsed="true">
@@ -556,7 +529,7 @@
   <Enum Name="MvpFramework.KeyboardKey" Collapsed="true">
     <Position X="15.75" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>A5ru5//VY8ooSswJUzETACoVGk1c1BsayKGo////aWM=</HashCode>
+      <HashCode>A5ru5//VY9ooSswJUzETAGsVGk1c1BsayKGo////aWM=</HashCode>
       <FileName>KeyboardKey.cs</FileName>
     </TypeIdentifier>
   </Enum>
@@ -578,7 +551,7 @@
     <Position X="17.5" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAACAAAA=</HashCode>
-      <FileName>ViewBase.cs</FileName>
+      <FileName>IWindowPresenter.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="MvpFramework.Menu.MenuStyle" Collapsed="true">
@@ -592,7 +565,7 @@
     <Position X="15.75" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ViewBase.cs</FileName>
+      <FileName>IWindowPresenter.cs</FileName>
     </TypeIdentifier>
   </Delegate>
   <Font Name="Segoe UI" Size="9" />

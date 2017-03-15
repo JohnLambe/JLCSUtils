@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.Text;
+﻿using JohnLambe.Util;
+using JohnLambe.Util.Text;
 using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,12 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Build a list of options from handlers on a given object.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="filter"></param>
-        /// <returns></returns>
+        /// <param name="target">The object with the handler methods.</param>
+        /// <param name="filter">Value to filter handlers by (using their <see cref="MvpHandlerAttribute.Filter"/> property or equivalent).</param>
+        /// <returns>the collection of menu items / options.</returns>
         public virtual OptionCollection Build(object target, string filter)
         {
-            var options = new Dictionary<string, Menu.MenuItemModel>();
+            var options = new Dictionary<string, MenuItemModel>();
 
             foreach (var handlerInfo in _handlerResolver.GetHandlersInfo(target, null))
             {
@@ -29,11 +30,11 @@ namespace MvpFramework.Menu
                     && ((filter == null) || (handlerInfo.Attribute.Filter?.Contains(filter) ?? false))
                     )
                 {
-                    var id = handlerInfo.Attribute?.Id ?? handlerInfo.Method?.Name;
+                    var id = handlerInfo.Attribute?.Id ?? handlerInfo.Method?.Name.RemovePrefix(HandlerNamePrefix).RemoveSuffix(HandlerNameSuffix);
                     var option = new MenuItemModel(options, id)
                     {
                         DisplayName = handlerInfo.Attribute?.DisplayName ??
-                            CaptionUtils.GetDisplayName(handlerInfo.Method, "Handle_", "Clicked"),
+                            CaptionUtils.GetDisplayName(handlerInfo.Method, HandlerNamePrefix, HandlerNameSuffix),
                         //| Alternatively, we could use the ID.
                         HotKey = handlerInfo.Attribute.HotKey,
                         IconId = handlerInfo.Attribute.IconId,
@@ -45,9 +46,20 @@ namespace MvpFramework.Menu
                 }
             }
 
-            var optionSet = new OptionCollection(options);
-            return optionSet;
+            return new OptionCollection(options);
         }
+
+        /// <summary>
+        /// Optional prefix of names of handler methods.
+        /// This is exlcuded from the handler name if present.
+        /// </summary>
+        public const string HandlerNamePrefix = "Handle_";
+
+        /// <summary>
+        /// Optional suffix of names of handler methods.
+        /// This is exlcuded from the handler name if present.
+        /// </summary>
+        public const string HandlerNameSuffix = "Clicked";
 
         protected readonly HandlerResolver _handlerResolver = new HandlerResolver();
     }

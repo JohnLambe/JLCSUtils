@@ -32,6 +32,7 @@ namespace MvpFramework.Binding
         /// The control bound by this binder.
         /// </summary>
         object BoundControl { get; }
+        //| Type `object` since each UI framework will have its own type(s) for controls.
 
         //| Could add `void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)` for nested Views
     }
@@ -44,7 +45,7 @@ namespace MvpFramework.Binding
     /// parameters of a control and a presenter, and returns the control binder.
     /// </para>
     /// </summary>
-    public interface IControlBinderFactory : IFactory<IControlBinder, object, IPresenter>
+    public interface IControlBinderFactory : IFactory<IControlBinder, object>
         //TODO: Remove presenter parameter
     {
     }

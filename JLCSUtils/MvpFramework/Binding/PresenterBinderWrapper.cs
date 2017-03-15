@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvpFramework.Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,20 +24,20 @@ namespace MvpFramework.Binding
             this.Presenter = presenter;
         }
 
+        /// <summary>
+        /// Get a collection of <see cref="MenuItemModel"/> representing a collection of handlers on the presenter.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public virtual IOptionCollection GetOptionCollection(string filter)
+        {
+            return new OptionCollectionBuilder().Build(Presenter, filter);
+        }
 
         public override EventHandler GetHandler(string handlerId, string filter = null)
         {
             var handlerDelegate = _handlerResolver.GetHandler(Presenter, handlerId, filter);
             return (sender, args) => handlerDelegate.Invoke();
-            /*
-            foreach( var method in Presenter.GetType()
-                .GetMethods(BindingFlags.Public)
-                // get attributes
-                .Where(m => )
-            {
-
-            }
-            */
         }
 
         //TODO: Return a type more decoupled from the presenter - that provides delegates instead of methods.

@@ -91,6 +91,8 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual string[] Rights { get; set; }
         //TODO?: Change type to an interface, IPrivilege (same for all similar 'Rights' properties).
+
+        //TOOO?: public virtual object ModalResult { get; set; }
     }
 
 

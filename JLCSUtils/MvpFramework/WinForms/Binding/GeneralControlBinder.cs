@@ -20,10 +20,10 @@ namespace MvpFramework.Binding
     /// </summary>
     public class GeneralControlBinder : IControlBinderExt
     {
-        public GeneralControlBinder(Control control, IPresenter presenter)
+        public GeneralControlBinder(Control control)
         {
             _boundControl = control;
-            this.Presenter = presenter;
+//            this.Presenter = presenter;
 
             string tag = _boundControl.Tag?.ToString();
             if (tag != null)
@@ -41,6 +41,8 @@ namespace MvpFramework.Binding
         /// <param name="modelBinder"></param>
         public virtual void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {
+            Presenter = presenter;
+
             if (_controlProperty != null)
             {
                 Model = modelBinder;
@@ -124,7 +126,7 @@ namespace MvpFramework.Binding
 
         protected MethodInfo _eventHandlerMethod;
 
-        protected readonly IPresenter Presenter;
+        protected virtual IPresenter Presenter { get; private set; }
 
         /// <summary>
         /// The model of the View that the control is placed in.

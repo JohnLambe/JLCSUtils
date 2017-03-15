@@ -133,40 +133,37 @@ namespace MvpFramework.Dialog
     }
 
 
-    //TODO: Refactor as a class:
     /// <summary>
     /// Specifies how (what type of dialog etc.) a message is displayed.
     /// </summary>
-    public enum MessageDisplayType
+    public class MessageDisplayType
     {
         /// <summary>
         /// To use a default based on other properties of the <see cref="MessageDialogModel"/>.
         /// </summary>
-        Default = 0,
+        public static readonly MessageDisplayType Default = new MessageDisplayType();
         //| Could use Nullable<MessageDisplayType> instead ?
 
         /// <summary>
         /// Don't display. It may be logged.
         /// </summary>
-        None,
+        public static readonly MessageDisplayType None = new MessageDisplayType();
 
         /// <summary>
         /// A message appears modelessly and dissappears after a certain time if the user does not explicity dismiss it.
         /// (Like an Android "Toast" message).
         /// </summary>
-        Temporary,
+        public static readonly MessageDisplayType Temporary = new MessageDisplayType();
 
         /// <summary>
         /// Show a modeless dialog or message, typically on the bottom or corner of a page/screen/window etc.
         /// </summary>
-        NonModal,
+        public static readonly MessageDisplayType NonModal = new MessageDisplayType();
 
         /// <summary>
         /// Show a modal dialog.
         /// </summary>
-        Modal,
-
-        Custom
+        public static readonly MessageDisplayType Modal = new MessageDisplayType();
     }
 
 
