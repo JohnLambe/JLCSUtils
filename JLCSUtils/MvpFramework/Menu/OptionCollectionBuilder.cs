@@ -41,7 +41,8 @@ namespace MvpFramework.Menu
                         IsDefault = handlerInfo.Attribute.IsDefault,
                         Order = handlerInfo.Attribute.Order,
                     };
-                    option.Invoked += (item, args) => handlerInfo.Method.Invoke(target, new object[] { });
+                    option.Invoked += handlerInfo.HandlerWithArgsDelegate; // CreateInvokeDelegate(handlerInfo, target);
+                        //(item, args) => handlerInfo.Method.Invoke(target, new object[] { });
                     options[id] = option;
                 }
             }

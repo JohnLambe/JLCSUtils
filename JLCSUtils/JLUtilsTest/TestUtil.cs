@@ -13,6 +13,8 @@ namespace JohnLambe.Tests.JLUtilsTest
     {
         /// <summary>
         /// Assert that the given delegate throws an exception of the given type or a subtype.
+        /// 
+        /// <seealso cref="AssertThrows{TException}(VoidDelegate, string)"/>
         /// </summary>
         /// <param name="exceptionType">The expected exception type.</param>
         /// <param name="del">Delegate to be tested.</param>
@@ -20,6 +22,18 @@ namespace JohnLambe.Tests.JLUtilsTest
         public static void AssertThrows(Type exceptionType, VoidDelegate del, string failMessage = null)
         {
             AssertThrowsContains(exceptionType, "", del, failMessage);
+        }
+
+        /// <summary>
+        /// Assert that the given delegate throws an exception of the given type or a subtype.
+        /// </summary>
+        /// <typeparam name="TException">The expected exception type.</typeparam>
+        /// <param name="del">Delegate to be tested.</param>
+        /// <param name="failMessage">Message to be output if the test fails (if the expected exception is not thrown).</param>
+        public static void AssertThrows<TException>(VoidDelegate del, string failMessage = null)
+            where TException : Exception
+        {
+            AssertThrows(typeof(TException), del, failMessage);
         }
 
         /// <summary>

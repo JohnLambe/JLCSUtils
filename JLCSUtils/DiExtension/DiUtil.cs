@@ -33,7 +33,7 @@ namespace DiExtension
         /// <returns>An array the same length as <paramref name="parameters"/>, with the requested range of values populated.
         /// Elements outside the requested range (<paramref name="startIndex"/> to <paramref name="endIndex"/>) are null.
         /// </returns>
-        public static object[] PopulateArgs(IDiResolver diResolver, ParameterInfo[] parameters, object[] contextArgs = null, Func<ParameterInfo, bool?> selector = null, int startIndex = 0, int endIndex = -1)
+        public static object[] PopulateArgs(this IDiResolver diResolver, ParameterInfo[] parameters, object[] contextArgs = null, Func<ParameterInfo, bool?> selector = null, int startIndex = 0, int endIndex = -1)
         {
             if (contextArgs == null)
                 contextArgs = EmptyCollection<object>.EmptyArray;

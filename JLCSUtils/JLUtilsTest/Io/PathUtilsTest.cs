@@ -36,9 +36,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Io
         public void ChangeFilename()
         {
             const string OriginalFilename = @"Z:\directory name.ext\_asd\old filename.txt.dat";
-            
+
             Assert.AreEqual(@"Z:\directory name.ext\_asd\new filename.doc", PathUtils.ChangeFilename(OriginalFilename, "new filename.doc"));
-            
+
             Assert.AreEqual(@"Z:\directory name.ext\_asd\new filename with no extension", PathUtils.ChangeFilename(OriginalFilename, "new filename with no extension"), "No extension in new filename");
         }
     }

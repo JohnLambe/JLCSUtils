@@ -51,6 +51,31 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual string[] Filter { get; set; }
 
+        /// <summary>
+        /// If there is only item in <see cref="Filter"/>, this is it.
+        /// If there are none, this is null.
+        /// Otherwise, an exception is thrown on reading this.
+        /// </summary>
+        public virtual string SingleFilter
+        {
+            get
+            {
+                if (Filter == null || Filter.Length == 0)
+                    return null;
+                else if (Filter.Length == 1)
+                    return Filter[0];
+                else
+                    throw new InvalidOperationException("Multiple Filters are defined");
+            }
+            set
+            {
+                if (value == null)
+                    Filter = null;
+                else
+                    Filter = new string[] { value };
+            }
+        }
+
 
         // Details for generating a UI item:
 

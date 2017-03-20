@@ -100,6 +100,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di.ConfigInject
 
         }
 
+        [TestCategory("Failing")]
         [TestMethod]
         public void InjectionFailed()
         {

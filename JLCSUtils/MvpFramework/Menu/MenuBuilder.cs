@@ -136,7 +136,7 @@ namespace MvpFramework.Menu
         {
             if (Resolver != null && item.HandlerType != null)
             {
-                MenuItemModel.InvokeDelegate instanceExecute = null;
+                MenuItemModel.InvokedDelegate instanceExecute = null;
 
                 // Instance methods:
 
@@ -178,7 +178,7 @@ namespace MvpFramework.Menu
             // Support special parameters for menu state ?
         }
 
-        protected virtual void MenuItemExecute_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args, MethodInfo method, MenuItemModel.InvokeDelegate invoke)
+        protected virtual void MenuItemExecute_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args, MethodInfo method, MenuItemModel.InvokedDelegate invoke)
         {
             var result = DiUtil.CallMethod<object>(DiResolver,method,null, new object[] { item, args });
             if (result is bool && !(bool)result)

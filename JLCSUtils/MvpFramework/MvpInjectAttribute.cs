@@ -21,4 +21,14 @@ namespace MvpFramework
     public class MvpParamAttribute : MvpAttribute
     {
     }
+
+    /// <summary>
+    /// Flags that a Presenter being injected should get a View nested in the View of the Presenter
+    /// that it is being injected into.
+    /// Currently supported only on constructor injection.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    public class MvpNestedAttribute : MvpAttribute
+    {
+    }
 }

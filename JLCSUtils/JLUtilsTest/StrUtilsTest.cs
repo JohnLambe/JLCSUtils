@@ -170,7 +170,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         [TestMethod]
-        public void DoublQuote()
+        public void DoubleQuote()
         {
             Assert.AreEqual("\"value\"", "value".DoubleQuote(), "no quotes");
             Assert.AreEqual("\"value\"\"1234\"", "value\"1234".DoubleQuote());
@@ -306,7 +306,20 @@ namespace JohnLambe.Tests.JLUtilsTest
         {
             Assert.AreEqual("qweABCDyuiop", StrUtils.ReplaceSubstring("qwertyuiop", 3, 2, "ABCD"));
 
+            Assert.AreEqual("qweABCDrtyuiop", StrUtils.ReplaceSubstring("qwertyuiop", 3, 0, "ABCD"), "0-length section being replaced");
+
+            TestUtil.AssertThrows<ArgumentException>(
+                () => StrUtils.ReplaceSubstring("qwertyuiop", 3, -1, "ABCD"));
+            TestUtil.AssertThrows<ArgumentException>(
+                () => StrUtils.ReplaceSubstring("qwertyuiop", -0x1000000, 5, "ABCD"));
+
             //TODO: null
+        }
+
+        [TestMethod]
+        public void ReplaceSubstring_WithNull()
+        {
+            Assert.AreEqual("qwéyuiop", StrUtils.ReplaceSubstring("qwértyuiop", 3, 2, null));
         }
 
         [TestMethod]

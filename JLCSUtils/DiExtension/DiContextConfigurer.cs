@@ -98,7 +98,7 @@ namespace DiExtension
                 else if (item.Attribute is DiRegisterInstanceAttribute)
                 {
                     if (item.Attribute.Name == null)
-                        throw new DependencyInjectionException("No Name specified for registering instance"); //TODO: Register singleton?
+                        throw new DependencyInjectionException("No Name specified for registering instance: " + item.Class); //TODO: Register singleton?
                     var instance = item.Class.Create<object>();
                         //TODO: Inject constructor parameters
                     DiContext.RegisterInstance(item.Attribute.Name, instance);

@@ -46,5 +46,61 @@ namespace JohnLambe.Util.Reflection
             else
                 return openGenericType.MakeGenericType(genericParameters);
         }
+
+        #region Nullable
+
+        /// <summary>
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>true iff <paramref name="t"/> is a nullable (<see cref="Nullable{T}"/>) value type.</returns>
+        public static bool IsNullableValueType(this Type t)
+            => Nullable.GetUnderlyingType(t) != null;
+            // same as: => t.IsGenericType && typeof(Nullable<>) == t.GetGenericTypeDefinition();
+
+        /// <summary>
+        /// Returns the <see cref="Nullable{T}"/> type for the given type.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        /// <exception>If <paramref name="t"/> is not a value type.</exception>
+        public static Type MakeNullableValueType(this Type t)
+        {
+//            if (t.IsValueType)
+            return typeof(Nullable<>).MakeGenericType(t);
+//            else
+//                throw new ArgumentException("Type " + t + " is not nullable");
+        }
+
+        /// <summary>
+        /// If this is a nullable value type, the underlying type is returned, otherwise this type is returned.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static Type GetNonNullableType(this Type t)
+            => Nullable.GetUnderlyingType(t) ?? t;
+
+        /// <summary>
+        /// If the given cannot be assigned null (i.e. if it is neither a nullable value type, nor a reference type),
+        /// this returns an equivalent type that can (a nullable value type),
+        /// otherwise returns the given type.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>the corresponding nullable type.</returns>
+        public static Type EnsureNullable(this Type t)
+        {
+            if(t.IsValueType)
+            {
+                if (t.IsNullableValueType())
+                    return t;                        // already nullable
+                else
+                    return t.MakeNullableValueType();
+            }
+            else
+            {   // not a value type, so it is already nullable
+                return t;
+            }
+        }
+
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Reflection;
 
 namespace JohnLambe.Util.TypeConversion
 {
@@ -22,12 +23,17 @@ namespace JohnLambe.Util.TypeConversion
         /// May throw an exception if it cannot be converted.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
+        /// <param name="source">the value to be converted.</param>
         /// <param name="requiredType"></param>
         /// <returns></returns>
         public static T Convert<T>(object source, Type requiredType)
         {
-            if (typeof(T).IsAssignableFrom(requiredType))        // if it can be cast (this has to be tried first, since ChangeType supports only IConvertible)
+            if (typeof(T).IsValueType && (source == null || source.ToString().Equals("")))   // converting null to a value type
+            {
+                return default(T);
+            }
+
+            if (source != null && requiredType.IsAssignableFrom(source.GetType()))        // if it can be cast (this has to be tried first, since ChangeType supports only IConvertible)
             {
                 try
                 {
@@ -38,7 +44,10 @@ namespace JohnLambe.Util.TypeConversion
                 }
             }
 
-            return (T)System.Convert.ChangeType(source, requiredType);
+            Type nullableUnderlyingType = Nullable.GetUnderlyingType(requiredType);  // null if not nullable
+
+            return (T)System.Convert.ChangeType(source, nullableUnderlyingType ?? requiredType); 
+                // if nullable, try to convert to the underlying type. System.Convert fails on trying to convert to Nullable<T>.
         }
 
         /// <summary>

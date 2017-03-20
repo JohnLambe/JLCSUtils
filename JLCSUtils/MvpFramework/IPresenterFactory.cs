@@ -101,4 +101,19 @@ namespace MvpFramework
     }
 
     #endregion
+
+
+    /// <summary>
+    /// For Presenter Factories nested in another Presenter with a corresponding nested view (nested in the outer Presenter's view).
+    /// This interface allows providing the nested view to the presenter being creating the nested Presenter.
+    /// </summary>
+    public interface INestedPresenterFactory
+    {
+        /// <summary>
+        /// The View to be used for any presenter created by this factory.
+        /// null to have a View created on each Create call.
+        /// </summary>
+        IView View { get; set; }
+    }
+
 }

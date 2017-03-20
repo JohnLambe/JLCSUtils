@@ -139,9 +139,9 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Do the action of this menu item.
         /// </summary>
-        public virtual void Invoke()
+        public virtual void Invoke(InvokedEventArgs args = null)
         {
-            Invoked?.Invoke(this, InvokedEventArgs.EmptyMenuItemInvokedEventArgs);
+            Invoked?.Invoke(this, args ?? InvokedEventArgs.EmptyInvokedEventArgs);
         }
 
         /// <summary>
@@ -312,6 +312,16 @@ namespace MvpFramework.Menu
             Visible = 8
         };
 
+        /// <summary>
+        /// Delegate for handlers to be notified of changes to a <see cref="MenuItemModel"/>.
+        /// </summary>
+        /// <param name="sender">The item on which something changed.</param>
+        /// <param name="args"></param>
+        public delegate void ChangedDelegate(MenuItemModel sender, ChangedEventArgs args);
+
+        /// <summary>
+        /// Arguments to <see cref="ChangedDelegate"/>.
+        /// </summary>
         public class ChangedEventArgs : EventArgs
         {
             public ChangedEventArgs(MenuItemChangeType changeType)
@@ -321,19 +331,25 @@ namespace MvpFramework.Menu
             public MenuItemChangeType ChangeType { get; protected set; }
         }
 
+        /// <summary>
+        /// Delegate for handlers for invoking a menu item / option.
+        /// </summary>
+        /// <param name="item">The item being invoked.</param>
+        /// <param name="args"></param>
+        public delegate void InvokedDelegate(MenuItemModel item, InvokedEventArgs args);
+
+        /// <summary>
+        /// Arguments to <see cref="InvokedDelegate"/>.
+        /// </summary>
         public class InvokedEventArgs : EventArgs
         {
-            public static readonly InvokedEventArgs EmptyMenuItemInvokedEventArgs = new InvokedEventArgs();
+            public static readonly InvokedEventArgs EmptyInvokedEventArgs = new InvokedEventArgs();
         }
-
-        public delegate void InvokeDelegate(MenuItemModel item, InvokedEventArgs args);
 
         /// <summary>
         /// Fired when the menu item is invoked (typically when chosen from the menu).
         /// </summary>
-        public virtual event InvokeDelegate Invoked;
-
-        public delegate void ChangedDelegate(MenuItemModel sender, ChangedEventArgs args);
+        public virtual event InvokedDelegate Invoked;
 
         /// <summary>
         /// Fired when certain properties of this class change.

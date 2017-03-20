@@ -21,13 +21,12 @@ namespace MvpFramework
         /// Close the window.
         /// </summary>
         void Close();
-
-        /*TODO: Events:
-        event EventHandler<WindowViewOpenedEventArgs> Opened;
-        event EventHandler Closed;
-        */
     }
 
+
+    /// <summary>
+    /// Non-generic equivalent of <see cref="IWindowPresenter{TModelResult}"/>.
+    /// </summary>
     public interface IWindowPresenter : IWindowPresenter<object>
     {
     }

@@ -71,6 +71,8 @@ namespace MvpFramework.Binding
                 _eventHandlerMethod = method;
                 _boundControl.Click += BoundControl_Click;
             }
+
+            //TODO: Other events. Map to handler name: <Name>_<Event>
         }
 
         /// <summary>
@@ -124,8 +126,15 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual object BoundControl => _boundControl;
 
+        //TODO: Use PresenterBinder, and use an abstraction of the handler (rather than directly referencing a method).
+        /// <summary>
+        /// Method of the presenter to handler Click event.
+        /// </summary>
         protected MethodInfo _eventHandlerMethod;
 
+        /// <summary>
+        /// The bound Presenter.
+        /// </summary>
         protected virtual IPresenter Presenter { get; private set; }
 
         /// <summary>

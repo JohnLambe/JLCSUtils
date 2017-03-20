@@ -50,6 +50,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
         /// <summary>
         /// Factory is injected, but property injection fails with an exception.
         /// </summary>
+        [TestCategory("Failing")]
         [TestMethod]
         public void InjectFactoryAndPropertyFails()
         {

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 
 using DiExtension;
-using JohnLambe.Util;
 using DiExtension.Attributes;
+using JohnLambe.Util;
 
 namespace MvpFramework
 {
@@ -17,7 +17,8 @@ namespace MvpFramework
     /// <typeparam name="TPresenter"></typeparam>
     /// <typeparam name="TParam1"></typeparam>
     public class PresenterFactory<TPresenter> :
-        IPresenterFactory<TPresenter>
+        IPresenterFactory<TPresenter>,
+        INestedPresenterFactory
         where TPresenter : IPresenter
     {
         public PresenterFactory(MvpResolver resolver, IDiResolver diResolver,
@@ -71,6 +72,7 @@ namespace MvpFramework
         }
 
         //TPresenter IPresenterFactory<TPresenter>.Create()
+        //|TODO?: Consider making virtual.
         public TPresenter Create()
         {
             return CreatePresenter();
@@ -79,19 +81,47 @@ namespace MvpFramework
         /// <summary>
         /// Create the Presenter (with its View).
         /// </summary>
-        /// <param name="param">Arguments to the 'Create' method.</param>
+        /// <param name="createArguments">Arguments to the 'Create' method.</param>
         /// <returns>the new Presenter.</returns>
-        protected virtual TPresenter CreatePresenter(params object[] param)
+        protected virtual TPresenter CreatePresenter(params object[] createArguments)
         {
             Init();
 
-            var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass,param);
+            var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass,createArguments);
             if (existingPresenter != null)
                 return existingPresenter;
 
-            var parameters = TargetConstructor.GetParameters();   // constructor parameters
+            var constructorParameters = TargetConstructor.GetParameters();   // constructor parameters
 
-            var args = DiUtil.PopulateArgs(DiResolver, parameters, param,
+            // Populate the view:
+            IView view = null;
+            if (constructorParameters.Count() > 0)            // if the Presenter constructor has at least one parameter
+            {
+                // Determine the view to be injected (if there are no parameters, the View is not injected):
+                try
+                {
+                    if (((INestedPresenterFactory)this).View != null)     // if a View is supplied
+                        view = ((INestedPresenterFactory)this).View;      // use it
+                    else
+                        view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                }
+                catch (Exception)   //TODO: Exception type
+                {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
+                    view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                }
+                //| Could provide parameters for context-based injection of View.
+                try
+                {
+                    UiManager.AfterCreateView(TargetClass, createArguments, ref view);
+                }
+                catch(Exception)
+                {
+                    MiscUtil.TryDispose(view);
+                    throw;
+                }
+            }
+
+            var args = DiResolver.PopulateArgs(constructorParameters, createArguments,
                 parameter =>
                 {
                     bool? fromCreateParam = null;
@@ -107,90 +137,37 @@ namespace MvpFramework
                 1    // skip the first parameter (it's for the View)
                 );
 
-            // Populate the view:
-            IView view = null;
-            if (parameters.Count() > 0)
+            int paramIndex = 0;
+            foreach(var arg in args)
             {
-                try
+                if (paramIndex > 0)    // ignore the first parameter - the View
                 {
-                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                    if (constructorParameters[paramIndex].IsDefined(typeof(MvpNestedAttribute)))    // if flagged as nested
+                    {
+                        if (arg is INestedPresenterFactory)                        // and the argument supports this
+                        {
+                            ((INestedPresenterFactory)arg).View = view;            // provide the View of the Presenter being created
+                        }
+                        else
+                        {
+                            throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute) + ": This can be used only on Presenter Factories");
+                        }
+                    }
                 }
-                catch (Exception)   //TODO: Exception type
-                {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
-                    view = Resolver.GetViewForPresenterType<IView>(TargetClass);
-                }
-                //| Could provide parameters for context-based injection of View.
-                try
-                {
-                    UiManager.AfterCreateView(TargetClass, param, ref view);
-                }
-                catch(Exception)
-                {
-                    MiscUtil.TryDispose(view);
-                    throw;
-                }
-                args[0] = view;
+                paramIndex++;
             }
 
-
-            /*
-            object[] args = new object[parameters.Count()];       // constructor arguments
-            IView view = null;
-
-            // Populate the constructor arguments:
-            int parameterIndex = 0;                               // index of the constructor parameter
-            int createMethodParameterIndex = 0;
-            bool? createParam = null;                             // true iff the current parameter is to be populated from the arguments to the 'Create' method
-            foreach (var parameter in parameters)
+            if (args.Length > 0)
             {
-                //                if(parameter.ParameterType.IsAssignableFrom(typeof(TView)))
-                if (parameterIndex == 0)
-                {   // first parameter is always the View
-                    try
-                    {
-                        view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
-                    }
-                    catch (Exception)   //TODO: Exception type
-                    {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
-                        view = Resolver.GetViewForPresenterType<IView>(TargetClass);
-                    }
-                    //| Could provide parameters for context-based injection of View.
-                    UiManager.AfterCreateView(ref view);
-                    args[parameterIndex] = view;
-                }
-                else
-                {
-                    var attribute = parameter.GetCustomAttribute<InjectAttribute>();
-                    if (attribute != null)
-                    {
-                        createParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
-                    }
-                    else
-                    {
-                        createParam = parameterIndex < param.Length + 1;   // not specified as a 'Create' parameter, and its index is beyond the range of the 'Create' parameters
-                        //TODO: To support [Inject] before last create parameter: createParam = createMethodParameterIndex < param.Length + 1;
-                    }
-
-                    if (createParam.Value)
-                    {   // Create method parameters (possibly including the Model)
-                        args[parameterIndex] = param[createMethodParameterIndex];
-                        createMethodParameterIndex++;   // next parameter
-                    }
-                    else
-                    {   // other parameters are injected from the DI container
-                        args[parameterIndex] = DiResolver.GetInstance<object>(parameter.ParameterType);
-                    }
-                }
-                parameterIndex++;
+                args[0] = view;   // assign the view (determined before creating the `args` array)
             }
-            */
 
             var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
             DiResolver.BuildUp(presenter);                                 // inject properties
 
             try
             {
-                UiManager.AfterCreatePresenter<TPresenter>(ref presenter, param, view);
+                UiManager.AfterCreatePresenter<TPresenter>(ref presenter, createArguments, view);
             }
             catch(Exception)
             {
@@ -203,10 +180,18 @@ namespace MvpFramework
         }
 
         /// <summary>
+        /// The View to be used for any presenter created by this class.
+        /// null (the default and usual case) to have a View created on each Create call.
+        /// </summary>
+        IView INestedPresenterFactory.View { get; set; }
+        //| This could have been protected, instead of having the INestedPresenterFactory inteface.
+        //| This way is more extendable - unrelated classes could implement the IPresenterFactory<> interfaces.
+
+        /// <summary>
         /// True iff views created by this factory are modal.
         /// </summary>
         public virtual bool Modal { get; set; } = true;
-        //| Could have an object with more settings relating to how a view is shown.
+        //| Could be replaced by an object that encapsulates this and more settings relating to how a view is shown.
 
         /// <summary>
         /// The type of the Presenter created by this factory.

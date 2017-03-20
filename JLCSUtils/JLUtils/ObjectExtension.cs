@@ -10,7 +10,7 @@ namespace JohnLambe.Util
     {
         /// <summary>
         /// A default value for this type.
-        /// T should be the same as the type that implements this.
+        /// <typeparamref name="T"/> should be the same as the type that implements this.
         /// </summary>
         /// <returns></returns>
         T GetDefaultValue();
@@ -24,7 +24,7 @@ namespace JohnLambe.Util
                 return ((IHasDefaultValue<T>)thisValue).GetDefaultValue();
             else if (thisValue is String)
                 return "" as T;
-            else if (TypeUtils.IsNumeric(thisValue))
+            else if (TypeUtil.IsNumeric(thisValue))
                 return 0 as T;
             else
                 return default(T);  // null

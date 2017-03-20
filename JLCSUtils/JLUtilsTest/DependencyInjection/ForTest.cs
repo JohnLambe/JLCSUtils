@@ -16,7 +16,7 @@ namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection
         }
     }
 
-    [DiRegisterInstance]
+    [DiRegisterInstance(Name = "Test1")]  //TODO?: Support registration without name
     public class Test1 : TestBase
     {
         public Test1()

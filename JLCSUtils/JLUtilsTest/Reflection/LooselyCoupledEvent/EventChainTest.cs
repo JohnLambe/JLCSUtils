@@ -9,6 +9,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection.LooselyCoupledEvent
     [TestClass]
     public class EventChainTest
     {
+        [TestCategory("Failing")]
         [TestMethod]
         public void SendEvent()
         {

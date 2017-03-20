@@ -55,6 +55,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             Assert.AreEqual(1234, Marshal.ReadInt32(p1New, 0), "Data is different after reallocation");
         }
 
+        [TestCategory("Failing")]
         [TestMethod]
         public void ReallocHGlobalFail()
         {
@@ -138,6 +139,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             }
         }
 
+        [TestCategory("Failing")]
         [TestMethod]
         public void ReadAndWriteCharUnicode()
         {

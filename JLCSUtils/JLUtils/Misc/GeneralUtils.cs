@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Misc
 {
+    /// <summary>
+    /// General utility methods.
+    /// </summary>
     public static class GeneralUtils
     {
         /// <summary>
