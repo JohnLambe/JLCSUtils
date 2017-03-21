@@ -30,11 +30,33 @@ namespace MvpFramework
             ModalResult = modalResult;
         }
 
+        /// <summary>
+        /// Show the view.
+        /// </summary>
+        /// <returns></returns>
+        public override object Show()
+        {
+            var result = base.Show();
+            View.Show();
+            return result;
+        }
+
         public virtual object ShowModal()
         {
             View.ShowModal();
 //            OnShowModal?.Invoke(this, EventArgs.Empty);
             return ModalResult;
+        }
+
+        /// <summary>
+        /// Bind to the view.
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="binderFactory"></param>
+        protected override void Bind(TView view, IControlBinderFactory binderFactory)
+        {
+            base.Bind(View,binderFactory);
+            view.ViewVisibilityChanged += View_ViewVisibilityChanged;
         }
 
         /// <summary>

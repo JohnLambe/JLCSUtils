@@ -43,36 +43,45 @@ namespace MvpFramework.Binding
         {
             Presenter = presenter;
 
-            if (_controlProperty != null)
+            try
             {
-                Model = modelBinder;
 
-                Refresh();
-
-                if (modelBinder.GetProp(_modelPropertyName).CanWrite)
-                    _boundControl.TextChanged += BoundControl_ValueChanged;
-                //modelBinder.BindProperty(_propertyName);
-
-                if (_boundControl is TextBox)
+                if (_controlProperty != null)
                 {
-                    var property = modelBinder.GetProp(_modelPropertyName).Property;
-                    var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
-                    if(attrib != null)
-                        ((TextBox)_boundControl).MaxLength = attrib.Length;
+                    Model = modelBinder;
+
+                    Refresh();
+
+                    if (modelBinder.GetProp(_modelPropertyName).CanWrite)
+                        _boundControl.TextChanged += BoundControl_ValueChanged;
+                    //modelBinder.BindProperty(_propertyName);
+
+                    if (_boundControl is TextBox)
+                    {
+                        var property = modelBinder.GetProp(_modelPropertyName).Property;
+                        var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
+                        if (attrib != null)
+                            ((TextBox)_boundControl).MaxLength = attrib.Length;
+                    }
                 }
-            }
 
-            // 'Click' event handler:
-            var method = Presenter?.GetType().GetMethods().Where(
-                p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Id?.Equals(_modelPropertyName) ?? false).Any())
-                ?.FirstOrDefault();
-            if (method != null)
+                // 'Click' event handler:
+                var method = Presenter?.GetType().GetMethods().Where(
+                    p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Id?.Equals(_modelPropertyName) ?? false).Any())
+                    ?.FirstOrDefault();
+                if (method != null)
+                {
+                    _eventHandlerMethod = method;
+                    _boundControl.Click += BoundControl_Click;
+                }
+
+                //TODO: Other events. Map to handler name: <Name>_<Event>
+            }
+            catch(Exception ex)
             {
-                _eventHandlerMethod = method;
-                _boundControl.Click += BoundControl_Click;
+                throw new MvpBindingException("Error on binding control " + BoundControl + ": " + ex.Message, ex);
+                //TODO: Get control name?
             }
-
-            //TODO: Other events. Map to handler name: <Name>_<Event>
         }
 
         /// <summary>

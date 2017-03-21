@@ -17,6 +17,12 @@ namespace MvpFramework
     //  Models cannot reference Views or Presenters.
     public interface IView
     {
+        /// <summary>
+        /// Bind the View to the Presenter and Model.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="presenter"></param>
+        /// <param name="binderFactory"></param>
         void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory);
 
         /// <summary>

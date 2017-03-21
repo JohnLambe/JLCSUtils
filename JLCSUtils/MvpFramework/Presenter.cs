@@ -27,7 +27,7 @@ namespace MvpFramework
     /// <typeparam name="TModel">The type of the Model.
     /// Can be anything. Using primitive types is not recommended and may not be supported in future versions.</typeparam>
     public class PresenterBase<TView, TModel> : IPresenter, INotifyOnDispose
-        where TView : IWindowView
+        where TView : IView
     {
         public PresenterBase(
             TView view,                                                   // resolved by MVP framework
@@ -54,7 +54,7 @@ namespace MvpFramework
         protected virtual void Bind(TView view, IControlBinderFactory binderFactory)
         {
             View.Bind(Model, this, binderFactory);
-            view.ViewVisibilityChanged += View_ViewVisibilityChanged;
+//            view.ViewVisibilityChanged += View_ViewVisibilityChanged;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace MvpFramework
         /// <returns></returns>
         public virtual object Show()
         {
-            View.Show();
+//            View.Show();
             return null;
         }
 

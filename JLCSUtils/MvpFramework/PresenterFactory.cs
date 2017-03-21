@@ -85,98 +85,115 @@ namespace MvpFramework
         /// <returns>the new Presenter.</returns>
         protected virtual TPresenter CreatePresenter(params object[] createArguments)
         {
-            Init();
-
-            var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass,createArguments);
-            if (existingPresenter != null)
-                return existingPresenter;
-
-            var constructorParameters = TargetConstructor.GetParameters();   // constructor parameters
-
-            // Populate the view:
-            IView view = null;
-            if (constructorParameters.Count() > 0)            // if the Presenter constructor has at least one parameter
+            try
             {
-                // Determine the view to be injected (if there are no parameters, the View is not injected):
-                try
-                {
-                    if (((INestedPresenterFactory)this).View != null)     // if a View is supplied
-                        view = ((INestedPresenterFactory)this).View;      // use it
-                    else
-                        view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
-                }
-                catch (Exception)   //TODO: Exception type
-                {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
-                    view = Resolver.GetViewForPresenterType<IView>(TargetClass);
-                }
-                //| Could provide parameters for context-based injection of View.
-                try
-                {
-                    UiManager.AfterCreateView(TargetClass, createArguments, ref view);
-                }
-                catch(Exception)
-                {
-                    MiscUtil.TryDispose(view);
-                    throw;
-                }
-            }
+                Init();
 
-            var args = DiResolver.PopulateArgs(constructorParameters, createArguments,
-                parameter =>
+                var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, createArguments);
+                if (existingPresenter != null)
+                    return existingPresenter;
+
+                var constructorParameters = TargetConstructor.GetParameters();   // constructor parameters
+
+                // Populate the view:
+                IView view = null;
+                if (constructorParameters.Count() > 0)            // if the Presenter constructor has at least one parameter
                 {
-                    bool? fromCreateParam = null;
-                    var attribute = parameter.GetCustomAttribute<InjectAttribute>();
-                    if (attribute != null)
+                    if (SuppliedView != null)     // if a View is supplied
                     {
-                        fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
-                        // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
+                        view = SuppliedView;      // use it
+                    }
+                    else
+                    {
+                        // Determine the view to be injected (if there are no parameters, the View is not injected):
+                        try
+                        {
+                            view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                        }
+                        catch (Exception)   //TODO: Exception type
+                        {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
+                            view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                        }
+                    }
+                    //| Could provide parameters for context-based injection of View.
+                    try
+                    {
+                        UiManager.AfterCreateView(TargetClass, createArguments, ref view);
+                    }
+                    catch (Exception)
+                    {
+                        MiscUtil.TryDispose(view);
+                        throw;
+                    }
+                }
+
+                var args = DiResolver.PopulateArgs(constructorParameters, createArguments,
+                    parameter =>
+                    {
+                        bool? fromCreateParam = null;
+                        var attribute = parameter.GetCustomAttribute<InjectAttribute>();
+                        if (attribute != null)
+                        {
+                            fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
+                                                                                  // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
                     }
                     // still null if there was no InjectAttribute.
                     return fromCreateParam;
-                },
-                1    // skip the first parameter (it's for the View)
-                );
+                    },
+                    1    // skip the first parameter (it's for the View)
+                    );
 
-            int paramIndex = 0;
-            foreach(var arg in args)
-            {
-                if (paramIndex > 0)    // ignore the first parameter - the View
+                int paramIndex = 0;
+                foreach (var arg in args)
                 {
-                    if (constructorParameters[paramIndex].IsDefined(typeof(MvpNestedAttribute)))    // if flagged as nested
+                    if (paramIndex > 0)    // ignore the first parameter - the View
                     {
-                        if (arg is INestedPresenterFactory)                        // and the argument supports this
+                        if (constructorParameters[paramIndex].IsDefined(typeof(MvpNestedAttribute)))    // if flagged as nested
                         {
-                            ((INestedPresenterFactory)arg).View = view;            // provide the View of the Presenter being created
-                        }
-                        else
-                        {
-                            throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute) + ": This can be used only on Presenter Factories");
+                            if (arg is INestedPresenterFactory)                        // and the argument supports this
+                            {
+                                ((INestedPresenterFactory)arg).View = view;            // provide the View of the Presenter being created
+                            }
+                            else
+                            {
+                                throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute) + ": This can be used only on Presenter Factories");
+                            }
                         }
                     }
+                    paramIndex++;
                 }
-                paramIndex++;
-            }
 
-            if (args.Length > 0)
+                if (args.Length > 0)
+                {
+                    args[0] = view;   // assign the view (determined before creating the `args` array)
+                }
+
+                var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
+                DiResolver.BuildUp(presenter);                                 // inject properties
+
+                try
+                {
+                    UiManager.AfterCreatePresenter<TPresenter>(ref presenter, createArguments, view);
+                }
+                catch (Exception)
+                {
+                    MiscUtil.TryDispose(presenter);
+                    MiscUtil.TryDispose(view);
+                    throw;
+                }
+
+                return presenter;
+            }
+            catch(Exception ex)
             {
-                args[0] = view;   // assign the view (determined before creating the `args` array)
+                throw new MvpResolutionException("Error on creating presenter: Type: " + typeof(TPresenter) + "\n"
+                    + (TargetClass != null ? "Presenter class: " + TargetClass + "\n" : "")
+                    + (TargetConstructor != null ? "Target Presenter constructor: " + TargetConstructor + "\n" : "")
+                    + (SuppliedView != null ? "With supplied View: " + SuppliedView + "\n" : "")
+                    + ex.Message
+                    , ex);
+                //TODO: Include more information in error message
             }
-
-            var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
-            DiResolver.BuildUp(presenter);                                 // inject properties
-
-            try
-            {
-                UiManager.AfterCreatePresenter<TPresenter>(ref presenter, createArguments, view);
-            }
-            catch(Exception)
-            {
-                MiscUtil.TryDispose(presenter);
-                MiscUtil.TryDispose(view);
-                throw;
-            }
-
-            return presenter;
         }
 
         /// <summary>
@@ -186,6 +203,12 @@ namespace MvpFramework
         IView INestedPresenterFactory.View { get; set; }
         //| This could have been protected, instead of having the INestedPresenterFactory inteface.
         //| This way is more extendable - unrelated classes could implement the IPresenterFactory<> interfaces.
+
+        /// <summary>
+        /// Same as <see cref="INestedPresenterFactory.View"/>.
+        /// </summary>
+        protected virtual IView SuppliedView
+            => ((INestedPresenterFactory)this).View;
 
         /// <summary>
         /// True iff views created by this factory are modal.

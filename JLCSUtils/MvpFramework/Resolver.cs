@@ -359,7 +359,7 @@ namespace MvpFramework
             throw new MvpResolutionException("Resolution failed on resolving View for Presenter: " + presenterType.FullName + ".\n"
                 + (viewInterfaceType == null ? "Failed to resolve View Interface (Check that it is defined with a conventional name, e.g. " + viewInterfaceName + ")\n"
                 : "View Interface: " + viewInterfaceType.FullName + " (Check that there is a DI registration for this interface, or an implementing class with the [View] attribute)\n")
-                + (viewClassType != null ? "Tried getting class " + viewClassType.FullName + "from DI\n"
+                + (viewClassType != null ? "Tried getting class " + viewClassType.FullName + " from DI\n"
                 : !string.IsNullOrEmpty(viewClassName) ? "No class found called " + viewClassName + "\n" : "")
                 );
         }
