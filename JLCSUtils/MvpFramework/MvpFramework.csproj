@@ -44,9 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
     <Compile Include="IPresenter.cs" />
+    <Compile Include="MvpUiComponentConsts.cs" />
     <Compile Include="WinForms\Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
@@ -77,7 +79,7 @@
     <Compile Include="Dialog\MessageDialog.cs" />
     <Compile Include="IUiController.cs" />
     <Compile Include="IView.cs" />
-    <Compile Include="Binding\ControlBinder.cs" />
+    <Compile Include="Binding\IControlBinder.cs" />
     <Compile Include="MvpInjectAttribute.cs" />
     <Compile Include="MvpResolutionException.cs" />
     <Compile Include="Presenter.cs" />
@@ -93,6 +95,21 @@
     </Compile>
     <Compile Include="WinForms\ButtonContainer.Designer.cs">
       <DependentUpon>ButtonContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Controls\MvpButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\Controls\MvpCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\Controls\MvpComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\Controls\MvpLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\Controls\MvpTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="WinForms\EmbeddableView.cs">
       <SubType>UserControl</SubType>

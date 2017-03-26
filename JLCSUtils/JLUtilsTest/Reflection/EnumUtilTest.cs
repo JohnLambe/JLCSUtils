@@ -27,17 +27,23 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.IsFalse(x.HasAnyFlag(AttributeTargets.Method | AttributeTargets.ReturnValue));
         }
 
+        /// <summary>
+        /// Test with the wrong type for the flags.
+        /// </summary>
         [TestMethod]
         public void HasAnyFlag_Fails()
         {
             System.Base64FormattingOptions x = Base64FormattingOptions.InsertLineBreaks;
-            TestUtil.AssertThrows<Exception>( () => x.HasAnyFlag(System.DayOfWeek.Wednesday) );
+            TestUtil.AssertThrows<Exception>( () => x.HasAnyFlag(System.DayOfWeek.Wednesday), "Different enum types" );
         }
 
+        /// <summary>
+        /// Non-Flags enum.
+        /// </summary>
         [TestMethod]
         public void HasAnyFlagValidated_Fail()
         {
-            TestUtil.AssertThrows<Exception>(() => System.DayOfWeek.Wednesday.HasAnyFlag(System.DayOfWeek.Wednesday));
+            TestUtil.AssertThrows<Exception>(() => System.DayOfWeek.Wednesday.HasAnyFlagValidated(System.DayOfWeek.Wednesday), "Non-Flags enum");
         }
 
         [TestMethod]
@@ -49,11 +55,15 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         }
 
         [TestMethod]
-        public void ValidateEnum()
+        public void ValidateEnum_Valid()
         {
             DayOfWeek x = DayOfWeek.Sunday;
             Assert.IsTrue(x.ValidateEnumValue());
+        }
 
+        [TestMethod]
+        public void ValidateEnum_Invalid()
+        {
             DayOfWeek y = (DayOfWeek)125;
             Assert.IsFalse(y.ValidateEnumValue());
         }

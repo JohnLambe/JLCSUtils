@@ -87,6 +87,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         /// Test that data is preserved on reallocating.
         /// </summary>
         [TestMethod]
+        [TestCategory("Failing")]
         public void ReallocCopyTest()
         {
             var b = new ByteArray(0,256);

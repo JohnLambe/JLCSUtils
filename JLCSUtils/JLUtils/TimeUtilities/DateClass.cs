@@ -9,7 +9,7 @@ namespace JohnLambe.Util.TimeUtilities
     //[ComplexType]
     public abstract class DateClass
     {
-        //TODO: Implement (be delegation to Value) other methods and operators.
+        //TODO: Implement (by delegation to Value) other methods and operators.
 
         public virtual DateTime Value
         {
@@ -19,7 +19,12 @@ namespace JohnLambe.Util.TimeUtilities
 
         protected abstract DateTime PreprocessDateTime(DateTime value);
 
-        protected DateTime _value;
+        public static implicit operator DateTime(DateClass value)
+        {
+            return value.Value;
+        }
+
+        private DateTime _value;
     }
 
     /// <summary>
@@ -27,9 +32,19 @@ namespace JohnLambe.Util.TimeUtilities
     /// </summary>
     public class StartDate : DateClass
     {
+        public StartDate(DateTime value)
+        {
+            this.Value = value;
+        }
+
         protected override DateTime PreprocessDateTime(DateTime value)
         {
-            return Value.Date;
+            return value.Date;
+        }
+
+        public static implicit operator StartDate(DateTime value)
+        {
+            return new StartDate(value);
         }
     }
 
@@ -38,9 +53,19 @@ namespace JohnLambe.Util.TimeUtilities
     /// </summary>
     public class EndDate : DateClass
     {
+        public EndDate(DateTime value)
+        {
+            this.Value = value;
+        }
+
         protected override DateTime PreprocessDateTime(DateTime value)
         {
-            return TimeUtils.EndOfDay(Value);
+            return TimeUtils.EndOfDay(value);
+        }
+
+        public static implicit operator EndDate(DateTime value)
+        {
+            return new EndDate(value);
         }
     }
 }

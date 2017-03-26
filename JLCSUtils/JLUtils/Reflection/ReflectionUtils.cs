@@ -93,10 +93,12 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="type"></param>
         /// <param name="arguments"></param>
+        /// <typeparam name="T">The </typeparam>
         /// <returns></returns>
         public static T Create<T>(this Type type, params object[] arguments)
             where T: class
         {
+            /* old version:
             var argumentTypes = new Type[arguments.Length];
             for (int n = 0; n < arguments.Length; n++)
             {
@@ -106,8 +108,18 @@ namespace JohnLambe.Util.Reflection
                     argumentTypes[n] = arguments[n].GetType();
             }
             return CreateT<T>(type,argumentTypes,arguments);
+            */
+            return CreateT<T>(type, ReflectionUtils.ArrayOfTypes(arguments), arguments);            
         }
 
+        /// <summary>
+        /// Like <see cref="Create{T}(Type, object[])"/>, but the paramter types are specified explicitly.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="argumentTypes"></param>
+        /// <param name="arguments"></param>
+        /// <returns></returns>
         public static T CreateT<T>(Type type, Type[] argumentTypes, object[] arguments)
             where T: class
         {

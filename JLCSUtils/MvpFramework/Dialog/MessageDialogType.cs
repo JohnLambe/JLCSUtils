@@ -1,4 +1,5 @@
 ﻿using JohnLambe.Util;
+using JohnLambe.Util.Exceptions;
 using JohnLambe.Util.Misc;
 using JohnLambe.Util.Text;
 using MvpFramework.Menu;
@@ -68,6 +69,9 @@ namespace MvpFramework.Dialog
         /// </summary>
         public virtual IOptionCollection DefaultOptions { get; private set; }
 
+        /// <summary>
+        /// A suggested color of a UI element in a dialog for this type of message (a color to distinguish types of message).
+        /// </summary>
         public virtual Color DefaultColor { get; private set; } = Color.Empty;
 
         /// <summary>
@@ -158,6 +162,33 @@ namespace MvpFramework.Dialog
 
     }
 
+    /// <summary>
+    /// Associates a class (such as a dialog type) with an exception type.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class,
+        AllowMultiple = true,            // Mutlitple exceptions can be mapped to the same type.
+        Inherited = false)]              // Not inherited because the exception is mapped to a specific level in the inheritance heirarchy.
+    public class MappedExceptionAttribute: Attribute
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="exceptionClass"><see cref="ExceptionClass"/></param>
+        public MappedExceptionAttribute(Type exceptionClass)
+        {
+            this.ExceptionClass = exceptionClass;
+        }
+
+        /// <summary>
+        /// The exception type being mapped.
+        /// Must be <see cref="System.Exception"/> or a subclass of it.
+        /// </summary>
+        public virtual Type ExceptionClass { get; set; }
+    }
+
+    /// <summary>
+    /// Information message that is not an error, warning or confirmation, and generally doesn't offer a choice.
+    /// By default has only one option (typically called "Ok") - to dismiss it.
+    /// </summary>
     public class InformationalDialogType : MessageDialogType
     {
         public InformationalDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -171,6 +202,10 @@ namespace MvpFramework.Dialog
         // Suggested icon: 'i' on blue circle (tourist information  sign)
     }
 
+    /// <summary>
+    /// Message that asks the user to confirm an action.
+    /// Default options are "Yes", "No" and "Cancel".
+    /// </summary>
     public class ConfirmationDialogType : MessageDialogType
     {
         public ConfirmationDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -184,6 +219,10 @@ namespace MvpFramework.Dialog
         // Suggested icon: blue '?' in white circle with blue border
     }
 
+    /// <summary>
+    /// Message that warns the user of something (it can be something that has happened or is about to be done).
+    /// By default, has only one option (typically called "Ok") - to dismiss it.
+    /// </summary>
     public class WarningDialogType : MessageDialogType
     {
         public WarningDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -197,6 +236,12 @@ namespace MvpFramework.Dialog
         // Suggested icon: black '!' in yellow isosceles triangle (bottom side horizontal) with black border
     }
 
+    /// <summary>
+    /// Message that warns the user about something dangerous, etc. More serious than <see cref="WarningDialogType"/>.
+    /// This may have a different UI style to draw attention to it, and/or different UI behaviours
+    /// (e.g. a delay of 1-2 seconds before allowing the user to respond, so that a user automatically pressing a key to dismiss when they couldn't possibly have read it won't be accepted).
+    /// By default has only one option (typically called "Ok") - to dismiss it.
+    /// </summary>
     public class SevereWarningDialogType : WarningDialogType
     {
         public SevereWarningDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -223,6 +268,11 @@ namespace MvpFramework.Dialog
         // same stlye as Warning
     }
 
+    /// <summary>
+    /// An error - something that has gone wrong.
+    /// By default, has only one option (typically called "Ok") - to dismiss it (the same applies to all type with names ending with "Error").
+    /// </summary>
+    [MappedException(typeof(Exception))]
     public class ErrorDialogType : MessageDialogType
     {
         public ErrorDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -232,9 +282,14 @@ namespace MvpFramework.Dialog
 
         public override Color DefaultColor => Color.LightGray;
 
-        // Suggested icon: white 'X' on red circle; circle could be dark gray if red is reserved for serious warnings.
+        // Suggested icon: white 'X' on red background (circle or square); background could be dark gray if red is reserved for serious warnings.
+        //   Must be clearly distinguished from other icons that often have an 'X': Close, Delete, 'No' / Cancel, Abort, Test Failed.
     }
 
+    /// <summary>
+    /// An error caused by the user, e.g. invalid input.
+    /// </summary>
+    [MappedException(typeof(UserErrorException))]
     public class UserErrorDialogType : MessageDialogType
     {
         public UserErrorDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -248,6 +303,13 @@ namespace MvpFramework.Dialog
         // Suggested icon: red 'X' on transparent background; OR universal 'no' symbol on white background (foreground could be red or black)
     }
 
+    /// <summary>
+    /// An error related to the system or environment, e.g. I/O error, disc full, network connection failed.
+    /// </summary>
+    [MappedException(typeof(System.IO.IOException))]
+        // Sometimes IO errors should be treated as user error (such as if the user entered an invalid filename), but then they should be validated in those cases, an different error thrown/shown.
+    [MappedException(typeof(OutOfMemoryException))]
+    [MappedException(typeof(AssemblyLoadEventArgs))]
     public class SystemErrorDialogType : ErrorDialogType
     {
         public SystemErrorDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -257,9 +319,20 @@ namespace MvpFramework.Dialog
 
         public override Color DefaultColor => Color.DarkGray;  // Lighter than Gray
 
-        // Suggested icon: Like 'Error' icon but with a cogwheel (or other icon to indicate system internals etc.) added
+        // Suggested icon: Like 'Error' icon but with a cogwheel (or other icon to indicate system internals etc.) added.
     }
 
+    /// <summary>
+    /// An error due to something internal to the system, (apparently) not caused by the user, nor the environment,
+    /// e.g. an invalid state that must be the result of a bug, or an assertion failure.
+    /// (An error that should never happen.)
+    /// </summary>
+    [MappedException(typeof(InternalErrorException))]     // explicitly an internal error.
+    // Some of the following might be caused indirectly by user input, but then they should be validated before causing these exceptions,
+    // so these exceptions still indicate an internal failure (even if it just poor validation):
+    [MappedException(typeof(AccessViolationException))]   
+    [MappedException(typeof(IndexOutOfRangeException))]
+    [MappedException(typeof(NullReferenceException))]
     public class InternalErrorDialogType : ErrorDialogType
     {
         public InternalErrorDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -270,7 +343,7 @@ namespace MvpFramework.Dialog
         public override Color DefaultColor => Color.FromArgb(50,50,50);
         public override Color DefaultColorMuted => Color.Gray;  // Dark gray
 
-        // Suggested icon: white 'X' on black circle
+        // Suggested icon: Like error but with a black background (white 'X' on black background (circle or square)).
     }
 
 

@@ -1,14 +1,18 @@
-﻿using System;
+﻿using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.TypeConversion;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Reflection
 {
     /// <summary>
+    /// Utilities for working with enumeration types.
     /// </summary>
     public static class EnumUtil
     {
@@ -24,17 +28,29 @@ namespace JohnLambe.Util.Reflection
             return (value.GetIntegerValue() & mask) != 0;
         }
 
+        /// <summary>
+        /// True if any of the bits in <paramref name="mask"/> are set in this enum value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="mask"></param>
+        /// <returns></returns>
         public static bool HasAnyFlag(this Enum value, Enum mask)
         {
-            Debug.Assert(value.GetType() == mask.GetType(), "Enum types don't match");
+            Diagnostics.PreCondition<ArgumentException>(value.GetType() == mask.GetType(), "Enum types don't match");
             return HasAnyFlag(value, mask.GetIntegerValue());
         }
 
+        /// <summary>
+        /// Like <see cref="HasAnyFlag(Enum, Enum)"/>, but tests that the enum type has the <see cref="FlagsAttribute"/> attribute.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="mask"></param>
+        /// <returns>True if any of the bits in <paramref name="mask"/> are set in this enum value.</returns>
         public static bool HasAnyFlagValidated(this Enum value, Enum mask)
         {
             if (!value.GetType().IsDefined<FlagsAttribute>())
                 throw new ArgumentException("Not a Flags Enum");
-            return HasAnyFlag(value,mask);
+            return HasAnyFlag(value, mask);
         }
 
         /// <summary>
@@ -69,9 +85,21 @@ namespace JohnLambe.Util.Reflection
         public static long GetIntegerValue(this Enum value)
         {
             return (long)System.Convert.ChangeType(value, typeof(long));
-        // same as:            return (int)Enum.ToObject(value.GetType(), value);
-        // but have to cast to Enum.GetUnderlyingType();
-        //TODO: Is this more efficient?
+            // same as:            return (int)Enum.ToObject(value.GetType(), value);
+            // but have to cast to Enum.GetUnderlyingType();
+            //TODO: Is this more efficient?
+        }
+
+        /// <summary>
+        /// Get the <see cref="FieldInfo"/> of the Enum type, for the given enum value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static FieldInfo GetField(this Enum value)
+        {
+            var enumType = value.GetType();          // the type of the Enum that the given value is in
+            return enumType.GetField(Enum.GetName(enumType, value));    // look up the field by name
+            // (There's probably a more efficient way than this string lookup).
         }
 
         /*
@@ -107,11 +135,15 @@ namespace JohnLambe.Util.Reflection
     }
 
 
+    public abstract class EnumAttribute : Attribute
+    {
+    }
+
     /// <summary>
     /// Flags that an enum type contains a mixture of flag bits and a numeric value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Enum, AllowMultiple = false, Inherited = true)]
-    public class HybridEnumAttribute : Attribute
+    public class HybridEnumAttribute : EnumAttribute
     {
     }
 
@@ -119,7 +151,7 @@ namespace JohnLambe.Util.Reflection
     /// Flags that an enum constant (in an enum flagged with <see cref="HybridEnumAttribute"/>) should be trated as a flag.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class EnumFlagAttribute : Attribute
+    public class EnumFlagAttribute : EnumAttribute
     {
     }
 
@@ -128,7 +160,7 @@ namespace JohnLambe.Util.Reflection
     /// Specifies how the bits specified by the value of the attributed item are interpreted.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class EnumHybridMemberAttribute : Attribute
+    public class EnumHybridMemberAttribute : EnumAttribute
     {
         /// <summary>
         /// Treat these bits as being this type.

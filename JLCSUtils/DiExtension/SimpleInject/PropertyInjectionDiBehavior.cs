@@ -15,8 +15,14 @@ using DiExtension.ConfigInject;
 
 namespace DiExtension.SimpleInject
 {
+    /// <summary>
+    /// Base class for <see cref="IDependencyInjectionBehavior"/> implementations (SimpleInjector extensions).
+    /// </summary>
     public class InjectionBehaviorBase
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="provider">Provider that will be used to look up values for injection by a key.</param>
         public InjectionBehaviorBase(IConfigProvider provider)
         {
             ConfigProvider = provider;
@@ -38,6 +44,11 @@ namespace DiExtension.SimpleInject
             return key;
         }
 
+        /// <summary>
+        /// Get the key to use to look up a value for the given consumer.
+        /// </summary>
+        /// <param name="consumer"></param>
+        /// <returns>The key to use.</returns>
         public static string GetKeyForConsumer(InjectionConsumerInfo consumer)
         {
             var attribute = GetAttributeForConsumer(consumer);
@@ -50,6 +61,13 @@ namespace DiExtension.SimpleInject
             return key;
         }
 
+        /// <summary>
+        /// Look up a value for injection, by its key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="requiredType">The type that the found value is required to be.
+        /// It may be converted to this.</param>
+        /// <returns>The looked up value. Must be of type <paramref name="requiredType"/>.</returns>
         public virtual object GetValue(string key, Type requiredType)
         {
             object value;
@@ -87,7 +105,7 @@ namespace DiExtension.SimpleInject
                 }
                 else
                 {
-                    Console.WriteLine("Resolution failed for " + member + "; Key=" + key);
+                    Console.WriteLine("Resolution failed for " + member + "; Key=" + key);                    //TODO: remove
                     //TODO: capture information to be added to exception if resolving by other method fails
                 }
             }
@@ -95,8 +113,17 @@ namespace DiExtension.SimpleInject
             return false;
         }
 
+        /// <summary>
+        /// Get the <see cref="InjectAttribute"/> on the consumer.
+        /// </summary>
+        /// <param name="consumer"></param>
+        /// <returns>The attribute, or null if does not have one.</returns>
         protected static InjectAttribute GetAttributeForConsumer(InjectionConsumerInfo consumer)
         {
+            /*TODO: Test and replace with this:
+            return ((ICustomAttributeProvider)consumer.Target.Parameter ?? (ICustomAttributeProvider)consumer.Target.Member)
+                .GetCustomAttribute<InjectAttribute>();
+                /*/
             return consumer.Target.Parameter != null ?
                 consumer.Target.Parameter.GetCustomAttribute<InjectAttribute>()
                 : consumer.Target.Member?.GetCustomAttribute<InjectAttribute>();
@@ -125,22 +152,35 @@ namespace DiExtension.SimpleInject
         /// </summary>
         protected readonly IDependencyInjectionBehavior Existing;
 
-        public PropertyInjectionDiBehavior(IDependencyInjectionBehavior existing, IConfigProvider context) : base(context)
+        /// <summary>
+        /// </summary>
+        /// <param name="existing">Bahvior to use if this one fails (usually the behaviour in place before this one is installed).</param>
+        /// <param name="provider">Provider that will be used to look up values for injection by a key.</param>
+        public PropertyInjectionDiBehavior(IDependencyInjectionBehavior existing, IConfigProvider provider) : base(provider)
         {
             Existing = existing;
         }
 
-        public static PropertyInjectionDiBehavior RegisterWith(ContainerOptions options, IConfigProvider context)
+        /// <summary>
+        /// Register an instance of this with a SimpleInjector container.
+        /// </summary>
+        /// <param name="options">The <see cref="ContainerOptions"/> of the container to register with.</param>
+        /// <param name="provider">Provider that will be used to look up values for injection by a key.</param>
+        /// <returns></returns>
+        public static PropertyInjectionDiBehavior RegisterWith(ContainerOptions options, IConfigProvider provider)
         {
-            options.PropertySelectionBehavior = new InjectAttributePropertySelectionBehavior(context);
+            options.PropertySelectionBehavior = new InjectAttributePropertySelectionBehavior(provider);
             var diBheaviour = new PropertyInjectionDiBehavior(
-                options.DependencyInjectionBehavior, context);
+                options.DependencyInjectionBehavior, provider);
             options.DependencyInjectionBehavior = diBheaviour;
             return diBheaviour;
         }
 
         #region IDependencyInjectionBehavior methods
 
+        /// <summary> <see cref="IDependencyInjectionBehavior.BuildExpression(InjectionConsumerInfo)"/> </summary>
+        /// <param name="consumer"></param>
+        /// <returns></returns>
         public virtual Expression BuildExpression(InjectionConsumerInfo consumer)
         {
             if (CanResolve(consumer))
@@ -158,6 +198,8 @@ namespace DiExtension.SimpleInject
             throw new DependencyInjectionException("Resolving failed for " + consumer.Target.Name);
         }
 
+        /// <summary> <see cref="IDependencyInjectionBehavior.Verify(InjectionConsumerInfo)"/> </summary>
+        /// <param name="consumer"></param>
         public virtual void Verify(InjectionConsumerInfo consumer)
         {
             if (!CanResolve(consumer))      // if we can't resolve it, test with the underlying behaviour
@@ -174,14 +216,10 @@ namespace DiExtension.SimpleInject
         /// <returns></returns>
         protected virtual bool CanResolve(InjectionConsumerInfo consumer)
         {
+//            if (consumer.Target.Property == null)
+//                return false;                          // reject if not a property
             var attribute = GetAttributeForConsumer(consumer);  // get the attribute
             return attribute != null && attribute.Enabled;             // if the attribute is present and its Enabled property is true
-            // (Member is probably never null. Tested anyway above.)
-/*                if (consumer.Target.Member.GetCustomAttributes(typeof(InjectAttribute)).Any())
-                {
-                    return true;
-                }
-*/
         }
 
     }

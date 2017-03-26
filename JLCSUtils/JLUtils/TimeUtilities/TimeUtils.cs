@@ -41,9 +41,19 @@ namespace JohnLambe.Util.TimeUtilities
             get { return TimeSpan.Zero; }
         }
 
-        // Formats:
+        #region Formats
+
+        /// <summary>
+        /// Full date and time in metric format.
+        /// </summary>
         public const string MetricFormat = "yyyy-MM-dd hh:mm:ss";
+
+        /// <summary>
+        /// ISO-8601 Basic date/time format.
+        /// </summary>
         public const string Iso8601Format = "yyyyMMdd'T'hhmmss";
+
+        #endregion
 
         #endregion
 
@@ -207,5 +217,8 @@ namespace JohnLambe.Util.TimeUtilities
         public static readonly TimeSpan EndOfDayTime = new TimeSpan(0,23,59,59,999);
 
         #endregion
+
+        public static string NowIso8601()
+            => DateTime.Now.ToString(Iso8601Format);
     }
 }

@@ -47,9 +47,13 @@
     <Compile Include="Collections\EnumeratorUtils.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="ConfigProvider\IconRepository.cs" />
+    <Compile Include="Diagnostic\Diagnostics.cs" />
     <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="ConfigProvider\FileImageLoaderConfigProvider.cs" />
+    <Compile Include="Exceptions\AssertionFailedException.cs" />
+    <Compile Include="Exceptions\IUserErrorException.cs" />
+    <Compile Include="Exceptions\UserErrorException.cs" />
     <Compile Include="FilterDelegates\NullableBooleanExpression.cs" />
     <Compile Include="FilterDelegates\NullableFilterDelegate.cs" />
     <Compile Include="ConfigProvider\IConfigProvider.cs" />
@@ -67,6 +71,7 @@
     <Compile Include="Misc\ValidationAttribute.cs" />
     <Compile Include="Reflection\AssemblyUtils.cs" />
     <Compile Include="Reflection\AttributeUtils.cs" />
+    <Compile Include="Reflection\EnumAttributeUtil.cs" />
     <Compile Include="Reflection\GenericTypeUtils.cs" />
     <Compile Include="Security\HashedPassword.cs" />
     <Compile Include="Services\EnvironmentService.cs" />

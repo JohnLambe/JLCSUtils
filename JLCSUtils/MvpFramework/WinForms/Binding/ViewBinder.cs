@@ -43,7 +43,7 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="control"></param>
         /// <param name="binderFactory"></param>
         /// <param name="presenter"></param>
-        protected void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
+        protected virtual void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
         {
             var binder = binderFactory.Create(control);
             if (binder != null)
@@ -96,7 +96,14 @@ namespace MvpFramework.WinForms.Binding
         /// </summary>
         protected virtual IList<IControlBinder> Binders { get; private set; }
 
+        /// <summary>
+        /// The binder for the model.
+        /// </summary>
         protected virtual ModelBinderWrapper ModelBinder { get; set; }
+
+        /// <summary>
+        /// The bound view.
+        /// </summary>
         protected virtual Control View { get; set; }
     }
 

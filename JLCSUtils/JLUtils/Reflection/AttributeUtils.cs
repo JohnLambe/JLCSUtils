@@ -66,9 +66,9 @@ namespace JohnLambe.Util.Reflection
             //return provider.GetCustomAttribute<T>() != null;
         }
         
-        public static bool IsDefined<T>(this ICustomAttributeProvider provider)
+        public static bool IsDefined<T>(this ICustomAttributeProvider provider, bool inherited = true)
         {
-            return provider.IsDefined(typeof(T), true);
+            return provider.IsDefined(typeof(T), inherited);
             //return provider.GetCustomAttribute<T>() != null;
         }
         

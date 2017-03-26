@@ -15,9 +15,12 @@ namespace DiExtension.SimpleInject
     /// </summary>
     public class InjectAttributePropertySelectionBehavior : IPropertySelectionBehavior
     {
-        public InjectAttributePropertySelectionBehavior(IConfigProvider diContext)
+        /// <summary>
+        /// </summary>
+        /// <param name="provider">Provider that will be used to look up values for injection by a key.</param>
+        public InjectAttributePropertySelectionBehavior(IConfigProvider provider)
         {
-            _configProvider = diContext;
+            _configProvider = provider;
         }
 
         /// <summary>
@@ -45,6 +48,9 @@ namespace DiExtension.SimpleInject
             return false;
         }
 
+        /// <summary>
+        /// Provider for looking up values for injection by a key.
+        /// </summary>
         protected readonly IConfigProvider _configProvider;
     }
 }

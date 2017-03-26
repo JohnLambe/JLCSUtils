@@ -202,7 +202,7 @@ namespace MvpFramework.Menu
                 {
                     level++;
                     current = current.Parent;
-                    Debug.Assert(current != this, "INTERNAL ERROR: MenuItemModel: Circular Parent reference");   // if this happened, and we continued, it would loop indfinitely.
+                    Debug.Assert(current != this, "INTERNAL ERROR: MenuItemModel: Circular Parent reference");   // if this happened, and we continued, it would loop indefinitely.
                 }
                 return level;
             }

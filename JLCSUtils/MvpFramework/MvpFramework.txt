@@ -25,10 +25,12 @@ Automated enforcement:
 TODO:
     Interfaces for [Model/Presenter]BinderWrapper
 	Method for Presenter to cause a refresh of View controls binding a specified property of the model.
+	Provide a way of declaring a mapping from properties of the View class (such as the title) to Model properties.
+		Currently [ViewTitle] maps from Model to View.
+	Bind using BindingContext.
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.
-	Provide a way of declaring a mapping from properties of the View class (such as the title) to Model properties.
 	Provide the ability to declare a property on the View to recieve the model (without the View having a type parameter).
 
 Done:
