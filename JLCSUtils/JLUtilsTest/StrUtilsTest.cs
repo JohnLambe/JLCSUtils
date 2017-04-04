@@ -5,6 +5,7 @@ using System.Linq;
 using JohnLambe.Util;
 using System.Collections;
 using System.Collections.Generic;
+using JohnLambe.Util.Collections;
 
 namespace JohnLambe.Tests.JLUtilsTest
 {
@@ -14,29 +15,29 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void RemovePrefix()
         {
-            Assert.AreEqual("Value-Prefix:asd", StrUtils.RemovePrefix("Prefix:Value-Prefix:asd", "Prefix:"));
-            Assert.AreEqual("Prefix:Value-Prefix:asd", StrUtils.RemovePrefix("Prefix:Value-Prefix:asd", "PrefiX:"), "Wrongly case insensitive");
-            Assert.AreEqual("Value-Prefix:asd", StrUtils.RemovePrefix("ASD:Value-Prefix:asd", "asD:", StringComparison.InvariantCultureIgnoreCase), "Non-case-sensitive");
+            Assert.AreEqual("Value-Prefix:asd", StrUtil.RemovePrefix("Prefix:Value-Prefix:asd", "Prefix:"));
+            Assert.AreEqual("Prefix:Value-Prefix:asd", StrUtil.RemovePrefix("Prefix:Value-Prefix:asd", "PrefiX:"), "Wrongly case insensitive");
+            Assert.AreEqual("Value-Prefix:asd", StrUtil.RemovePrefix("ASD:Value-Prefix:asd", "asD:", StringComparison.InvariantCultureIgnoreCase), "Non-case-sensitive");
 
-            Assert.AreEqual(null, StrUtils.RemovePrefix(null,null, StringComparison.InvariantCultureIgnoreCase), "null");
+            Assert.AreEqual(null, StrUtil.RemovePrefix(null,null, StringComparison.InvariantCultureIgnoreCase), "null");
         }
 
         [TestMethod]
         public void RemoveSuffix()
         {
-            Assert.AreEqual("12345678", StrUtils.RemoveSuffix("1234567890", "90"));
-            Assert.AreEqual("asdfghjkl", StrUtils.RemoveSuffix("asdfghjkl", "KL"), "Wrongly case insensitive");
-            Assert.AreEqual("qwertyui", StrUtils.RemoveSuffix("qwertyuiop", "Op", StringComparison.InvariantCultureIgnoreCase), "Non-case-sensitive");
-            Assert.AreEqual("test string", StrUtils.RemoveSuffix("test string", "", StringComparison.InvariantCultureIgnoreCase), "Should have returned unmodified");
+            Assert.AreEqual("12345678", StrUtil.RemoveSuffix("1234567890", "90"));
+            Assert.AreEqual("asdfghjkl", StrUtil.RemoveSuffix("asdfghjkl", "KL"), "Wrongly case insensitive");
+            Assert.AreEqual("qwertyui", StrUtil.RemoveSuffix("qwertyuiop", "Op", StringComparison.InvariantCultureIgnoreCase), "Non-case-sensitive");
+            Assert.AreEqual("test string", StrUtil.RemoveSuffix("test string", "", StringComparison.InvariantCultureIgnoreCase), "Should have returned unmodified");
 
-            Assert.AreEqual(null, StrUtils.RemoveSuffix(null, "90"), "null");
+            Assert.AreEqual(null, StrUtil.RemoveSuffix(null, "90"), "null");
         }
 
         [TestMethod]
         public void TotalLength()
         {
-            Assert.AreEqual(13, StrUtils.TotalLength(2,new string[] {"asd","f",null," . . "}));
-            Assert.AreEqual(0, StrUtils.TotalLength(2,null), "wrong length when no parts");
+            Assert.AreEqual(13, StrUtil.TotalLength(2,new string[] {"asd","f",null," . . "}));
+            Assert.AreEqual(0, StrUtil.TotalLength(2,null), "wrong length when no parts");
         }
 
         #region SplitToVars
@@ -111,20 +112,20 @@ namespace JohnLambe.Tests.JLUtilsTest
             string[] parts = new string[6];
 
             // Act:
-            parts[0] = StrUtils.SplitFirst('.', ref a);
+            parts[0] = StrUtil.SplitFirst('.', ref a);
             Assert.AreEqual("second..4th", a);
 
-            parts[1] = StrUtils.SplitFirst('.', ref a);
+            parts[1] = StrUtil.SplitFirst('.', ref a);
             Assert.AreEqual(".4th", a);
 
-            parts[2] = StrUtils.SplitFirst('.', ref a);
+            parts[2] = StrUtil.SplitFirst('.', ref a);
             Assert.AreEqual("4th", a);
 
-            parts[3] = StrUtils.SplitFirst('.', ref a);
+            parts[3] = StrUtil.SplitFirst('.', ref a);
             Assert.AreEqual(null, a);
 
             // Nothing remaining at this point. Subsequent calls will return null.
-            parts[4] = StrUtils.SplitFirst('.', ref a);
+            parts[4] = StrUtil.SplitFirst('.', ref a);
 
             // Assert:
             Assert.IsTrue(parts.SequenceEqual(
@@ -135,7 +136,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void SplitBefore()
         {
-            Assert.AreEqual(null, StrUtils.SplitBefore(null, ":"));
+            Assert.AreEqual(null, StrUtil.SplitBefore(null, ":"));
             Assert.AreEqual("first", "first/second".SplitBefore("/"));
             Assert.AreEqual("a:b:c", "a:b:c::d:e:f::g".SplitBefore("::"));
         }
@@ -143,7 +144,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void SplitAfter()
         {
-            Assert.AreEqual(null, StrUtils.SplitAfter(null, "a"));
+            Assert.AreEqual(null, StrUtil.SplitAfter(null, "a"));
             Assert.AreEqual("second", "firstzsecond".SplitAfter("z"));
             Assert.AreEqual("d:e:f::g", "a:b:c::d:e:f::g".SplitAfter("::"));
         }
@@ -153,20 +154,20 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void ConcatWithSeparator()
         {
-            Assert.AreEqual("asd/f//gh/i",StrUtils.ConcatWithSeparator("/","asd","f/",null,"gh","","i"));
+            Assert.AreEqual("asd/f//gh/i",StrUtil.ConcatWithSeparator("/","asd","f/",null,"gh","","i"));
         }
 
         [TestMethod]
         public void NullToBlank()
         {
-            Assert.AreEqual("", StrUtils.NullToBlank(null));
-            Assert.AreEqual("asd ", StrUtils.NullToBlank("asd "));
+            Assert.AreEqual("", StrUtil.NullToBlank(null));
+            Assert.AreEqual("asd ", StrUtil.NullToBlank("asd "));
         }
 
         [TestMethod]
         public void FirstNonBlank()
         {
-            Assert.AreEqual("third", StrUtils.FirstNonBlank("",null,"third",null,"fifth"));
+            Assert.AreEqual("third", StrUtil.FirstNonBlank("",null,"third",null,"fifth"));
         }
 
         [TestMethod]
@@ -180,7 +181,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         public void CharAt()
         {
             Assert.AreEqual('d', "Éb\0cdefghi".CharAt(4,'x'));
-            Assert.AreEqual('#', StrUtils.CharAt(null, 4, '#'), "null");
+            Assert.AreEqual('#', StrUtil.CharAt(null, 4, '#'), "null");
             Assert.AreEqual('-', "qwerty".CharAt(100,'-'), "out of range");
             Assert.AreEqual('\0', "qwerty".CharAt(-1), "out of range, negative");
             Assert.AreEqual('\0', "abcd".CharAt(4), "out of range by one");
@@ -198,31 +199,31 @@ namespace JohnLambe.Tests.JLUtilsTest
             Assert.AreEqual("nm", "zxcvbnm".EndSubstring(2));
             Assert.AreEqual("", "ASDFghjkl".EndSubstring(0));
             Assert.AreEqual("é-qwerty-Á", "é-qwerty-Á".EndSubstring(500), "length longer than string");
-            Assert.AreEqual(null, StrUtils.EndSubstring(null,0));
+            Assert.AreEqual(null, StrUtil.EndSubstring(null,0));
         }
 
         [TestMethod]
         public void NullPropagate()
         {
-            Assert.AreEqual(null, StrUtils.NullPropagate("first",null,"third"));
-            Assert.AreEqual("firstthird", StrUtils.NullPropagate("first", "", "third"));
-            Assert.AreEqual(null, StrUtils.NullPropagate());
-            Assert.AreEqual("", StrUtils.NullPropagate("",""));
+            Assert.AreEqual(null, StrUtil.NullPropagate("first",null,"third"));
+            Assert.AreEqual("firstthird", StrUtil.NullPropagate("first", "", "third"));
+            Assert.AreEqual(null, StrUtil.NullPropagate());
+            Assert.AreEqual("", StrUtil.NullPropagate("",""));
         }
 
         [TestMethod]
         public void ConcatForEach()
         {
-            Assert.AreEqual("<2> <4> <6>",StrUtils.ConcatForEach(new int[] { 2, 4, 6 }, x => "<" + x + ">", " "));
-            Assert.AreEqual("<2><4><6>", StrUtils.ConcatForEach(new int[] { 2, 4, 6 }, x => "<" + x + ">"));
-            Assert.AreEqual("#a -> #b -> #c", StrUtils.ConcatForEach(new string[] { "a", null, "b", "c" }, x => x == null ? null : "#" + x, " -> "));
-            Assert.AreEqual("12 -> 22 -> 32", StrUtils.ConcatForEach(new float?[] { 10, 20, null, 30 }, x => x + 2, " -> "));
+            Assert.AreEqual("<2> <4> <6>",StrUtil.ConcatForEach(new int[] { 2, 4, 6 }, x => "<" + x + ">", " "));
+            Assert.AreEqual("<2><4><6>", StrUtil.ConcatForEach(new int[] { 2, 4, 6 }, x => "<" + x + ">"));
+            Assert.AreEqual("#a -> #b -> #c", StrUtil.ConcatForEach(new string[] { "a", null, "b", "c" }, x => x == null ? null : "#" + x, " -> "));
+            Assert.AreEqual("12 -> 22 -> 32", StrUtil.ConcatForEach(new float?[] { 10, 20, null, 30 }, x => x + 2, " -> "));
         }
 
         [TestMethod]
         public void RemoveCharacters()
         {
-            Assert.AreEqual("12345", "asd1fgh23jkl45í".RemoveCharacters(CharacterUtils.Digits,true));
+            Assert.AreEqual("12345", "asd1fgh23jkl45í".RemoveCharacters(CharacterUtil.Digits,true));
             Assert.AreEqual("word1word2é", "word1 word-2 é".RemoveCharacters(" -"));
 
             Assert.AreEqual(null, ((string)null).RemoveCharacters("12345"));
@@ -233,11 +234,11 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void Repeat()
         {
-            Assert.AreEqual("éfgéfgéfgéfgéfg", StrUtils.Repeat("éfg", 5));
-            Assert.AreEqual("", StrUtils.Repeat("qwerty", 0));
+            Assert.AreEqual("éfgéfgéfgéfgéfg", StrUtil.Repeat("éfg", 5));
+            Assert.AreEqual("", StrUtil.Repeat("qwerty", 0));
 
-            Assert.AreEqual(null, StrUtils.Repeat(null, 10));
-            TestUtil.AssertThrows(typeof(ArgumentException), () => StrUtils.Repeat("xyz", -1));
+            Assert.AreEqual(null, StrUtil.Repeat(null, 10));
+            TestUtil.AssertThrows(typeof(ArgumentException), () => StrUtil.Repeat("xyz", -1));
         }
 
         [TestMethod]
@@ -251,7 +252,7 @@ namespace JohnLambe.Tests.JLUtilsTest
 
             Assert.AreEqual(true, "<--JKL->".IsEnclosedIn("<--", "->"), "different length prefix and suffix");
 
-            Assert.AreEqual(false, StrUtils.IsEnclosedIn(null, "%"), "null");
+            Assert.AreEqual(false, StrUtil.IsEnclosedIn(null, "%"), "null");
         }
 
         [TestMethod]
@@ -263,31 +264,31 @@ namespace JohnLambe.Tests.JLUtilsTest
             Assert.AreEqual(false, "<AAA> ".IsEnclosedIn('<', '>'));
             Assert.AreEqual(false, "".IsEnclosedIn('%'));
             Assert.AreEqual(false, "%".IsEnclosedIn('%'));  // the same character can't count as both `prefix` and `suffix`
-            Assert.AreEqual(false, StrUtils.IsEnclosedIn(null,'%'), "null");
+            Assert.AreEqual(false, StrUtil.IsEnclosedIn(null,'%'), "null");
         }
 
         [TestMethod]
         public void ExtractEnclosed()
         {
-            Assert.AreEqual("Ábc", StrUtils.ExtractEnclosed("/Ábc/","/"));
-            Assert.AreEqual(null, StrUtils.ExtractEnclosed("zxcvbnm", "/"), "null");
-            Assert.AreEqual("ExtractEnclosed", StrUtils.ExtractEnclosed("(*ExtractEnclosed*)", "(*","*)"));
+            Assert.AreEqual("Ábc", StrUtil.ExtractEnclosed("/Ábc/","/"));
+            Assert.AreEqual(null, StrUtil.ExtractEnclosed("zxcvbnm", "/"), "null");
+            Assert.AreEqual("ExtractEnclosed", StrUtil.ExtractEnclosed("(*ExtractEnclosed*)", "(*","*)"));
         }
 
         [TestMethod]
         public void ExtractEnclosed_Char()
         {
-            Assert.AreEqual("sdf", StrUtils.ExtractEnclosed("asdfg", 'a', 'g'));
-            Assert.AreEqual("", StrUtils.ExtractEnclosed("@@", '@', '@'),"empty enclosed string");
-            Assert.AreEqual(null, StrUtils.ExtractEnclosed("]a[", '[', ']'));
-            Assert.AreEqual(null, StrUtils.ExtractEnclosed(null, '[', ']'),"null");
+            Assert.AreEqual("sdf", StrUtil.ExtractEnclosed("asdfg", 'a', 'g'));
+            Assert.AreEqual("", StrUtil.ExtractEnclosed("@@", '@', '@'),"empty enclosed string");
+            Assert.AreEqual(null, StrUtil.ExtractEnclosed("]a[", '[', ']'));
+            Assert.AreEqual(null, StrUtil.ExtractEnclosed(null, '[', ']'),"null");
         }
 
         [TestMethod]
         public void OverwriteSubstring()
         {
-            Assert.AreEqual("qweABCDiop", StrUtils.OverwriteSubstring("qwertyuiop",3,"ABCD"));
-            Assert.AreEqual("qweABCDEFGHIJK", StrUtils.OverwriteSubstring("qwertyuiop", 3, "ABCDEFGHIJK"));
+            Assert.AreEqual("qweABCDiop", StrUtil.OverwriteSubstring("qwertyuiop",3,"ABCD"));
+            Assert.AreEqual("qweABCDEFGHIJK", StrUtil.OverwriteSubstring("qwertyuiop", 3, "ABCDEFGHIJK"));
 
             //TODO: null
         }
@@ -295,8 +296,8 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void OverwriteSubstringNoExtend()
         {
-            Assert.AreEqual("qweABCDiop", StrUtils.OverwriteSubstring("qwertyuiop", 3, "ABCD", false));
-            Assert.AreEqual("qweABCDEFG", StrUtils.OverwriteSubstring("qwertyuiop", 3, "ABCDEFGHIJK", false));
+            Assert.AreEqual("qweABCDiop", StrUtil.OverwriteSubstring("qwertyuiop", 3, "ABCD", false));
+            Assert.AreEqual("qweABCDEFG", StrUtil.OverwriteSubstring("qwertyuiop", 3, "ABCDEFGHIJK", false));
 
             //TODO: null
         }
@@ -304,14 +305,14 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void ReplaceSubstring()
         {
-            Assert.AreEqual("qweABCDyuiop", StrUtils.ReplaceSubstring("qwertyuiop", 3, 2, "ABCD"));
+            Assert.AreEqual("qweABCDyuiop", StrUtil.ReplaceSubstring("qwertyuiop", 3, 2, "ABCD"));
 
-            Assert.AreEqual("qweABCDrtyuiop", StrUtils.ReplaceSubstring("qwertyuiop", 3, 0, "ABCD"), "0-length section being replaced");
+            Assert.AreEqual("qweABCDrtyuiop", StrUtil.ReplaceSubstring("qwertyuiop", 3, 0, "ABCD"), "0-length section being replaced");
 
             TestUtil.AssertThrows<ArgumentException>(
-                () => StrUtils.ReplaceSubstring("qwertyuiop", 3, -1, "ABCD"));
+                () => StrUtil.ReplaceSubstring("qwertyuiop", 3, -1, "ABCD"));
             TestUtil.AssertThrows<ArgumentException>(
-                () => StrUtils.ReplaceSubstring("qwertyuiop", -0x1000000, 5, "ABCD"));
+                () => StrUtil.ReplaceSubstring("qwertyuiop", -0x1000000, 5, "ABCD"));
 
             //TODO: null
         }
@@ -319,7 +320,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         [TestMethod]
         public void ReplaceSubstring_WithNull()
         {
-            Assert.AreEqual("qwéyuiop", StrUtils.ReplaceSubstring("qwértyuiop", 3, 2, null));
+            Assert.AreEqual("qwéyuiop", StrUtil.ReplaceSubstring("qwértyuiop", 3, 2, null));
         }
 
         [TestMethod]
@@ -355,33 +356,33 @@ namespace JohnLambe.Tests.JLUtilsTest
         {
             int? x = null;
 
-            Assert.AreEqual("", StrUtils.ConcatWithSeparatorsTrim());
-            Assert.AreEqual("one part", StrUtils.ConcatWithSeparatorsTrim("one part"));
-            Assert.AreEqual("", StrUtils.ConcatWithSeparatorsTrim(x), "null");
-            Assert.AreEqual("[1", StrUtils.ConcatWithSeparatorsTrim("[", 1));
-            Assert.AreEqual("[1]", StrUtils.ConcatWithSeparatorsTrim("[", 1, ']'));
-            Assert.AreEqual("1 b]", StrUtils.ConcatWithSeparatorsTrim( 1, " ", "b", ']'));
-            Assert.AreEqual("1", StrUtils.ConcatWithSeparatorsTrim(1, " ", ""), "Separator excluded before blank");
-            Assert.AreEqual("1", StrUtils.ConcatWithSeparatorsTrim(1, " ", null), "Separator excluded before null");  // string trailer
-            Assert.AreEqual("second", StrUtils.ConcatWithSeparatorsTrim(null, " ", "second"), "Separator excluded after null");
-            Assert.AreEqual("firstsecond - third €", StrUtils.ConcatWithSeparatorsTrim("first", null, "second", " - ", "third €"), "no trailer");
-            Assert.AreEqual("firstsecond - third €", StrUtils.ConcatWithSeparatorsTrim("first", null, "second", " - ", "third €", null));
+            Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrim());
+            Assert.AreEqual("one part", StrUtil.ConcatWithSeparatorsTrim("one part"));
+            Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrim(x), "null");
+            Assert.AreEqual("[1", StrUtil.ConcatWithSeparatorsTrim("[", 1));
+            Assert.AreEqual("[1]", StrUtil.ConcatWithSeparatorsTrim("[", 1, ']'));
+            Assert.AreEqual("1 b]", StrUtil.ConcatWithSeparatorsTrim( 1, " ", "b", ']'));
+            Assert.AreEqual("1", StrUtil.ConcatWithSeparatorsTrim(1, " ", ""), "Separator excluded before blank");
+            Assert.AreEqual("1", StrUtil.ConcatWithSeparatorsTrim(1, " ", null), "Separator excluded before null");  // string trailer
+            Assert.AreEqual("second", StrUtil.ConcatWithSeparatorsTrim(null, " ", "second"), "Separator excluded after null");
+            Assert.AreEqual("firstsecond - third €", StrUtil.ConcatWithSeparatorsTrim("first", null, "second", " - ", "third €"), "no trailer");
+            Assert.AreEqual("firstsecond - third €", StrUtil.ConcatWithSeparatorsTrim("first", null, "second", " - ", "third €", null));
         }
 
         [TestMethod]
         public void ConcatWithSeparatorsTrimEnclosed()
         {
-            Assert.AreEqual("", StrUtils.ConcatWithSeparatorsTrimEnclosed("["));
-            Assert.AreEqual("[1", StrUtils.ConcatWithSeparatorsTrimEnclosed("[",1));
-            Assert.AreEqual("[1]", StrUtils.ConcatWithSeparatorsTrimEnclosed("[", 1, ']'));
-            Assert.AreEqual("[1 b]", StrUtils.ConcatWithSeparatorsTrimEnclosed("[", 1, " ", "  b ", ']'));
-            Assert.AreEqual("[1]", StrUtils.ConcatWithSeparatorsTrimEnclosed("[", 1, " ", "", ']'), "Separator excluded before blank");
-            Assert.AreEqual("[1]", StrUtils.ConcatWithSeparatorsTrimEnclosed("[", 1, " ", null, "]"), "Separator excluded before null");  // string trailer
-            Assert.AreEqual("[second]", StrUtils.ConcatWithSeparatorsTrimEnclosed("[", null, " ", " second  ", ']'), "Separator excluded after null; trim");
-            Assert.AreEqual("[firstsecond - third €", StrUtils.ConcatWithSeparatorsTrimEnclosed("[", "first", null, "second", " - ", "third €"), "no trailer");
-            Assert.AreEqual("firstsecond - third €", StrUtils.ConcatWithSeparatorsTrimEnclosed(null, "first", null, "second", " - ", "third €", null), "no leader");
-            Assert.AreEqual("", StrUtils.ConcatWithSeparatorsTrimEnclosed("<", null, ",", "", " ", "", ">"), "all null/blank except separators, leader and trailer");
-            Assert.AreEqual(" < a > ", StrUtils.ConcatWithSeparatorsTrimEnclosed(" < ", "a", " > "), "shouldn't trim leader/trailer");
+            Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrimEnclosed("["));
+            Assert.AreEqual("[1", StrUtil.ConcatWithSeparatorsTrimEnclosed("[",1));
+            Assert.AreEqual("[1]", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", 1, ']'));
+            Assert.AreEqual("[1 b]", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", 1, " ", "  b ", ']'));
+            Assert.AreEqual("[1]", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", 1, " ", "", ']'), "Separator excluded before blank");
+            Assert.AreEqual("[1]", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", 1, " ", null, "]"), "Separator excluded before null");  // string trailer
+            Assert.AreEqual("[second]", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", null, " ", " second  ", ']'), "Separator excluded after null; trim");
+            Assert.AreEqual("[firstsecond - third €", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", "first", null, "second", " - ", "third €"), "no trailer");
+            Assert.AreEqual("firstsecond - third €", StrUtil.ConcatWithSeparatorsTrimEnclosed(null, "first", null, "second", " - ", "third €", null), "no leader");
+            Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrimEnclosed("<", null, ",", "", " ", "", ">"), "all null/blank except separators, leader and trailer");
+            Assert.AreEqual(" < a > ", StrUtil.ConcatWithSeparatorsTrimEnclosed(" < ", "a", " > "), "shouldn't trim leader/trailer");
         }
 
         [TestMethod]
@@ -390,7 +391,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             string first, second;
 
             // Act:
-            StrUtils.SplitAtInclusive("abcdefgh", 4, out first, out second);
+            StrUtil.SplitAtInclusive("abcdefgh", 4, out first, out second);
 
             // Assert:
             Assert.AreEqual(first, "abcd");
@@ -403,7 +404,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             string first, second;
 
             // Act:
-            StrUtils.SplitAtInclusive("abcdefgh", 0, out first, out second);
+            StrUtil.SplitAtInclusive("abcdefgh", 0, out first, out second);
 
             // Assert:
             Assert.AreEqual(first, "");
@@ -416,7 +417,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             string first, second;
 
             // Act:
-            StrUtils.SplitOn("abcd-efghi", 4, out first, out second);
+            StrUtil.SplitOn("abcd-efghi", 4, out first, out second);
 
             // Assert:
             Assert.AreEqual(first, "abcd");
@@ -429,7 +430,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             string first, second;
 
             // Act:
-            StrUtils.SplitOn("abcdefgh", 0, out first, out second);
+            StrUtil.SplitOn("abcdefgh", 0, out first, out second);
 
             // Assert:
             Assert.AreEqual(first, "");
@@ -456,6 +457,34 @@ namespace JohnLambe.Tests.JLUtilsTest
                 "to be replaced | after".ReplaceSubstringBetween(null, "|", "(new value)"), "no start delimiter");
             Assert.AreEqual("before |(new value)",
                 "before | to be replaced".ReplaceSubstringBetween("|", null, "(new value)"), "no end delimiter");
+        }
+
+        [TestMethod]
+        public void ContainsAnyCharacters()
+        {
+            Assert.AreEqual(false, StrUtil.ContainsAnyCharacters("asdfghjkl", new HashSet<char> { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p' }));
+            Assert.AreEqual(true, StrUtil.ContainsAnyCharacters("ZXCVBNM", new HashSet<char> { 'é', 'q', 'w', 'e', 'r', 't', 'y', 'B', 'u', 'i', 'o', 'p' }));
+
+            Assert.AreEqual(true, StrUtil.ContainsOnlyCharacters("ABCDDEFABD", new HashSet<char> { 'A', 'B', 'C', 'X', 'D', 'E', 'F' }));
+            Assert.AreEqual(true, StrUtil.ContainsOnlyCharacters("ABCDDEFABD", new HashSet<char> { 'A', 'B', 'C', 'D', 'F', 'E' }), "Set exactly matches the characters in the string");
+
+            Assert.AreEqual(false, StrUtil.ContainsAnyCharacters(null, new HashSet<char> { 'q', 'w', 'e', 'r', 't', 'y', 'B', 'u', 'i', 'o', 'p' }));
+            Assert.AreEqual(false, StrUtil.ContainsAnyCharacters(null, null));
+            Assert.AreEqual(false, StrUtil.ContainsAnyCharacters("ZXCVBNM", null));
+        }
+
+        [TestMethod]
+        public void ContainsOnlyCharacters()
+        {
+            Assert.AreEqual(false, StrUtil.ContainsOnlyCharacters("asdfghjkl", new HashSet<char> { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p' }), "Contains none of them");
+            Assert.AreEqual(false, StrUtil.ContainsOnlyCharacters("ZXCVBNM", new HashSet<char> { 'é', 'q', 'w', 'e', 'r', 't', 'y', 'B', 'u', 'i', 'o', 'p' }), "Contains one of them");
+
+            Assert.AreEqual(true, StrUtil.ContainsOnlyCharacters("ABCDDEFABD", new HashSet<char> { 'A', 'B', 'C', 'X', 'D', 'E', 'F' }));
+            Assert.AreEqual(true, StrUtil.ContainsOnlyCharacters("ABCDDEFABD", new HashSet<char> { 'A', 'B', 'C', 'D', 'F', 'E' }), "Set exactly matches the characters in the string");
+
+            Assert.AreEqual(true, StrUtil.ContainsOnlyCharacters(null, new HashSet<char> { 'q', 'w', 'e', 'r', 't', 'y', 'B', 'u', 'i', 'o', 'p' }));
+            Assert.AreEqual(true, StrUtil.ContainsOnlyCharacters(null, null));
+            Assert.AreEqual(false, StrUtil.ContainsOnlyCharacters("ZXCVBNM", null));
         }
     }
 }

@@ -14,9 +14,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Collections
         [TestMethod]
         public void Count()
         {
-            Assert.AreEqual(10, EnumeratorUtils.Count("0123456789".GetEnumerator()));
-            Assert.AreEqual(0, EnumeratorUtils.Count(new LinkedList<int>().GetEnumerator()), "empty list");
-            Assert.AreEqual(0, EnumeratorUtils.Count<string>(null), "null");
+            Assert.AreEqual(10, EnumeratorUtil.Count("0123456789".GetEnumerator()));
+            Assert.AreEqual(0, EnumeratorUtil.Count(new LinkedList<int>().GetEnumerator()), "empty list");
+            Assert.AreEqual(0, EnumeratorUtil.Count<string>(null), "null");
         }
     }
 }

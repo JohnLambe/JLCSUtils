@@ -40,7 +40,7 @@ namespace JohnLambe.Util.Db
             if (!Data.TryGetValue(keyValues, out result))
             {
                 throw new KeyNotFoundException("Key not found in mock repository for "
-                      + typeof(TEntity).Name + "; Key: " + CollectionUtils.CollectionToString(keyValues));
+                      + typeof(TEntity).Name + "; Key: " + CollectionUtil.CollectionToString(keyValues));
             }
             return result;
         }
@@ -69,13 +69,13 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Create()
         {
-            return ReflectionUtils.Create<TEntity>(typeof(TEntity));
+            return ReflectionUtil.Create<TEntity>(typeof(TEntity));
         }
 
         public virtual TDerivedEntity Create<TDerivedEntity>()
             where TDerivedEntity : class, TEntity
         {
-            return ReflectionUtils.Create<TDerivedEntity>(typeof(TDerivedEntity));
+            return ReflectionUtil.Create<TDerivedEntity>(typeof(TDerivedEntity));
         }
 
         // What does IDbSet.Remove do when the entity does not exist?

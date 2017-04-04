@@ -487,11 +487,11 @@ namespace MvpFramework
         {
             if (param == null)
                 param = new object[] { };
-            Type[] paramTypes = ReflectionUtils.ArrayOfTypes(param);   // the types of the parameters to the factory's Create method
+            Type[] paramTypes = ReflectionUtil.ArrayOfTypes(param);   // the types of the parameters to the factory's Create method
             //TODO: Test with runtime types different to (but assignable to) the actual types.
 
             // Make the generic factory type:
-            Type factoryType = GenericTypeUtils.ChangeGenericParameters(typeof(KnownPresenterFactory<>), 
+            Type factoryType = GenericTypeUtil.ChangeGenericParameters(typeof(KnownPresenterFactory<>), 
                 (new Type[] { presenterType }).Concat(paramTypes).ToArray());
             //typeof(PresenterFactory<,>).MakeGenericType(presenterType, param.GetType());
 

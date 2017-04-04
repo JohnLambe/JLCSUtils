@@ -16,7 +16,7 @@ namespace JohnLambe.Util.Collections
     {
         public virtual int Count
         {
-            get { return EnumeratorUtils.Count(GetEnumerator()); }
+            get { return EnumeratorUtil.Count(GetEnumerator()); }
             // inefficient. Subclasses should implement a more efficient method where possible.
         }
 

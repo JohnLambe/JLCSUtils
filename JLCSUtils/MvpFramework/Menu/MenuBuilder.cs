@@ -48,7 +48,7 @@ namespace MvpFramework.Menu
         public virtual MenuCollection BuildMenu(IEnumerable<Assembly> assemblies = null, BooleanExpression<Type> filter = null)
         {
             if (assemblies == null)
-                assemblies = Assemblies ?? AssemblyUtils.GetReferencedAssemblies(Assembly.GetCallingAssembly(), true);
+                assemblies = Assemblies ?? AssemblyUtil.GetReferencedAssemblies(Assembly.GetCallingAssembly(), true);
 
             var allItems = new Dictionary<string, MenuItemModel>();
 
@@ -82,7 +82,7 @@ namespace MvpFramework.Menu
             {
                 if (item.Value.ParentId != null && item.Value.Parent == null)
                 {
-                    item.Value.Parent = DictionaryUtils.TryGetValue(allItems, item.Value.ParentId).NotNull("Invalid parent for Menu item " + item.Value.CodeDescription + " - " + item.Value.ParentId + " not found");
+                    item.Value.Parent = DictionaryUtil.TryGetValue(allItems, item.Value.ParentId).NotNull("Invalid parent for Menu item " + item.Value.CodeDescription + " - " + item.Value.ParentId + " not found");
                 }
                 AddInvokeDelegate(item.Value);
             }
@@ -107,7 +107,7 @@ namespace MvpFramework.Menu
                 ParentId = attribute.ParentId,
                 AcceleratorChar = attribute.AcceleratorChar,
                 Order = attribute.Order,
-                DisplayName = attribute.DisplayName ?? CaptionUtils.GetDisplayName(handlerType),
+                DisplayName = attribute.DisplayName ?? CaptionUtil.GetDisplayName(handlerType),
                 HotKey = attribute.HotKey,
                 IsMenu = attribute.IsMenu,
                 HandlerType = (attribute as MenuItemInstanceAttribute)?.Handler ?? handlerType,   // not applicable to Menu (will be null)
@@ -157,7 +157,7 @@ namespace MvpFramework.Menu
 
                 var staticExecuteMethod =
                     DiResolver == null ? null :                    // if no DiResover, don't try to use this method (alternatively, we could allow it if it doesn't have any parameters to be injected by DI)
-                    GeneralUtils.IgnoreException(
+                    GeneralUtil.IgnoreException(
                     () => item.HandlerType.GetMethod(MenuExecuteMethodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.IgnoreReturn),
                     typeof(AmbiguousMatchException)
                     );

@@ -11,6 +11,8 @@ namespace JohnLambe.Tests.JLUtilsTest
     /// </summary>
     public static class TestUtil
     {
+        #region Testing Exceptions
+
         /// <summary>
         /// Assert that the given delegate throws an exception of the given type or a subtype.
         /// 
@@ -83,5 +85,50 @@ namespace JohnLambe.Tests.JLUtilsTest
                 + (!string.IsNullOrEmpty(message) ? " containing message \"" + message + "\"; " : "")
                 + " " + failMessage);
         }
+
+        #endregion
+
+        #region Compare
+
+        /// <summary>
+        /// Compare two values after rounding to a specified number of decimal places.
+        /// </summary>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
+        /// <param name="decimalPlaces">Number of decimal places to round the values to before comparing. (Must not be negative).</param>
+        /// <param name="message">Message to output on failure.</param>
+        public static void AreEqualWithPrecision(decimal expected, decimal actual, int decimalPlaces, string message = null)
+        {
+            decimal expectedRounded = Math.Round(expected, decimalPlaces);
+            decimal actualRounded = Math.Round(actual, decimalPlaces);
+            if (expected != actual)
+            {
+                throw new AssertFailedException("Values do not match: Expected " + expectedRounded + " (rounded from " + expected + ")\n"
+                    + "Actual: " + actualRounded + " (rounded from " + actual + ")"
+                    + message != null ? "\n" + message : "");
+            }
+        }
+
+        /// <summary>
+        /// Compare floating point numbers with an allowed percentage difference.
+        /// </summary>
+        /// <param name="expected">The expected value.</param>
+        /// <param name="actual">The actual value.</param>
+        /// <param name="allowedDifferenceProportion">The allowed difference as a proportion. e.g. 0.1 means +/- 10%.</param>
+        /// <param name="message">Message to output on failure.</param>
+        public static void AreEqual(double expected, double actual, double allowedDifferenceProportion, string message = null)
+        {
+            double difference = expected - actual;
+            double differenceProportion = Math.Abs(difference) / Math.Min(expected, actual);
+            if (differenceProportion > allowedDifferenceProportion)
+            {
+                throw new AssertFailedException("Values do not match: Expected " + expected + " +/- " + (allowedDifferenceProportion *100) + "%\n"
+                    + "Actual: " + actual + " (difference of " + (differenceProportion*100) + "%)"
+                    + message != null ? "\n" + message : "");
+            }
+        }
+
+        #endregion
+
     }
 }

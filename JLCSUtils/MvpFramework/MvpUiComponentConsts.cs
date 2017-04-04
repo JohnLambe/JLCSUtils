@@ -8,6 +8,9 @@ using MvpFramework.Binding;
 
 namespace MvpFramework
 {
+    /// <summary>
+    /// Constants used in UI components.
+    /// </summary>
     public static class MvpUiComponentConsts
     {
         /// <summary>

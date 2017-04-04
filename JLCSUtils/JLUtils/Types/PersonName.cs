@@ -42,7 +42,7 @@ namespace JohnLambe.Util.Types
             }
             set
             {
-                FirstNames = value + StrUtils.BlankPropagate(" ", MiddleNames);
+                FirstNames = value + StrUtil.BlankPropagate(" ", MiddleNames);
             }
         }
 
@@ -60,7 +60,7 @@ namespace JohnLambe.Util.Types
             }
             set
             {
-                FirstNames = StrUtils.ConcatWithSeparator(" ", FirstName, value);
+                FirstNames = StrUtil.ConcatWithSeparator(" ", FirstName, value);
             }
         }
 
@@ -87,7 +87,7 @@ namespace JohnLambe.Util.Types
             get
             {
                 return
-                    StrUtils.ConcatWithSeparatorsTrimEnclosed("",
+                    StrUtil.ConcatWithSeparatorsTrimEnclosed("",
                         Title, " ",
                         FirstNames, " ",
                         Surname, " ",
@@ -107,7 +107,7 @@ namespace JohnLambe.Util.Types
         {
             get
             {
-                return StrUtils.ConcatWithSeparatorsTrimEnclosed("",
+                return StrUtil.ConcatWithSeparatorsTrimEnclosed("",
                         Surname, ", ",
                         Title, " ",
                         FirstNames, " ",
@@ -132,7 +132,7 @@ namespace JohnLambe.Util.Types
         {
             get
             {
-                return StrUtils.ConcatWithSeparatorTrim(" ", FirstNames, Surname);
+                return StrUtil.ConcatWithSeparatorTrim(" ", FirstNames, Surname);
             }
             set
             {

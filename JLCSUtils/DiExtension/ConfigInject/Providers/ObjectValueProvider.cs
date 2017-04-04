@@ -43,7 +43,7 @@ namespace DiExtension.ConfigInject.Providers
         {
             //            var property = ReflectionUtils.GetProperty(source, key);
             ////            var property = source?.GetType()?.GetProperty(key);
-            object objectValue = ReflectionUtils.TryGetPropertyValue<object>(source, key);
+            object objectValue = ReflectionUtil.TryGetPropertyValue<object>(source, key);
             if (objectValue != null)
             {
                 value = GeneralTypeConverter.Convert<T>(objectValue

@@ -16,20 +16,20 @@ namespace JohnLambe.Tests.JLUtilsTest.Io
         public void AppendBeforeExtension()
         {
             const string OriginalFilename = @"f:\directory name\old filename.txt.dat";
-            Assert.AreEqual(@"f:\directory name\old filename.txt-inserted.dat", PathUtils.AppendBeforeExtension(OriginalFilename, "-inserted"));
+            Assert.AreEqual(@"f:\directory name\old filename.txt-inserted.dat", PathUtil.AppendBeforeExtension(OriginalFilename, "-inserted"));
         }
 
         [TestMethod]
         public void ChangeDirectory()
         {
-            Assert.AreEqual(@"D:\newdir\file.txt", PathUtils.ChangeDirectory(@"C:\dir1\subdir\file.txt", @"D:\newdir"));
+            Assert.AreEqual(@"D:\newdir\file.txt", PathUtil.ChangeDirectory(@"C:\dir1\subdir\file.txt", @"D:\newdir"));
         }
 
         [TestMethod]
         public void ChangeFilenameWithoutExtension()
         {
             const string OriginalFilename = @"\\machine\share\dir\old filename.txt";
-            Assert.AreEqual(@"\\machine\share\dir\filename with space.txt", PathUtils.ChangeFilenameWithoutExtension(OriginalFilename, "filename with space"));
+            Assert.AreEqual(@"\\machine\share\dir\filename with space.txt", PathUtil.ChangeFilenameWithoutExtension(OriginalFilename, "filename with space"));
         }
 
         [TestMethod]
@@ -37,9 +37,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Io
         {
             const string OriginalFilename = @"Z:\directory name.ext\_asd\old filename.txt.dat";
 
-            Assert.AreEqual(@"Z:\directory name.ext\_asd\new filename.doc", PathUtils.ChangeFilename(OriginalFilename, "new filename.doc"));
+            Assert.AreEqual(@"Z:\directory name.ext\_asd\new filename.doc", PathUtil.ChangeFilename(OriginalFilename, "new filename.doc"));
 
-            Assert.AreEqual(@"Z:\directory name.ext\_asd\new filename with no extension", PathUtils.ChangeFilename(OriginalFilename, "new filename with no extension"), "No extension in new filename");
+            Assert.AreEqual(@"Z:\directory name.ext\_asd\new filename with no extension", PathUtil.ChangeFilename(OriginalFilename, "new filename with no extension"), "No extension in new filename");
         }
     }
 }

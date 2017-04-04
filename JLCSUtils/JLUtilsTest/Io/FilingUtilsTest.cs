@@ -23,7 +23,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Io
             if(File.Exists(filename))
                 File.Delete(filename);
 
-            var stream = FilingUtils.OpenAppendOrCreate(filename,true);
+            var stream = FilingUtil.OpenAppendOrCreate(filename,true);
             try
             {
                 Assert.IsNotNull(stream, "Returned null");
@@ -47,7 +47,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Io
 
             File.WriteAllText(filename, "test");
 
-            var stream = FilingUtils.OpenAppendOrCreate(filename, true);
+            var stream = FilingUtil.OpenAppendOrCreate(filename, true);
             try
             {
                 Assert.IsNotNull(stream, "Returned null");

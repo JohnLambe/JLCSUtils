@@ -23,7 +23,7 @@ namespace JohnLambe.Util.TimeUtilities
 
         public Time(TimeSpan value)
         {
-            if (!TimeUtils.IsTimeOfDay(value))
+            if (!TimeUtil.IsTimeOfDay(value))
                 throw new OverflowException("Invalid Time value (" + value + ")");
             _value = value;
         }
@@ -53,7 +53,7 @@ namespace JohnLambe.Util.TimeUtilities
 //            if (hours >= TimeUtils.HoursPerDay || hours < 0)
 //                throw new ArgumentException("Invalid value for Time (" + hours + " hours)");
             TimeSpan value = new TimeSpan(0, hours, minutes, seconds, milliseconds);
-            if(!TimeUtils.IsTimeOfDay(value))
+            if(!TimeUtil.IsTimeOfDay(value))
                 throw new OverflowException("Invalid value for time of day (" + value + " )");
             _value = value;
         }
@@ -89,7 +89,7 @@ namespace JohnLambe.Util.TimeUtilities
         /// The 12-hour clock 'AM' or 'PM' part of the time.
         /// </summary>
         public TimeAmPm AmPm
-            => (_value < TimeUtils.Noon) ? TimeAmPm.Am : TimeAmPm.Pm;
+            => (_value < TimeUtil.Noon) ? TimeAmPm.Am : TimeAmPm.Pm;
 
         /// <summary>
         /// The hour on a 12-hour clock.
@@ -429,7 +429,7 @@ namespace JohnLambe.Util.TimeUtilities
 
             else if (other is DateTime)
                 return _value == ((DateTime)other).TimeOfDay
-                    && TimeUtils.IsDateOnly((DateTime)other);
+                    && TimeUtil.IsDateOnly((DateTime)other);
 //            else if (other is DateTime?)
 //                return (!_value.HasValue && !((DateTime?)other).HasValue)
 //                    || (_value.HasValue && ((DateTime?)other).HasValue

@@ -11,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
 using System.ComponentModel;
+using JohnLambe.Util.Validation;
 
 namespace MvpFramework.Binding
 {
@@ -180,8 +181,10 @@ namespace MvpFramework.Binding
         /// <param name="e"></param>
         protected virtual void BoundControl_ValueChanged(object sender, EventArgs e)
         {
-            if(EventEnabled)
+            if (EventEnabled)
+            {
                 Model.GetProp(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
+            }
         }
 
         /// <summary>

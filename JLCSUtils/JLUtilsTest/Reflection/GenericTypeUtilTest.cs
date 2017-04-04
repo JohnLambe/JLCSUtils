@@ -18,9 +18,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void ChangeGenericParameterCount()
         {
             // Act:
-            var type = GenericTypeUtils.ChangeGenericParameterCount(typeof(TestGenericType<,,>), 4);
-            var typeFromConcrete = GenericTypeUtils.ChangeGenericParameterCount(typeof(TestGenericType<int,string,object,float>), 3);
-            var nonGenericType = GenericTypeUtils.ChangeGenericParameterCount(typeof(TestGenericType<,,>), 0);
+            var type = GenericTypeUtil.ChangeGenericParameterCount(typeof(TestGenericType<,,>), 4);
+            var typeFromConcrete = GenericTypeUtil.ChangeGenericParameterCount(typeof(TestGenericType<int,string,object,float>), 3);
+            var nonGenericType = GenericTypeUtil.ChangeGenericParameterCount(typeof(TestGenericType<,,>), 0);
 
             // Assert:
             Assert.AreEqual(typeof(TestGenericType<,,,>), type);
@@ -35,7 +35,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void ChangeGenericParameterCount_Fail()
         {
             TestUtil.AssertThrows(typeof(Exception),
-                () => GenericTypeUtils.ChangeGenericParameterCount(typeof(TestGenericType<,,>), 2));
+                () => GenericTypeUtil.ChangeGenericParameterCount(typeof(TestGenericType<,,>), 2));
         }
 
         #endregion
@@ -46,7 +46,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void ChangeGenericParameters()
         {
             // Act:
-            var result = GenericTypeUtils.ChangeGenericParameters(typeof(TestGenericType<int,string,int>), typeof(object), typeof(DateTime), typeof(byte), typeof(GenericTypeUtilTest));
+            var result = GenericTypeUtil.ChangeGenericParameters(typeof(TestGenericType<int,string,int>), typeof(object), typeof(DateTime), typeof(byte), typeof(GenericTypeUtilTest));
 
             // Assert:
             Assert.AreEqual(typeof(TestGenericType<object, DateTime, byte, GenericTypeUtilTest>), result);
@@ -56,7 +56,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void ChangeGenericParameters_FromNonGeneric()
         {
             // Act:
-            var result = GenericTypeUtils.ChangeGenericParameters(typeof(TestGenericType), typeof(short), typeof(TestGenericType<int,int,int>), typeof(double));
+            var result = GenericTypeUtil.ChangeGenericParameters(typeof(TestGenericType), typeof(short), typeof(TestGenericType<int,int,int>), typeof(double));
 
             // Assert:
             Assert.AreEqual(typeof(TestGenericType<short, TestGenericType<int,int,int>, double>), result);
@@ -66,7 +66,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void ChangeGenericParameters_ToNonGeneric()
         {
             // Act:
-            var result = GenericTypeUtils.ChangeGenericParameters(typeof(TestGenericType<long,bool,bool>));
+            var result = GenericTypeUtil.ChangeGenericParameters(typeof(TestGenericType<long,bool,bool>));
 
             // Assert:
             Assert.AreEqual(typeof(TestGenericType), result);
@@ -79,15 +79,15 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void IsNullableValueType()
         {
-            Assert.IsTrue(GenericTypeUtils.IsNullableValueType(typeof(int?)));
-            Assert.IsTrue(GenericTypeUtils.IsNullableValueType(typeof(S1?)), "Nullable Struct");
-            Assert.IsTrue(GenericTypeUtils.IsNullableValueType(typeof(Nullable<float>)));
+            Assert.IsTrue(GenericTypeUtil.IsNullableValueType(typeof(int?)));
+            Assert.IsTrue(GenericTypeUtil.IsNullableValueType(typeof(S1?)), "Nullable Struct");
+            Assert.IsTrue(GenericTypeUtil.IsNullableValueType(typeof(Nullable<float>)));
 
             Type t = typeof(float);
             Assert.IsFalse(t.IsNullableValueType());
 
-            Assert.IsFalse(GenericTypeUtils.IsNullableValueType(typeof(decimal)));
-            Assert.IsFalse(GenericTypeUtils.IsNullableValueType(typeof(S1)), "Struct");
+            Assert.IsFalse(GenericTypeUtil.IsNullableValueType(typeof(decimal)));
+            Assert.IsFalse(GenericTypeUtil.IsNullableValueType(typeof(S1)), "Struct");
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void IsNullableValueType_NotValueType()
         {
-            Assert.IsFalse(GenericTypeUtils.IsNullableValueType(typeof(object)));
+            Assert.IsFalse(GenericTypeUtil.IsNullableValueType(typeof(object)));
             Assert.IsFalse(GetType().IsNullableValueType());
 
             Assert.IsFalse(typeof(System.EnvironmentVariableTarget).IsNullableValueType(), "Enum");

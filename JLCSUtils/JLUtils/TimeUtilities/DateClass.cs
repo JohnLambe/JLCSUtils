@@ -60,7 +60,7 @@ namespace JohnLambe.Util.TimeUtilities
 
         protected override DateTime PreprocessDateTime(DateTime value)
         {
-            return TimeUtils.EndOfDay(value);
+            return TimeUtil.EndOfDay(value);
         }
 
         public static implicit operator EndDate(DateTime value)

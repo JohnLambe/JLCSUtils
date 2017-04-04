@@ -50,7 +50,7 @@ namespace MvpFramework.Binding
             /// Name corresponding to this handler, for displaying in a user interface.
             /// </summary>
             public virtual string DisplayName
-                => Attribute?.DisplayName ?? CaptionUtils.GetDisplayName(Method);
+                => Attribute?.DisplayName ?? CaptionUtil.GetDisplayName(Method);
 
             protected virtual MenuItemModel.InvokedDelegate CreateInvokeDelegate()
             {

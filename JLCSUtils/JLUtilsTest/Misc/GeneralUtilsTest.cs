@@ -23,7 +23,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Misc
             int y = 0;
 
             // Act:
-            int x = GeneralUtils.IgnoreException(() => 10 / y, typeof(DivideByZeroException));
+            int x = GeneralUtil.IgnoreException(() => 10 / y, typeof(DivideByZeroException));
 
             // Assert:
             Assert.AreEqual(0, x);
@@ -41,7 +41,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Misc
             int y = 0;
 
             // Act:
-            int x = GeneralUtils.IgnoreException(() => 10 / y, typeof(ArithmeticException), ExpectedResult);
+            int x = GeneralUtil.IgnoreException(() => 10 / y, typeof(ArithmeticException), ExpectedResult);
 
             // Assert:
             Assert.AreEqual(ExpectedResult, x);
@@ -58,7 +58,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Misc
 
             // Act:
             TestUtil.AssertThrows(typeof(DivideByZeroException),
-                () => GeneralUtils.IgnoreException(() => 10 / y, typeof(OverflowException), 100)
+                () => GeneralUtil.IgnoreException(() => 10 / y, typeof(OverflowException), 100)
                 );
         }
 
@@ -69,7 +69,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Misc
         public void IgnoreException_NoException()
         {
             // Act:
-            int x = GeneralUtils.IgnoreException(() => 10 / 5, typeof(ArithmeticException), 1234);
+            int x = GeneralUtil.IgnoreException(() => 10 / 5, typeof(ArithmeticException), 1234);
 
             // Assert:
             Assert.AreEqual(10 / 5, x);

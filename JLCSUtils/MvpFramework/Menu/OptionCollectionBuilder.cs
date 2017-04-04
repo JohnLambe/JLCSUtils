@@ -34,7 +34,7 @@ namespace MvpFramework.Menu
                     var option = new MenuItemModel(options, id)
                     {
                         DisplayName = handlerInfo.Attribute?.DisplayName ??
-                            CaptionUtils.GetDisplayName(handlerInfo.Method, HandlerNamePrefix, HandlerNameSuffix),
+                            CaptionUtil.GetDisplayName(handlerInfo.Method, HandlerNamePrefix, HandlerNameSuffix),
                         //| Alternatively, we could use the ID.
                         HotKey = handlerInfo.Attribute.HotKey,
                         IconId = handlerInfo.Attribute.IconId,

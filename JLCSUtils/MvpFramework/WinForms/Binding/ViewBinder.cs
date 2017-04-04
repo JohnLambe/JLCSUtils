@@ -27,6 +27,7 @@ namespace MvpFramework.WinForms.Binding
         {
             View = view;
             ModelBinder = new ModelBinderWrapper(model);
+            PresenterBinder = new PresenterBinderWrapper(presenter);
 
             if (binderFactory != null)
             {
@@ -85,10 +86,21 @@ namespace MvpFramework.WinForms.Binding
             {
                 foreach (var binder in Binders)
                 {
-                    if (control == null || binder.IsInControl(control))
+                    if (control == null || binder.IsInControl(control))      // if refreshing all controls, or this one is in the requested one
                         binder.Refresh();
                 }
             }
+        }
+
+        /// <summary>
+        /// Fire a handler on the presenter.
+        /// </summary>
+        /// <param name="handlerId"></param>
+        /// <param name="param"></param>
+        // View bases classes could have a method that delegates to this.
+        public virtual void FireHandler(string handlerId, EventArgs args = null)
+        {
+            PresenterBinder.GetHandler(handlerId).Invoke(View, args ?? EventArgs.Empty);
         }
 
         /// <summary>
@@ -100,6 +112,11 @@ namespace MvpFramework.WinForms.Binding
         /// The binder for the model.
         /// </summary>
         protected virtual ModelBinderWrapper ModelBinder { get; set; }
+
+        /// <summary>
+        /// The binder for the presenter.
+        /// </summary>
+        protected virtual PresenterBinderWrapperBase PresenterBinder { get; set; }
 
         /// <summary>
         /// The bound view.

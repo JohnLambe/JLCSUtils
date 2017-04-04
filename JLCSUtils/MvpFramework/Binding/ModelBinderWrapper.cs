@@ -29,13 +29,13 @@ namespace MvpFramework.Binding
         public virtual object GetValue(string propertyName)
         {
             //            return GetProperty(propertyName)?.GetValue(Model);
-            return ReflectionUtils.TryGetPropertyValue<object>(Model, propertyName);
+            return ReflectionUtil.TryGetPropertyValue<object>(Model, propertyName);
         }
 
         [Obsolete]
         public virtual void SetValue(string propertyName, object value)
             //            => GetProperty(propertyName)?.SetValue(Model, value);
-            => ReflectionUtils.TrySetPropertyValue<object>(Model, propertyName, value);
+            => ReflectionUtil.TrySetPropertyValue<object>(Model, propertyName, value);
 
         [Obsolete]
         public virtual bool CanRead(string propertyName)
@@ -55,13 +55,13 @@ namespace MvpFramework.Binding
         public virtual PropertyInfo GetProperty(string propertyName)
         {
             var model = Model; 
-            return ReflectionUtils.GetProperty(ref model, propertyName);
+            return ReflectionUtil.GetProperty(ref model, propertyName);
         }
 
         [Obsolete]
         public virtual string GetCaptionForProperty(string propertyName)
         {
-            return CaptionUtils.GetDisplayName(GetProperty(propertyName));
+            return CaptionUtil.GetDisplayName(GetProperty(propertyName));
         }
 
  /*

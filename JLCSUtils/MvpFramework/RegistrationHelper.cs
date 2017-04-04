@@ -101,9 +101,9 @@ namespace MvpFramework
 
                     var argTypesArray = argTypes.ToArray();
                     // Make the closed generic type of the factory interface:
-                    factoryInterfaceType = GenericTypeUtils.ChangeGenericParameters(typeof(IPresenterFactory<>), argTypesArray);
+                    factoryInterfaceType = GenericTypeUtil.ChangeGenericParameters(typeof(IPresenterFactory<>), argTypesArray);
                     // Register a mapping from this generic factory interface to the concrete generic factory class:
-                    RegisterType(factoryInterfaceType, GenericTypeUtils.ChangeGenericParameters(typeof(PresenterFactory<>), argTypesArray));
+                    RegisterType(factoryInterfaceType, GenericTypeUtil.ChangeGenericParameters(typeof(PresenterFactory<>), argTypesArray));
 
                     /*
                     //TODO: Determine Model or Parameters:

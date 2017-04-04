@@ -54,6 +54,7 @@
       <HintPath>..\Library\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
@@ -134,6 +135,8 @@
     <Compile Include="TypeConversion\GeneralTypeConverterTest.cs" />
     <Compile Include="Types\IDTest.cs" />
     <Compile Include="Types\PersonName.cs" />
+    <Compile Include="Validation\TestModel.cs" />
+    <Compile Include="Validation\ValidatorExTest.cs" />
     <Compile Include="Xml\XmlUtilTest.cs" />
   </ItemGroup>
   <ItemGroup>

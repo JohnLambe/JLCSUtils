@@ -56,7 +56,7 @@ namespace JohnLambe.Util.TimeUtilities
         /// <param name="value"></param>
         public Date(DateTime value)
         {
-            if (!TimeUtils.IsDateOnly(value))
+            if (!TimeUtil.IsDateOnly(value))
                 throw new OverflowException("Can't cast DateTime to Date because it has a time part");
             _value = value;
         }

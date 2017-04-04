@@ -26,9 +26,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
             // Act / Assert:
 
-            Assert.AreEqual(900, ReflectionUtils.TryGetPropertyValue<int>(x, "Property2"), "Failed on first level");
-            Assert.AreEqual(12345, ReflectionUtils.TryGetPropertyValue<int>(x, "Property1.Property2"), "Failed on second level");
-            Assert.AreEqual(4, ReflectionUtils.TryGetPropertyValue<int>(x, "Property1.Property1.Property3.Length"));
+            Assert.AreEqual(900, ReflectionUtil.TryGetPropertyValue<int>(x, "Property2"), "Failed on first level");
+            Assert.AreEqual(12345, ReflectionUtil.TryGetPropertyValue<int>(x, "Property1.Property2"), "Failed on second level");
+            Assert.AreEqual(4, ReflectionUtil.TryGetPropertyValue<int>(x, "Property1.Property1.Property3.Length"));
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
             // Act:
 
-            ReflectionUtils.TrySetPropertyValue(x, "Property1.Property1.Property3", "new value");
+            ReflectionUtil.TrySetPropertyValue(x, "Property1.Property1.Property3", "new value");
 
             // Assert:
 
@@ -57,18 +57,18 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void ArrayOfTypes()
         {
-            var result = ReflectionUtils.ArrayOfTypes(10, "a", null, new object(), DateTime.Now);
-            Console.Out.WriteLine(CollectionUtils.CollectionToString(result));
+            var result = ReflectionUtil.ArrayOfTypes(10, "a", null, new object(), DateTime.Now);
+            Console.Out.WriteLine(CollectionUtil.CollectionToString(result));
 
             // Assert:
-            Assert.AreEqual(CollectionUtils.CollectionToString(new Type[] { typeof(int), typeof(string), null, typeof(object), typeof(DateTime) }),
-                CollectionUtils.CollectionToString(result));
+            Assert.AreEqual(CollectionUtil.CollectionToString(new Type[] { typeof(int), typeof(string), null, typeof(object), typeof(DateTime) }),
+                CollectionUtil.CollectionToString(result));
         }
 
         [TestMethod]
         public void ArrayOfTypes_Null()
         {
-            Assert.AreEqual(null, ReflectionUtils.ArrayOfTypes(null));
+            Assert.AreEqual(null, ReflectionUtil.ArrayOfTypes(null));
         }
 
         #endregion
@@ -78,7 +78,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallStaticMethod()
         {
-            Assert.AreEqual(1234, ReflectionUtils.CallStaticMethod<int>(GetType(), "TestStaticMethod", 1000, 234));
+            Assert.AreEqual(1234, ReflectionUtil.CallStaticMethod<int>(GetType(), "TestStaticMethod", 1000, 234));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallMethod_Static()
         {
-            Assert.AreEqual(1234, ReflectionUtils.CallMethod<int>(new ReflectionUtilTest(), "TestStaticMethod", 1000, 234));
+            Assert.AreEqual(1234, ReflectionUtil.CallMethod<int>(new ReflectionUtilTest(), "TestStaticMethod", 1000, 234));
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallMethod()
         {
-            Assert.AreEqual("str50", ReflectionUtils.CallMethod<string>(new ReflectionUtilTest(), "TestInstanceMethod", "str", 50));
+            Assert.AreEqual("str50", ReflectionUtil.CallMethod<string>(new ReflectionUtilTest(), "TestInstanceMethod", "str", 50));
         }
 
         public static int TestStaticMethod(int x, int y = 1000)
@@ -116,7 +116,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallStaticMethodVarArgs()
         {
-            Assert.AreEqual(30, ReflectionUtils.CallStaticMethodVarArgs<int>(GetType(), "TestStaticMethod", 10, 20));
+            Assert.AreEqual(30, ReflectionUtil.CallStaticMethodVarArgs<int>(GetType(), "TestStaticMethod", 10, 20));
         }
 
         /// <summary>
@@ -125,13 +125,13 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void CallStaticMethodVarArgs_DefaultParam()
         {
-            Assert.AreEqual(1010, ReflectionUtils.CallStaticMethodVarArgs<int>(GetType(), "TestStaticMethod", 10));  // only one argument supplied
+            Assert.AreEqual(1010, ReflectionUtil.CallStaticMethodVarArgs<int>(GetType(), "TestStaticMethod", 10));  // only one argument supplied
         }
 
         [TestMethod]
         public void CallMethodVarArgs()
         {
-            Assert.AreEqual("a100", ReflectionUtils.CallMethodVarArgs<string>(this, "TestInstanceMethod", "a", 100));
+            Assert.AreEqual("a100", ReflectionUtil.CallMethodVarArgs<string>(this, "TestInstanceMethod", "a", 100));
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void CallMethodVarArgs_MissingParam()
         {
             TestUtil.AssertThrows(typeof(Exception),
-                    () => ReflectionUtils.CallMethodVarArgs<string>(this, "TestInstanceMethod", "a"));
+                    () => ReflectionUtil.CallMethodVarArgs<string>(this, "TestInstanceMethod", "a"));
         }
 
         //TODO: Several cases not covered.

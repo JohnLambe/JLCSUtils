@@ -43,7 +43,7 @@ namespace MvpFramework.Dialog
 
             Id = id;
             Icon = id;
-            Description = description ?? CaptionUtils.PascalCaseToCaption(id);
+            Description = description ?? CaptionUtil.PascalCaseToCaption(id);
             DefaultOptions = options;
         }
 
@@ -182,7 +182,18 @@ namespace MvpFramework.Dialog
         /// The exception type being mapped.
         /// Must be <see cref="System.Exception"/> or a subclass of it.
         /// </summary>
-        public virtual Type ExceptionClass { get; set; }
+        public virtual Type ExceptionClass
+        {
+            get { return _exceptionClass; }
+            set
+            {
+                if (_exceptionClass.IsSubclassOf(typeof(Exception)))
+                    _exceptionClass = value;
+                else
+                    throw new ArgumentException(nameof(MappedExceptionAttribute) + "." + nameof(ExceptionClass) + " must be a subclass of Exception");
+            }
+        }
+        private Type _exceptionClass;
     }
 
     /// <summary>
@@ -290,6 +301,7 @@ namespace MvpFramework.Dialog
     /// An error caused by the user, e.g. invalid input.
     /// </summary>
     [MappedException(typeof(UserErrorException))]
+    [MappedException(typeof(System.ComponentModel.DataAnnotations.ValidationException))]
     public class UserErrorDialogType : MessageDialogType
     {
         public UserErrorDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -306,10 +318,10 @@ namespace MvpFramework.Dialog
     /// <summary>
     /// An error related to the system or environment, e.g. I/O error, disc full, network connection failed.
     /// </summary>
-    [MappedException(typeof(System.IO.IOException))]
-        // Sometimes IO errors should be treated as user error (such as if the user entered an invalid filename), but then they should be validated in those cases, an different error thrown/shown.
-    [MappedException(typeof(OutOfMemoryException))]
-    [MappedException(typeof(AssemblyLoadEventArgs))]
+    [MappedException(typeof(SystemException))]
+    // [MappedException(typeof(System.IO.IOException))]  // subclass of SystemException
+    //   Sometimes IO errors should be treated as user error (such as if the user entered an invalid filename), but then they should be validated in those cases, an different error thrown/shown.
+    // [MappedException(typeof(OutOfMemoryException))] // subclass of SystemException
     public class SystemErrorDialogType : ErrorDialogType
     {
         public SystemErrorDialogType(string id = null, IOptionCollection options = null, string description = null)
@@ -333,6 +345,7 @@ namespace MvpFramework.Dialog
     [MappedException(typeof(AccessViolationException))]   
     [MappedException(typeof(IndexOutOfRangeException))]
     [MappedException(typeof(NullReferenceException))]
+    [MappedException(typeof(ArgumentException))]  // could be treated as either user error (based on the assumption that the argument came from the user originally) or internal error.
     public class InternalErrorDialogType : ErrorDialogType
     {
         public InternalErrorDialogType(string id = null, IOptionCollection options = null, string description = null)

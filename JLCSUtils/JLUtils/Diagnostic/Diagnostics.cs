@@ -115,7 +115,7 @@ namespace JohnLambe.Util.Diagnostic
                 throw new AssertionFailedException(message);
             //TODO: Get stack trace
             else
-                throw ReflectionUtils.Create<Exception>(exceptionClass, message);
+                throw ReflectionUtil.Create<Exception>(exceptionClass, message);
         }
 
         [Conditional("DEBUG")]
@@ -225,7 +225,7 @@ namespace JohnLambe.Util.Diagnostic
         [Conditional("LOGGING")]
         public static void Log(string message)
         {
-            Console.WriteLine(TimeUtils.NowIso8601() + "\t" + message);
+            Console.WriteLine(TimeUtil.NowIso8601() + "\t" + message);
         }
 
         #endregion

@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -42,9 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\ArrayUtils.cs" />
+    <Compile Include="Collections\ArrayUtil.cs" />
     <Compile Include="Collections\CompareUtil.cs" />
-    <Compile Include="Collections\EnumeratorUtils.cs" />
+    <Compile Include="Collections\EnumerableCaster.cs" />
+    <Compile Include="Collections\EnumeratorUtil.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="ConfigProvider\IconRepository.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />
@@ -60,7 +62,7 @@
     <Compile Include="ConfigProvider\IconReposityConfigProvider.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
-    <Compile Include="Misc\GeneralUtils.cs" />
+    <Compile Include="Misc\GeneralUtil.cs" />
     <Compile Include="Misc\IconRepository.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
     <Compile Include="Logging\LoggingAttribute.cs" />
@@ -68,48 +70,47 @@
     <Compile Include="Misc\LazyPopulatedProxy.cs" />
     <Compile Include="Misc\NotifyOnChangeProxy.cs" />
     <Compile Include="Misc\Range.cs" />
-    <Compile Include="Misc\ValidationAttribute.cs" />
-    <Compile Include="Reflection\AssemblyUtils.cs" />
-    <Compile Include="Reflection\AttributeUtils.cs" />
+    <Compile Include="Validation\ValidationAttributes.cs" />
+    <Compile Include="Reflection\AssemblyUtil.cs" />
+    <Compile Include="Reflection\AttributeUtil.cs" />
     <Compile Include="Reflection\EnumAttributeUtil.cs" />
-    <Compile Include="Reflection\GenericTypeUtils.cs" />
-    <Compile Include="Security\HashedPassword.cs" />
+    <Compile Include="Reflection\GenericTypeUtil.cs" />
+    <Compile Include="Services\Security\HashedPassword.cs" />
     <Compile Include="Services\EnvironmentService.cs" />
     <Compile Include="Services\RandomService.cs" />
     <Compile Include="Services\TimeService.cs" />
-    <Compile Include="Text\CaptionUtils.cs" />
-    <Compile Include="Text\CharacterSet.cs" />
-    <Compile Include="Text\EncoderExtension.cs" />
+    <Compile Include="Text\CaptionUtil.cs" />
+    <Compile Include="Text\StringCharacterSet.cs" />
     <Compile Include="TimeUtilities\DateClass.cs" />
     <Compile Include="Types\ID.cs" />
     <Compile Include="Misc\LazyInitialize.cs" />
-    <Compile Include="Text\CharacterUtils.cs" />
-    <Compile Include="Collections\CollectionUtils.cs" />
+    <Compile Include="Text\CharacterUtil.cs" />
+    <Compile Include="Collections\CollectionUtil.cs" />
     <Compile Include="Collections\LazilyPopulatedDictionary.cs" />
     <Compile Include="Db\EnumToSql.cs" />
-    <Compile Include="Collections\DictionaryUtils.cs" />
+    <Compile Include="Collections\DictionaryUtil.cs" />
     <Compile Include="Collections\DictionaryWrapperMap.cs" />
     <Compile Include="Collections\EmptyCollection.cs" />
     <Compile Include="Collections\IMutableList.cs" />
     <Compile Include="Collections\IQueue.cs" />
-    <Compile Include="Collections\ListUtils.cs" />
+    <Compile Include="Collections\ListUtil.cs" />
     <Compile Include="Collections\MutableList.cs" />
     <Compile Include="Collections\WrapperMap.cs" />
     <Compile Include="Encoding\HexConverter.cs" />
     <Compile Include="Misc\DynamicProxyBase.cs" />
     <Compile Include="Encoding\SortStringCalculator.cs" />
-    <Compile Include="Math\RandomUtils.cs" />
+    <Compile Include="Math\RandomUtil.cs" />
     <Compile Include="Reflection\EnumUtil.cs" />
-    <Compile Include="Io\FilingUtils.cs" />
-    <Compile Include="Io\PathUtils.cs" />
+    <Compile Include="Io\FilingUtil.cs" />
+    <Compile Include="Io\PathUtil.cs" />
     <Compile Include="Math\MathUtil.cs" />
-    <Compile Include="Math\OrdinalUtils.cs" />
+    <Compile Include="Math\OrdinalUtil.cs" />
     <Compile Include="Misc\ReferenceCountedObject.cs" />
     <Compile Include="Reflection\TypeUtil.cs" />
     <Compile Include="Text\StringBuilderExtension.cs" />
     <Compile Include="TimeUtilities\Date.cs" />
     <Compile Include="TimeUtilities\Time.cs" />
-    <Compile Include="TimeUtilities\TimeUtils.cs" />
+    <Compile Include="TimeUtilities\TimeUtil.cs" />
     <Compile Include="TypeConversion\Converters.cs" />
     <Compile Include="TypeConversion\GeneralTypeConverter.cs" />
     <Compile Include="TypeConversion\IConverter.cs" />
@@ -117,26 +118,31 @@
     <Compile Include="Delegates.cs" />
     <Compile Include="FilterDelegates\BooleanExpression.cs" />
     <Compile Include="FilterDelegates\FilterDelegate.cs" />
-    <Compile Include="Math\BitUtils.cs" />
+    <Compile Include="Math\BitUtil.cs" />
     <Compile Include="MiscUtil.cs" />
     <Compile Include="NotifyOnDispose.cs" />
     <Compile Include="ObjectExtension.cs" />
     <Compile Include="PriorityEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\ReflectionUtils.cs" />
-    <Compile Include="StrUtils.cs" />
+    <Compile Include="Reflection\ReflectionUtil.cs" />
+    <Compile Include="StrUtil.cs" />
     <Compile Include="Text\FormatCollection.cs" />
     <Compile Include="Threading\ThreadBase.cs" />
     <Compile Include="Threading\ThreadSafe.cs" />
     <Compile Include="Types\NullableBool.cs" />
     <Compile Include="Types\PersonName.cs" />
     <Compile Include="Types\PhoneNumber.cs" />
+    <Compile Include="Validation\ValidationContextExtension.cs" />
+    <Compile Include="Validation\ValidatorEx.cs" />
+    <Compile Include="Validation\ValidationResult.cs" />
+    <Compile Include="Validation\Validators.cs" />
     <Compile Include="Var.cs" />
     <Compile Include="Xml\XmlUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Services\ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

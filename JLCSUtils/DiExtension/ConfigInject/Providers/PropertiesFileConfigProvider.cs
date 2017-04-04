@@ -28,7 +28,7 @@ namespace DiExtension.ConfigInject.Providers
         {
             if (root != null)
                 root = root + ".";
-            DictionaryUtils.ImportText(_values, data, root);
+            DictionaryUtil.ImportText(_values, data, root);
         }
     }
 

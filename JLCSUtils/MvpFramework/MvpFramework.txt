@@ -23,11 +23,19 @@ Automated enforcement:
 
 
 TODO:
-    Interfaces for [Model/Presenter]BinderWrapper
+    Interfaces for [Model/Presenter]BinderWrapper.
 	Method for Presenter to cause a refresh of View controls binding a specified property of the model.
+	General exception handler: Handles unhandled exceptions on anything invoked by the framework.
+		Tester-Doer: If test rejects exception, it is isn't caught ?
+		Default implementation shows an error dialog, and has a dependency of IMessageDialogService.
 	Provide a way of declaring a mapping from properties of the View class (such as the title) to Model properties.
 		Currently [ViewTitle] maps from Model to View.
 	Bind using BindingContext.
+	BinderString values to bind:
+		- the caption for a specified property.
+		- the validation message for a specified property.
+		- all validation messages.
+	Label control to show the caption for the property of the linked input control.
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.

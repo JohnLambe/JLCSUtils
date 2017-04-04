@@ -38,6 +38,7 @@ namespace JohnLambe.Util.Misc
         Custom
     }
 
+
     /// <summary>
     /// Interface for getting icons with a key.
     /// </summary>
