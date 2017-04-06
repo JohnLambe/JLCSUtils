@@ -13,12 +13,18 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
         [InvalidValue("X")]
         public string Property1 { get; set; }
 
+        [InvalidValue("X")]
+        [InvalidValue("Invalid")]
         public string SetterValidatedProperty
         {
             get { return _setterValidatedProperty; }
             set
             {
-                ValidatorEx.Instance.ValidateValueException<string>(this, ref value, nameof(SetterValidatedProperty));
+                ValidatorEx.Instance.SetValue(this, ref _setterValidatedProperty, value, nameof(SetterValidatedProperty));
+                /*
+                ValidatorEx.Instance.ValidateValue<string>(this, ref value, nameof(SetterValidatedProperty));
+                _setterValidatedProperty = value;
+                */
             }
         }
         protected string _setterValidatedProperty;

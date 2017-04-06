@@ -85,4 +85,7 @@ namespace MvpFramework.WinForms
 
         public virtual MessageDialogViewModel Model { get; set; }
     }
+
+    // Instead of (or as well as a colour), we could have an icon to the right, or a small icon in the Button Container 
+    // to indicate the dialog type.
 }

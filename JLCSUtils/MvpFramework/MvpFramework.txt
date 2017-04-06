@@ -36,6 +36,11 @@ TODO:
 		- the validation message for a specified property.
 		- all validation messages.
 	Label control to show the caption for the property of the linked input control.
+	Labelled edit control that maps the caption, and includes (optionally) a validation message and/or other validaity indication (colour or icon ('!' to right)).
+	Auto generate controls (at runtime; could alternatively/also have a source code generator, for developers to edit afterwards).
+	Auto generate IQueryable.
+	Bind IQueryable to grid components, etc.
+	Review Dialog layout.
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.

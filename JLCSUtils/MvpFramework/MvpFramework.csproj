@@ -48,6 +48,7 @@
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
     <Compile Include="IPresenter.cs" />
+    <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
     <Compile Include="MvpUiComponentConsts.cs" />
     <Compile Include="WinForms\Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\HandlerResolver.cs" />

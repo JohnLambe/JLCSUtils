@@ -39,7 +39,7 @@ namespace JohnLambe.Util.Validation
         /// Throw an exception if the given object has an invalid value.
         /// </summary>
         /// <param name="instance">The object to be validated.</param>
-        public virtual void ValidateObjectException(object instance)
+        public virtual void ValidateObject(object instance)
         {
             if (instance != null)
             {
@@ -54,7 +54,7 @@ namespace JohnLambe.Util.Validation
         #region Validate Property
 
         /// <summary>
-        /// Validate a specified property of an object.
+        /// Validate a specified property of an object (i.e. test that its current value is valid).
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="propertyName">The name of the property to be validated (case-sensitive).</param>
@@ -66,10 +66,10 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// Validate a specified property of an object.
+        /// Validate a specified property of an object (i.e. test that its current value is valid).
         /// </summary>
         /// <param name="instance"></param>
-        /// <param name="propertyName">The name of the property to be validated (case-sensitive).</param>
+        /// <param name="propertyName">The property to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
         public virtual bool TryValidateProperty(object instance, PropertyInfo property, ValidationResults results)
         {
@@ -82,7 +82,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="instance">The object on which the property is to be validated.</param>
         /// <param name="propertyName">The name of the member (usually a property) of <paramref name="instance"/> to be validated.</param>
-        public virtual void ValidatePropertyException(ref object instance, string propertyName)
+        public virtual void ValidateProperty(ref object instance, string propertyName)
         {
             ValidationResults results = new ValidationResults();
             TryValidateProperty(instance, propertyName, results);
@@ -96,13 +96,14 @@ namespace JohnLambe.Util.Validation
         #region Validate Value
 
         /// <summary>
-        /// Throw an exception if the given value is invalid for the specified property.
+        /// Throw an exception if the given value is invalid for the specified property (i.e. if it would not be valid to assign it to that property).
         /// </summary>
-        /// <param name="value">The object on which the property is to be validated.</param>
-        /// <param name="propertyName">The name of the member (usually a property) of <paramref name="value"/> to be validated.</param>
-        public virtual void ValidateValueForPropertyException<T>(ref object value, string propertyName)
+        /// <param name="value">The value to be validated.</param>
+        /// <param name="propertyName">The name of the property (of type <typeparamref name="T"/>).</param>
+        /// <typeparam name="T">The type that this property is on.</typeparam>
+        public virtual void ValidateValueForProperty<T>(ref object value, string propertyName)
         {
-            ValidateValueException(null, ref value, typeof(T).GetProperty(propertyName));
+            ValidateValue(null, ref value, typeof(T).GetProperty(propertyName));
         }
 
         /// <summary>
@@ -110,10 +111,10 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="value">The object on which the property is to be validated.</param>
         /// <param name="propertyName">The name of the member (usually a property) of <paramref name="value"/> to be validated.</param>
-        public virtual void ValidateValueException<TValue>(object instance, ref TValue value, string propertyName)
+        public virtual void ValidateValue<TValue>(object instance, ref TValue value, string propertyName)
         {
             instance.ArgNotNull(nameof(instance));
-            ValidateValueException<TValue>(instance, ref value, instance.GetType().GetProperty(propertyName));
+            ValidateValue<TValue>(instance, ref value, instance.GetType().GetProperty(propertyName));
         }
 
         /// <summary>
@@ -121,11 +122,31 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="value"></param>
         /// <param name="property"></param>
-        public virtual void ValidateValueException<TValue>(object instance, ref TValue value, MemberInfo property)
+        public virtual void ValidateValue<TValue>(object instance, ref TValue value, MemberInfo property)
         {
             ValidationResults results = new ValidationResults();
             TryValidateValue(instance, value, property, results);
             results.ThrowIfInvalid();
+        }
+
+        /// <summary>
+        /// Set a referenced item (<paramref name="targetValue"/>) to the given <paramref name="value"/>,
+        /// if it is valid. (If it is not valid, an exception is thrown and <paramref name="targetValue"/> is not set.
+        /// <para>This is useful when setting a field in a property setter.</para>
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="targetValue"></param>
+        /// <param name="value"></param>
+        /// <param name="instance"></param>
+        /// <param name="propertyName"></param>
+        //| Could be called SetPropertyValue.
+        //| Could make this an extension method in another namespace (so that it is seen only in code files that need it).
+        //| Could inspect stack to get property name (assuming that this is being called from the setter)? Could set a field located by a naming convention?
+        public virtual void SetValue<TValue>(object instance, ref TValue targetValue, TValue value, string propertyName)
+        {
+            ValidateValue<TValue>(instance, ref value, propertyName);
+            // If no exception was thrown, assign it:
+            targetValue = value;
         }
 
         /// <summary>

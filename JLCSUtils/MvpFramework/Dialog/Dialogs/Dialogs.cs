@@ -23,6 +23,25 @@ namespace MvpFramework.Dialog.Dialogs
         {
             base.MessageType = MessageDialogType.Error;
         }
+
+        /// <summary>
+        /// Create a dialog model to represent the given exception.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="fatal">True iff this is a fatal error that will cause the application to exit.
+        /// Equivalent to .</param>
+        /// <returns></returns>
+        public static ErrorDialog CreateDialogModelForException(Exception ex, bool fatal = false)
+        {
+            if (ex == null)
+                return null;
+
+            return new ErrorDialog()
+            {
+                Exception = ex
+                //TODO: Choose subclass by exception type
+            };
+        }
     }
 
     public class ConfirmationDialog : MessageDialogModel<string>

@@ -47,7 +47,12 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Main message for display.
         /// </summary>
-        public virtual string Message { get; set; }
+        public virtual string Message
+        {
+            get { return _message ?? Exception?.Message; }
+            set { _message = value; }
+        }
+        private string _message;
 
         public virtual MessageDialogType MessageType { get; set; } = MessageDialogType.Informational;
         //| Inferred from MessageTypeId ?

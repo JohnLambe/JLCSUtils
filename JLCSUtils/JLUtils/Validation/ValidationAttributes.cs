@@ -1,4 +1,5 @@
 ﻿using JohnLambe.Util.Math;
+using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.TypeConversion;
 using System;
@@ -24,9 +25,10 @@ namespace JohnLambe.Util.Validation
         //            => GetType().Name + " validation failed";
 
         /// <summary>
-        /// 
+        /// If this is not <see cref="ValidationResultType.Error"/>, then when an item fails validation,
+        /// it generates a message of that type.
         /// </summary>
-        public virtual ValidationResultType ResultType { get; set; }
+        public virtual ValidationResultType ResultType { get; set; } = ValidationResultType.Error;
 
         //
         // Summary:
@@ -43,7 +45,14 @@ namespace JohnLambe.Util.Validation
         //     An instance of the System.ComponentModel.DataAnnotations.ValidationResult class.
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var results = new ValidationResultCollection();
+            if (ResultType < ValidationResultType.Error                    // if this can return only warnings / messages, or modify the value
+                && !validationContext.GetSupportedFeatures().HasAnyFlag(ValidationFeatures.Warnings | ValidationFeatures.Modification)   // and that is not supported
+                )
+            {   
+                return ValidationResult.Success;    // treat as valid
+            }
+
+            var results = new ValidationResultCollection(validationContext.GetSupportedFeatures(), ResultType);
             IsValid(ref value, validationContext, results);
             return results.Result;
         }

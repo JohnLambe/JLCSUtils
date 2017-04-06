@@ -89,6 +89,20 @@ namespace JohnLambe.Util.Text
                     ?? PascalCaseToCaption(member.Name.RemovePrefix(prefix).RemoveSuffix(suffix));
         }
 
+        /// <summary>
+        /// Returns a human-readable name to describe the given object.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public static string GetDisplayNameForObject(object instance)
+        {
+            if (instance == null)
+                return null;
+            return ReflectionUtil.TryGetPropertyValue<string>(instance, "Name")
+                ?? ReflectionUtil.TryGetPropertyValue<string>(instance, "Description")
+                ?? instance.ToString();
+        }
+
         [Obsolete("Use GetDisplayName")]
         public static string PropertyToCaption(PropertyInfo property)
         {

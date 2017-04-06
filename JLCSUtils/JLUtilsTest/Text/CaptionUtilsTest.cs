@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using JohnLambe.Util.Text;
+using System.Dynamic;
 
 namespace JohnLambe.Tests.JLUtilsTest.Text
 {
@@ -47,9 +48,48 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
             Assert.AreEqual(null, CaptionUtil.GetDescriptionFromAttribute(GetType().GetProperty("TestProperty2")), "no attribute");
         }
 
+        #region GetDisplayNameForObject
+
+        [TestMethod]
+        public void GetDisplayNameForObject_NoProperty()
+        {
+            Assert.AreEqual(ToString(),CaptionUtil.GetDisplayNameForObject(this));
+        }
+
+        [TestMethod]
+        public void GetDisplayNameForObject_Description()
+        {
+            var testObject = new TestClass()
+            {
+                Description = "the description"
+            };
+            Assert.AreEqual("the description", CaptionUtil.GetDisplayNameForObject(testObject));
+        }
+
+        /* TODO: GetDisplayNameForObject doesn't support dynamic properties yet.
+        [TestMethod]
+        public void GetDisplayNameForObject_Dynamic()
+        {
+            // Arrange:
+            dynamic x = new ExpandoObject();
+            x.Name = "name";
+
+            // Act/Assert:
+            Assert.AreEqual("name", x);
+        }
+        */
+
+        public class TestClass
+        {
+            public string Description { get; set; }
+        }
+
+        #endregion
+
         [System.ComponentModel.Description("Description of TestProperty1")]
         public string TestProperty1 { get; set; }
 
         public virtual int TestProperty2 { get; }
+
     }
 }

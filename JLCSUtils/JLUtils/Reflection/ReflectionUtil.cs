@@ -25,7 +25,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static LinkedList<Type> GetTypeHeirarchy(Type target)
+        public static IEnumerable<Type> GetTypeHeirarchy(Type target)
         {
             LinkedList<Type> heirarchy = new LinkedList<Type>();
             while (target != null)
@@ -372,6 +372,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target">The object from which to read the property.</param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <returns>The property value.</returns>
+        //| Could call this "ReadProperty".
         public static T TryGetPropertyValue<T>(object target, string propertyName)
         {
             object value = null;
@@ -589,7 +590,7 @@ namespace JohnLambe.Util.Reflection
             {
                 if (Property != null)
                 {
-                    Validator?.ValidateValueException(Target, ref value, Property);
+                    Validator?.ValidateValue(Target, ref value, Property);
 
                     Property?.SetValue(Target, value);
                 }

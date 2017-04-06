@@ -147,12 +147,26 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         //TODO: Several cases not covered.
 
         #endregion
+
+        [TestMethod]
+        public void GetTypeHierarchy()
+        {
+            // Act:
+            var result = ReflectionUtil.GetTypeHeirarchy(typeof(ClassForTest));
+            Console.WriteLine(result.Count());
+            
+            // Assert:
+            Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object), typeof(ClassForTestBase), typeof(ClassForTest) }));
+        }
     }
 
-    public class ClassForTest
+    public class ClassForTestBase
+    {
+    }
+    public class ClassForTest : ClassForTestBase
     {
         public ClassForTest Property1 { get; set; }
         public int Property2 { get; set; }
-        public string Property3 { get; set; }
+        public virtual string Property3 { get; set; }  // it shouldn't make any difference whether the property is virtual.
     }
 }

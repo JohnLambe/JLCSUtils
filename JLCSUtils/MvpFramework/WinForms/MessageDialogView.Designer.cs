@@ -43,7 +43,7 @@
             // 
             this.uiButtons.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
             this.uiButtons.Buttons = null;
-            this.uiButtons.ButtonsLayout = System.Windows.Forms.TabAlignment.Left;
+            this.uiButtons.ButtonsLayout = System.Windows.Forms.TabAlignment.Right;
             this.uiButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.uiButtons.Filter = "DialogOptions";
             this.uiButtons.Location = new System.Drawing.Point(0, 108);

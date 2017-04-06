@@ -19,8 +19,10 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
             _model.Property1 = "X";
             Validator.ValidateObject(_model, new ValidationContext(_model));
 
+            //TODO
         }
 
+        #region ValidateProperty
 
         [TestMethod]
         public void ValidateProperty()
@@ -43,6 +45,25 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
             // Assert:
             Assert.IsFalse(_results.IsValid);
         }
+
+        #endregion
+
+        #region SetValue
+
+        [TestMethod]
+        [ExpectedException(typeof(ValidationException))]
+        public void SetValue_Fail()
+        {
+            _model.SetterValidatedProperty = "Invalid";
+        }
+
+        [TestMethod]
+        public void SetValue_Success()
+        {
+            _model.SetterValidatedProperty = "Valid";
+        }
+
+        #endregion
 
         public ValidatorEx _validator = new ValidatorEx();
         public TestModel _model = new TestModel();

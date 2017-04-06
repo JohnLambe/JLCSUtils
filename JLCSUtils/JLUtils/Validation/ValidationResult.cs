@@ -43,6 +43,12 @@ namespace JohnLambe.Util.Validation
 
     public class ValidationResultCollection
     {
+        public ValidationResultCollection(ValidationFeatures supportedFeatures = ValidationFeatures.All, ValidationResultType resultType = ValidationResultType.Error)
+        {
+            this.SupportedFeatures = supportedFeatures;
+            this.ResultType = resultType;
+        }
+
         public virtual void Add(ValidationResult result)
         {
             _results.Add(result);
@@ -55,8 +61,12 @@ namespace JohnLambe.Util.Validation
 
         public virtual void Fail()
         {
-
+            //TODO
         }
+
+        public virtual ValidationResultType ResultType { get; set; }
+
+        public virtual ValidationFeatures SupportedFeatures { get; set; }
 
         public virtual ValidationResult Result
         {
@@ -68,6 +78,8 @@ namespace JohnLambe.Util.Validation
 
         public virtual ValidationResult MergeResults(ICollection<ValidationResult> results)
         {
+            ValidationResultType mostSevereType = ValidationResultType.None;
+
             if (_results.Count == 0)
             {
                 return ValidationResult.Success;
@@ -81,10 +93,17 @@ namespace JohnLambe.Util.Validation
                 StringBuilder message = new StringBuilder();
                 foreach (var r in _results)
                 {
-                    message.Append(r.ErrorMessage);
+                    ValidationResultType thisResultType = r is ValidationResultEx ?
+                        ((ValidationResultEx)r).Type
+                        : ValidationResultType.Error;
+                    if (thisResultType > mostSevereType)
+                        mostSevereType = ((ValidationResultEx)r).Type;
+                    message.AppendLine(r.ErrorMessage);
                 }
-                return new ValidationResultEx(message.ToString());
+                return new ValidationResultEx(message.ToString()) { Type = mostSevereType };
             }
+            //TODO: Apply ResultType
+            //TODO: SupportedFeatures
         }
 
         protected IList<ValidationResult> _results = new List<ValidationResult>();
@@ -92,17 +111,19 @@ namespace JohnLambe.Util.Validation
 
     public enum ValidationResultType
     {
-        Updated = 1,
+        None = 0,
+
+        Updated = 10,
         /// <summary>
         /// Non-warning informational message.
         /// </summary>
-        Message,
-        Warning,
-        SevereWarning,
+        Message = 20,
+        Warning = 60,
+        SevereWarning = 80,
         /// <summary>
         /// A value is invalid.
         /// </summary>
-        Error
+        Error = 100
     }
 
     public class ValidationResults
