@@ -29,28 +29,15 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageDialogView));
-            this.uiButtons = new MvpFramework.WinForms.ButtonContainer();
             this.uiMainPanel = new System.Windows.Forms.Panel();
             this.uiMessageText = new System.Windows.Forms.Label();
             this.uiIcon2 = new System.Windows.Forms.PictureBox();
             this.uiMainIcon = new System.Windows.Forms.PictureBox();
+            this.uiButtons = new MvpFramework.WinForms.ButtonContainer();
             this.uiMainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiIcon2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiMainIcon)).BeginInit();
             this.SuspendLayout();
-            // 
-            // uiButtons
-            // 
-            this.uiButtons.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
-            this.uiButtons.Buttons = null;
-            this.uiButtons.ButtonsLayout = System.Windows.Forms.TabAlignment.Right;
-            this.uiButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.uiButtons.Filter = "DialogOptions";
-            this.uiButtons.Location = new System.Drawing.Point(0, 108);
-            this.uiButtons.Name = "uiButtons";
-            this.uiButtons.Size = new System.Drawing.Size(474, 48);
-            this.uiButtons.TabIndex = 1;
-            this.uiButtons.ButtonClicked += new MvpFramework.WinForms.ButtonContainer.ButtonClickedDelegate(this.uiButtons_ButtonClicked);
             // 
             // uiMainPanel
             // 
@@ -103,6 +90,19 @@
             this.uiMainIcon.Size = new System.Drawing.Size(70, 108);
             this.uiMainIcon.TabIndex = 6;
             this.uiMainIcon.TabStop = false;
+            // 
+            // uiButtons
+            // 
+            this.uiButtons.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
+            this.uiButtons.Buttons = null;
+            this.uiButtons.ButtonsLayout = System.Windows.Forms.TabAlignment.Right;
+            this.uiButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.uiButtons.Filter = "DialogOptions";
+            this.uiButtons.Location = new System.Drawing.Point(0, 108);
+            this.uiButtons.Name = "uiButtons";
+            this.uiButtons.Size = new System.Drawing.Size(474, 48);
+            this.uiButtons.TabIndex = 1;
+            this.uiButtons.ButtonClicked += new MvpFramework.WinForms.ButtonContainer.ButtonClickedDelegate(this.uiButtons_ButtonClicked);
             // 
             // MessageDialogView
             // 

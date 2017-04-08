@@ -111,15 +111,21 @@ namespace MvpFramework.Binding
                     Refresh();
 
                     if (modelBinder.GetProp(_modelPropertyName).CanWrite)
-                        _boundControl.TextChanged += BoundControl_ValueChanged;
-                    //modelBinder.BindProperty(_propertyName);
+                    {
+                        _boundControl.Validating += _boundControl_Validating;
+                        _boundControl.Validated += _boundControl_Validated; ;
+                        //                        _boundControl.TextChanged += BoundControl_ValueChanged;
+                        //                        modelBinder.BindProperty(_propertyName);
+                    }
 
-                    if (_boundControl is TextBox)
+                    if (_boundControl is TextBoxBase)
                     {
                         var property = modelBinder.GetProp(_modelPropertyName).Property;
                         var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
                         if (attrib != null)
-                            ((TextBox)_boundControl).MaxLength = attrib.Length;
+                        {
+                            ((TextBoxBase)_boundControl).MaxLength = attrib.Length;
+                        }
                     }
                 }
 
@@ -140,6 +146,25 @@ namespace MvpFramework.Binding
             {
                 throw new MvpBindingException("Error on binding control " + BoundControl + ": " + ex.Message, ex);
                 //TODO: Get control name?
+            }
+        }
+
+        private void _boundControl_Validated(object sender, EventArgs e)
+        {
+            if (EventEnabled)
+            {
+                Model.GetProp(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
+                //| We could set _boundControl.'Modified' (if it exists) to false.         
+            }
+        }
+
+        protected void _boundControl_Validating(object sender, CancelEventArgs e)
+        {
+            if (EventEnabled)
+            {
+                var value = _controlProperty.GetValue(_boundControl);
+                Model.GetProp(_modelPropertyName).ValidateValue(ref value);
+//                _controlProperty.SetValue(_boundControl, value);
             }
         }
 

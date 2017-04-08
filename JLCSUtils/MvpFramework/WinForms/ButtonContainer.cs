@@ -209,16 +209,29 @@ namespace MvpFramework.WinForms
         /// <param name="buttonModel"></param>
         protected virtual void PopulateButton(Control button, MenuItemModel buttonModel)
         {
+            bool hasIcon = !string.IsNullOrEmpty(buttonModel.IconId);
+
             if (button is Button)
             {
                 (button as Button).UseVisualStyleBackColor = true;   // so that it doesn't use the color of the background.
-                (button as Button).AutoSize = true;    // resizes if text is too long for the initial width. Doesn't reduce size if text is shorter.
+                (button as Button).AutoSize = ButtonAutoSize;    // resizes if text is too long for the initial width. Doesn't reduce size if text is shorter.
+                (button as Button).AutoSizeMode = ButtonAutoSizeMode;    // resizes if text is too long for the initial width. Doesn't reduce size if text is shorter.
             }
 
+            int buttonWidth = button.Width;
+            /*
+            if (ButtonAutoSize)
+            {
+                int textWidth = (int)button.CreateGraphics().MeasureString(button.Text, button.Font).Width;
+                buttonWidth = textWidth + (hasIcon ? 32 : 0) + button.Margin.Horizontal + 2;
+            }
+            */
+            // We could adjust the height of buttons when vertically stacked and the text is more than one line (due to wrapping or line breaks).
+
             // Assign minimum width, before assigning text:
-            button.Width = MinimumButtonWidth != 0 ? MinimumButtonWidth
+            button.Width = ButtonMinimumWidth != 0 ? ButtonMinimumWidth
                 : Orientation == Orientation.Vertical ? this.ClientInsideMarginsRectangle().Width
-                : button.Width;
+                : buttonWidth;
 
             button.Text = buttonModel.DisplayName;    // may cause resizing
 
@@ -306,7 +319,7 @@ namespace MvpFramework.WinForms
         [DefaultValue(DefaultMinimumButtonWidth)]
         [Description("Default width of each button, in pixels. "
                     + "0 for default, which makes them fill the width of this control if Orientation is Vertical.")]
-        public virtual int MinimumButtonWidth { get; set; } = DefaultMinimumButtonWidth;
+        public virtual int ButtonMinimumWidth { get; set; } = DefaultMinimumButtonWidth;
         protected const int DefaultMinimumButtonWidth = 0;
 
         /// <summary>
@@ -328,8 +341,11 @@ namespace MvpFramework.WinForms
         public virtual TabAlignment ButtonsLayout { get; set; } = TabAlignment.Top;
         //TODO: Doesn't work yet.
 
+        [Category("Layout")]
         [Description("Whether the buttons are positioned in a horizontal line or stacked vertically.")]
-        protected virtual Orientation Orientation
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public virtual Orientation Orientation
             => (ButtonsLayout == TabAlignment.Left || ButtonsLayout == TabAlignment.Right) ? Orientation.Horizontal : Orientation.Vertical;
 
         /// <summary>
@@ -338,7 +354,8 @@ namespace MvpFramework.WinForms
         [Category("Layout")]
         [Description("Place buttons from right to left or bottom to top (depending on Orientation).")]
         [DefaultValue(false)]
-        protected virtual bool ReverseDirection  //{ get; set; } = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        protected virtual bool ReverseDirection
             => ButtonsLayout.HasFlag(TabAlignment.Bottom | TabAlignment.Right);
 
         [Category("Layout")]
@@ -356,6 +373,16 @@ namespace MvpFramework.WinForms
         [Description("Height of each button, in pixels. 0 for default, which makes them fill the height of this control if Orientation is Horizontal.")]
         [DefaultValue(0)]
         public virtual int ButtonHeight { get; set; } = 0;
+
+        [Category("Layout")]
+        [Description("True to automatically size the buttons. Currently supported for horizontal layouts only.")]
+        [DefaultValue(true)]
+        public virtual bool ButtonAutoSize { get; set; } = true;
+
+        [Category("Layout")]
+        [Description("How buttons automatically size (if ButtonAutoSize is true).")]
+        [DefaultValue(AutoSizeMode.GrowOnly)]
+        public virtual AutoSizeMode ButtonAutoSizeMode { get; set; } = AutoSizeMode.GrowOnly;
 
         [Category("Action")]
         [Description("Fired when any of the buttons is clicked.")]
@@ -402,6 +429,17 @@ namespace MvpFramework.WinForms
         /// <param name="sender">The button container.</param>
         /// <param name="args"></param>
         public delegate void ButtonClickedDelegate(object sender, ButtonClickedEventArgs args);
+    }
+
+
+    public enum ButtonContainerLayout
+    {
+        LeftToRight,
+        RightToLeft,
+        TopToBottom,
+        BottomToTop,
+        HorizontalCentred,
+        VerticalCentred
     }
 
 }

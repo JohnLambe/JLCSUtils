@@ -39,11 +39,11 @@ namespace MvpFramework.Binding
 
         [Obsolete]
         public virtual bool CanRead(string propertyName)
-            => GetProperty(propertyName)?.CanRead ?? false;
+            => GetPropertyInternal(propertyName)?.CanRead ?? false;
 
         [Obsolete]
         public virtual bool CanWrite(string propertyName)
-            => GetProperty(propertyName)?.CanWrite ?? false;
+            => GetPropertyInternal(propertyName)?.CanWrite ?? false;
 
         /// <summary>
         /// Get a property of the model.
@@ -52,7 +52,7 @@ namespace MvpFramework.Binding
         /// <param name="propertyName"></param>
         /// <returns></returns>
         [Obsolete]
-        public virtual PropertyInfo GetProperty(string propertyName)
+        private PropertyInfo GetPropertyInternal(string propertyName)
         {
             var model = Model; 
             return ReflectionUtil.GetProperty(ref model, propertyName);
@@ -61,7 +61,7 @@ namespace MvpFramework.Binding
         [Obsolete]
         public virtual string GetCaptionForProperty(string propertyName)
         {
-            return CaptionUtil.GetDisplayName(GetProperty(propertyName));
+            return CaptionUtil.GetDisplayName(GetPropertyInternal(propertyName));
         }
 
  /*
@@ -89,10 +89,17 @@ namespace MvpFramework.Binding
             }
         }
 
-        public virtual ModelPropertyBinder GetProp(string propertName)
+        public virtual ModelPropertyBinder GetProp(string propertName)  //TODO: Replace with GetProperty below
         {
             return new ModelPropertyBinder(Model, propertName);
         }
+
+        /*
+        public virtual ModelPropertyBinder GetProperty(string propertName)
+        {
+            return new ModelPropertyBinder(Model, propertName);
+        }
+        */
 
         /// <summary>
         /// Get the title of the view, if applicable.

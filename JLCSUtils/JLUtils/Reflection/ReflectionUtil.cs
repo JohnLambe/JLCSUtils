@@ -621,7 +621,18 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         public virtual PropertyInfo Property { get; }
 
-        public virtual ValidatorEx Validator { get; set; }
+        protected virtual ValidatorEx Validator { get; set; }
+
+        public virtual bool TryValidateValue(TProperty value, ValidationResults results)
+        {
+            return Validator?.TryValidateValue(Target, value, Property, results)
+                ?? true;
+        }
+
+        public virtual void ValidateValue(ref TProperty value)
+        {
+            Validator?.ValidateValue(Target, ref value, Property);
+        }
 
         #region ICustomAttributeProvider
         // Delegates to Property.

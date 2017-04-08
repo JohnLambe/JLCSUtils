@@ -41,6 +41,8 @@ TODO:
 	Auto generate IQueryable.
 	Bind IQueryable to grid components, etc.
 	Review Dialog layout.
+	WinForms controls:
+		WinForms Validation events, ValidationMode
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.
