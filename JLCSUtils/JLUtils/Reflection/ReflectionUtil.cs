@@ -621,17 +621,29 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         public virtual PropertyInfo Property { get; }
 
-        protected virtual ValidatorEx Validator { get; set; }
+        protected virtual ValidatorEx Validator { get; set; } = new ValidatorEx(); //TODO: Make injectable
 
+        /// <summary>
+        /// Test whether the given value is valid for assignment to the property.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="results"></param>
+        /// <returns></returns>
         public virtual bool TryValidateValue(TProperty value, ValidationResults results)
         {
             return Validator?.TryValidateValue(Target, value, Property, results)
                 ?? true;
         }
 
-        public virtual void ValidateValue(ref TProperty value)
+        /// <summary>
+        /// Validate the given value for assignment to the property, throwing an exception if it is invalid.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>true iff a validator modified the value.</returns>
+        /// <exception cref="ValidationException">If invalid.</exception>
+        public virtual bool ValidateValue(ref TProperty value)
         {
-            Validator?.ValidateValue(Target, ref value, Property);
+            return Validator?.ValidateValue(Target, ref value, Property) ?? false;
         }
 
         #region ICustomAttributeProvider

@@ -9,6 +9,7 @@ using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Collections;
 using System.Reflection;
 using DiExtension;
+using MvpFramework.Dialog;
 
 namespace MvpFramework.Binding
 {
@@ -61,7 +62,8 @@ namespace MvpFramework.Binding
 
         protected virtual IControlBinder FallbackBinder(object control)
         {
-            return GeneralControlBinder.TryCreateBinder(control as Control);
+            return GeneralControlBinder.TryCreateBinder(control as Control, () => DiResolver.GetInstance<IMessageDialogService>(typeof(IMessageDialogService)));
+            //TODO: Avoid the reference to IMessageDialogService (by populating method arguments from DI by reflection).
         }
 
         public virtual void Scan(Assembly assm)

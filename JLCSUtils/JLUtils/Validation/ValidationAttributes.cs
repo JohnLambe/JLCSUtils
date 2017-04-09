@@ -52,20 +52,23 @@ namespace JohnLambe.Util.Validation
                 return ValidationResult.Success;    // treat as valid
             }
 
-            var results = new ValidationResultCollection(validationContext.GetSupportedFeatures(), ResultType);
+            var results = new ValidationResults(validationContext.GetSupportedFeatures(), ResultType);
             IsValid(ref value, validationContext, results);
             return results.Result;
         }
 
-        protected virtual void IsValid(ref object value, ValidationContext validationContext, ValidationResultCollection results)
+        protected virtual void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
         }
     }
 
+    /// <summary>
+    /// For validation of string values.
+    /// </summary>
     public class StringValidationAttribute : ValidationAttributeBase
     {
         /// <summary>
-        /// Characters allowed in the string. null for all.
+        /// All characters allowed in the string. null for all.
         /// </summary>
         public virtual string AllowedCharacters
         {
@@ -79,14 +82,22 @@ namespace JohnLambe.Util.Validation
             }
         }
 
+        /// <summary>
+        /// The set of characters in <see cref="AllowedCharacters"/>.
+        /// null if all characters are allowed.
+        /// </summary>
         public virtual ISet<char> AllowedCharactersSet
         {
             get { return _allowedValues; }
         }
-
         protected StringCharacterSet _allowedValues;
 
-        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResultCollection results)
+        /// <summary>
+        /// Specifies how the string should be capitalised.
+        /// </summary>
+        public virtual LetterCapitalisationOption Capitalisation { get; set; } = LetterCapitalisationOption.MixedCase;
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
             if (value != null && AllowedCharacters != null)
@@ -95,6 +106,50 @@ namespace JohnLambe.Util.Validation
                     results.Add(ErrorMessage ?? "Contains an invalid character");
             }
         }
+    }
+
+    /// <summary>
+    /// Options for what capitalisation is valid in a string,
+    /// or should be applied to it (capitalisation changed to match the pattern).
+    /// </summary>
+    public enum LetterCapitalisationOption
+    {
+        /// <summary>
+        /// Any combination of capital and lowercase letters is valid.
+        /// Don't change/correct capitalisation.
+        /// </summary>
+        MixedCase = 0,
+        /// <summary>
+        /// All letters are lowercase.
+        /// </summary>
+        AllLowercase,
+        /// <summary>
+        /// All letters are capital.
+        /// </summary>
+        AllCaptial,
+        /// <summary>
+        /// The first letter of each word is captial.
+        /// Capital letters in other positions are also valid.
+        /// </summary>
+        TitleCase,
+        /// <summary>
+        /// The first letter of each word is captial.
+        /// All other letters must be lowercase.
+        /// </summary>
+        TitleCaseOnly,
+        /// <summary>
+        /// The first letter of the string is capital.
+        /// Capital letters in other positions are also valid.
+        /// </summary>
+        FirstLetterCapital,
+        /// <summary>
+        /// The first letter of the string is capital.
+        /// All other letters must be lowercase.
+        /// </summary>
+        FirstLetterCapitalOnly
+
+        // These options relate to human-readable text.
+        //| Code identifiers also have camelCase, PascalCase, and options relating to underscores.
     }
 
     /// <summary>
@@ -112,13 +167,13 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual object InvalidValue { get; set; }
 
-        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResultCollection results)
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
             if((value == null && InvalidValue == null)
                 || (value != null && value.Equals(InvalidValue)))
             {
-                results.Add("Cannot have the value " + InvalidValue);
+                results.Add("The value " + InvalidValue + " is invalid");
             }
         }
     }
@@ -173,7 +228,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual bool AllowBlank { get; set; }
 
-        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResultCollection results)
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
             if (!AllowBlank || !value.Equals(""))
@@ -183,6 +238,9 @@ namespace JohnLambe.Util.Validation
     }
 
 
+    /// <summary>
+    /// Metadata or validation information for numberic values.
+    /// </summary>
     public class NumberValidationAttribute : ValidationAttributeBase
     {
         /// <summary>
@@ -207,10 +265,16 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual DigitGroupingOption DigitGrouping { get; set; } = DigitGroupingOption.Default;
 
+        /// <summary>
+        /// The lowest valid value.
+        /// </summary>
         public virtual double MinimumValue { get; set; } = double.MinValue;
+        /// <summary>
+        /// The highest valid value.
+        /// </summary>
         public virtual double MaximumValue { get; set; } = double.MaxValue;
 
-        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResultCollection results)
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             if (value != null)
             {
@@ -277,13 +341,37 @@ namespace JohnLambe.Util.Validation
     {
     }
 
+
+    /// <summary>
+    /// Specifies a collection of valid values.
+    /// </summary>
     public class AllowedValuesAttribute : ValidationAttributeBase
     {
         //TODO: Reference a (possibly dynamic) provider/dataset of values that may be chosen.
 
-        public virtual bool AllowFreeText { get; set; }
+        /// <summary>
+        /// The list of allowed values.
+        /// </summary>
+        public virtual object[] Values { get; set; }
+
+        /// <summary>
+        /// Iff true, values not in the list are allowed.
+        /// The list can be provided to choose from, but other values can be enetered.
+        /// </summary>
+        public virtual bool AllowOtherValues { get; set; } = false;
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+            if (!AllowOtherValues && !Values.Contains(value))
+                results.Fail();
+        }
     }
 
+
+    /// <summary>
+    /// Specifies that a property is date/time value, and provides metadata relating to it.
+    /// </summary>
     public class DateTimeAttribute : ValidationAttributeBase
     {
         public virtual TimePrecision TimeParts { get; set;}
@@ -291,7 +379,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Number of decimal places in seconds (for display and entry).
         /// </summary>
-        public virtual int DecimalPlaces { get; set; }
+        public virtual int SecondsDecimalPlaces { get; set; }
     }
 
     [Flags]

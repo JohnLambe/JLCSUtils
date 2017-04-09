@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace MvpFramework
 {
+    /// <summary>
+    /// Base class for attributes that flag a class as a Presenter or View to be registered automatically.
+    /// </summary>
     public abstract class MvpAttribute : Attribute
     {
         /// <summary>
         /// The Presenter/View Interface, that the DI container should map to the attributed class.
         /// </summary>
         public virtual Type Interface { get; set; }
-
     }
 
     /// <summary>
@@ -35,9 +37,9 @@ namespace MvpFramework
 
         //        public Type ViewInterface { get; set; }
 
-        public Type ForModel { get; set; }
+        public virtual Type ForModel { get; set; }
 
-        public Type ForAction { get; set; }
+        public virtual Type ForAction { get; set; }
     }
 
 

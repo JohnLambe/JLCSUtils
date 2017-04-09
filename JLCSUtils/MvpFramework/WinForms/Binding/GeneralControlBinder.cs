@@ -12,10 +12,16 @@ using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
 using System.ComponentModel;
 using JohnLambe.Util.Validation;
+using MvpFramework.Dialog;
+using MvpFramework.Dialog.Dialogs;
+using DiExtension.AutoFactory;
+using JohnLambe.Util.Misc;
 
 namespace MvpFramework.Binding
 {
     // Quick-and-dirty binder to demonstrate the concept:
+
+    //TODO: NOTE: This references WinForms - move to MvpFramework.Binding.WinForms.
 
     //TODO: Bind the property specified by DefaultBindingPropertyAttribute.
     //  And event specified by DefaultEventAttribute (the one created on double-clicking in the designer).
@@ -24,7 +30,7 @@ namespace MvpFramework.Binding
     /// <summary>
     /// Binds some common WinForms controls.
     /// </summary>
-    //| Could be called "TagControlBinder".
+    //| Could be called "TagControlBinder", "GeneralWinFormsControlBinder", or "WinFormsTagControlBinder".
     public class GeneralControlBinder : IControlBinderExt
     {
         /// <summary>
@@ -32,17 +38,27 @@ namespace MvpFramework.Binding
         /// otherwise, returns null.
         /// </summary>
         /// <param name="control"></param>
+        /// <param name="messageDialogServiceFactory">Providers the message dialog service to be used by the binder.
+        /// See the corresponding parameter of <see cref="GeneralControlBinder.GeneralControlBinder(Control, Func{IMessageDialogService})"/>.</param>
         /// <returns>Binder or null.</returns>
-        public static IControlBinderExt TryCreateBinder(Control control)
+        public static IControlBinderExt TryCreateBinder(Control control, Func<IMessageDialogService> messageDialogServiceFactory)
         {
             if (GetBinderString(control) != null)
-                return new GeneralControlBinder(control);
+                return new GeneralControlBinder(control, messageDialogServiceFactory);
             else
                 return null;        // no binder
         }
 
-        public GeneralControlBinder(Control control)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="control">The control to be bound.</param>
+        /// <param name="messageDialogServiceFactory">Delegate to create a message dialog service to be used for showing validation errors.
+        /// If null, validation errors are raised as exceptions.</param>
+        public GeneralControlBinder(Control control, Func<IMessageDialogService> messageDialogServiceFactory)
         {
+            this.DialogServiceFactory = messageDialogServiceFactory;
+
             var defaultBindingAttrib = control.GetType().GetCustomAttribute<DefaultBindingPropertyAttribute>();
             var propertyName = defaultBindingAttrib?.Name;
 
@@ -57,6 +73,11 @@ namespace MvpFramework.Binding
             }
         }
 
+        /// <summary>
+        /// Returns the binder string for the given control.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns></returns>
         protected static string GetBinderString(Control control)
         {
             /* Use AttributedControlBinder for this:
@@ -83,6 +104,10 @@ namespace MvpFramework.Binding
             return null;
         }
 
+        /// <summary>
+        /// Gets the binder string from the bound control.
+        /// </summary>
+        /// <returns></returns>
         protected virtual string GetBinderString()
         {
             return GetBinderString(_boundControl);
@@ -90,14 +115,14 @@ namespace MvpFramework.Binding
 
         public virtual void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {
-            BindModel(modelBinder, new PresenterBinderWrapper(presenter));
+            MvpBind(modelBinder, new PresenterBinderWrapper(presenter));
         }
 
         /// <summary>
         /// Bind this control to the given model.
         /// </summary>
         /// <param name="modelBinder"></param>
-        public virtual void BindModel(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
+        public virtual void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
         {
             Presenter = presenterBinder.Presenter;
 
@@ -110,17 +135,17 @@ namespace MvpFramework.Binding
 
                     Refresh();
 
-                    if (modelBinder.GetProp(_modelPropertyName).CanWrite)
+                    if (modelBinder.GetProperty(_modelPropertyName).CanWrite)
                     {
-                        _boundControl.Validating += _boundControl_Validating;
-                        _boundControl.Validated += _boundControl_Validated; ;
+                        _boundControl.Validating += BoundControl_Validating;
+                        _boundControl.Validated += BoundControl_Validated;
                         //                        _boundControl.TextChanged += BoundControl_ValueChanged;
                         //                        modelBinder.BindProperty(_propertyName);
                     }
 
                     if (_boundControl is TextBoxBase)
                     {
-                        var property = modelBinder.GetProp(_modelPropertyName).Property;
+                        var property = modelBinder.GetProperty(_modelPropertyName).Property;
                         var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
                         if (attrib != null)
                         {
@@ -144,27 +169,47 @@ namespace MvpFramework.Binding
             }
             catch(Exception ex)
             {
-                throw new MvpBindingException("Error on binding control " + BoundControl + ": " + ex.Message, ex);
-                //TODO: Get control name?
+                string controlName = (BoundControl is Control) ? ((Control)BoundControl).Name : BoundControl.ToString();
+                throw new MvpBindingException("Error on binding control " + controlName + ": " + ex.Message, ex);
             }
         }
 
-        private void _boundControl_Validated(object sender, EventArgs e)
+        private void BoundControl_Validated(object sender, EventArgs e)
         {
             if (EventEnabled)
             {
-                Model.GetProp(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
-                //| We could set _boundControl.'Modified' (if it exists) to false.         
+                Model.GetProperty(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
+                //| We could set _boundControl.'Modified' (if it exists) to false:
+//                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
             }
         }
 
-        protected void _boundControl_Validating(object sender, CancelEventArgs e)
+        protected void BoundControl_Validating(object sender, CancelEventArgs e)
         {
             if (EventEnabled)
             {
                 var value = _controlProperty.GetValue(_boundControl);
-                Model.GetProp(_modelPropertyName).ValidateValue(ref value);
-//                _controlProperty.SetValue(_boundControl, value);
+                var results = new ValidationResults();
+                if( !Model.GetProperty(_modelPropertyName).TryValidateValue(value, results) )
+                {
+                    e.Cancel = true;   // validation fails. This usually means that the control stays focussed.
+
+                    // We show the dialog here, if we have the service to do so,
+                    // because raising an exception would cause WinForms not to handle the cancelling of the event
+                    // (it would allow the focus to leave the control).
+                    if (DialogService != null)
+                        DialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
+                    else
+                        results.ThrowIfInvalid();
+                }
+
+                //TODO: Warnings
+
+                if (results.Modified)
+                {
+                    _controlProperty.SetValue(_boundControl, results.NewValue);
+//                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
+                }
             }
         }
 
@@ -179,8 +224,8 @@ namespace MvpFramework.Binding
                 try
                 {
                     if(Model != null)
-                        if (Model.GetProp(_modelPropertyName).CanRead && _controlProperty.CanWrite)
-                            _controlProperty.SetValue(_boundControl, Model.GetProp(_modelPropertyName).Value);
+                        if (Model.GetProperty(_modelPropertyName).CanRead && _controlProperty.CanWrite)
+                            _controlProperty.SetValue(_boundControl, Model.GetProperty(_modelPropertyName).Value);
                 }
                 finally
                 {
@@ -208,7 +253,7 @@ namespace MvpFramework.Binding
         {
             if (EventEnabled)
             {
-                Model.GetProp(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
+                Model.GetProperty(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
             }
         }
 
@@ -232,6 +277,19 @@ namespace MvpFramework.Binding
         /// The bound Presenter.
         /// </summary>
         protected virtual IPresenter Presenter { get; private set; }
+
+        /// <summary>
+        /// Service for showing a dialog on validation errors.
+        /// </summary>
+        protected virtual IMessageDialogService DialogService
+        {
+            get
+            {
+                return LazyInitialize.GetValue(ref _dialogService, DialogServiceFactory);
+            }
+        }
+        private Func<IMessageDialogService> DialogServiceFactory { get; set; }
+        private IMessageDialogService _dialogService;
 
         /// <summary>
         /// The model of the View that the control is placed in.

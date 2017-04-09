@@ -16,7 +16,7 @@ namespace JohnLambe.Util.Misc
         public virtual void AddRef()
         {
             if (IsDisposed)             
-                throw new ObjectDisposedException("ReferenceCountedObject is disposed: " + ToString());
+                throw new ObjectDisposedException(nameof(ReferenceCountedObject) + " is disposed: " + ToString());
             // If calling this after it is disposed, the caller is likely to try to use it.
             // (Hence, it's worse than an extra call to ReleaseRef (which means that something is wrong, but the caller won't be trying to use this)
             // or disposing when there are still references (callers might no longer hold references).
@@ -26,7 +26,7 @@ namespace JohnLambe.Util.Misc
 
         public virtual void ReleaseRef()
         {
-            Debug.Assert(!IsDisposed, "ReferenceCountedObject.ReleaseRef: Already disposed: " + ToString());
+            Debug.Assert(!IsDisposed, nameof(ReferenceCountedObject) + "." + nameof(ReleaseRef) + ": Already disposed: " + ToString());
 
             RefCount--;
             if (RefCount == 0)           // if the last reference was released
@@ -35,7 +35,7 @@ namespace JohnLambe.Util.Misc
             }
             else
             {
-                Debug.Assert(RefCount > 0, "ReferenceCountedObject released too many times (" + RefCount + "): " + ToString());
+                Debug.Assert(RefCount > 0, nameof(ReferenceCountedObject) + " released too many times (" + RefCount + "): " + ToString());
                 // This shouldn't happen since it should have been disposed in this case, and the earlier assertion should have failed.
             }
         }

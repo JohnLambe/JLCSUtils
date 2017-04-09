@@ -122,11 +122,13 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="value"></param>
         /// <param name="property"></param>
-        public virtual void ValidateValue<TValue>(object instance, ref TValue value, MemberInfo property)
+        /// <returns>true if a validator modif</returns>
+        public virtual bool ValidateValue<TValue>(object instance, ref TValue value, MemberInfo property)
         {
             ValidationResults results = new ValidationResults();
             TryValidateValue(instance, value, property, results);
             results.ThrowIfInvalid();
+            return results.Modified;
         }
 
         /// <summary>

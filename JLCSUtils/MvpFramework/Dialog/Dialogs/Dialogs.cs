@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using MvpFramework.Dialog;
 using MvpFramework.Menu;
+using JohnLambe.Util.Validation;
 
 namespace MvpFramework.Dialog.Dialogs
 {
@@ -74,6 +75,35 @@ namespace MvpFramework.Dialog.Dialogs
         {
             base.MessageType = MessageDialogType.UserError;
         }
+
+        /// <summary>
+        /// Create a message dialog model for the given validation results.
+        /// </summary>
+        /// <param name="validationResults"></param>
+        /// <returns>Message dialog model. May be a subclass of this.</returns>
+        public static UserErrorDialog CreateDialogModelForValidationResult(ValidationResults validationResults)
+        {
+            return new UserErrorDialog()
+            {
+                Validation = validationResults,
+                Message = validationResults.ToString()
+            };
+        }
+
+        /// <summary>
+        /// Create a message dialog model for the given validation result.
+        /// </summary>
+        /// <param name="validationResults"></param>
+        /// <returns>Message dialog model. May be a subclass of this.</returns>
+        public static UserErrorDialog CreateDialogModelForValidationResult(ValidationResultEx validationResult)
+        {
+            return new UserErrorDialog()
+            {
+                Validation = new ValidationResults(validationResult)
+            };
+        }
+
+        public virtual ValidationResults Validation { get; protected set; }
     }
 
     public class SystemErrorDialog : MessageDialogModel<string>

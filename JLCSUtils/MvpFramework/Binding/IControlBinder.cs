@@ -14,16 +14,17 @@ namespace MvpFramework.Binding
     public interface IControlBinder
     {
         /// <summary>
-        /// Bind the given model to the control.
+        /// Bind the given model and presenter to the control.
         /// </summary>
         /// <param name="modelBinder"></param>
         void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter);
-        //| `presenter` could also use a wrapper, similar to ModelBinderWrapper.
+        //TODO: Change to void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenter);
 
         /// <summary>
         /// Update the control from the model.
         /// </summary>
         void Refresh();
+        //TODO: Rename to 'MvpRefresh'
     }
 
     public interface IControlBinderExt : IControlBinder

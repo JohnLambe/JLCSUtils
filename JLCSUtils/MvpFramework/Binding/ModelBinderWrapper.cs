@@ -23,7 +23,7 @@ namespace MvpFramework.Binding
             this.Model = model;
         }
 
-        // Methods obsoleted. Use GetProp instead:
+        // Methods obsoleted. Use GetProperty instead:
 
         [Obsolete]
         public virtual object GetValue(string propertyName)
@@ -64,22 +64,32 @@ namespace MvpFramework.Binding
             return CaptionUtil.GetDisplayName(GetPropertyInternal(propertyName));
         }
 
- /*
-        /// <summary>
-        /// Provides attributes of the property, which may include details
-        /// related to binding or validation.
-        /// This may (in subclasses or future versions) return attributes even if 
-        /// <see cref="GetProperty(string)"/> returns null, so it is recommended to use this instead of using it
-        /// as <see cref="ICustomAttributeProvider"/>.
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        public virtual ICustomAttributeProvider GetAttributes(string propertyName)
+        [Obsolete("Use GetProperty")]
+        public ModelPropertyBinder GetProp(string propertName)
         {
-            return GetProperty(propertyName);
+            return GetProperty(propertName);
         }
-*/
 
+        /*
+               /// <summary>
+               /// Provides attributes of the property, which may include details
+               /// related to binding or validation.
+               /// This may (in subclasses or future versions) return attributes even if 
+               /// <see cref="GetProperty(string)"/> returns null, so it is recommended to use this instead of using it
+               /// as <see cref="ICustomAttributeProvider"/>.
+               /// </summary>
+               /// <param name="propertyName"></param>
+               /// <returns></returns>
+               public virtual ICustomAttributeProvider GetAttributes(string propertyName)
+               {
+                   return GetProperty(propertyName);
+               }
+       */
+
+        /// <summary>
+        /// All bindable properties of the model.
+        /// (All objects that could be returned from <see cref="GetProperty"/>.)
+        /// </summary>
         public virtual IEnumerable<ModelPropertyBinder> Properties
         {
             get
@@ -89,17 +99,16 @@ namespace MvpFramework.Binding
             }
         }
 
-        public virtual ModelPropertyBinder GetProp(string propertName)  //TODO: Replace with GetProperty below
-        {
-            return new ModelPropertyBinder(Model, propertName);
-        }
-
-        /*
+        /// <summary>
+        /// Get an object representing the binding of a requested property, and allowing reading and writing the property value.
+        /// </summary>
+        /// <param name="propertName">The name of the property in the model.
+        /// (This is usually case-sensitive, but that depends on the type model (the subclass of this)).</param>
+        /// <returns></returns>
         public virtual ModelPropertyBinder GetProperty(string propertName)
         {
             return new ModelPropertyBinder(Model, propertName);
         }
-        */
 
         /// <summary>
         /// Get the title of the view, if applicable.
@@ -118,6 +127,10 @@ namespace MvpFramework.Binding
     }
 
 
+    /// <summary>
+    /// Metadata of property on an instance.
+    /// Provides access to the property value.
+    /// </summary>
     public class ModelPropertyBinder : BoundProperty<object, object>
     {
         public ModelPropertyBinder(object target, PropertyInfo property) : base(target, property)
