@@ -23,7 +23,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Update the control from the model.
         /// </summary>
-        void Refresh();
+        void MvpRefresh();
         //TODO: Rename to 'MvpRefresh'
     }
 

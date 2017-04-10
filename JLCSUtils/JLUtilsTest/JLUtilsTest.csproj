@@ -135,6 +135,7 @@
     <Compile Include="TypeConversion\GeneralTypeConverterTest.cs" />
     <Compile Include="Types\IDTest.cs" />
     <Compile Include="Types\PersonName.cs" />
+    <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\TestModel.cs" />
     <Compile Include="Validation\ValidatorExTest.cs" />
     <Compile Include="Xml\XmlUtilTest.cs" />

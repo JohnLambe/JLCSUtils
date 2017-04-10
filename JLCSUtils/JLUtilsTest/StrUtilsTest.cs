@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
 using JohnLambe.Util;
+using JohnLambe.Util.Text;
 using System.Collections;
 using System.Collections.Generic;
 using JohnLambe.Util.Collections;

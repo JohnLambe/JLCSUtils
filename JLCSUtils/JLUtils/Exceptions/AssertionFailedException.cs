@@ -13,7 +13,7 @@ namespace JohnLambe.Util.Exceptions
     /// e.g. an invalid state that must be the result of a bug.
     /// (An error that should never happen.)
     /// </summary>
-    public class InternalErrorException : Exception, IUserErrorException
+    public class InternalErrorException : Exception, IUserError
     {
         #region System-wide configuration
 
@@ -65,10 +65,11 @@ namespace JohnLambe.Util.Exceptions
             => "INTERNAL ERROR: An internal error has occurred";
     }
 
+
     /// <summary>
     /// Exception to be thrown when an assertion fails.
     /// </summary>
-    public class AssertionFailedException : InternalErrorException, IUserErrorException
+    public class AssertionFailedException : InternalErrorException, IUserError
     {
         //
         // Summary:

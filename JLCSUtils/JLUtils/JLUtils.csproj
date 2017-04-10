@@ -54,7 +54,7 @@
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="ConfigProvider\FileImageLoaderConfigProvider.cs" />
     <Compile Include="Exceptions\AssertionFailedException.cs" />
-    <Compile Include="Exceptions\IUserErrorException.cs" />
+    <Compile Include="Exceptions\IUserError.cs" />
     <Compile Include="Exceptions\UserErrorException.cs" />
     <Compile Include="FilterDelegates\NullableBooleanExpression.cs" />
     <Compile Include="FilterDelegates\NullableFilterDelegate.cs" />

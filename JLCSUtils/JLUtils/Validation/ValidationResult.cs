@@ -140,7 +140,7 @@ namespace JohnLambe.Util.Validation
                         ((ValidationResultEx)r).Type
                         : ValidationResultType.Error;
                     if (thisResultType > mostSevereType)
-                        mostSevereType = ((ValidationResultEx)r).Type;
+                        mostSevereType = thisResultType;
                     message.AppendLine(r.ErrorMessage);
                     if(r is ValidationResultEx)
                     {

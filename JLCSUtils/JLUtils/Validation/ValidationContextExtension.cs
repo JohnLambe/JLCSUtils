@@ -21,11 +21,13 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Gets a value indicating which features are supported by the system.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">The validation context. If null, <see cref="ValidationFeatures.None"/> is returned.</param>
         /// <returns></returns>
         //| This is implemented as an extension method because ValidationContext is sealed (otherwise, we would have subclassed it).
         public static ValidationFeatures GetSupportedFeatures(this ValidationContext context)
         {
+            if (context == null)
+                return ValidationFeatures.None;
             return (ValidationFeatures)context.Items[Key_SupportedFeatures];
         }
 
@@ -33,13 +35,13 @@ namespace JohnLambe.Util.Validation
         /// Set the supported features.
         /// <seealso cref="GetSupportedFeatures(ValidationContext)"/>
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">The validation context. Must not be null.</param>
         /// <param name="features"></param>
         //| This is not an extension method, since most consumers of ValidationContext should not use it.
         //| It is set by the framework (and potentially by third party extensions of this framework, which is why it is public) only.
         public static void SetSupportedFeatures(ValidationContext context, ValidationFeatures features)
         {
-            context.Items[Key_SupportedFeatures] = features;
+            context.ArgNotNull(nameof(context)).Items[Key_SupportedFeatures] = features;
         }
 
         /// <summary>

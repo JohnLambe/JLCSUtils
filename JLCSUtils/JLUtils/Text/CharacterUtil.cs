@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JohnLambe.Util
+namespace JohnLambe.Util.Text
 {
     public static class CharacterUtil
     {

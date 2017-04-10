@@ -9,7 +9,7 @@ namespace JohnLambe.Util.Exceptions
     /// Exception to be raised on errors made by a user (e.g. invalid input).
     /// This can be handled by user interfaces, to show a dialog in a style appropriate for user errors.
     /// </summary>
-    public class UserErrorException : Exception, IUserErrorException
+    public class UserErrorException : Exception, IUserError
     {
         // The optional detailMessage parameter is added to each of the base class constructors, except the default one
         // (since that would be ambiguous).

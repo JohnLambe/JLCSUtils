@@ -133,7 +133,7 @@ namespace MvpFramework.Binding
                 {
                     Model = modelBinder;
 
-                    Refresh();
+                    MvpRefresh();
 
                     if (modelBinder.GetProperty(_modelPropertyName).CanWrite)
                     {
@@ -216,7 +216,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Update the control from the model.
         /// </summary>
-        public virtual void Refresh()
+        public virtual void MvpRefresh()
         {
             if (_modelPropertyName != null)
             {

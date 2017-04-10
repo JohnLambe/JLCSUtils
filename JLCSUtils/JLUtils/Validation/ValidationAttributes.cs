@@ -18,12 +18,6 @@ namespace JohnLambe.Util.Validation
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)] //TODO: Review
     public abstract class ValidationAttributeBase : System.ComponentModel.DataAnnotations.ValidationAttribute
     {
-        // <summary>
-        // Error message to use if <see cref="ErrorMessage"/> is null.
-        // </summary>
-        //        public virtual string DefaultErrorMessage 
-        //            => GetType().Name + " validation failed";
-
         /// <summary>
         /// If this is not <see cref="ValidationResultType.Error"/>, then when an item fails validation,
         /// it generates a message of that type.

@@ -27,6 +27,11 @@ namespace MvpFramework.WinForms
                 SetupDesignMode();
         }
 
+        public virtual void MvpRefresh()
+        {
+            Refresh();
+        }
+
         protected virtual void SetupDesignMode()
         {
             ClearButtons();

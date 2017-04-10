@@ -11,6 +11,7 @@ namespace JohnLambe.Util.Validation
 {
     /// <summary>
     /// Validate objects or members according to <see cref="ValidationAttribute"/>s - extension of <see cref="Validator"/>.
+    /// <para>Instance data of this holds configuration settings only.</para>
     /// </summary>
     public class ValidatorEx
     {

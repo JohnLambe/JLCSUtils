@@ -53,10 +53,10 @@ namespace MvpFramework.Binding
 
         }
 
-        public virtual void Refresh()
+        public virtual void MvpRefresh()
         {
             if (UseOwnHandler)
-                ((IControlBinder)BoundControl).Refresh();
+                ((IControlBinder)BoundControl).MvpRefresh();
         }
 
 

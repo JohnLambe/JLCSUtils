@@ -2,7 +2,7 @@
 //   See licence.
 ////////////////////////////////////////
 
-namespace JohnLambe.Util
+namespace JohnLambe.Util.Math
 {
     /// <summary>
     /// Utilities relating to ordinal numbers.

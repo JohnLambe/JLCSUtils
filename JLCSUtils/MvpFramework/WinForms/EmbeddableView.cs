@@ -17,7 +17,11 @@ namespace MvpFramework.WinForms
 
         public virtual void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {
+        }
 
+        public virtual void MvpRefresh()
+        {
+            Refresh();
         }
     }
 }

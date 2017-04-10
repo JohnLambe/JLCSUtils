@@ -87,7 +87,7 @@ namespace MvpFramework.WinForms.Binding
                 foreach (var binder in Binders)
                 {
                     if (control == null || binder.IsInControl(control))      // if refreshing all controls, or this one is in the requested one
-                        binder.Refresh();
+                        binder.MvpRefresh();
                 }
             }
         }
