@@ -151,6 +151,9 @@ namespace MvpFramework.Binding
                         {
                             ((TextBoxBase)_boundControl).MaxLength = attrib.Length;
                         }
+
+                        //TODO: Attach a handler for key press events (for TextBoxBase and possibly some other controls) that undoes any change on pressing ESCAPE.
+
                     }
                 }
 
@@ -308,4 +311,5 @@ namespace MvpFramework.Binding
         /// </summary>
         protected readonly PropertyInfo _controlProperty;
     }
+
 }

@@ -56,6 +56,7 @@ namespace MvpFramework.WinForms
 
                         //            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                     }
+                    _enabled = value;
                 }
             }
         }

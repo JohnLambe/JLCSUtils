@@ -6,6 +6,7 @@ using System.Text;
 using JohnLambe.Util.Encoding;
 using System.Diagnostics;
 using JohnLambe.Util;
+using JohnLambe.Util.Diagnostic;
 
 namespace MvpFramework.Menu
 {
@@ -202,7 +203,7 @@ namespace MvpFramework.Menu
                 {
                     level++;
                     current = current.Parent;
-                    Debug.Assert(current != this, "INTERNAL ERROR: MenuItemModel: Circular Parent reference");   // if this happened, and we continued, it would loop indefinitely.
+                    Diagnostics.Assert(current != this, "INTERNAL ERROR: MenuItemModel: Circular Parent reference");   // if this happened, and we continued, it would loop indefinitely.
                 }
                 return level;
             }

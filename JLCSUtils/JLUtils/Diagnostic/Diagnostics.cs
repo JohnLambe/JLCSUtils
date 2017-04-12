@@ -13,7 +13,12 @@ namespace JohnLambe.Util.Diagnostic
 {
     public static class Diagnostics
     {
-        private static int AssertionLevel = 5;
+        public static int AssertionLevel { get; set; } = 5;
+
+        /// <summary>
+        /// Iff true, call <see cref="Debug.Assert(bool, string)"/> when an assertion fails.
+        /// </summary>
+        public static bool UseDebug { get; set; } = false;
 
         public const int Level_Low = 2;
 
@@ -111,7 +116,9 @@ namespace JohnLambe.Util.Diagnostic
         private static void AssertionFailed(string message, AssertionCategory category, Type exceptionClass = null)
         {
             Log("ASSERTION FAILED: " + message);
-            if (exceptionClass == null)
+            if (UseDebug)
+                Debug.Assert(false, message);
+            else if (exceptionClass == null)
                 throw new AssertionFailedException(message);
             //TODO: Get stack trace
             else

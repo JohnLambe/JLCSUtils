@@ -19,8 +19,9 @@ namespace MvpFramework.Dialog
     // This system encourages dialogs that have a visual indication (icon, colour, style, dialog box shape etc.)
     // of the type of dialog (warning, error, confirmation, information, etc.) and
     // another visual indication of the specific message (usually an icon or image).
-    // A colour (or colour scheme) for the first one may be preferable to having two icons in the same dialog
-    // to avoid it looing cluttered (though it could have one icon to the right of the window and the other to the left,
+    // A colour (or colour scheme) or other style (maybe a differently-shaped dialog - with a diagonal cutout in a corner, etc.)
+    // for the first one may be preferable to having two icons in the same dialog
+    // - to avoid it looking cluttered (though it could have one icon to the right of the window and the other to the left,
     // the dialog type icon could be the icon on the left of the title bar, or the message icon could be a background image).
     // The details of the former are defined in the MessageDialogType object for the dialog.
     // This can include an icon, which, depending on the UI, may be shown in addition to the icon for the specific

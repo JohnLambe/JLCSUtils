@@ -49,8 +49,21 @@ namespace JohnLambe.Util.Misc
         protected T _value;
     }
 
-    public class LazyInitialize
+
+    public static class LazyInitialize
     {
+        /// <summary>
+        /// Read the value of a lazily-initialised item.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field">Field that stores the value when initialised.
+        /// Must be null when not initialised.</param>
+        /// <param name="createDelegate">Delegate to initialise the item.
+        /// <paramref name="field"/> is set to the result of this if it is null initially.
+        /// </param>
+        /// <returns>The value of <paramref name="field"/> (which is initialised on exit).
+        /// This can be null if and only if <paramref name="createDelegate"/> returns null.
+        /// </returns>
         public static T GetValue<T>(ref T field, Func<T> createDelegate)
         {
             if (field == null)

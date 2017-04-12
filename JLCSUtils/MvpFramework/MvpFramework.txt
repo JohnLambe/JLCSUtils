@@ -42,7 +42,14 @@ TODO:
 	Bind IQueryable to grid components, etc.
 	Review Dialog layout.
 	WinForms controls:
-		WinForms Validation events, ValidationMode
+		*WinForms Validation events
+		ValidationMode
+	Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
+	Role-based presenter interfaces: For consumer of presenter, and View.
+
+Possible additions:
+	Map handlers (by ID) to events on View Interface?
+	Map handlers (by ID) from the view to methods on the Presenter Interface?
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.

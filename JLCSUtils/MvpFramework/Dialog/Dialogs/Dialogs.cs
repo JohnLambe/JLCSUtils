@@ -30,7 +30,8 @@ namespace MvpFramework.Dialog.Dialogs
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="fatal">True iff this is a fatal error that will cause the application to exit.
-        /// Equivalent to .</param>
+        /// Equivalent to <see cref="UnhandledExceptionEventArgs.IsTerminating"/>.
+        /// </param>
         /// <returns></returns>
         public static ErrorDialog CreateDialogModelForException(Exception ex, bool fatal = false)
         {
