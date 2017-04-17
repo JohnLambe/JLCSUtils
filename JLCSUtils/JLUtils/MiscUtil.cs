@@ -100,7 +100,7 @@ namespace JohnLambe.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="del"></param>
         /// <param name="defaultValue">Value to return on NullReferenceException.</param>
-        /// <returns></returns>
+        /// <returns>The value returned by the delegate, or null if it threw <see cref="NullReferenceException"/>.</returns>
         public static T IgnoreNull<T>(Func<T> del, T defaultValue = default(T))
         {
             try
@@ -221,6 +221,57 @@ namespace JohnLambe.Util
             if (disposable != null)
             {
                 disposable.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// If the given <paramref name="value"/> is of the specified type (<typeparamref name="TReturn"/>),
+        /// execute the delegate <paramref name="matchedDelegate"/> with <paramref name="value"/> as its parameter,
+        /// otherwise execute <paramref name="notMatchedDelegate"/> (if it is not null).
+        /// </summary>
+        /// <typeparam name="TRequired"></typeparam>
+        /// <typeparam name="TReturn"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="matchedDelegate">Delegate to be executed if the value is not of the required type.</param>
+        /// <param name="notMatchedDelegate">Optional delegate to be executed if the value is not of the required type.</param>
+        /// <returns>
+        /// The return value of the delegate that was executed.
+        /// If the value is not of the required type, and <paramref name="notMatchedDelegate"/> is null,
+        /// the default value for <typeparamref name="TReturn"/> is returned.
+        /// </returns>
+        public static TReturn Cast<TRequired,TReturn>(object value, Func<TRequired, TReturn> matchedDelegate, Func<TReturn> notMatchedDelegate = null)
+        {
+            if (value is TRequired)
+                return matchedDelegate((TRequired)value);
+            else
+                return notMatchedDelegate != null ? notMatchedDelegate() : default(TReturn);
+        }
+
+        /// <summary>
+        /// The same as <see cref="Cast{TRequired, TReturn}(object, Func{TRequired, TReturn}, Func{TReturn})"/>
+        /// except that nothing is returned by the delegates.
+        /// <para>
+        /// If the given <paramref name="value"/> is of the specified type (<typeparamref name="TReturn"/>),
+        /// execute the delegate <paramref name="matchedDelegate"/> with <paramref name="value"/> as its parameter,
+        /// otherwise execute <paramref name="notMatchedDelegate"/> (if it is not null).
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TRequired"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="matchedDelegate">Delegate to be executed if the value is not of the required type.</param>
+        /// <param name="notMatchedDelegate">Optional delegate to be executed if the value is not of the required type.</param>
+        /// <returns>true iff the given <paramref name="value"/> was of the specified type.</returns>
+        public static bool CastNoReturn<TRequired>(object value, VoidDelegate<TRequired> matchedDelegate, VoidDelegate notMatchedDelegate = null)
+        {
+            if (value is TRequired)
+            {
+                matchedDelegate((TRequired)value);
+                return true;
+            }
+            else
+            {
+                notMatchedDelegate?.Invoke();
+                return false;
             }
         }
     }

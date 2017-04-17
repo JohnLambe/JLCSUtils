@@ -120,6 +120,7 @@
     <Compile Include="Reflection\LooselyCoupledEvent\ForTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEventTest.cs" />
     <Compile Include="Reflection\ReflectionUtilTest.cs" />
+    <Compile Include="Reflection\ReflectionUtilTest2.cs" />
     <Compile Include="Reflection\TypeUtilTest.cs" />
     <Compile Include="Security\HashedPasswordTest.cs" />
     <Compile Include="StrUtilsTest.cs" />

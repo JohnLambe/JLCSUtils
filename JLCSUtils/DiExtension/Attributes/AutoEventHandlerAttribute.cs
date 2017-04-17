@@ -23,7 +23,7 @@ namespace DiExtension.Attributes
     /// Registers a handler for an event.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public class AutoEventHandlerAttribute : Attribute
+    public class AutoEventHandlerAttribute : DiAttribute
     {
         public AutoEventHandlerAttribute(Type eventType, int priority = 0)
         {

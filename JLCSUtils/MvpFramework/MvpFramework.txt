@@ -44,8 +44,12 @@ TODO:
 	WinForms controls:
 		*WinForms Validation events
 		ValidationMode
-	Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
-	Role-based presenter interfaces: For consumer of presenter, and View.
+	Binding Validation:
+		Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
+		Throw exception when a presenter handler cannot be bound.
+		Throw exception when a view control references a property that cannot be bound.
+	Role-based presenter interfaces: For consumer of presenter, and View ??  View shouldn't reference presenter. Should provide events instead.
+
 
 Possible additions:
 	Map handlers (by ID) to events on View Interface?

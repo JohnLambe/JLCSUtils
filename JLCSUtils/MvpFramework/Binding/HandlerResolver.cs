@@ -18,7 +18,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Details of a single handler instance - its metadata and the instance on which it is defined.
         /// </summary>
-        public class Handler
+        public class Handler   //TODO: Refactor to subclass of MemberAttribute<MethodInfo,Attribute>
         {
             /// <summary>
             /// Attribute with metadata of the handler.

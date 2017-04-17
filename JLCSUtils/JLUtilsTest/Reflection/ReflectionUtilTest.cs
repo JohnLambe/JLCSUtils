@@ -158,6 +158,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             // Assert:
             Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object), typeof(ClassForTestBase), typeof(ClassForTest) }));
         }
+
     }
 
     public class ClassForTestBase

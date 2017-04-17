@@ -37,6 +37,7 @@ namespace MvpFramework.WinForms
             // Set the 'Model' property if there is one: 
             // (So derived classes can declare one of the expected type. This doesn't use a type parameter because the Forms Designer does not support it.)
             ReflectionUtil.TrySetPropertyValue(this, "Model", model);
+            //TODO: Move to non-WinForms-specific ViewBinder
 
             /*
             if (binderFactory != null)

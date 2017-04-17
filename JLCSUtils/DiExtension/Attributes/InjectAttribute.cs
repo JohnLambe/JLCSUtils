@@ -14,7 +14,7 @@ namespace DiExtension.Attributes
     //TODO: Allow on methods - to cause the method to be called with each parameter resolved similarly to a constructor parameter. ? 
     // The Key and ByType properties would not be used (so use different class with a common base class?). Throw exception if non-default values supplied?
     // If Required==false, and not all required parameters are resolved, don't call?
-    public class InjectAttribute : Attribute
+    public class InjectAttribute : DiAttribute
     {
         /// <summary>
         /// Value of <see cref="Key"/> to indicate that the name in code of the attributed member should be used as the key.

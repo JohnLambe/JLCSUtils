@@ -36,16 +36,199 @@ namespace JohnLambe.Util.Reflection
             return heirarchy;
         }
 
-
         // end AutoConfig
 
-        //        public static bool HasCustomAttribute<T>(this ICustomAttributeProvider type, )
 
+        /*
+    public static IEnumerable<MemberInfo> GetMemberHeirarchy(MemberInfo target)
+    {
+        var supertypes = GetTypeHeirarchy(target.DeclaringType);
 
+    }
+    */
+
+        //public static IEnumerable<MemberInfo> GetMemberHeirarchy(MemberInfo target)
+        //{
+        //    BindingFlags flags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+        //    Type superType = target.DeclaringType.BaseType;
+        //    if (superType == null)
+        //        return null;
+
+        //    MemberInfo result = null;
+
+        //    if (!MiscUtil.CastNoReturn<Type>(target,
+        //        t =>
+        //        {
+        //            result = superType;
+        //        }
+        //        ))
+        //    if (!MiscUtil.CastNoReturn<MethodInfo>(target,
+        //        t =>
+        //        {
+        //            var parameters = t.GetParameters();
+        //            var parameterTypes = new Type[parameters.Length];
+        //            for (int n = 0; n < parameterTypes.Length; n++)
+        //            {
+        //                parameterTypes[n] = parameters[n].ParameterType;
+        //            }
+        //            result = superType.GetMethod(target.Name, flags, null, parameterTypes, null);
+
+        //        }
+        //        ))
+        //    if (!MiscUtil.CastNoReturn<PropertyInfo>(target,
+        //        t =>
+        //        {
+        //            /*
+        //            var paramInfo = t.GetIndexParameters();
+        //            var parameterTypes = new Type[paramInfo.Length];
+        //            for (int n = 0; n < parameterTypes.Length; n++)
+        //            {
+        //                parameterTypes[n] = paramInfo[n].ParameterType;
+        //            }
+        //            */
+        //            result = superType.GetProperty(target.Name, flags);
+        //        }
+        //        ))
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        #region Get Overridden Member
+
+        /// <summary>
+        /// Returns the method that the given one directly overrides.
+        /// null if the given method is not an override.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static MethodInfo GetOverriddenMethod(this MethodInfo member)
+        {
+            if (member.IsVirtual)
+            {
+                BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+                Type superType = member.DeclaringType.BaseType;     // supertype of the declaring type - this is the lowest level in the hierarchy that could have the overridden item
+                if (superType == null)
+                    return null;                 // no base type, so the method must not have been an override
+
+                var parameters = member.GetParameters();
+                var parameterTypes = new Type[parameters.Length];
+                for (int n = 0; n < parameterTypes.Length; n++)
+                {
+                    parameterTypes[n] = parameters[n].ParameterType;
+                }
+
+                return superType.GetMethod(member.Name, flags, null, parameterTypes, null);
+            }
+            else
+            {
+                return null;   // not virtual, so it can't be an override
+            }
+        }
+
+        /// <summary>
+        /// Returns the property that the given one directly overrides.
+        /// null if the given one is not an override.
+        /// <para>This does not support properties with index parameters.</para>
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static PropertyInfo GetOverriddenProperty(this PropertyInfo member)
+        {
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+            Type superType = member.DeclaringType.BaseType;     // supertype of the declaring type - this is the lowest level in the hierarchy that could have the overridden item
+            if (superType == null)
+                return null;                 // no base type, so the method must not have been an override
+
+            return superType.GetProperty(member.Name, flags);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// The original (highest level) definition of the property in a direct or indirect superclass.
+        /// This may return the same property given as a parameter.
+        /// <para>This does not support properties with index parameters.</para>
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        /// <remarks>This is similar to <see cref="MethodInfo.GetBaseDefinition"/> for properties.</remarks>
+        public static PropertyInfo GetBaseDefinition(this PropertyInfo member)
+        {
+            // Get the base definition of either accessor, then get its class, and find the property on that class:
+            return (member.GetMethod ?? member.SetMethod).GetBaseDefinition().DeclaringType.GetProperty(member.Name);
+        }
+
+        #region IsOverride
+        // Tests whether a member overrides a member of a base type.
+
+        /// <summary>
+        /// True iff this method is an override.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static bool IsOverride(this MethodInfo member)
+        {
+            return member.IsVirtual                                    // for performance: it it's not virtual, it can't be an override
+                && member.DeclaringType != member.GetBaseDefinition().DeclaringType;   // if this declaration is not on the same class as the base one
+        }
+
+        /// <summary>
+        /// True iff this property overrides a base class property.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static bool IsOverride(this PropertyInfo member)
+        {
+            // PropertyInfo doesn't have GetBaseDefinition(), so we use either of the accessor methods:
+            return IsOverride(member.GetMethod ?? member.SetMethod);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Converts the member to a string, with more detail than <see cref="MemberInfo.ToString"/>.
+        /// This always returns the same value for two instances that reference the same member, even if an instance
+        /// was returned from a different type (that inherited the member).
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>The </returns>
+        public static string GetDescription(this MemberInfo member)
+        {
+            if (member == null)
+                return null;
+            string result = null;
+            /*
+            if(!MiscUtil.CastNoReturn<MethodInfo>(member,
+                m => result = TypeUtil.TypeNameOrVoid(m.ReturnType)
+                    + " " + m.DeclaringType.FullName + "." + m.Name
+                    + "("
+                    + (m.GetParameters()?.ToString() ?? "")  //TODO: convert the parameters to a string in C# syntax
+                    + ")"
+                ))
+                */
+                if (!MiscUtil.CastNoReturn<PropertyInfo>(member,
+                    m => result = TypeUtil.TypeNameOrVoid(m.PropertyType)
+                        + " " + m.DeclaringType.FullName + "." + m.Name
+                    ))
+                {
+                    result = member.DeclaringType.FullName + ": " + member?.ToString();
+                }
+            return result;
+        }
+
+        #region AssignProperty
+
+        /*
         public static void AssignProperty(object target, string propertyName, object value)
         {
             AssignProperty(target, propertyName, value, false);
         }
+        */
 
         /// <summary>
         /// Assign a specified property of the given object.
@@ -55,7 +238,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="value"></param>
         /// <param name="ignoreInvalid">Iff true, no exception is raised if the property does not exist.
         /// (Exceptions are still raised for invalid property values).</param>
-        public static void AssignProperty(object target, string propertyName, object value, bool ignoreInvalid)
+        public static void AssignProperty(object target, string propertyName, object value, bool ignoreInvalid = false)
         {
             var property = target.GetType().GetProperty(propertyName);
             if (property != null)
@@ -91,6 +274,10 @@ namespace JohnLambe.Util.Reflection
                 }
             }
         }
+
+        #endregion
+
+        #region Create
 
         /// <summary>
         /// Instantiate this type with the given constructor arguments.
@@ -130,6 +317,8 @@ namespace JohnLambe.Util.Reflection
             return (T)type.GetConstructor(argumentTypes).Invoke(arguments);
         }
 
+        #endregion
+
         /// <summary>
         /// Returns an array in which each element is the type of the corresponding element in the given array.
         /// </summary>
@@ -147,6 +336,8 @@ namespace JohnLambe.Util.Reflection
             }
             return result;
         }
+
+        #region Calling method
 
         /// <summary>
         /// Call a static method.
@@ -263,13 +454,14 @@ namespace JohnLambe.Util.Reflection
             //TODO: Better exceptions
         }
 
+        #endregion
+
         /// <summary>
         /// Passed as an argument value to certain methods (that call a method by reflection) to use the default value for that parameter.
         /// </summary>
         public static readonly object DefaultValue = new object();
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
@@ -401,9 +593,12 @@ namespace JohnLambe.Util.Reflection
 
     #region BindingFlagsExt
 
+    /// <summary>
+    /// Extends <see cref="BindingFlags"/> with options used by this library.
+    /// </summary>
     public enum BindingFlagsExt : long
     {
-        #region
+        #region BindingFlags
         //
         // Summary:
         //     Specifies no binding flag.
@@ -528,147 +723,5 @@ namespace JohnLambe.Util.Reflection
     }
 
     #endregion
-
-
-    /// <summary>
-    /// Metadata of a property (of a class, struct, interface, dictionary, etc.),
-    /// and the object it is defined on.
-    /// </summary>
-    /// <typeparam name="TTarget"></typeparam>
-    /// <typeparam name="TProperty"></typeparam>
-    public class BoundProperty<TTarget,TProperty> : ICustomAttributeProvider
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target">The object on which the property is defined.
-        /// </param>
-        /// <param name="propertyName">The name of the property. This may be a nested property name (with ".").</param>
-        public BoundProperty(TTarget target, string propertyName)
-        {
-            object targetObject = target;
-            Property = ReflectionUtil.GetProperty(ref targetObject, propertyName);
-            this.Target = (TTarget)targetObject;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target">The object on which the property is defined.</param>
-        /// <param name="property">The property itself.</param>
-        public BoundProperty(TTarget target, PropertyInfo property)
-        {
-            ObjectExtension.CheckArgNotNull(target, nameof(target));
-            property.ArgNotNull(nameof(property));
-            Contract.Requires(property.DeclaringType.IsAssignableFrom(target.GetType()));
-            this.Target = target;
-            this.Property = property;
-        }
-
-        /// <summary>
-        /// True if the property is readable (not write-only).
-        /// </summary>
-        public virtual bool CanRead
-            => Property?.CanRead ?? false;
-
-        /// <summary>
-        /// True if the property is settable (not read-only).
-        /// </summary>
-        public virtual bool CanWrite
-            => Property?.CanWrite ?? false;
-
-        /// <summary>
-        /// The value of this property on the bound object.
-        /// </summary>
-        public virtual TProperty Value
-        {
-            get
-            {
-                return (TProperty)Property?.GetValue(Target);
-            }
-            set
-            {
-                if (Property != null)
-                {
-                    Validator?.ValidateValue(Target, ref value, Property);
-
-                    Property?.SetValue(Target, value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// The name of the property (as used in code).
-        /// </summary>
-        public virtual string Name
-            => Property.Name;
-
-        /// <summary>
-        /// A caption or name of the property for display to a user.
-        /// </summary>
-        public virtual string DisplayName
-            => CaptionUtil.GetDisplayName(Property);
-
-        /// <summary>
-        /// The object that declares this property.
-        /// If this object was created using a nested property name, this returns the nested object.
-        /// </summary>
-        public virtual TTarget Target { get; }
-
-        /// <summary>
-        /// The Property metadata. This may be null if this object does not represent a class/struct/interface
-        /// (e.g. it could be a dictionary or XML file).
-        /// </summary>
-        public virtual PropertyInfo Property { get; }
-
-        protected virtual ValidatorEx Validator { get; set; } = new ValidatorEx(); //TODO: Make injectable
-
-        /// <summary>
-        /// Test whether the given value is valid for assignment to the property.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="results"></param>
-        /// <returns></returns>
-        public virtual bool TryValidateValue(TProperty value, ValidationResults results)
-        {
-            return Validator?.TryValidateValue(Target, value, Property, results)
-                ?? true;
-        }
-
-        /// <summary>
-        /// Validate the given value for assignment to the property, throwing an exception if it is invalid.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns>true iff a validator modified the value.</returns>
-        /// <exception cref="ValidationException">If invalid.</exception>
-        public virtual bool ValidateValue(ref TProperty value)
-        {
-            return Validator?.ValidateValue(Target, ref value, Property) ?? false;
-        }
-
-        #region ICustomAttributeProvider
-        // Delegates to Property.
-
-        public object[] GetCustomAttributes(Type attributeType, bool inherit)
-        {
-            return ((ICustomAttributeProvider)Property).GetCustomAttributes(attributeType, inherit);
-        }
-
-        public object[] GetCustomAttributes(bool inherit)
-        {
-            return ((ICustomAttributeProvider)Property).GetCustomAttributes(inherit);
-        }
-
-        public bool IsDefined(Type attributeType, bool inherit)
-        {
-            return ((ICustomAttributeProvider)Property).IsDefined(attributeType, inherit);
-        }
-
-        #endregion
-
-        //| Could, alternatively, subclass PropertyInfo.
-        //| Most members would have to delegate to an underlying PropertyInfo (the Reflection calls can return any subclass; PropertInfo is abstract).
-        //| That could be broken by changes to PropertyInfo in future .NET framework versions.
-    }
 
 }

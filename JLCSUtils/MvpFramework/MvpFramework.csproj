@@ -47,7 +47,9 @@
     <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
+    <Compile Include="Binding\ViewBinderBase.cs" />
     <Compile Include="IPresenter.cs" />
+    <Compile Include="QueryGenerator.cs" />
     <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
     <Compile Include="MvpUiComponentConsts.cs" />
     <Compile Include="WinForms\Binding\GeneralControlBinder.cs" />

@@ -1,4 +1,5 @@
 ﻿using JohnLambe.Util.Misc;
+using JohnLambe.Util.Reflection;
 using System;
 using System.ComponentModel;
 
@@ -9,10 +10,15 @@ namespace MvpFramework.Binding
     /// <summary>
     /// Base class for attributes of this framework.
     /// </summary>
-    // Subclasses are necessarily required to be independent of the UI framework, but any that have dependendies on one,
+    // Subclasses are not necessarily required to be independent of the UI framework, but any that have dependendies on one,
     // must be declared in a namespace relating to that framework.
-    public abstract class MvpAttribute : Attribute
+    public abstract class MvpAttribute : Attribute, IEnabledAttribute
     {
+        /// <summary>
+        /// True to enable handling of this attribute.
+        /// Defaults to true. Set to false on overriding members to disable an attribute on the overridden member.
+        /// </summary>
+        public virtual bool Enabled { get; set; } = true;
     }
 
 
@@ -22,11 +28,11 @@ namespace MvpFramework.Binding
     /// Flags a method as a handler that can be invoked from a view.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class MvpHandlerAttribute : System.Attribute
+    public class MvpHandlerAttribute : MvpAttribute
     {
         public MvpHandlerAttribute(string id = null)
         {
-            this.Id = id;
+          this.Id = id;
         }
 
         /// <summary>
@@ -42,10 +48,12 @@ namespace MvpFramework.Binding
             set { Id = value; }
         }        
 
+        /*
         /// <summary>
         /// Set to false on an attribute on an overridden member, to disable a handler attribute on a base class.
         /// </summary>
         public virtual bool Enabled { get; set; } = true;
+        */
 
         /// <summary>
         /// Sorting order in a list of handlers.
@@ -53,7 +61,8 @@ namespace MvpFramework.Binding
         public virtual int Order { get; set; }
 
         /// <summary>
-        /// Filters where this appears is accessible.
+        /// Filters where this appears or is accessible.
+        /// e.g. depending on the view and this value, a button may be created that invokes the handler.
         /// </summary>
         public virtual string[] Filter { get; set; }
 
@@ -151,6 +160,7 @@ namespace MvpFramework.Binding
     /// <summary>
     /// Flags a property to be mapped to the title of a view (e.g. window title).
     /// </summary>
+    //TODO: Remove - the Model shouldn't specify anything about the View.
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class ViewTitleAttribute : MvpAttribute
     {
@@ -192,11 +202,13 @@ namespace MvpFramework.Binding
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class MvpBoundControlAttribute : MvpAttribute
     {
+        /*
         /// <summary>
         /// True to enable handling of this attribute.
         /// Defaults to true. Set to false on overriding members to disable an attribute on the overridden member.
         /// </summary>
         public virtual bool Enabled { get; set; } = true;
+        */
 
         /// <summary>
         /// Iff true, and the control class implements <see cref="IControlBinder"/>, it is also bound, after <see cref="AttributedControlBinder"/>.
@@ -215,11 +227,6 @@ namespace MvpFramework.Binding
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public abstract class MvpMappingPropertyBaseAttribute : MvpAttribute
     {
-        /// <summary>
-        /// True to enable handling of this attribute.
-        /// Defaults to true. Set to false on overriding members to disable an attribute on the overridden member.
-        /// </summary>
-        public virtual bool Enabled { get; set; } = true;
     }
 
     /// <summary>
@@ -380,4 +387,61 @@ namespace MvpFramework.Binding
     */
 
     #endregion
+
+
+    #region For Views
+
+    /// <summary>
+    /// Binds the attributed property on a view to a property of the model.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class MvpBindAttribute : MvpAttribute
+    {
+        /// <summary>
+        /// Value of <see cref="Key"/> to bind the whole model (the model instance rather than a member of it).
+        /// </summary>
+        public const string Model = "";
+
+        /// <summary>
+        /// </summary>
+        /// <param name="key"><see cref="Key"/></param>
+        public MvpBindAttribute(string key = null)
+        {
+            this.Key = key;
+        }
+
+        /// <summary>
+        /// The name of the property of the model to be bound to the attributed item.
+        /// null to use the name of the attributed item.
+        /// </summary>
+        //| The name of this is chosen to match DiExtension.Attributes.InjectAttribute.Key.
+        public virtual string Key { get; set; }
+    }
+
+    #endregion
+
+    #region For View Interfaces
+
+    /// <summary>
+    /// Specifies a handler ID for an event on a view interface (to be bound to a <see cref="MvpHandlerAttribute"/>).
+    /// <para>NOT IMPLEMENTED YET</para>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
+    //|TODO?: Could allow multiple.
+    public class MvpEventAttribute : MvpAttribute
+    {
+        public MvpEventAttribute(string id = null)
+        {
+            this.Id = id;
+        }
+
+        /// <summary>
+        /// The ID of the handler, referenced in the user interface.
+        /// null to derive from the method name (NOT IMPLEMENTED YET).
+        /// </summary>
+        public virtual string Id { get; set; }
+    }
+
+    #endregion
+
 }

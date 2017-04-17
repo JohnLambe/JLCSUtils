@@ -181,12 +181,17 @@ namespace JohnLambe.Util.Diagnostic
         [Conditional("DEBUG")]
         [Conditional("ASSERTIONS")]
         [Conditional("ASSERTIONS_LOW")]
-        public static void PostCondition(bool condition, string message = null)
+        public static void PreCondition(bool condition, string message = null)
         {
-            if (!condition)
-            {
-                throw new AssertionFailedException(message);
-            }
+            PreCondition<AssertionFailedException>(condition, message);
+        }
+
+        [Conditional("DEBUG")]
+        [Conditional("ASSERTIONS")]
+        [Conditional("ASSERTIONS_LOW")]
+        public static void PostCondition<TException>(bool condition, string message = null)
+        {
+            AssertInternal(condition, message, AssertionCategory.PostCondition, typeof(TException));
         }
 
         /// <summary>

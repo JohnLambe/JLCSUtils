@@ -24,7 +24,6 @@ namespace MvpFramework.Binding
         /// Update the control from the model.
         /// </summary>
         void MvpRefresh();
-        //TODO: Rename to 'MvpRefresh'
     }
 
     public interface IControlBinderExt : IControlBinder
@@ -48,6 +47,7 @@ namespace MvpFramework.Binding
     /// a parameter of a control, and returns the control binder (or null).
     /// </para>
     /// </summary>
+    //| TODO?: Could add a generic parameter for the type of the control (the control base class for the UI framework).
     public interface IControlBinderFactory : IFactory<IControlBinder, object>
     {
     }

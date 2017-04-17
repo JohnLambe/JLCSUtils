@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.Validation;
+﻿using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,11 @@ using System.Threading.Tasks;
 
 namespace MvpFramework
 {
-    public abstract class GridAttribute : Attribute
+    /// <summary>
+    /// Attributes for building queryies for the attributes class,
+    /// and/or specifying a tabular layout.
+    /// </summary>
+    public abstract class GridAttribute : Attribute, IFilteredAttribute
     {
         /// <summary>
         /// Set to false to effectively remove the attribute for the specified Filter values.
@@ -52,7 +57,27 @@ namespace MvpFramework
         public virtual bool Visible { get; set; }
     }
 
-    
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
+    public class ColumnFilterAttribute : GridAttribute
+    {
+        public virtual object MinimumValue { get; set; }
+
+        public virtual object MaximumValue { get; set; }
+
+        public virtual object Value
+        {
+            get
+            {
+                return MinimumValue;
+            }
+            set
+            {
+                MinimumValue = value; MaximumValue = value;
+            }
+        }
+    }
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public class SortOrder : Attribute
     {

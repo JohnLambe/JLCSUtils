@@ -17,7 +17,7 @@ namespace DiExtension.Attributes
     /// Enables handling of auto-wired events in the attributed class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class HasAutoWiredEventHandlerAttribute : Attribute
+    public class HasAutoWiredEventHandlerAttribute : DiAttribute
     {
     }
 }
