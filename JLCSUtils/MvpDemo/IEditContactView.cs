@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MvpDemo
 {
-    public interface IEditContactView : IView
+    public interface IEditContactView : IWindowView
     {
 //        event VoidDelegate OnOkClick;
     }

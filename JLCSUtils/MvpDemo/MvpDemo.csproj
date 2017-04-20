@@ -52,13 +52,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EditContactView.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="EditContactView.Designer.cs">
       <DependentUpon>EditContactView.cs</DependentUpon>
     </Compile>
     <Compile Include="EditContactPresenter.cs" />
+    <Compile Include="Heirarchical\TestHView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Heirarchical\TestHView.Designer.cs">
+      <DependentUpon>TestHView.cs</DependentUpon>
+    </Compile>
     <Compile Include="IEditContactView.cs" />
+    <Compile Include="Heirarchical\TestHPresenter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,10 +73,14 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Contact.cs" />
+    <Compile Include="Model\TestHViewModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="EditContactView.resx">
       <DependentUpon>EditContactView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Heirarchical\TestHView.resx">
+      <DependentUpon>TestHView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -83,6 +94,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Properties\DataSources\MvpDemo.Model.Contact.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

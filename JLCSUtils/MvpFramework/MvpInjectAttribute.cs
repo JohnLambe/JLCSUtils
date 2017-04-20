@@ -18,7 +18,7 @@ namespace MvpFramework
     /// Flags a parameter to be injected by the MVP framework.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public class MvpParamAttribute : MvpAttribute
+    public class MvpParamAttribute : MvpClassAttribute
     {
     }
 
@@ -28,7 +28,7 @@ namespace MvpFramework
     /// Currently supported only on constructor injection.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public class MvpNestedAttribute : MvpAttribute
+    public class MvpNestedAttribute : MvpClassAttribute
     {
     }
 }

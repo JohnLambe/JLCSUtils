@@ -176,7 +176,7 @@ namespace MvpFramework.Dialog
     /// Regsiter a message dialog type to be available for configuration.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class RegisterMessageDialogAttribute : MvpAttribute
+    public class RegisterMessageDialogAttribute : MvpClassAttribute
     {
         public virtual string[] Filter { get; set; }
 

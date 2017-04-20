@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8452381C-CD3A-4C94-B393-2448686136BC}</ProjectGuid>
+    <ProjectGuid>{CE40F581-A53B-4D2B-A2B2-312A4E516FB4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MvpFrameworkTest</RootNamespace>
-    <AssemblyName>MvpFrameworkTest</AssemblyName>
+    <RootNamespace>Test.DiExtensionTest</RootNamespace>
+    <AssemblyName>DiExtensionTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,9 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99" />
     <Reference Include="System" />
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -54,27 +52,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Binding\ModelBinderWrapperTest.cs" />
-    <Compile Include="Binding\MvpEventAttributeTest.cs" />
-    <Compile Include="Menu\MenuBuilderTest.cs" />
-    <Compile Include="Menu\OptionCollectionBuilderTest.cs" />
-    <Compile Include="RegistrationHelperTest.cs" />
-    <Compile Include="ResolverTest.cs" />
+    <Compile Include="ConfigInject\Providers\CompositeProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="OptionsTest.cs" />
+    <Compile Include="UnitTest2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">
-      <Project>{A6CC2DD9-BB55-4697-A6FF-8F43657A23DF}</Project>
+      <Project>{a6cc2dd9-bb55-4697-a6ff-8f43657a23df}</Project>
       <Name>DiExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\JLUtils\JLUtils.csproj">
-      <Project>{2C2E5049-976D-408F-A67D-1463271F3E98}</Project>
+      <Project>{2c2e5049-976d-408f-a67d-1463271f3e98}</Project>
       <Name>JLUtils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MvpFramework\MvpFramework.csproj">
-      <Project>{153a1b06-bf51-4bf1-b116-8ec44361daac}</Project>
-      <Name>MvpFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

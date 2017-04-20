@@ -1,10 +1,11 @@
-﻿using JohnLambe.Util.Reflection;
-using JohnLambe.Util.Validation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Validation;
+using System.Reflection;
+using JohnLambe.Util.Exceptions;
 
 namespace MvpFramework
 {
@@ -59,11 +60,26 @@ namespace MvpFramework
 
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-    public class ColumnFilterAttribute : GridAttribute
+    public abstract class ColumnFilterBaseAttribute : GridAttribute
+    {
+        public abstract bool TestFilter<T>(T value);
+    }
+
+    public class ColumnFilterAttribute : ColumnFilterBaseAttribute
     {
         public virtual object MinimumValue { get; set; }
 
         public virtual object MaximumValue { get; set; }
+
+        /// <summary>
+        /// If &gt; "", filters to values beginning with this string (based on the result of <see cref="object.ToString"/> of the value).
+        /// </summary>
+        public virtual string StartsWith { get; set; }
+
+        /// <summary>
+        /// Iff true, the filter condition is negated.
+        /// </summary>
+        public virtual bool Not { get; set; } = false;
 
         public virtual object Value
         {
@@ -75,6 +91,17 @@ namespace MvpFramework
             {
                 MinimumValue = value; MaximumValue = value;
             }
+        }
+
+        public override bool TestFilter<T>(T value)
+        {
+            if (value == null)
+                return true;
+            IComparable valueComparable = value as IComparable;
+            if (valueComparable == null)
+                throw new InternalErrorException("Invalid value for " + GetType().Name + ": " + value.GetType());
+            return (MinimumValue != null && valueComparable.CompareTo(MinimumValue) >= 0)
+                && (MaximumValue != null && valueComparable.CompareTo(MaximumValue) <= 0);
         }
     }
 

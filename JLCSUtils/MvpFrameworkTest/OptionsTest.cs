@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvpFramework;
 using MvpFramework.Binding;
 using System.Linq;
+using MvpFramework.Menu;
 
 namespace MvpFrameworkTest
 {
@@ -16,10 +17,10 @@ namespace MvpFrameworkTest
             // Act:
             var target = new TestClassForOptionSet();
             var optionCollection = new OptionCollectionBuilder().Build(target, "filter1");
-            optionCollection.Options.First().Invoke();
+            optionCollection.Children.First().Invoke();
 
-            Assert.AreEqual("Handler 1b display name", optionCollection.Options.First().DisplayName);
-            Assert.AreEqual(3, optionCollection.Options.Count());
+            Assert.AreEqual("Handler 1b display name", optionCollection.Children.First().DisplayName);
+            Assert.AreEqual(3, optionCollection.Children.Count());
             Assert.AreEqual("Method1;", target.Output);
         }
 
@@ -49,7 +50,7 @@ namespace MvpFrameworkTest
             // Act:
             //            var newItem = optionCollection.NewOption("new");
             var newItem = optionCollection.AddOption(
-                new MvpFramework.Menu.MenuItemModel(null,"new")
+                new MvpFramework.Menu.MenuItemModel("new")
                 {
                     DisplayName = "New Item",
                     Order = 5
@@ -58,8 +59,8 @@ namespace MvpFrameworkTest
             Console.Out.WriteLine();
 
             // Assert:
-            Assert.AreEqual(4, optionCollection.Options.Count());
-            Assert.AreEqual(newItem, optionCollection.Options.ToArray()[2]);
+            Assert.AreEqual(4, optionCollection.Children.Count());
+            Assert.AreEqual(newItem, optionCollection.Children.ToArray()[2]);
         }
     }
 

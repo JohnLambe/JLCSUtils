@@ -8,6 +8,7 @@ using MvpFramework;
 using DiExtension;
 using DiExtension.SimpleInject;
 using MvpFramework.Binding;
+using DiExtension.Attributes;
 
 namespace MvpFrameworkTest
 {
@@ -16,9 +17,22 @@ namespace MvpFrameworkTest
     {
         public RegistrationHelperTest()
         {
-            RegHelper = new RegistrationHelper(new DiMvpResolver(Context), Context);
+            var mvpResolver = new DiMvpResolver(Context);
+            Context.Container.RegisterSingleton<MvpResolver>(mvpResolver);
+            Context.Container.RegisterSingleton(typeof(IDiResolver), Context);
+            Context.RegisterType(typeof(IResolverExtension), typeof(NullResolverExtension));
+
+            Context.Container.RegisterSingleton(typeof(IControlBinderFactory), new ControlBinderFactory());
+
+            RegHelper = new RegistrationHelper(mvpResolver, Context);
         }
 
+        /// <summary>
+        /// Resolve a PresenterFactory to test automatic registration.
+        /// <para>
+        /// This tests the automatic registration which should be equivalent to the registration done in <see cref="GetPresenterFactory_Manual"/>.
+        /// </para>
+        /// </summary>
         [TestMethod]
         public void GetPresenterFactory()
         {
@@ -27,37 +41,45 @@ namespace MvpFrameworkTest
 
             // Act:
 
-            var factory = Context.GetInstance<IPresenterFactory<ITest1Presenter>>();
+            var factory = Context.GetInstance<IPresenterFactory<ITest1Presenter,object>>();
             Console.Out.WriteLine(factory);
 
-            var presenter = factory.Create();
-            
+            // Assert:
+
+            // Invoke the resolved factory:
+            var presenter = factory.Create("test");
 
             Assert.IsNotNull(factory);
             Assert.IsTrue(presenter is ITest1Presenter);
             //TODO test that view was injected
         }
 
+        /// <summary>
+        /// Manually (i.e. without scanning) register everything required, then resolve a Presenter.
+        /// </summary>
         [TestMethod]
         public void GetPresenterFactory_Manual()
         {
             // Arrange:
 
+            /*
             // General container setup:
             Context.Container.RegisterSingleton(typeof(IDiResolver), Context);
             Context.RegisterType(typeof(MvpResolver), typeof(DiMvpResolver));
             Context.RegisterType(typeof(IResolverExtension), typeof(NullUiManager));
+            */
 
             // Registration of this presenter:
             Context.RegisterType(typeof(ITest1Presenter), typeof(Test1Presenter));
-            Context.RegisterType(typeof(IPresenterFactory<ITest1Presenter>), typeof(PresenterFactory<ITest1Presenter>));
+            Context.RegisterType(typeof(IPresenterFactory<ITest1Presenter,object>), typeof(PresenterFactory<ITest1Presenter,object>));
 
+            Context.RegisterType(typeof(ITest1View), typeof(Test1View));
 
             // Act:
-            var factory = Context.GetInstance<IPresenterFactory<ITest1Presenter>>();
+            var factory = Context.GetInstance<IPresenterFactory<ITest1Presenter,object>>();
             Console.Out.WriteLine(factory);
 
-            var presenter = factory.Create();
+            var presenter = factory.Create("test");
 
 
             // Assert:
@@ -67,6 +89,10 @@ namespace MvpFrameworkTest
             //TODO test that view was injected
         }
 
+        /// <summary>
+        /// Resolve a Presenter after automatic registration.
+        /// </summary>
+        [TestCategory("Failing")]
         [TestMethod]
         public void GetPresenter()
         {
@@ -84,30 +110,50 @@ namespace MvpFrameworkTest
 
     public interface ITest1Presenter : IPresenter
     {
-
     }
 
-    public class Test1Presenter : ITest1Presenter
+    [Presenter]
+    public class Test1Presenter : PresenterBase<ITest1View,object>, ITest1Presenter
     {
-        public object Show()
+        public Test1Presenter(Test1View view, [MvpParam] object model = null, [Inject] IControlBinderFactory binderFactory = null) : base(view, model, binderFactory)
+        {
+        }
+
+        public override object Show()
         {
             throw new NotImplementedException();
         }
     }
 
-    public class Test1View : IView
+    public interface ITest1View : IWindowView
     {
+    }
+
+    [View]
+    public class Test1View : ITest1View
+    {
+        public event ViewVisibilityChangedDelegate ViewVisibilityChanged;
+
         public void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {
-            throw new NotImplementedException();
+//            throw new NotImplementedException();
         }
 
-        public void Refresh()
+        public void Close()
         {
-            throw new NotImplementedException();
+        }
+
+        public void RefreshView()
+        {
+//            throw new NotImplementedException();
         }
 
         public void Show()
+        {
+//            throw new NotImplementedException();
+        }
+
+        public object ShowModal()
         {
             throw new NotImplementedException();
         }

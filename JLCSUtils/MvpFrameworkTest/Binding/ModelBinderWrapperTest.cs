@@ -14,9 +14,9 @@ namespace MvpFrameworkTest.Binding
         [TestMethod]
         public void GetValue()
         {
-            ModelBinderWrapper model = new ModelBinderWrapper("qwerty");
+            ModelBinderWrapper model = new ModelBinderWrapper("qwerty");  // the model is a string
 
-            Assert.AreEqual(6, model.GetValue("Length"));
+            Assert.AreEqual(6, model.GetProperty("Length").Value);
         }
 
     }

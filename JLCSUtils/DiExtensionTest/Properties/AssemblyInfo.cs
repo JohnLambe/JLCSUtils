@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MvpDemo")]
-[assembly: AssemblyDescription("Application to demonstrate MvpFramework.")]
+[assembly: AssemblyTitle("DiExtensionTest")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("John Lambe")]
-[assembly: AssemblyProduct("MvpDemo")]
-[assembly: AssemblyCopyright("Copyright © 2016 John Bernard Lambe; MIT Licence")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("DiExtensionTest")]
+[assembly: AssemblyCopyright("Copyright © 2017 John Bernard Lambe; MIT Licence")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("deac9f85-fdde-4079-87a6-a40774772f70")]
+[assembly: Guid("ce40f581-a53b-4d2b-a2b2-312a4e516fb4")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.27.1")]
-[assembly: AssemblyFileVersion("0.1.27.1")]
+[assembly: AssemblyVersion("0.0.1.0")]
+[assembly: AssemblyFileVersion("0.0.1.0")]

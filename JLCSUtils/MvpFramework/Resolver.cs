@@ -393,7 +393,7 @@ namespace MvpFramework
         /// <param name="classType">A presenter or view class.</param>
         /// <returns>The presenter/view interface type.</returns>
         protected virtual Type ResolveInterfaceForClass<TRequiredInterface, TAttribute>(Type classType)
-                where TAttribute : MvpAttribute
+                where TAttribute : MvpClassAttribute
                 where TRequiredInterface : class
         {
             // look for attribute first:

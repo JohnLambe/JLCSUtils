@@ -49,6 +49,7 @@ TODO:
 		Throw exception when a presenter handler cannot be bound.
 		Throw exception when a view control references a property that cannot be bound.
 	Role-based presenter interfaces: For consumer of presenter, and View ??  View shouldn't reference presenter. Should provide events instead.
+	Resolving PresenterForActionAttribute for derived types of specified types.
 
 
 Possible additions:
