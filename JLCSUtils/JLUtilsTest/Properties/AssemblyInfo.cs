@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("JLUtilsTest")]
-[assembly: AssemblyCopyright("Copyright © 2016 John Lambe; MIT Licence")]
+[assembly: AssemblyCopyright("Copyright © 2016-2017 John Lambe; MIT Licence")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.29.1")]
-[assembly: AssemblyFileVersion("0.1.29.1")]
+[assembly: AssemblyVersion("0.1.31.6")]
+[assembly: AssemblyFileVersion("0.1.31.6")]

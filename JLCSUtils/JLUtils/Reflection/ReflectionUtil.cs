@@ -703,10 +703,18 @@ namespace JohnLambe.Util.Reflection
         IgnoreReturn = 16777216,
 
         #endregion
-
-        PartMatch = 0x100000000,
-        NullForDefault = 0x200000000,
-        CallStatic     = 0x400000000
+        /*
+        PartMatch        = 0x100000000,
+        NullForDefault   = 0x200000000,
+        */
+        /// <summary>
+        /// Call/invoke a static member.
+        /// </summary>
+        CallStatic       = 0x400000000,
+        /// <summary>
+        /// Include private members from base classes.
+        /// </summary>
+        InheritedPrivate = 0x800000000,
     }
 
     public static class BindingFlagsExtension

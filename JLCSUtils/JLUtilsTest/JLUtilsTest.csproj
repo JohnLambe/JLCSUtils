@@ -113,6 +113,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceCountedObjectTest.cs" />
     <Compile Include="Reflection\AttributeUtilTest.cs" />
+    <Compile Include="Reflection\PropertyDefaultUtilTest.cs" />
     <Compile Include="Reflection\EnumAttributeUtilTest.cs" />
     <Compile Include="Reflection\EnumUtilTest.cs" />
     <Compile Include="Reflection\GenericTypeUtilTest.cs" />
@@ -135,7 +136,8 @@
     <Compile Include="TimeUtilities\TimeUtilsTest.cs" />
     <Compile Include="TypeConversion\GeneralTypeConverterTest.cs" />
     <Compile Include="Types\IDTest.cs" />
-    <Compile Include="Types\PersonName.cs" />
+    <Compile Include="Types\NotNullAttributeTest.cs" />
+    <Compile Include="Types\PersonNameTest.cs" />
     <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\TestModel.cs" />
     <Compile Include="Validation\ValidatorExTest.cs" />

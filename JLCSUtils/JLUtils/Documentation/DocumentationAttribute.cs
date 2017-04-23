@@ -7,28 +7,54 @@ using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Documentation
 {
+    /// <summary>
+    /// Base class for attributes affecting object model diagrams.
+    /// </summary>
     public abstract class DocumentationAttributeBase : Attribute
     {
+        /// <summary>
+        /// Identifies the diagram affected by this attribute.
+        /// </summary>
         public virtual string Diagram { get; set; }
 
+        /// <summary>
+        /// True to hide the attributed item on the diagram.
+        /// </summary>
         public virtual NullableBool Hidden { get; set; }
-
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Settings affecting the display of a type on a diagram.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class TypeDocumentationAttribute : DocumentationAttributeBase
     {
+        /// <summary>
+        /// True to show the attributed item collapsed on the diagram.
+        /// </summary>
         public virtual NullableBool Collapsed { get; set; }
 
+        /// <summary>
+        /// Specifies what compartments are show on the diagram.
+        /// </summary>
         public virtual DiagramCompartments CompartmentsVisible { get; set; }
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Settings affecting the display of a type on a diagram.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class MemberDocumentationAttribute : DocumentationAttributeBase
     {
+        /// <summary>
+        /// For navigation properties and collections: Specifies how the assocation is shown on the diagram.
+        /// </summary>
         public virtual DiagramAssociationType AssociationType { get; set; }
     }
 
+    /// <summary>
+    /// How an association is show on a diagram.
+    /// </summary>
     public enum DiagramAssociationType
     {
         Null = 0,

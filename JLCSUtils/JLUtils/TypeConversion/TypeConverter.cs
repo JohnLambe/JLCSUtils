@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.TypeConversion
 {
+    // see System.ComponentModel.TypeConverter
+
     public class TypeConverter
     {
         public T Convert<T>(object source)

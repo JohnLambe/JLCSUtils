@@ -71,6 +71,8 @@
     <Compile Include="Misc\NotifyOnChangeProxy.cs" />
     <Compile Include="Misc\Range.cs" />
     <Compile Include="Reflection\BoundProperty.cs" />
+    <Compile Include="Reflection\PropertyDefaultUtil.cs" />
+    <Compile Include="Types\NotNullAttribute.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />
     <Compile Include="Reflection\AssemblyUtil.cs" />
     <Compile Include="Reflection\AttributeUtil.cs" />
