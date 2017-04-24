@@ -10,7 +10,7 @@ namespace MvpFramework
     /// <summary>
     /// Base class for injection attributes of the MVP framework.
     /// </summary>
-    public class MvpInjectAttribute : InjectAttribute
+    public abstract class MvpInjectAttribute : InjectAttribute
     {        
     }
 

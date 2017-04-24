@@ -9,9 +9,22 @@ using System.Reflection;
 
 namespace DiExtension
 {
+    /// <summary>
+    /// Dependency injection utilities.
+    /// </summary>
     public static class DiUtil
     {
-        public static T CallMethod<T>(IDiResolver diResolver, MethodInfo method, object target, object[] contextArgs = null, Func<ParameterInfo, bool?> selector = null)
+        /// <summary>
+        /// Call a method, populating some or all of its parameters by dependeny injection.
+        /// </summary>
+        /// <typeparam name="T">The return type. The return value of the method is cast to this.</typeparam>
+        /// <param name="diResolver">The DI resolver to use for injecting parameters.</param>
+        /// <param name="method">The method to invoke.</param>
+        /// <param name="target">The instance to invoke the method on. Ignored if the method is static.</param>
+        /// <param name="contextArgs">See <see cref="PopulateArgs(IDiResolver, ParameterInfo[], object[], Func{ParameterInfo, bool?}, int, int)"/>.</param>
+        /// <param name="selector">See <see cref="PopulateArgs(IDiResolver, ParameterInfo[], object[], Func{ParameterInfo, bool?}, int, int)"/>.</param>
+        /// <returns>The value returned by the invoked method.</returns>
+        public static T CallMethod<T>(IDiResolver diResolver, MethodInfo method, object target, object[] contextArgs = null, SourceSelectorDelegate selector = null)
         {
             var args = PopulateArgs(diResolver, method.GetParameters(), contextArgs, selector);
             return (T)method.Invoke(target, args);
@@ -33,14 +46,14 @@ namespace DiExtension
         /// <returns>An array the same length as <paramref name="parameters"/>, with the requested range of values populated.
         /// Elements outside the requested range (<paramref name="startIndex"/> to <paramref name="endIndex"/>) are null.
         /// </returns>
-        public static object[] PopulateArgs(this IDiResolver diResolver, ParameterInfo[] parameters, object[] contextArgs = null, Func<ParameterInfo, bool?> selector = null, int startIndex = 0, int endIndex = -1)
+        public static object[] PopulateArgs(this IDiResolver diResolver, ParameterInfo[] parameters, object[] contextArgs = null, SourceSelectorDelegate selector = null, int startIndex = 0, int endIndex = -1)
         {
             if (contextArgs == null)
                 contextArgs = EmptyCollection<object>.EmptyArray;
 
             object[] args = new object[parameters.Count()];       // populated arguments (to be returned)
 
-            int parameterIndex = 0;                               // index of the constructor parameter
+            int parameterIndex = 0;                               // index of the parameter
             int contextArgsIndex = 0;                             // index of next unused element in contextArgs
             bool? createParam = null;                             // true iff the current parameter is to be populated from the context arguments
             foreach (var parameter in parameters)
@@ -70,6 +83,21 @@ namespace DiExtension
 
             return args;
         }
+
+        public delegate bool? SourceSelectorDelegate(ParameterInfo parameter);
+
+        public static SourceSelectorDelegate AttributeSourceSelector =
+            parameter =>
+            {
+                bool? fromContextParam = null;
+                var attribute = parameter.GetCustomAttribute<InjectAttribute>();
+                if (attribute != null)
+                {
+                    fromContextParam = !attribute.Enabled;    // attributed as a context parameter
+                }
+                // still null if there was no InjectAttribute.
+                return fromContextParam;
+            };
 
     }
 }

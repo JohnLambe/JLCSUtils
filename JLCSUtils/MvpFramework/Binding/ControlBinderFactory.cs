@@ -1,5 +1,4 @@
-﻿using DiExtension.AutoFactory;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +8,7 @@ using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Collections;
 using System.Reflection;
 using DiExtension;
+using DiExtension.AutoFactory;
 using MvpFramework.Dialog;
 
 namespace MvpFramework.Binding

@@ -128,18 +128,7 @@ namespace MvpFramework
                 }
 
                 var args = DiResolver.PopulateArgs(constructorParameters, createArguments,
-                    parameter =>
-                    {
-                        bool? fromCreateParam = null;
-                        var attribute = parameter.GetCustomAttribute<InjectAttribute>();
-                        if (attribute != null)
-                        {
-                            fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
-                                                                                  // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
-                    }
-                    // still null if there was no InjectAttribute.
-                    return fromCreateParam;
-                    },
+                    DiMvpResolver.AttributeSourceSelector,
                     1    // skip the first parameter (it's for the View)
                     );
 

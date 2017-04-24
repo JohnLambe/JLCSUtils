@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DiExtension;
 using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
+using DiExtension.Attributes;
 
 namespace MvpFramework
 {
@@ -537,6 +538,27 @@ namespace MvpFramework
         }
 
         protected readonly IDiResolver Context;
+
+        /// <summary>
+        /// Chooses whether to use a context parameter or DI based on attributes:
+        ///   returns true if there is a non-disabled (i.e. <see cref="InjectAttribute.Enabled"/> is not false) <see cref="MvpInjectAttribute"/>,
+        ///   false if there is a non-disabled <see cref="InjectAttribute"/>,
+        ///   and null if there is neither.
+        /// </summary>
+        public static DiUtil.SourceSelectorDelegate AttributeSourceSelector { get; } =
+                    parameter =>
+                    {
+                        bool? fromCreateParam = null;
+                        var attribute = parameter.GetCustomAttribute<InjectAttribute>();
+                        if (attribute != null && attribute.Enabled)      // not null or disabled
+                        {
+                            fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
+                                                                                  // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
+                        }
+                        // still null if there was no InjectAttribute.
+                        return fromCreateParam;
+                    };
+
     }
 
 

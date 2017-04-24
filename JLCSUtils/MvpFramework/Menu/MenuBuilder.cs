@@ -123,8 +123,15 @@ namespace MvpFramework.Menu
 
         /// <summary>
         /// Name of static method to be invoked (if present) on invoking a menu item.
+        /// <para>If both this and <see cref="MenuExecuteInstanceMethodName"/> are present,
+        /// this is called first, then the instance one is called unless this returns false.</para>
         /// </summary>
         protected const string MenuExecuteMethodName = "MenuExecute";
+        /// <summary>
+        /// Name of instance method to be invoked (if present) on invoking a menu item.
+        /// <para>An instance is created from the DI container and this is called on it.</para>
+        /// </summary>
+        [Obsolete("Not implemented yet")]
         protected const string MenuExecuteInstanceMethodName = "Execute";
 
         /// <summary>
@@ -178,9 +185,16 @@ namespace MvpFramework.Menu
             // Support special parameters for menu state ?
         }
 
+        /// <summary>
+        /// Handles invoking of a menu item, when the handler is not an IPresenter.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="args"></param>
+        /// <param name="method"></param>
+        /// <param name="invoke"></param>
         protected virtual void MenuItemExecute_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args, MethodInfo method, MenuItemModel.InvokedDelegate invoke)
         {
-            var result = DiUtil.CallMethod<object>(DiResolver,method,null, new object[] { item, args });
+            var result = DiUtil.CallMethod<object>(DiResolver,method,null, new object[] { item, args }, DiMvpResolver.AttributeSourceSelector);
             if (result is bool && !(bool)result)
             {
                 // suppress creating an instance
