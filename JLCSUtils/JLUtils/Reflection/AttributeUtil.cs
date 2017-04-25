@@ -55,12 +55,6 @@ namespace JohnLambe.Util.Reflection
             // because type.GetCustomAttributes(bool) returns object[] .
             // The above could only return IEnumerable<object> .
         }
-        /*
-                public static IEnumerable<T> GetCustomAttributes<T>(this ICustomAttributeProvider type)
-                {
-                    return GetCustomAttributes<T>(type, true);
-                }
-        */
 
         [Obsolete("Use ICustomAttributeProvider.IsDefined")]
         public static bool HasCustomAttribute<T>(this ICustomAttributeProvider provider)
@@ -132,6 +126,24 @@ namespace JohnLambe.Util.Reflection
             return result;
         }
         */
+
+        /// <summary>
+        /// Get attribues with the declaring member.
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <typeparam name="TMember"></typeparam>
+        /// <param name="provider"></param>
+        /// <param name="inherited"></param>
+        /// <returns></returns>
+        public static IEnumerable<AttributeAndMember<TAttribute,TMember>> GetAttributesWithMember<TAttribute,TMember>(this TMember provider, bool inherited = true)
+            where TMember : MemberInfo
+            where TAttribute : Attribute
+        {
+            return provider.GetCustomAttributes<TAttribute>().Select(
+                a => new AttributeAndMember<TAttribute, TMember>() { DeclaringMember = provider, Attribute = a }
+                );
+        }
+
 
         public static IEnumerable<MemberAttribute<TMember,TAttribute>> GetMemberAttributes<TMember,TAttribute>(Type target, string id = null, string filter = null)
                 where TMember : MemberInfo

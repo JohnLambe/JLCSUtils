@@ -85,7 +85,9 @@ namespace MvpFrameworkTest
     {
     }
 
+    [PresenterForAction(typeof(TestModel), typeof(IConvertible))]  // additional registration that we are not resolving by
     [PresenterForAction(typeof(TestModel), typeof(IViewPresenter))]
+    [PresenterForAction(typeof(TestModel), typeof(ICloneable))]  // additional registration that we are not resolving by
     public class AViewPresenter : IViewPresenter   // class not resolvable by naming convention
     {
         public object Show()

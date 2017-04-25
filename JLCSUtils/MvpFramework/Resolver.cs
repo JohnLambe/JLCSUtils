@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +8,7 @@ using DiExtension;
 using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
 using DiExtension.Attributes;
+using JohnLambe.Util.Diagnostic;
 
 namespace MvpFramework
 {
@@ -171,7 +171,7 @@ namespace MvpFramework
         /// <returns>The Presenter class.</returns>
         public virtual Type ResolvePresenterType(Type presenterInterface, Type modelType = null)
         {
-            Contract.Requires(presenterInterface != null);
+            Diagnostics.PreCondition(presenterInterface != null);
 
             var resolvedPresenterType = ResolvePresenterTypeForAction(presenterInterface, modelType);
             if (resolvedPresenterType != null)
@@ -215,11 +215,17 @@ namespace MvpFramework
             throw new MvpResolutionException("Resolution failed for Presenter type: " + presenterInterface.FullName + ", " + modelType?.FullName);
         }
 
+        /// <summary>
+        /// Returns the type of a presenter that can do a specified action on a given model.
+        /// </summary>
+        /// <param name="actionInterface">The action to be performed, e.g. Display, Edit, Print.</param>
+        /// <param name="modelType">The model on which the presenter must be able to perform the action.</param>
+        /// <returns>The resolved Presenter type (which must implement <see cref="IPresenter"/>), or null if none is found.</returns>
+        /// <seealso cref="PresenterForActionAttribute"/>
         public virtual Type ResolvePresenterTypeForAction(Type actionInterface, Type modelType)
         {
             // Initial inefficient implementation.
-            //TODO: Does not currently support multiple PresenterForActionAttributes on the same type.
-            //      Does not currently recognise a presenter that handles a superclass (or other type is assignable from) the target one.
+            //TODO: Does not currently recognise a presenter that handles a superclass (or other type that is assignable from) the target one.
             //TODO: Cache mappings.
 
             if (Assemblies == null)
@@ -235,13 +241,27 @@ namespace MvpFramework
             //                ?.DeclaringType;
             ;
             */
-            return Assemblies.SelectMany(a => a.GetTypes())
-                .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() })
+            /* for exact type:
+            return Assemblies.SelectMany(a => a.GetTypes())             // all types
+                .SelectMany(t => t.GetAttributesWithMember<PresenterForActionAttribute,Type>())   // all PresenterForActionAttribute attributes of each type
                 .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType)
-                .Select(at1 => at1.DeclaringType)
+                .Select(at1 => at1.DeclaringMember)
                 .FirstOrDefault()
-            //                ?.DeclaringType;
+            */
+            return Assemblies.SelectMany(a => a.GetTypes())             // all types
+                .SelectMany(t => t.GetAttributesWithMember<PresenterForActionAttribute,Type>())   // all PresenterForActionAttribute attributes of each type
+                .Where(at => at.Attribute.CanHandle(actionInterface, modelType))
+                .Select(at1 => at1.DeclaringMember)
+                .FirstOrDefault()
             ;
+            /*
+            return Assemblies.SelectMany(a => a.GetTypes())             // all types
+                .Select(t => new AttributeAndMember<PresenterForActionAttribute, Type>()
+                    { DeclaringMember = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() })
+                .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType)
+                .Select(at1 => at1.DeclaringMember)
+                .FirstOrDefault()
+                */
         }
 
         /// <summary>
@@ -267,20 +287,20 @@ namespace MvpFramework
             return ClassUtils.Instantiate<TPresenter>(presenterType, new Type[] { typeof(TModel) }, new object[] { model });
             //TODO: Get from DI container?
         }
-    */
+        */
 
-        /// <summary>
-        /// Get the View for a given Presenter.
-        /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
-        /// <param name="presenter"></param>
-        /// <returns></returns>
+            /// <summary>
+            /// Get the View for a given Presenter.
+            /// </summary>
+            /// <typeparam name="TView"></typeparam>
+            /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
+            /// <param name="presenter"></param>
+            /// <returns></returns>
         public virtual TView GetViewForPresenter<TView, TPresenter>(TPresenter presenter)
             where TView : IView
             where TPresenter : IPresenter
         {
-            Contract.Requires(presenter != null);
+            Diagnostics.PreCondition(presenter != null);
             return GetViewForPresenterType<TView>(presenter.GetType());
 
             /*
@@ -318,7 +338,7 @@ namespace MvpFramework
         public virtual TView GetViewForPresenterType<TView>(Type presenterType)
             where TView : IView
         {
-            Contract.Requires(presenterType != null);
+            Diagnostics.PreCondition(presenterType != null);
 
             // form the conventional simple name:
             string simpleName = presenterType.Name.RemoveSuffix(PresenterSuffix) + ViewSuffix;
@@ -546,27 +566,19 @@ namespace MvpFramework
         ///   and null if there is neither.
         /// </summary>
         public static DiUtil.SourceSelectorDelegate AttributeSourceSelector { get; } =
-                    parameter =>
-                    {
-                        bool? fromCreateParam = null;
-                        var attribute = parameter.GetCustomAttribute<InjectAttribute>();
-                        if (attribute != null && attribute.Enabled)      // not null or disabled
-                        {
-                            fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
-                                                                                  // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
-                        }
-                        // still null if there was no InjectAttribute.
-                        return fromCreateParam;
-                    };
+            parameter =>
+            {
+                bool? fromCreateParam = null;
+                var attribute = parameter.GetCustomAttribute<InjectAttribute>();
+                if (attribute != null && attribute.Enabled)      // not null or disabled
+                {
+                    fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
+                                                                            // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
+                }
+                // still null if there was no InjectAttribute.
+                return fromCreateParam;
+            };
 
-    }
-
-
-    public class AttributeAndType<T>
-        where T : Attribute
-    {
-        public Type DeclaringType;
-        public T Attribute;
     }
 
 }

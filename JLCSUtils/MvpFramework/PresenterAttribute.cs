@@ -61,6 +61,18 @@ namespace MvpFramework
         /// It is recommended that this is an interface for the action (or role) without requiring knowledge of the model type.
         /// </summary>
         public virtual Type ForAction { get; set; }
+
+        /// <summary>
+        /// Tests whether this class can handle a given action and model.
+        /// </summary>
+        /// <param name="actionInterface"><see cref="ForAction"/></param>
+        /// <param name="modelType"><see cref="ForModel"/></param>
+        /// <returns>true iff this can handle the given action and model.</returns>
+        public virtual bool CanHandle(Type actionInterface, Type modelType)
+            => Enabled
+                && ForAction == actionInterface
+                && /*AcceptModelSubTypes ? ForModel.IsAssignableFrom(modelType) :*/ ForModel == modelType;
+        //TODO: Support AcceptModelSubTypes
     }
 
 
