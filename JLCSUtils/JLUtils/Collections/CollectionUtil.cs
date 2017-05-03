@@ -32,6 +32,18 @@ namespace JohnLambe.Util.Collections
         }
 
         /// <summary>
+        /// Adds the given value to the list unless it is null (in which casem this does nothing).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="value"></param>
+        public static void AddIfNotNull<T>(this ICollection<T> collection, T value)
+        {
+            if (value != null)
+                collection.Add(value);
+        }
+
+        /// <summary>
         /// Returns a string containing a string representation of each item in the collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>

@@ -47,7 +47,13 @@
     <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
-    <Compile Include="Binding\ViewBinderBase.cs" />
+    <Compile Include="Binding\IUiTypeAdaptor.cs" />
+    <Compile Include="Binding\ViewBinderBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Binding\ViewControlBinder.cs" />
+    <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
+    <Compile Include="Dialog\ExceptionToDialogMap.cs" />
     <Compile Include="IPresenter.cs" />
     <Compile Include="QueryGenerator.cs" />
     <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
@@ -84,7 +90,7 @@
     <Compile Include="IView.cs" />
     <Compile Include="Binding\IControlBinder.cs" />
     <Compile Include="MvpInjectAttribute.cs" />
-    <Compile Include="MvpResolutionException.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="Presenter.cs" />
     <Compile Include="PresenterAttribute.cs" />
     <Compile Include="PresenterFactory.cs" />
@@ -132,7 +138,9 @@
     </Compile>
     <Compile Include="WinForms\Types.cs" />
     <Compile Include="WinForms\UiController.cs" />
-    <Compile Include="WinForms\Binding\ViewBinder.cs" />
+    <Compile Include="WinForms\Binding\ViewBinder.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForms\WindowViewBase.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -10,6 +10,9 @@ using JohnLambe.Util.Validation;
 
 namespace MvpFramework.Dialog.Dialogs
 {
+    /// <summary>
+    /// Dialog model for <see cref="InformationalDialogType"/>
+    /// </summary>
     public class InformationDialog : MessageDialogModel<string>
     {
         public InformationDialog()
@@ -18,12 +21,17 @@ namespace MvpFramework.Dialog.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="ErrorDialogType"/>
+    /// </summary>
     public class ErrorDialog : MessageDialogModel<string>
     {
         public ErrorDialog()
         {
             base.MessageType = MessageDialogType.Error;
         }
+
+        public virtual bool IsFatal { get; protected set; }
 
         /// <summary>
         /// Create a dialog model to represent the given exception.
@@ -41,11 +49,15 @@ namespace MvpFramework.Dialog.Dialogs
             return new ErrorDialog()
             {
                 Exception = ex
+
                 //TODO: Choose subclass by exception type
             };
         }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="ConfirmationDialogType"/>
+    /// </summary>
     public class ConfirmationDialog : MessageDialogModel<string>
     {
         public ConfirmationDialog()
@@ -54,6 +66,9 @@ namespace MvpFramework.Dialog.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="WarningDialogType"/>
+    /// </summary>
     public class WarningDialog : MessageDialogModel<string>
     {
         public WarningDialog()
@@ -62,6 +77,9 @@ namespace MvpFramework.Dialog.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="SevereWarningDialogType"/>.
+    /// </summary>
     public class SevereWarningDialog : MessageDialogModel<string>
     {
         public SevereWarningDialog()
@@ -70,6 +88,9 @@ namespace MvpFramework.Dialog.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="UserErrorDialogType"/>.
+    /// </summary>
     public class UserErrorDialog : MessageDialogModel<string>
     {
         public UserErrorDialog()
@@ -107,6 +128,9 @@ namespace MvpFramework.Dialog.Dialogs
         public virtual ValidationResults Validation { get; protected set; }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="SystemErrorDialogType"/>.
+    /// </summary>
     public class SystemErrorDialog : MessageDialogModel<string>
     {
         public SystemErrorDialog()
@@ -115,6 +139,9 @@ namespace MvpFramework.Dialog.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dialog model for <see cref="InternalErrorDialogType"/>.
+    /// </summary>
     public class InternalErrorDialog : MessageDialogModel<string>
     {
         public InternalErrorDialog()

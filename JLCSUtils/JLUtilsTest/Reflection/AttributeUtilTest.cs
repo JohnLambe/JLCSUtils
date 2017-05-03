@@ -24,7 +24,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             var method = typeof(TargetObject).GetMethod("Handler");
             var attribs1 = method.GetCustomAttributes<EventHandlerAttribute>();
 
-
+            //TODO
         }
 
         [TestMethod]

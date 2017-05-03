@@ -48,7 +48,6 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Window title (for the current dialog).
         /// </summary>
-        [ViewTitle]
         public virtual string Title => Dialog?.Title;
     }
 }

@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 using MvpFramework.WinForms.Binding;
 using JohnLambe.Util.Reflection;
+using JohnLambe.Util;
+using JohnLambe.Util.Collections;
 
 namespace MvpFramework.WinForms.Binding
 {
@@ -32,6 +34,14 @@ namespace MvpFramework.WinForms.Binding
             if (binderFactory != null)
             {
                 Binders = new List<IControlBinder>();
+
+                var viewControlBinder = ViewControlBinder.GetBinderForView(View);
+                if (viewControlBinder != null)
+                {
+                    viewControlBinder.BindModel(ModelBinder, presenter);
+                    //TODO: Don't bind if there was nothing to bind
+                    Binders.Add(viewControlBinder);
+                }
 
                 //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
                 BindControl(view, binderFactory, presenter);   // bind the root control recursively
@@ -65,8 +75,7 @@ namespace MvpFramework.WinForms.Binding
                 }
             }
 
-            var controls = control.Controls;
-            foreach (Control childControl in controls)
+            foreach (Control childControl in control.Controls)
             {
                 BindControl(childControl, binderFactory, presenter);
             }
@@ -78,9 +87,19 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
         public virtual void RefreshView(Control control)
         {
-            var viewTitle = ModelBinder.Title;
-            if (viewTitle != null)
-                View.Text = viewTitle;
+            if (control == null)
+            {
+                //TODO: Populate all bound properties of the View itself
+
+                //TODO: Bind by MvpEventAttribute
+
+                /*
+                var viewTitle = ModelBinder.Title;
+                if (viewTitle != null)
+                    View.Text = viewTitle;
+                */
+
+            }
 
             if (Binders != null)
             {

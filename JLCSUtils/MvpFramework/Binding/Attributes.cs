@@ -12,7 +12,7 @@ namespace MvpFramework.Binding
     /// </summary>
     // Subclasses are not necessarily required to be independent of the UI framework, but any that have dependendies on one,
     // must be declared in a namespace relating to that framework.
-    public abstract class MvpAttribute : Attribute, IEnabledAttribute
+    public abstract class MvpAttributeBase : Attribute, IEnabledAttribute
     {
         /// <summary>
         /// True to enable handling of this attribute.
@@ -28,7 +28,7 @@ namespace MvpFramework.Binding
     /// Flags a method as a handler that can be invoked from a view.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class MvpHandlerAttribute : MvpAttribute
+    public class MvpHandlerAttribute : MvpAttributeBase
     {
         public MvpHandlerAttribute(string id = null)
         {
@@ -150,6 +150,20 @@ namespace MvpFramework.Binding
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
     public class DisplayNameAnyAttribute : DisplayNameAttribute
     {
+        public DisplayNameAnyAttribute()
+        {
+        }
+        public DisplayNameAnyAttribute(string displayName) : base(displayName)
+        {
+        }
+
+        /// <summary>
+        /// A shorter version of the display name, for use when space is more limited.
+        /// <para>If this is present, and <see cref="DisplayName"/> is null, this should NOT be considered
+        /// a default for it (if there is another method of getting a default name (for example, using the code name of the attributed item),
+        /// it should be used).</para>
+        /// </summary>
+        public virtual string ShortName { get; set; }
     }
 
     #endregion
@@ -157,14 +171,17 @@ namespace MvpFramework.Binding
 
     #region For Models
 
+    /*
     /// <summary>
     /// Flags a property to be mapped to the title of a view (e.g. window title).
     /// </summary>
     //TODO: Remove - the Model shouldn't specify anything about the View.
+    [Obsolete]
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class ViewTitleAttribute : MvpAttribute
+    public class ViewTitleAttribute : MvpAttributeBase
     {
     }
+    */
 
     #endregion
 
@@ -177,7 +194,7 @@ namespace MvpFramework.Binding
     /// <para>A class can bind multiple classes of control, using multiple instances of this attribute.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-    public class ControlBinderAttribute : MvpAttribute
+    public class ControlBinderAttribute : MvpAttributeBase
     {
         public ControlBinderAttribute(Type forControl)
         {
@@ -200,7 +217,7 @@ namespace MvpFramework.Binding
     /// <seealso cref="AttributedControlBinder"/>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class MvpBoundControlAttribute : MvpAttribute
+    public class MvpBoundControlAttribute : MvpAttributeBase
     {
         /*
         /// <summary>
@@ -225,7 +242,7 @@ namespace MvpFramework.Binding
     /// Base class for attributes for properties whose value defines a mapping between a view and a model or presenter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public abstract class MvpMappingPropertyBaseAttribute : MvpAttribute
+    public abstract class MvpMappingPropertyBaseAttribute : MvpAttributeBase
     {
     }
 
@@ -309,7 +326,7 @@ namespace MvpFramework.Binding
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class MvpBinderStringAttribute : MvpAttribute
+    public class MvpBinderStringAttribute : MvpAttributeBase
     {
     }
 
@@ -395,7 +412,7 @@ namespace MvpFramework.Binding
     /// Binds the attributed property on a view to a property of the model.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class MvpBindAttribute : MvpAttribute
+    public class MvpBindAttribute : MvpAttributeBase
     {
         /// <summary>
         /// Value of <see cref="Key"/> to bind the whole model (the model instance rather than a member of it).
@@ -416,6 +433,11 @@ namespace MvpFramework.Binding
         /// </summary>
         //| The name of this is chosen to match DiExtension.Attributes.InjectAttribute.Key.
         public virtual string Key { get; set; }
+
+        /// <summary>
+        /// Iff true, an exception is thrown if binding fails.
+        /// </summary>
+        public virtual bool Required { get; set; } = true;
     }
 
     #endregion
@@ -428,7 +450,7 @@ namespace MvpFramework.Binding
     /// </summary>
     [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
     //|TODO?: Could allow multiple.
-    public class MvpEventAttribute : MvpAttribute
+    public class MvpEventAttribute : MvpAttributeBase
     {
         public MvpEventAttribute(string id = null)
         {

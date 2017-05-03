@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
     [TestClass]
@@ -30,25 +32,31 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void FromEnum()
         {
-            Assert.AreEqual(10, EnumAttributeUtil.FromEnum<int, CustomEnumMappedValueAttribute>(TestEnum.A));
-            Assert.AreEqual(20, EnumAttributeUtil.FromEnum<int, CustomEnumMappedValueAttribute>(TestEnum.B));
-            Assert.AreEqual(0, EnumAttributeUtil.FromEnum<int, CustomEnumMappedValueAttribute>(TestEnum.C));
+            Multiple(
+                () => Assert.AreEqual(10, EnumAttributeUtil.FromEnum<int, CustomEnumMappedValueAttribute>(TestEnum.A)),
+                () => Assert.AreEqual(20, EnumAttributeUtil.FromEnum<int, CustomEnumMappedValueAttribute>(TestEnum.B)),
+                () => Assert.AreEqual(0, EnumAttributeUtil.FromEnum<int, CustomEnumMappedValueAttribute>(TestEnum.C))
+            );
         }
 
         [TestMethod]
         public void FromEnum_ToNullable()
         {
-            Assert.AreEqual(10, EnumAttributeUtil.FromEnum<int?, CustomEnumMappedValueAttribute>(TestEnum.A));
-            Assert.AreEqual(20, EnumAttributeUtil.FromEnum<int?, CustomEnumMappedValueAttribute>(TestEnum.B));
-            Assert.AreEqual(null, EnumAttributeUtil.FromEnum<int?, CustomEnumMappedValueAttribute>(TestEnum.C));
+            Multiple(
+                () => Assert.AreEqual(10, EnumAttributeUtil.FromEnum<int?, CustomEnumMappedValueAttribute>(TestEnum.A)),
+                () => Assert.AreEqual(20, EnumAttributeUtil.FromEnum<int?, CustomEnumMappedValueAttribute>(TestEnum.B)),
+                () => Assert.AreEqual(null, EnumAttributeUtil.FromEnum<int?, CustomEnumMappedValueAttribute>(TestEnum.C))
+            );
         }
 
         [TestMethod]
         public void FromEnum_ConvertType()
         {
-            Assert.AreEqual("10", EnumAttributeUtil.FromEnum<string, CustomEnumMappedValueAttribute>(TestEnum.A));
-            Assert.AreEqual(20.0, EnumAttributeUtil.FromEnum<double, CustomEnumMappedValueAttribute>(TestEnum.B));
-            Assert.AreEqual(0, EnumAttributeUtil.FromEnum<byte, CustomEnumMappedValueAttribute>(TestEnum.C));
+            Multiple(
+                () => Assert.AreEqual("10", EnumAttributeUtil.FromEnum<string, CustomEnumMappedValueAttribute>(TestEnum.A)),
+                () => Assert.AreEqual(20.0, EnumAttributeUtil.FromEnum<double, CustomEnumMappedValueAttribute>(TestEnum.B)),
+                () => Assert.AreEqual(0, EnumAttributeUtil.FromEnum<byte, CustomEnumMappedValueAttribute>(TestEnum.C))
+            );
         }
 
     }

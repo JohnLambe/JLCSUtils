@@ -139,6 +139,18 @@ namespace JohnLambe.Util.Diagnostic
 
         #endregion
 
+        /// <summary>
+        /// Equivalent to <see cref="Assert(bool, string)"/> with a false condition.
+        /// </summary>
+        /// <param name="message"></param>
+        [Conditional("DEBUG")]
+        [Conditional("ASSERTIONS")]
+        [Conditional("ASSERTIONS_LOW")]
+        public static void Fail(string message)
+        {
+            AssertInternal(false, message);
+        }
+
         [Conditional("DEBUG")]
         [Conditional("ASSERTIONS")]
         [Conditional("ASSERTIONS_LOW")]

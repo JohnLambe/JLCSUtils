@@ -46,8 +46,15 @@ namespace JohnLambe.Util.TypeConversion
 
             Type nullableUnderlyingType = Nullable.GetUnderlyingType(requiredType);  // null if not nullable
 
-            return (T)System.Convert.ChangeType(source, nullableUnderlyingType ?? requiredType); 
+            try
+            {
+                return (T)System.Convert.ChangeType(source, nullableUnderlyingType ?? requiredType);
                 // if nullable, try to convert to the underlying type. System.Convert fails on trying to convert to Nullable<T>.
+            }
+            catch(InvalidCastException) when(requiredType == typeof(string))  // if failed and a string is required
+            {
+                return (T)System.Convert.ChangeType(source.ToString(), nullableUnderlyingType ?? requiredType);
+            }
         }
 
         /// <summary>

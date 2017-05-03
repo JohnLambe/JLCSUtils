@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Reflection
 {
+    /// <summary>
+    /// Utility for setting properties to their default value as defined by <see cref="DefaultValueAttribute"/>.
+    /// </summary>
     public static class PropertyDefaultUtil
     {
         /// <summary>

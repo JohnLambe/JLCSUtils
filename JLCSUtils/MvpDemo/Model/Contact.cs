@@ -23,6 +23,8 @@ namespace MvpDemo.Model
             set { _address = value; }
         }
         protected string _address;
+
+        public virtual string EntityDescription => "Contact";
     }
 
 }

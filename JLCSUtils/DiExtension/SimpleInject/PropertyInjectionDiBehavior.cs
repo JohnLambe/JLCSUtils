@@ -120,13 +120,14 @@ namespace DiExtension.SimpleInject
         /// <returns>The attribute, or null if does not have one.</returns>
         protected static InjectAttribute GetAttributeForConsumer(InjectionConsumerInfo consumer)
         {
-            /*TODO: Test and replace with this:
+            /*TODO: Test and replace with this:*/
             return ((ICustomAttributeProvider)consumer.Target.Parameter ?? (ICustomAttributeProvider)consumer.Target.Member)
                 .GetCustomAttribute<InjectAttribute>();
                 /*/
             return consumer.Target.Parameter != null ?
                 consumer.Target.Parameter.GetCustomAttribute<InjectAttribute>()
                 : consumer.Target.Member?.GetCustomAttribute<InjectAttribute>();
+                */
         }
 
         /// <summary>
@@ -146,12 +147,6 @@ namespace DiExtension.SimpleInject
     /// </summary>
     public class PropertyInjectionDiBehavior : InjectionBehaviorBase, IDependencyInjectionBehavior
     {
-        /// <summary>
-        /// The underlying IDependencyInjectionBehavior.
-        /// This class overrides this and delegates to it for anything that this class does not resolve.
-        /// </summary>
-        protected readonly IDependencyInjectionBehavior Existing;
-
         /// <summary>
         /// </summary>
         /// <param name="existing">Bahvior to use if this one fails (usually the behaviour in place before this one is installed).</param>
@@ -175,6 +170,12 @@ namespace DiExtension.SimpleInject
             options.DependencyInjectionBehavior = diBheaviour;
             return diBheaviour;
         }
+
+        /// <summary>
+        /// The underlying IDependencyInjectionBehavior.
+        /// This class overrides this and delegates to it for anything that this class does not resolve.
+        /// </summary>
+        protected readonly IDependencyInjectionBehavior Existing;
 
         #region IDependencyInjectionBehavior methods
 

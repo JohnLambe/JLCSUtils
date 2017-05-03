@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using JohnLambe.Util;
 using MvpFramework;
 using MvpFramework.WinForms;
+using MvpFramework.Binding;
+using MvpDemo.Model;
 
 namespace MvpDemo
 {
@@ -51,6 +53,20 @@ namespace MvpDemo
         private void button3_Click(object sender, EventArgs e)
         {
             uiAddress.Modified = false;
+            MessageBox.Show(ItemType + "\n" + Model1.ToString());
+            TestEvent?.Invoke(this, EventArgs.Empty);
         }
+
+        [MvpBind("EntityDescription")]
+        public virtual string ItemType { get; set; }
+
+        [MvpBind(MvpBindAttribute.Model)]
+        public Contact Model1 { get; set; }
+
+        [MvpEvent("Test")]
+        public event EventHandler TestEvent;
+
+        [MvpEvent("Test_NoHandler")]
+        public event EventHandler TestEvent2;
     }
 }

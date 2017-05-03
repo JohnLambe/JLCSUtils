@@ -22,6 +22,15 @@ namespace MvpFramework.Dialog
     /// </summary>
     public class MessageDialogModel<TResult> : IMessageDialogModel<TResult>
     {
+        /// <summary>
+        /// Conventional suffix of class names of subclasses of this.
+        /// <para>
+        /// This is used when mapping from <see cref="MessageDialogType"/> subclasses to subclasses of this - their suffix is replaced with this,
+        /// and their namespace is changed.
+        /// </para>
+        /// </summary>
+        public const string ClassNameSuffix = "Dialog";
+
         public MessageDialogModel()
         {
             MessageTypeId = GetType().FullName;
@@ -41,7 +50,6 @@ namespace MvpFramework.Dialog
         /// Title of the message dialog. (For display).
         /// May be null. (If it is, it is recommended that the UI hide the title bar of the window etc.).
         /// </summary>
-        [ViewTitle]
         public virtual string Title { get; set; }
 
         /// <summary>
@@ -173,7 +181,7 @@ namespace MvpFramework.Dialog
 
 
     /// <summary>
-    /// Regsiter a message dialog type to be available for configuration.
+    /// Register a message dialog type to be available for configuration.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class RegisterMessageDialogAttribute : MvpClassAttribute

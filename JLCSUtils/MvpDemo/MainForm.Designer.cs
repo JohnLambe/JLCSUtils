@@ -34,10 +34,10 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.contactBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.mvpTextBox1 = new MvpFramework.WinForms.Controls.MvpTextBox();
-            this.mvpComboBox1 = new MvpFramework.WinForms.Controls.MvpComboBox();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.button2 = new System.Windows.Forms.Button();
+            this.mvpTextBox1 = new MvpFramework.WinForms.Controls.MvpTextBox();
+            this.mvpComboBox1 = new MvpFramework.WinForms.Controls.MvpComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.contactBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -86,6 +86,21 @@
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = this.contactBindingSource;
+            this.bindingSource1.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(156, 35);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(114, 23);
+            this.button2.TabIndex = 7;
+            this.button2.Text = "Exception";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // mvpTextBox1
             // 
             this.mvpTextBox1.DataBindings.Add(new System.Windows.Forms.Binding("Lines", this.contactBindingSource, "Name", true));
@@ -107,21 +122,6 @@
             this.mvpComboBox1.Name = "mvpComboBox1";
             this.mvpComboBox1.Size = new System.Drawing.Size(121, 21);
             this.mvpComboBox1.TabIndex = 3;
-            // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = this.contactBindingSource;
-            this.bindingSource1.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(156, 35);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(114, 23);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "Exception";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // MainForm
             // 

@@ -2,6 +2,7 @@
 //   See licence.
 ////////////////////////////////////////
 
+using JohnLambe.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,5 +42,23 @@ namespace JohnLambe.Util.Text
         /// Characters allowed in identifiers such as those used in code.
         /// </summary>
         public const string IdentifierCharacters = AsciiCapitalLetters + AsciiLowercaseLetters + Digits + "_";
+
+        /// <summary>
+        /// Repeat the character <paramref name="count"/> times.
+        /// If <paramref name="count"/> &lt;= 0, "" is returned.
+        /// </summary>
+        /// <param name="c">The character to repeat.</param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        [return: NotNull]
+        public static string Repeat(this char c, int count)
+        {
+            if (count <= 0)
+                return "";
+            var sb = new StringBuilder(count);
+            for(int n = 0; n < count; n++)
+                sb.Append(c);
+            return sb.ToString();
+        }
     }
 }

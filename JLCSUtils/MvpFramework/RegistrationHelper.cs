@@ -36,6 +36,9 @@ using System.Diagnostics.Contracts;
 
 namespace MvpFramework
 {
+    /// <summary>
+    /// Registers types for MVP resolution.
+    /// </summary>
     public class RegistrationHelper
     {
         public RegistrationHelper(MvpResolver resolver, IDiTypeRegistrar diContext)
@@ -55,9 +58,13 @@ namespace MvpFramework
             Scan(assemblies);
         }
 
-        public virtual void Scan(IEnumerable<Assembly> assemblies)  //  IEnumerable<Assembly>
+        /// <summary>
+        /// Scan a list of assemblies for MVP registration.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to be scanned.</param>
+        public virtual void Scan(IEnumerable<Assembly> assemblies)
         {
-            foreach (var assembly in assemblies)
+            foreach (var assembly in assemblies.Distinct())
             {
                 // Register views first, because PresenterFactory tries to resolve the view interface to the view:
                 foreach (var view in

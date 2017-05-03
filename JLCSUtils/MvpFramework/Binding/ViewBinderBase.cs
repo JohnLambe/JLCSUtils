@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace MvpFramework.Binding
     /// This class is independent of the UI framework.
     /// </summary>
     /// <typeparam name="TControl">The type of the UI framework's control/widget base class.</typeparam>
-    public class ViewBinderBase<TControl>
+    public class ViewBinderBase<TControl> : Component
     {
 /*        
         /// <summary>

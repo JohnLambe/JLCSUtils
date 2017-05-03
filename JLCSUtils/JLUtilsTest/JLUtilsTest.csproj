@@ -49,6 +49,7 @@
     <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention">
       <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\SimpleInjector.dll</HintPath>
@@ -120,12 +121,14 @@
     <Compile Include="Reflection\LooselyCoupledEvent\EventChainTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\ForTest.cs" />
     <Compile Include="Reflection\LooselyCoupledEvent\LooselyCoupledEventTest.cs" />
+    <Compile Include="Reflection\PropertyInfoExtensionTest.cs" />
     <Compile Include="Reflection\ReflectionUtilTest.cs" />
     <Compile Include="Reflection\ReflectionUtilTest2.cs" />
     <Compile Include="Reflection\TypeUtilTest.cs" />
     <Compile Include="Security\HashedPasswordTest.cs" />
     <Compile Include="StrUtilsTest.cs" />
     <Compile Include="TestUtil.cs" />
+    <Compile Include="TestUtilTest.cs" />
     <Compile Include="Text\CaptionUtilsTest.cs" />
     <Compile Include="Text\StringCharacterSetTest.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />

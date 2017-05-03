@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using JohnLambe.Util;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
 namespace JohnLambe.Tests.JLUtilsTest
 {
     [TestClass]
@@ -12,31 +14,35 @@ namespace JohnLambe.Tests.JLUtilsTest
         public void IfNotNull()
         {
             string s = "asd  ";
-            Assert.AreEqual(s, MiscUtil.IfNotNull(s, x => x.ToString()), "Returns same value");
 
-            Assert.AreEqual(s.Trim(), s.IfNotNull(x => x.Trim()), "Returns same type");
+            Multiple(
+                () => Assert.AreEqual(s, MiscUtil.IfNotNull(s, x => x.ToString()), "Returns same value"),
 
-            Assert.AreEqual(s.Length, MiscUtil.IfNotNull(s, x => x.Length), "non-null, primitive return type.");
+                () => Assert.AreEqual(s.Trim(), s.IfNotNull(x => x.Trim()), "Returns same type"),
 
-            Assert.AreEqual(s.Trim().Length, s.IfNotNull(x => x.Trim()).IfNotNull(x => x.Length), "non-null: object, then primitive");
+                () => Assert.AreEqual(s.Length, MiscUtil.IfNotNull(s, x => x.Length), "non-null, primitive return type."),
+
+                () => Assert.AreEqual(s.Trim().Length, s.IfNotNull(x => x.Trim()).IfNotNull(x => x.Length), "non-null: object, then primitive")
+            );
 
             s = null;
-            Assert.AreEqual(s, MiscUtil.IfNotNull(s, x => x.ToString()), "null: same type.");
+            Multiple(
+                () => Assert.AreEqual(s, MiscUtil.IfNotNull(s, x => x.ToString()), "null: same type."),
 
-            Assert.AreEqual(null, s.IfNotNull(x => x.Trim()), "null: Returns same type");
+                () => Assert.AreEqual(null, s.IfNotNull(x => x.Trim()), "null: Returns same type"),
 
-            Assert.AreEqual(0, MiscUtil.IfNotNull(s, x => x.Length), "null: primitive return type.");
+                () => Assert.AreEqual(0, MiscUtil.IfNotNull(s, x => x.Length), "null: primitive return type."),
 
-            Assert.AreEqual(0,
-                s.IfNotNull(x => x.Trim()).IfNotNull(x => x.Length),
-                "null: object, then primitive");
-            Assert.AreEqual(0,
-                s.IfNotNull(x => x.Trim(), x => x.Length),
-                "null: object, then primitive; 2-delegate overload");
+                () => Assert.AreEqual(0,
+                    s.IfNotNull(x => x.Trim()).IfNotNull(x => x.Length),
+                    "null: object, then primitive"),
+                () => Assert.AreEqual(0,
+                    s.IfNotNull(x => x.Trim(), x => x.Length),
+                    "null: object, then primitive; 2-delegate overload")
+            );
             // equivalent to:
             int len =
                 s == null ? 0 : (s.Trim() == null ? 0 : s.Trim().Length);
-
         }
 
         [TestMethod]

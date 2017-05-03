@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Reflection
 {
+    /// <summary>
+    /// Utilities for working with Assemblies.
+    /// </summary>
     public class AssemblyUtil
     {
         /// <summary>

@@ -5,8 +5,11 @@ using JohnLambe.Util.Math;
 
 namespace JohnLambe.Tests.JLUtilsTest
 {
+    /// <summary>
+    /// Unit tests for <see cref="OrdinalUtil"/>.
+    /// </summary>
     [TestClass]
-    public class OrdinalUtilsTest
+    public class OrdinalUtilTest
     {
         [TestMethod]
         public void Ordinal()

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
@@ -46,16 +47,18 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
             // Assert:
 
-            Assert.AreEqual(123.456, target.DoubleProperty, "From base class, not overridden");
-            Assert.AreEqual(150, target.ByteProperty, "Default overridden");
-            Assert.AreEqual(1234567890123456789, target.LongProperty, "Default defined only on overridden property");
-            Assert.AreEqual('a', target.CharProperty, "Property overridden but default is unchanged");
+            Multiple(
+                () => Assert.AreEqual(123.456, target.DoubleProperty, "From base class, not overridden"),
+                () => Assert.AreEqual(150, target.ByteProperty, "Default overridden"),
+                () => Assert.AreEqual(1234567890123456789, target.LongProperty, "Default defined only on overridden property"),
+                () => Assert.AreEqual('a', target.CharProperty, "Property overridden but default is unchanged"),
 
-            Assert.AreEqual(typeof(string), target.TypeProperty, "Property is assigned a default value that is overridden by the attribute");
-            Assert.AreEqual(true, target.BoolProperty, "nullable primitive type");
+                () => Assert.AreEqual(typeof(string), target.TypeProperty, "Property is assigned a default value that is overridden by the attribute"),
+                () => Assert.AreEqual(true, target.BoolProperty, "nullable primitive type"),
 
-            Assert.AreEqual("1001", target.StringProperty, "Default value is different type to property");
-            Assert.AreEqual(null, target.StringProperty3, "Default value is null");
+                () => Assert.AreEqual("1001", target.StringProperty, "Default value is different type to property"),
+                () => Assert.AreEqual(null, target.StringProperty3, "Default value is null")
+            );
         }
 
         /// <summary>
@@ -72,9 +75,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
             // Assert:
 
-            Assert.AreEqual(5000, target.GetPrivatePropertyValue(), "private property");
-            Assert.AreEqual("Protected", target.ProtectedProperty, "protected setter");
-            Assert.AreEqual("Private", target.PrivateSetterProperty, "private setter");
+            Multiple(
+                () => Assert.AreEqual(5000, target.GetPrivatePropertyValue(), "private property"),
+                () => Assert.AreEqual("Protected", target.ProtectedProperty, "protected setter"),
+                () => Assert.AreEqual("Private", target.PrivateSetterProperty, "private setter")
+            );
         }
 
         /// <summary>
@@ -91,7 +96,6 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             PropertyDefaultUtil.PopulateDefaults(target);
 
             // Assert:
-
             Assert.AreEqual("Overridden", target.PrivateSetterProperty, "private setter");
         }
 

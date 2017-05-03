@@ -8,7 +8,6 @@ namespace JohnLambe.Tests.JLUtilsTest
     [TestClass]
     public class ObjectExtensionTest
     {
-
         #region NotNull
 
         const string TestMessage = "test message";
@@ -36,14 +35,16 @@ namespace JohnLambe.Tests.JLUtilsTest
         {
             string x = null;
 
-            TestUtil.AssertThrowsContains(typeof(NullReferenceException), TestMessage,
-                () => x.NotNull(TestMessage) );
+            TestUtil.Multiple(
+                () => TestUtil.AssertThrowsContains(typeof(NullReferenceException), TestMessage,
+                    () => x.NotNull(TestMessage) ),
 
-            TestUtil.AssertThrowsContains(typeof(NullReferenceException), TestMessage,
-                () => Console.WriteLine(x.NotNull(TestMessage)) );
+                () => TestUtil.AssertThrowsContains(typeof(NullReferenceException), TestMessage,
+                    () => Console.WriteLine(x.NotNull(TestMessage)) ),
 
-            TestUtil.AssertThrowsContains(typeof(NullReferenceException), TestMessage,
-                () => x.NotNull(TestMessage).ToUpper() );
+                () => TestUtil.AssertThrowsContains(typeof(NullReferenceException), TestMessage,
+                    () => x.NotNull(TestMessage).ToUpper() )
+            );
         }
 
         [TestMethod]
@@ -69,14 +70,16 @@ namespace JohnLambe.Tests.JLUtilsTest
         {
             string x = null;
 
-            TestUtil.AssertThrowsContains(typeof(ArgumentNullException), TestMessage,
-                () => x.ArgNotNull(TestMessage));
+            TestUtil.Multiple(
+                () => TestUtil.AssertThrowsContains(typeof(ArgumentNullException), TestMessage,
+                    () => x.ArgNotNull(TestMessage)),
 
-            TestUtil.AssertThrowsContains(typeof(ArgumentNullException), TestMessage,
-                () => Console.WriteLine(x.ArgNotNull(TestMessage)));
+                () => TestUtil.AssertThrowsContains(typeof(ArgumentNullException), TestMessage,
+                    () => Console.WriteLine(x.ArgNotNull(TestMessage))),
 
-            TestUtil.AssertThrowsContains(typeof(ArgumentNullException), TestMessage,
-                () => x.ArgNotNull(TestMessage).ToUpper());
+                () => TestUtil.AssertThrowsContains(typeof(ArgumentNullException), TestMessage,
+                    () => x.ArgNotNull(TestMessage).ToUpper())
+            );
         }
 
         #endregion

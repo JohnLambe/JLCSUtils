@@ -4,7 +4,7 @@ Each module of a system has its own namespace (under the system's namespace), wi
   View
   ViewInterface (OR could be called "Common" OR items that would go here could just be in the module's namespace): The interface of the View and types related to the View shared between View and Presenter.
   Presenter
-  PresenterInterface (optional) ?
+  PresenterInterface (optional) ?   TODO
   Model
 Anything else in the module's namespace can be referenced by all of these namespaces.
 
@@ -23,13 +23,13 @@ Automated enforcement:
 
 
 TODO:
-    Interfaces for [Model/Presenter]BinderWrapper.
-	Method for Presenter to cause a refresh of View controls binding a specified property of the model.
 	General exception handler: Handles unhandled exceptions on anything invoked by the framework.
 		Tester-Doer: If test rejects exception, it is isn't caught ?
 		Default implementation shows an error dialog, and has a dependency of IMessageDialogService.
-	Provide a way of declaring a mapping from properties of the View class (such as the title) to Model properties.
-		Currently [ViewTitle] maps from Model to View.
+
+    Interfaces for [Model/Presenter]BinderWrapper.
+	Method for Presenter to cause a refresh of View controls binding a specified property of the model.
+
 	Bind using BindingContext.
 	BinderString values to bind:
 		- the caption for a specified property.
@@ -37,9 +37,10 @@ TODO:
 		- all validation messages.
 	Label control to show the caption for the property of the linked input control.
 	Labelled edit control that maps the caption, and includes (optionally) a validation message and/or other validaity indication (colour or icon ('!' to right)).
-	Auto generate controls (at runtime; could alternatively/also have a source code generator, for developers to edit afterwards).
-	Auto generate IQueryable.
-	Bind IQueryable to grid components, etc.
+	Auto generation:
+		Auto generate controls (at runtime; could alternatively/also have a source code generator, for developers to edit afterwards).
+		Auto generate IQueryable.
+		Bind IQueryable to grid components, etc.
 	Review Dialog layout.
 	WinForms controls:
 		*WinForms Validation events
@@ -48,8 +49,12 @@ TODO:
 		Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
 		Throw exception when a presenter handler cannot be bound.
 		Throw exception when a view control references a property that cannot be bound.
-	Role-based presenter interfaces: For consumer of presenter, and View ??  View shouldn't reference presenter. Should provide events instead.
+	// Role-based presenter interfaces: For consumer of presenter, and View ??  View shouldn't reference presenter. Should provide events instead.
 	Resolving PresenterForActionAttribute for derived types of specified types.
+	Remove requirement to have interfaces for registration:
+		Presenter Interface: Consumer of presenter would reference Presenter type.
+			Less clear separation of concerns between presenters. Would typically require the View interface and model type to be public (visible to presenter consumer) since they are typcially generic parameters.
+		View Interface?: Presenter would reference View concrete type. Not recommended.
 
 
 Possible additions:
@@ -62,3 +67,5 @@ To Test:
 
 Done:
 	ViewBase.Bind: Could move most of the binding code from the View to the framework.
+	Provide a way of declaring a mapping from properties of the View class (such as the title) to Model properties.
+		Remove: Currently [ViewTitle] maps from Model to View.

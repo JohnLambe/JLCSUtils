@@ -10,7 +10,7 @@ namespace MvpFramework
     /// <summary>
     /// Base class for attributes that flag a class as a Presenter or View to be registered automatically.
     /// </summary>
-    public abstract class MvpClassAttribute : MvpAttribute
+    public abstract class MvpClassAttribute : MvpAttributeBase
     {
         /// <summary>
         /// The Presenter/View Interface, that the DI container should map to the attributed class.
@@ -32,6 +32,7 @@ namespace MvpFramework
     /// on a certain model type.
     /// <para>The attributed class must implement <see cref="IPresenter"/>.</para>
     /// </summary>
+    /// <seealso cref="MvpResolver.GetPresenterForModel{TPresenter, TModel}(TModel)"/>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class PresenterForActionAttribute : MvpClassAttribute
     {
@@ -49,9 +50,10 @@ namespace MvpFramework
         /// The type of the model.
         /// </summary>
         public virtual Type ForModel { get; set; }
+        //| Could be called ModelType
 
         /// <summary>
-        /// Iff true, the attributed presenter can handle any type of model assignable to the given one.
+        /// Iff true, the attributed presenter can handle any type of model assignable to <see cref="ForModel"/>.
         /// </summary>
         public virtual bool AcceptModelSubTypes { get; set; } = true;
 
@@ -61,6 +63,19 @@ namespace MvpFramework
         /// It is recommended that this is an interface for the action (or role) without requiring knowledge of the model type.
         /// </summary>
         public virtual Type ForAction { get; set; }
+        //| Could be called ActionHandled
+
+        /// <summary>
+        /// Iff true, the attributed presenter can be used for any action type assignable to <see cref="ForAction"/>.
+        /// </summary>
+        public virtual bool AcceptActionSubTypes { get; set; } = true;
+
+        /// <summary>
+        /// If there are multiple presenters that can handle the same model for the same action,
+        /// that are otherwise equally preferred,
+        /// this determines which one is used - the one with the lowest value is chosen.
+        /// </summary>
+        public virtual int Priority { get; set; }
 
         /// <summary>
         /// Tests whether this class can handle a given action and model.
@@ -73,8 +88,36 @@ namespace MvpFramework
                 && ForAction == actionInterface
                 && /*AcceptModelSubTypes ? ForModel.IsAssignableFrom(modelType) :*/ ForModel == modelType;
         //TODO: Support AcceptModelSubTypes
+
+            /*
+        public virtual int MatchScore(Type actionInterface, Type modelType)
+        {
+            //if (!Enabled || ForAction != actionInterface)
+            if(!CanHandle(actionInterface,modelType))
+                return 0;
+
+
+        }
+        */
     }
 
+    //| Instead of the above, we could use action interfaces with a model as a type parameter, e.g. IAction<TModel> ,
+    //| and tag the interface with an attribute.
+    //| An attribute on the presenter enables specifying a preference for one implementing presenter over others
+    //| (and having some presenters not be resolved automatically to handle the type).
+
+    [AttributeUsage(AttributeTargets.Interface,
+        AllowMultiple = true,     // could be used for multiple model types
+        Inherited = false         // the attribute is defined at the level at which mappings are declared. Mappings may not be declared at lower levels in the hierarchy.
+        )]
+    public class ActionInterfaceAttribute : MvpAttributeBase
+    {
+        /// <summary>
+        /// The type of model handled.
+        /// Iff null, the first generic type parameter of the interface is used.
+        /// </summary>
+        public virtual Type ModelType { get; set; }
+    }
 
     /// <summary>
     /// Flags a View for automatic registration with the DI system.

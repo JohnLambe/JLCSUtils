@@ -1,6 +1,8 @@
 ﻿using JohnLambe.Util.Reflection;
+using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,30 +16,38 @@ namespace MvpFramework
     /// <para><seealso cref="System.ConsoleKey"/> - doesn't have modifier keys, mouse buttons and some other keys.</para>
     /// <para><seealso cref="KeyboardKeyExtension"/> - for conversion to/from <see cref="System.ConsoleKey"/>.</para>
     /// </summary>
+    [HybridEnum]
     public enum KeyboardKey
     {
         // This type only:
         /// <summary>
         /// Mask for the main key (without modifiers).
         /// </summary>
+        [EnumMask]
         BaseKey = 0xFF,
 
         // WinForms only:
         //
         // Summary:
         //     The bitmask to extract modifiers from a key value.
+        [EnumMask]
         Modifiers = -65536,
         //
         // Summary:
         //     No key pressed.
+        [EnumNullValue]
         None = 0,
         //
         // Summary:
         //     The left mouse button.
+        [DisplayNameAny("Left Button")]
+        [Description("The left mouse button")]
         LButton = 1,
         //
         // Summary:
         //     The right mouse button.
+        [DisplayNameAny("Right Button")]
+        [Description("The right mouse button")]
         RButton = 2,
         //
         // Summary:
@@ -46,19 +56,24 @@ namespace MvpFramework
         //
         // Summary:
         //     The middle mouse button (three-button mouse).
+        [DisplayNameAny("Middle Button")]
+        [Description("The middle mouse button")]
         MButton = 4,
         //
         // Summary:
         //     The first x mouse button (five-button mouse).
+        [Description("The first x mouse button (five-button mouse)")]
         XButton1 = 5,
         //
         // Summary:
         //     The second x mouse button (five-button mouse).
+        [Description("The second x mouse button (five-button mouse)")]
         XButton2 = 6,
 
         //
         // Summary:
         //     The BACKSPACE key.
+        [DisplayNameAny("Backspace")]
         Back = 8,
         //
         // Summary:
@@ -79,20 +94,25 @@ namespace MvpFramework
         //
         // Summary:
         //     The ENTER key.
+        [EnumDuplicate]
         Enter = 13,
 
         // WinForms only:
         //
         // Summary:
         //     The SHIFT key.
+        [DisplayNameAny("Shift")]
         ShiftKey = 16,
         //
         // Summary:
         //     The CTRL key.
+        [DisplayNameAny("Ctrl")]
+        [Description("The Control key")]
         ControlKey = 17,
         //
         // Summary:
         //     The ALT key.
+        [DisplayNameAny("Alt")]
         Menu = 18,
 
         //
@@ -104,6 +124,8 @@ namespace MvpFramework
         //
         // Summary:
         //     The CAPS LOCK key.
+        [DisplayNameAny("Caps Lock")]
+        [EnumDuplicate]
         Capital = 20,
         //
         // Summary:
@@ -116,6 +138,9 @@ namespace MvpFramework
         //
         // Summary:
         //     The IME Hanguel mode key. (maintained for compatibility; use HangulMode)
+        //| This is included for consistency with the WinForms type.
+        [EnumDuplicate]
+        [Obsolete,EnumObsolete]
         HanguelMode = 21,
         //
         // Summary:
@@ -159,6 +184,8 @@ namespace MvpFramework
         //
         // Summary:
         //     The IME accept key. Obsolete, use System.Windows.Forms.Keys.IMEAccept instead.
+        [EnumDuplicate]
+        [Obsolete, EnumObsolete]
         IMEAceept = 30,
         //
         // Summary:
@@ -172,18 +199,24 @@ namespace MvpFramework
         //
         // Summary:
         //     The PAGE UP key.
+        [EnumDuplicate]
+        [DisplayNameAny("Page Up", ShortName = "PgUp")]
         Prior = 33,
         //
         // Summary:
         //     The PAGE UP key.
+        [DisplayNameAny("Page Up", ShortName = "PgUp")]
         PageUp = 33,
         //
         // Summary:
         //     The PAGE DOWN key.
+        [EnumDuplicate]
+        [DisplayNameAny("Page Down", ShortName = "PgDn")]
         Next = 34,
         //
         // Summary:
         //     The PAGE DOWN key.
+        [DisplayNameAny("Page Down", ShortName = "PgDn")]
         PageDown = 34,
         //
         // Summary:
@@ -196,18 +229,22 @@ namespace MvpFramework
         //
         // Summary:
         //     The LEFT ARROW key.
+        [Description("The Left Arrow key")]
         Left = 37,
         //
         // Summary:
         //     The UP ARROW key.
+        [Description("The Up Arrow key")]
         Up = 38,
         //
         // Summary:
         //     The RIGHT ARROW key.
+        [Description("The Right Arrow key")]
         Right = 39,
         //
         // Summary:
         //     The DOWN ARROW key.
+        [Description("The Down Arrow key")]
         Down = 40,
         //
         // Summary:
@@ -224,18 +261,23 @@ namespace MvpFramework
         //
         // Summary:
         //     The PRINT SCREEN key.
+        [EnumDuplicate]
+        [DisplayNameAny("Print Screen", ShortName = "PrtSc")]
         Snapshot = 44,
         //
         // Summary:
         //     The PRINT SCREEN key.
+        [DisplayNameAny("Print Screen", ShortName = "PrtSc")]
         PrintScreen = 44,
         //
         // Summary:
         //     The INS key.
+        [DisplayNameAny(ShortName = "Ins")]
         Insert = 45,
         //
         // Summary:
         //     The DEL key.
+        [DisplayNameAny(ShortName = "Del")]
         Delete = 46,
         //
         // Summary:
@@ -244,42 +286,52 @@ namespace MvpFramework
         //
         // Summary:
         //     The 0 key.
+        [DisplayNameAny("0")]
         D0 = 48,
         //
         // Summary:
         //     The 1 key.
+        [DisplayNameAny("1")]
         D1 = 49,
         //
         // Summary:
         //     The 2 key.
+        [DisplayNameAny("2")]
         D2 = 50,
         //
         // Summary:
         //     The 3 key.
+        [DisplayNameAny("3")]
         D3 = 51,
         //
         // Summary:
         //     The 4 key.
+        [DisplayNameAny("4")]
         D4 = 52,
         //
         // Summary:
         //     The 5 key.
+        [DisplayNameAny("5")]
         D5 = 53,
         //
         // Summary:
         //     The 6 key.
+        [DisplayNameAny("6")]
         D6 = 54,
         //
         // Summary:
         //     The 7 key.
+        [DisplayNameAny("7")]
         D7 = 55,
         //
         // Summary:
         //     The 8 key.
+        [DisplayNameAny("8")]
         D8 = 56,
         //
         // Summary:
         //     The 9 key.
+        [DisplayNameAny("9")]
         D9 = 57,
         //
         // Summary:
@@ -388,24 +440,31 @@ namespace MvpFramework
         //
         // Summary:
         //     The left Windows logo key (Microsoft Natural Keyboard).
+        [EnumDuplicate]
+        [DisplayNameAny("Left Windows", ShortName = "LWin")]
         LWin = 91,
         /// <summary>
         /// The left Windows logo key (Microsoft Natural Keyboard).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [DisplayNameAny("Left Windows", ShortName = "LWin")]
         LeftWindows = 91,
         //
         // Summary:
         //     The right Windows logo key (Microsoft Natural Keyboard).
+        [EnumDuplicate]
+        [DisplayNameAny("Right Windows", ShortName = "RWin")]
         RWin = 92,
         /// <summary>
         /// The left Windows logo key (Microsoft Natural Keyboard).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [DisplayNameAny("Right Windows", ShortName = "RWin")]
         RightWindows = 92,
         //
         // Summary:
         //     The application key (Microsoft Natural Keyboard).
+        [EnumDuplicate]
         Apps = 93,
         /// <summary>
         /// The application key (Microsoft Natural Keyboard).
@@ -463,6 +522,10 @@ namespace MvpFramework
         //
         // Summary:
         //     The add key.
+        /// <summary>
+        /// The '+' key on the numeric keypad.
+        /// </summary>
+        [DisplayNameAny("+")]
         Add = 107,
         //
         // Summary:
@@ -471,14 +534,26 @@ namespace MvpFramework
         //
         // Summary:
         //     The subtract key.
+        /// <summary>
+        /// The '-' key on the numeric keypad.
+        /// </summary>
+        [DisplayNameAny("-")]
         Subtract = 109,
         //
         // Summary:
         //     The decimal key.
+        /// <summary>
+        /// The '+' key on the numeric keypad.
+        /// </summary>
+        [DisplayNameAny(".")]
         Decimal = 110,
         //
         // Summary:
         //     The divide key.
+        /// <summary>
+        /// The '/' key on the numeric keypad.
+        /// </summary>
+        [DisplayNameAny("/")]
         Divide = 111,
         //
         // Summary:
@@ -589,26 +664,32 @@ namespace MvpFramework
         //
         // Summary:
         //     The left SHIFT key.
+        [DisplayNameAny("Left Shift", ShortName = "LShift")]
         LShiftKey = 160,
         //
         // Summary:
         //     The right SHIFT key.
+        [DisplayNameAny("Right Shift", ShortName = "RShift")]
         RShiftKey = 161,
         //
         // Summary:
         //     The left CTRL key.
+        [DisplayNameAny("Left Ctrl", ShortName = "LCtrl")]
         LControlKey = 162,
         //
         // Summary:
         //     The right CTRL key.
+        [DisplayNameAny("Right Ctrl", ShortName = "RCtrl")]
         RControlKey = 163,
         //
         // Summary:
         //     The left ALT key.
+        [DisplayNameAny("Left Alt", ShortName = "LAlt")]
         LMenu = 164,
         //
         // Summary:
         //     The right ALT key.
+        [DisplayNameAny("Right Alt", ShortName = "RAlt")]
         RMenu = 165,
 
         //
@@ -654,20 +735,24 @@ namespace MvpFramework
         //
         // Summary:
         //     The media next track key (Windows 2000 or later).
+        [DisplayNameAny("Next Track", ShortName = "NextTrack")]
         MediaNextTrack = 176,
         /// <summary>
         /// The media next track key (Windows 2000 or later).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [EnumDuplicate]
         MediaNext = 176,
         //
         // Summary:
         //     The media previous track key (Windows 2000 or later).
+        [DisplayNameAny("Previous Track", ShortName = "PrevTrack")]
         MediaPreviousTrack = 177,
         /// <summary>
         /// The media previous track key (Windows 2000 or later).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [EnumDuplicate]
         MediaPrevious = 177,
         //
         // Summary:
@@ -689,24 +774,31 @@ namespace MvpFramework
         /// The select media key (Windows 2000 or later).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [EnumDuplicate]
         LaunchMediaSelect = 181,
         //
         // Summary:
         //     The start application one key (Windows 2000 or later).
+        [DisplayNameAny(ShortName = "LaunchApp1")]
         LaunchApplication1 = 182,
         /// <summary>
         /// The start application one key (Windows 2000 or later).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [DisplayNameAny(ShortName = "LaunchApp1")]
+        [EnumDuplicate]
         LaunchApp1 = 182,
         //
         // Summary:
         //     The start application two key (Windows 2000 or later).
+        [DisplayNameAny(ShortName = "LaunchApp2")]
         LaunchApplication2 = 183,
         /// <summary>
         /// The start application two key (Windows 2000 or later).
         /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        [DisplayNameAny(ShortName = "LaunchApp2")]
+        [EnumDuplicate]
         LaunchApp2 = 183,
         //
         // Summary:
@@ -715,15 +807,22 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 1 key.
+        [EnumDuplicate]
         Oem1 = 186,
         //
         // Summary:
         //     The OEM plus key on any country/region keyboard (Windows 2000 or later).
+        [EnumDuplicate]
         Oemplus = 187,
+        //| This corrects the capitalisation of the WinForms name.
+        OemPlus = 187,
         //
         // Summary:
         //     The OEM comma key on any country/region keyboard (Windows 2000 or later).
+        [EnumDuplicate]
         Oemcomma = 188,
+        //| This corrects the capitalisation of the WinForms name.
+        OemComma = 188,   
         //
         // Summary:
         //     The OEM minus key on any country/region keyboard (Windows 2000 or later).
@@ -739,14 +838,19 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 2 key.
+        [EnumDuplicate]
         Oem2 = 191,
         //
         // Summary:
         //     The OEM tilde key on a US standard keyboard (Windows 2000 or later).
+        [EnumDuplicate]
         Oemtilde = 192,
+        //| This corrects the capitalisation of the WinForms name.
+        OemTilde = 192,
         //
         // Summary:
         //     The OEM 3 key.
+        [EnumDuplicate]
         Oem3 = 192,
         //
         // Summary:
@@ -755,6 +859,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 4 key.
+        [EnumDuplicate]
         Oem4 = 219,
         //
         // Summary:
@@ -763,6 +868,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 5 key.
+        [EnumDuplicate]
         Oem5 = 220,
         //
         // Summary:
@@ -771,6 +877,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 6 key.
+        [EnumDuplicate]
         Oem6 = 221,
         //
         // Summary:
@@ -779,6 +886,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 7 key.
+        [EnumDuplicate]
         Oem7 = 222,
         //
         // Summary:
@@ -792,10 +900,12 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM 102 key.
+        [EnumDuplicate]
         Oem102 = 226,
         //
         // Summary:
         //     The PROCESS KEY key.
+        [EnumDuplicate]
         ProcessKey = 229,
         /// <summary>
         /// The PROCESS KEY key.
@@ -810,6 +920,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The ATTN key.
+        [EnumDuplicate]
         Attn = 246,
         /// <summary>
         ///     The ATTN key.
@@ -830,8 +941,9 @@ namespace MvpFramework
         EraseEof = 249,
         /// <summary>
         ///     The ERASE EOF key.
-        /// <para>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</para>
         /// </summary>
+        /// <remarks>This name matches <see cref="System.ConsoleKey"/> (not Sytem.Windows.Forms.Keys).</remarks>
+        [EnumDuplicate]
         EraseEndOfFile = 249,
         //
         // Summary:
@@ -858,18 +970,26 @@ namespace MvpFramework
         //
         // Summary:
         //     The bitmask to extract a key code from a key value.
+        [EnumMask]
+        [EnumHybridMember(DataType = typeof(KeyboardKey))]
         KeyCode = 65535,
         //
         // Summary:
         //     The SHIFT modifier key.
+        [EnumHidden]
+        [EnumFlag]
         Shift = 65536,
         //
         // Summary:
         //     The CTRL modifier key.
+        [EnumHidden]
+        [EnumFlag]
         Control = 131072,
         //
         // Summary:
         //     The ALT modifier key.
+        [EnumHidden]
+        [EnumFlag]
         Alt = 262144
     }
 
@@ -877,6 +997,7 @@ namespace MvpFramework
     /// <summary>
     /// Extensions methods on or relating to <see cref="KeyboardKey"/>.
     /// </summary>
+    /// <seealso cref="WinForms.KeyboardKeyExt"/>
     public static class KeyboardKeyExtension
     {
         /// <summary>

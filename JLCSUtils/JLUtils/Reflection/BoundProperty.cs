@@ -12,24 +12,36 @@ using JohnLambe.Util.Validation;
 
 namespace JohnLambe.Util.Reflection
 {
+    /*
+    public class BoundProperty
+    {
+        public static BoundProperty<TTarget, TProperty> Create<TTarget, TProperty>(TTarget target, PropertyInfo property)
+        {
+            return new BoundProperty<TTarget, TProperty>(target, property);
+        }
+    }
+    */
+
     /// <summary>
     /// Metadata of a property (of a class, struct, interface, dictionary, etc.),
     /// and the object it is defined on.
     /// </summary>
-    /// <typeparam name="TTarget"></typeparam>
-    /// <typeparam name="TProperty"></typeparam>
+    /// <typeparam name="TTarget">The type of the object of the property.</typeparam>
+    /// <typeparam name="TProperty">The type of the property.</typeparam>
     public class BoundProperty<TTarget, TProperty> : ICustomAttributeProvider
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="target">The object on which the property is defined.
         /// </param>
         /// <param name="propertyName">The name of the property. This may be a nested property name (with ".").</param>
+//        /// <exception cref="ArgumentException">If the property, <paramref name="propertyName"/>, is not found.</exception>
+        //TODO: Throw exception if target==null and property is not static ?
         public BoundProperty(TTarget target, string propertyName)
         {
             object targetObject = target;
             Property = ReflectionUtil.GetProperty(ref targetObject, propertyName);
+//                .NotNull("Property not found: " + typeof(TTarget) + "." + propertyName, typeof(ArgumentException));
             this.Target = (TTarget)targetObject;
         }
 
@@ -103,6 +115,9 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         public virtual PropertyInfo Property { get; }
 
+        /// <summary>
+        /// Validator used to validate the property when set.
+        /// </summary>
         protected virtual ValidatorEx Validator { get; set; } = new ValidatorEx(); //TODO: Make injectable
 
         /// <summary>
@@ -131,17 +146,17 @@ namespace JohnLambe.Util.Reflection
         #region ICustomAttributeProvider
         // Delegates to Property.
 
-        public object[] GetCustomAttributes(Type attributeType, bool inherit)
+        public virtual object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return ((ICustomAttributeProvider)Property).GetCustomAttributes(attributeType, inherit);
         }
 
-        public object[] GetCustomAttributes(bool inherit)
+        public virtual object[] GetCustomAttributes(bool inherit)
         {
             return ((ICustomAttributeProvider)Property).GetCustomAttributes(inherit);
         }
 
-        public bool IsDefined(Type attributeType, bool inherit)
+        public virtual bool IsDefined(Type attributeType, bool inherit)
         {
             return ((ICustomAttributeProvider)Property).IsDefined(attributeType, inherit);
         }

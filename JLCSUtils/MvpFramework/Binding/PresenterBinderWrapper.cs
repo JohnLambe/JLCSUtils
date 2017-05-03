@@ -1,4 +1,6 @@
-﻿using MvpFramework.Menu;
+﻿using JohnLambe.Types;
+using JohnLambe.Util;
+using MvpFramework.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +21,9 @@ namespace MvpFramework.Binding
     /// </summary>
     public class PresenterBinderWrapper : PresenterBinderWrapperBase
     {
-        public PresenterBinderWrapper(IPresenter presenter)
+        public PresenterBinderWrapper([NotNull] IPresenter presenter)
         {
-            this.Presenter = presenter;
+            this.Presenter = presenter.ArgNotNull(nameof(presenter));
         }
 
         /// <summary>
@@ -34,7 +36,13 @@ namespace MvpFramework.Binding
             return new OptionCollectionBuilder().Build(Presenter, filter);
         }
 
-        public override EventHandler GetHandler(string handlerId, string filter = null)
+        /// <summary>
+        /// Returns a delegate for an event identified by a Handler ID.
+        /// </summary>
+        /// <param name="handlerId">The Handler ID (required).</param>
+        /// <param name="filter">If not null, this filters handlers.</param>
+        /// <returns></returns>
+        public override EventHandler GetHandler([NotNull] string handlerId, string filter = null)
         {
             var handlerDelegate = _handlerResolver.GetHandler(Presenter, handlerId, filter);
             return (sender, args) => handlerDelegate.Invoke();

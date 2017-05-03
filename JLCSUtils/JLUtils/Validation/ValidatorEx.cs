@@ -31,7 +31,7 @@ namespace JohnLambe.Util.Validation
         public virtual bool TryValidateObject(object instance, ValidationResults results)
         {
             if (instance == null)
-                return false;
+                return true;
             else
                 return Validator.TryValidateObject(instance, GetContext(instance), results.Results);
         }
@@ -60,6 +60,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="instance"></param>
         /// <param name="propertyName">The name of the property to be validated (case-sensitive).</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
         public virtual bool TryValidateProperty(object instance, string propertyName, ValidationResults results)
         {
             instance.ArgNotNull(nameof(instance));
@@ -72,6 +73,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="instance"></param>
         /// <param name="propertyName">The property to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
         public virtual bool TryValidateProperty(object instance, PropertyInfo property, ValidationResults results)
         {
             instance.ArgNotNull(nameof(instance));
@@ -123,7 +125,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="value"></param>
         /// <param name="property"></param>
-        /// <returns>true if a validator modif</returns>
+        /// <returns>true if a validator modified the value.</returns>
         public virtual bool ValidateValue<TValue>(object instance, ref TValue value, MemberInfo property)
         {
             ValidationResults results = new ValidationResults();
@@ -158,6 +160,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
         /// <param name="member">The member (usually a property) to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
         public virtual bool TryValidateValue(object instance, object value, MemberInfo member, ValidationResults results)
         {
             return TryValidateValue(instance, value, member.GetCustomAttributes(true).Cast<ValidationAttribute>(), results, member.Name, CaptionUtil.GetDisplayName(member));
@@ -171,6 +174,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="results">This is populated with validation errors and warnings.</param>
         /// <param name="memberName">The name of the member being validated.</param>
         /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
+        /// <returns>true iff valid.</returns>
         public virtual bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results, string memberName = null, string displayName = null)
         {
             return Validator.TryValidateValue(value, GetContext(instance, memberName, displayName), results.Results, attributes);
@@ -205,6 +209,157 @@ namespace JohnLambe.Util.Validation
         /// Instance with default settings.
         /// </summary>
         public static ValidatorEx Instance { get; private set; } = new ValidatorEx(ValidationFeatures.All);
+    }
+
+
+    /// <summary>
+    /// Validator that treats everything as valid.
+    /// </summary>
+    public class NullValidatorEx : ValidatorEx
+    {
+        public NullValidatorEx(ValidationFeatures features = ValidationFeatures.All)
+        {
+            SupportedFeatures = features;
+        }
+
+        #region Validate Object
+
+        /// <summary>
+        /// Validate the given object (all properties).
+        /// If null, it is treated as valid.
+        /// </summary>
+        /// <param name="instance">The object to be validated. null is treated as valid.</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
+        public override bool TryValidateObject(object instance, ValidationResults results)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Throw an exception if the given object has an invalid value.
+        /// </summary>
+        /// <param name="instance">The object to be validated.</param>
+        public override void ValidateObject(object instance)
+        {
+        }
+
+        #endregion
+
+        #region Validate Property
+
+        /// <summary>
+        /// Validate a specified property of an object (i.e. test that its current value is valid).
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="propertyName">The name of the property to be validated (case-sensitive).</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
+        public override bool TryValidateProperty(object instance, string propertyName, ValidationResults results)
+        {
+//            instance.ArgNotNull(nameof(instance));
+            return true;
+        }
+
+        /// <summary>
+        /// Validate a specified property of an object (i.e. test that its current value is valid).
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="propertyName">The property to be validated.</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
+        public override bool TryValidateProperty(object instance, PropertyInfo property, ValidationResults results)
+        {
+//            instance.ArgNotNull(nameof(instance));
+            return true;
+        }
+
+        /// <summary>
+        /// Throw an exception if the given property has an invalid value.
+        /// </summary>
+        /// <param name="instance">The object on which the property is to be validated.</param>
+        /// <param name="propertyName">The name of the member (usually a property) of <paramref name="instance"/> to be validated.</param>
+        public override void ValidateProperty(ref object instance, string propertyName)
+        {
+        }
+
+        #endregion
+
+        #region Validate Value
+
+        /// <summary>
+        /// Throw an exception if the given value is invalid for the specified property (i.e. if it would not be valid to assign it to that property).
+        /// </summary>
+        /// <param name="value">The value to be validated.</param>
+        /// <param name="propertyName">The name of the property (of type <typeparamref name="T"/>).</param>
+        /// <typeparam name="T">The type that this property is on.</typeparam>
+        public override void ValidateValueForProperty<T>(ref object value, string propertyName)
+        {
+        }
+
+        /// <summary>
+        /// Throw an exception if the given value is invalid for the specified property.
+        /// </summary>
+        /// <param name="value">The object on which the property is to be validated.</param>
+        /// <param name="propertyName">The name of the member (usually a property) of <paramref name="value"/> to be validated.</param>
+        public override void ValidateValue<TValue>(object instance, ref TValue value, string propertyName)
+        {
+//            instance.ArgNotNull(nameof(instance));
+        }
+
+        /// <summary>
+        /// Throw an exception if the given value is invalid for the specified property.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="property"></param>
+        /// <returns>true if a validator modified the value.</returns>
+        public override bool ValidateValue<TValue>(object instance, ref TValue value, MemberInfo property)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Set a referenced item (<paramref name="targetValue"/>) to the given <paramref name="value"/>,
+        /// if it is valid. (If it is not valid, an exception is thrown and <paramref name="targetValue"/> is not set.
+        /// <para>This is useful when setting a field in a property setter.</para>
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="targetValue"></param>
+        /// <param name="value"></param>
+        /// <param name="instance"></param>
+        /// <param name="propertyName"></param>
+        //| Could be called SetPropertyValue.
+        //| Could make this an extension method in another namespace (so that it is seen only in code files that need it).
+        //| Could inspect stack to get property name (assuming that this is being called from the setter)? Could set a field located by a naming convention?
+        public override void SetValue<TValue>(object instance, ref TValue targetValue, TValue value, string propertyName)
+        {
+        }
+
+        /// <summary>
+        /// Validate the given value as a value to be assigned to the given property.
+        /// </summary>
+        /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
+        /// <param name="member">The member (usually a property) to be validated.</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        public override bool TryValidateValue(object instance, object value, MemberInfo member, ValidationResults results)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Validate a value according to a set of attributes.
+        /// </summary>
+        /// <param name="value">The value to be validated.</param>
+        /// <param name="attributes">The attributes providing the validation rules.</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <param name="memberName">The name of the member being validated.</param>
+        /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
+        public override bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results, string memberName = null, string displayName = null)
+        {
+            return true;
+        }
+
+        #endregion
 
     }
 

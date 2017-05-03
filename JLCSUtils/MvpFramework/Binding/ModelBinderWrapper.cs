@@ -110,10 +110,12 @@ namespace MvpFramework.Binding
             return new ModelPropertyBinder(Model, propertName);
         }
 
+        /*
         /// <summary>
         /// Get the title of the view, if applicable.
         /// Returns null if the model does not define this.
         /// </summary>
+        [Obsolete]
         public virtual string Title
         {
             get
@@ -122,7 +124,17 @@ namespace MvpFramework.Binding
                 return titleProperty?.GetValue(Model)?.ToString();
             }
         }
+        */
 
+        /// <summary>
+        /// Returns the model as an object, if supported.
+        /// Returns null if this type of model does not support it.
+        /// </summary>
+        public virtual object AsObject => Model;
+
+        /// <summary>
+        /// The underlying Model object.
+        /// </summary>
         protected readonly object Model;
     }
 

@@ -23,10 +23,15 @@ namespace MvpFramework.Binding
             this.DiResolver = diResolver;
         }
 
+        /// <summary>
+        /// Create a binder for the given control.
+        /// </summary>
+        /// <param name="control">The control to get a binder for.</param>
+        /// <returns>The binder for the given control, or null if the control is not to be bound.</returns>
         public virtual IControlBinder Create(object control)
         {
             if (DiResolver != null)
-            {
+            {   // Look for a registered binder:
                 var binder = GetBinderForControl(control);
                 if (binder != null)
                     return binder;
@@ -38,6 +43,7 @@ namespace MvpFramework.Binding
                 return new AttributedControlBinder(control);
             else
                 return FallbackBinder(control);
+
             //TODO:
             // We could return different classes based on a mapping from Control classes to IControlBinder implementations.
             // - by a naming convention;
@@ -47,7 +53,11 @@ namespace MvpFramework.Binding
             // Cache the mappings.
         }
 
-
+        /// <summary>
+        /// Create a binder for a given control based using its mapped binder type.
+        /// </summary>
+        /// <param name="control">The control to get a binder for.</param>
+        /// <returns>The binder for the given control, or null if none is found.</returns>
         public virtual IControlBinder GetBinderForControl(object control)
         {
             var binderClass = BinderClassMappings.TryGetValue(control.GetType());
@@ -60,12 +70,21 @@ namespace MvpFramework.Binding
                 return null;
         }
 
+        /// <summary>
+        /// Return a default binder for a control. To be used when other methods have failed.
+        /// </summary>
+        /// <param name="control">The control to get a binder for.</param>
+        /// <returns>The binder for the given control, or null if the control is not to be bound.</returns>
         protected virtual IControlBinder FallbackBinder(object control)
         {
             return GeneralControlBinder.TryCreateBinder(control as Control, () => DiResolver.GetInstance<IMessageDialogService>(typeof(IMessageDialogService)));
             //TODO: Avoid the reference to IMessageDialogService (by populating method arguments from DI by reflection).
         }
 
+        /// <summary>
+        /// Populate the mappings of control types to binder types.
+        /// </summary>
+        /// <param name="assm"></param>
         public virtual void Scan(Assembly assm)
         {
             foreach(var t in assm.GetTypes().Where(t => t.IsDefined<ControlBinderAttribute>(false)))

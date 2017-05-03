@@ -35,12 +35,19 @@ namespace MvpFramework.Dialog
     /// Category of message.
     /// </summary>
     [Immutable]  // This must be immutable since instances are used like constants.
+    [DefaultDialogModelType(typeof(MessageDialogModel<string>))]
     public class MessageDialogType
     {
+        /// <summary>
+        /// Conventioanl suffix for names of subclasses of this.
+        /// </summary>
+        /// <seealso cref="MessageDialogModel{TResult}.ClassNameSuffix"/>
+        public const string ClassNameSuffix = "DialogType";
+
         public MessageDialogType(string id, IOptionCollection options, string description = null)
         {
             if (id == null)
-                id = GetType().Name.RemoveSuffix("DialogType");
+                id = GetType().Name.RemoveSuffix(ClassNameSuffix);
 
             Id = id;
             Icon = id;
@@ -161,40 +168,6 @@ namespace MvpFramework.Dialog
 
         #endregion
 
-    }
-
-    /// <summary>
-    /// Associates a class (such as a dialog type) with an exception type.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class,
-        AllowMultiple = true,            // Mutlitple exceptions can be mapped to the same type.
-        Inherited = false)]              // Not inherited because the exception is mapped to a specific level in the inheritance heirarchy.
-    public class MappedExceptionAttribute: Attribute
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="exceptionClass"><see cref="ExceptionClass"/></param>
-        public MappedExceptionAttribute(Type exceptionClass)
-        {
-            this.ExceptionClass = exceptionClass;
-        }
-
-        /// <summary>
-        /// The exception type being mapped.
-        /// Must be <see cref="System.Exception"/> or a subclass of it.
-        /// </summary>
-        public virtual Type ExceptionClass
-        {
-            get { return _exceptionClass; }
-            set
-            {
-                if (_exceptionClass.IsSubclassOf(typeof(Exception)))
-                    _exceptionClass = value;
-                else
-                    throw new ArgumentException(nameof(MappedExceptionAttribute) + "." + nameof(ExceptionClass) + " must be a subclass of Exception");
-            }
-        }
-        private Type _exceptionClass;
     }
 
     /// <summary>
@@ -336,14 +309,14 @@ namespace MvpFramework.Dialog
     }
 
     /// <summary>
-    /// An error due to something internal to the system, (apparently) not caused by the user, nor the environment,
+    /// An error due to something internal to the system, (apparently) not (directly) caused by the user, nor the environment,
     /// e.g. an invalid state that must be the result of a bug, or an assertion failure.
     /// (An error that should never happen.)
     /// </summary>
     [MappedException(typeof(InternalErrorException))]     // explicitly an internal error.
+    [MappedException(typeof(AccessViolationException))]
     // Some of the following might be caused indirectly by user input, but then they should be validated before causing these exceptions,
-    // so these exceptions still indicate an internal failure (even if it just poor validation):
-    [MappedException(typeof(AccessViolationException))]   
+    // so these exceptions still indicate an internal failure (even if it is just poor validation):
     [MappedException(typeof(IndexOutOfRangeException))]
     [MappedException(typeof(NullReferenceException))]
     [MappedException(typeof(ArgumentException))]  // could be treated as either user error (based on the assumption that the argument came from the user originally) or internal error.
@@ -368,7 +341,16 @@ namespace MvpFramework.Dialog
     {
         public const string Yes = "Yes";
         public const string No = "No";
+        /// <summary>
+        /// A 'Cancel' button: 
+        /// Cancels an action.
+        /// </summary>
         public const string Cancel = "Cancel";
+        /// <summary>
+        /// An 'Ok' button:
+        /// Commonly used when there is only one button,
+        /// and may confirm an action.
+        /// </summary>
         public const string Ok = "Ok";
         public const string Abort = "Abort";
         public const string Retry = "Retry";

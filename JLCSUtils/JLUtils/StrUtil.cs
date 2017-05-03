@@ -6,6 +6,9 @@ using System.Text;
 using JohnLambe.Util.Text;
 using System.Diagnostics.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Windows;
+using JohnLambe.Types;
+using JohnLambe.Util.Diagnostic;
 
 namespace JohnLambe.Util
 {
@@ -821,7 +824,7 @@ namespace JohnLambe.Util
         /// <param name="s"></param>
         /// <param name="characters"></param>
         /// <returns></returns>
-        public static bool ContainsAnyCharacters(this string s, ISet<char> characters)
+        public static bool ContainsAnyCharacters([Nullable]this string s, ISet<char> characters)
         {
             if (s == null || characters == null)
                 return false;      // it can't contain any of them
@@ -856,13 +859,14 @@ namespace JohnLambe.Util
         /// <summary>
         /// Repeat this string <paramref name="count"/> times.
         /// </summary>
-        /// <param name="s"></param>
+        /// <param name="s">The string to repeat. If null, null is returned.</param>
         /// <param name="count">The number of times to repeat.
         /// 0 is valid (returns "").</param>
         /// <returns><paramref name="s"/> repeated <paramref name="count"/> times.</returns>
         /// <exception cref="ArgumentException">If count is negative.</exception>
         // SQL: Replicate
-        public static string Repeat(this string s, int count)
+        [return: Nullable]
+        public static string Repeat([Nullable]this string s, int count)
         {
             if (count < 0)
                 throw new ArgumentException(nameof(count), "StrUtils.Repeat: 'count' cannot be negative (was " + count + ")");
@@ -946,6 +950,59 @@ namespace JohnLambe.Util
         #endregion
 
         /// <summary>
+        /// Return the substring between the first occurrence of any character in <param name="startDelimiters"/>
+        /// and the next occurence after that of any character in <param name="endDelimiters"/>.
+        /// The delimiter characters are not included.
+        /// If either the start or end delimiter (when not null) is not found, null is returned.
+        /// </summary>
+        /// <param name="s">The string to find a substring in. If null, null is returned.</param>
+        /// <param name="startDelimiters">Delimiter characters for the start of the substring, or null for the start of the string.</param>
+        /// <param name="endDelimiters">Delimiter characters for the end of the substring, or null for the end of the string.</param>
+        /// <param name="delimitersOptional">Iff true, if the starting delimiter is not found, the start of the string is the start of the substring,
+        /// and if the ending delimiter is not found, the end of the string is the end of the substring.</param>
+        /// <returns>the substring, or null if not found.</returns>
+        [return: Nullable]
+        public static string ExtractDelimited([Nullable]this string s, char[] startDelimiters, char[] endDelimiters = null, bool delimitersOptional = false)
+        {
+            if (s == null)
+                return null;
+
+            int start = startDelimiters == null ? 0 : s.IndexOfAny(startDelimiters);
+            if (start == -1)
+            {
+                if (delimitersOptional)
+                    start = 0;
+                else
+                    return null;
+            }
+
+            int end = endDelimiters == null ? s.Length : s.IndexOfAny(endDelimiters, start + 1);
+            if (end == -1)
+            { 
+                if (delimitersOptional)
+                    end = s.Length;
+                else
+                    return null;
+            }
+
+            return s.Substring(start, end - start);
+
+            /*
+            StringBuilder sb = new StringBuilder(s.Length);
+            foreach(var c in s)
+            {
+                if (startDelimiters?.Contains(c) ?? true)   // delimiter found
+                    return sb.ToString();
+
+                if (endDelimiters.Contains(c))   // delimiter found
+                    return sb.ToString();
+                else
+                    sb.Append(c);
+            }
+            */
+        }
+
+        /// <summary>
         /// Replace a section of a string with another string (which may be a different length).
         /// <para>Similar to SQL 'stuff' function.</para>
         /// </summary>
@@ -1008,7 +1065,140 @@ namespace JohnLambe.Util
                     );
         }
 
-        public static string SafeSubstring(this string s, int start, int length)
+        #region Text Formatting
+        // These treat null as "".
+
+        /// <summary>
+        /// Truncates the string if it is longer than the specified length,
+        /// otherwise returns it unmodified.
+        /// </summary>
+        /// <param name="s">The string to truncate. If null, "" is returned.</param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        [return: NotNull]
+        public static string Truncate([Nullable]string s, int length)
+        {
+            if (s == null)
+                return "";
+            if (length >= s.Length)    // no truncation required
+                return s;
+            return s.Substring(0, length);
+        }
+
+        /// <summary>
+        /// Pad a string to the specified width, unless it is longer, in which case the original string is returned.
+        /// </summary>
+        /// <param name="s">The string to pad. null is treated the same as "".</param>
+        /// <param name="width">The required width. If negative, "" is returned.</param>
+        /// <param name="alignment">Which way to align the text.
+        /// <para>Note: When <see cref="TextAlignment.Justify"/>, SPACEs are replaced by the padding character.
+        /// If there are no SPACEs, it is just aligned left.
+        /// </para>
+        /// </param>
+        /// <param name="paddingChar">The character to pad width.</param>
+        /// <returns></returns>
+        public static string Pad([Nullable]this string s, int width, TextAlignment alignment = TextAlignment.Left, char paddingChar = ' ')
+        {
+            if (width <= 0)
+                return "";
+            s = s ?? "";
+            if (s.Length >= width)
+                return s;
+            switch (alignment)
+            {
+                case TextAlignment.Left:
+                    return s.PadRight(width, paddingChar);
+                case TextAlignment.Right:
+                    return s.PadLeft(width, paddingChar);
+                case TextAlignment.Center:
+                    return (CharacterUtil.Repeat(paddingChar, (width - s.Length) / 2) + s)  // add half the required space (rounded down) to the left
+                        .PadRight(width, paddingChar);                              // add the rest to the right
+                case TextAlignment.Justify:
+                    {
+                        // Determines the number of padding characters required, and replaces existing SPACEs,
+                        // so that the total width is the required width.
+                        // Padding of each space is even except for rounding.
+                        // Currently, multiple consecutive SPACEs are NOT treated as a single gap (so they get a multiple of the normal padding amount between words).
+                        // This may change in a later version.
+
+                        s = s.Trim();
+                        int gaps = s.CountCharacter(' ');
+                        int spaceToAdd = width - s.Length + gaps;   // total number of required SPACEs, including this already in the string
+
+                        StringBuilder sb = new StringBuilder(width);
+                        int remainingPadding = spaceToAdd;
+                        int remainingGaps = gaps;
+                        if (gaps == 0)   // if no gaps, it can't be justified
+                        {
+                            return Pad(s, width, TextAlignment.Left, paddingChar);
+                        }
+                        else
+                        {
+                            foreach (char c in s)
+                            {
+                                if (c == ' ')
+                                {
+                                    int thisSpace = remainingPadding / remainingGaps;
+                                    // at the last gap, remainingGaps==1, so all remaining padding to be added is added here.
+                                    remainingPadding -= thisSpace;
+                                    remainingGaps--;
+                                    sb.Append(paddingChar.Repeat(thisSpace));
+                                }
+                                else
+                                {
+                                    sb.Append(c);
+                                }
+                            }
+                        }
+                        s = sb.ToString();
+                        Diagnostics.Assert(s.Length == width, "StrUtil.Pad Justify output the wrong width");
+                        return s;
+                    }
+                default:
+                    Diagnostics.Fail("Unrecognised alignment option: " + alignment);
+                    return s;
+            }
+        }
+
+        /// <summary>
+        /// Makes the string exactly the specified width
+        /// (Pads the string to the specified width, and truncates it if is already longer than the specified width).
+        /// </summary>
+        /// <param name="s">The string to pad. null is treated the same as "".</param>
+        /// <param name="width">The required width. If negative, "" is returned.</param>
+        /// <param name="alignment">How the string is aligned, as with <see cref="Pad(string, int, TextAlignment, char)"/>.</param>
+        /// <param name="paddingChar">The character to pad width.</param>
+        /// <returns></returns>
+        [return: NotNull]
+        public static string PadFixedWidth([Nullable]this string s, int width, TextAlignment alignment = TextAlignment.Left, char paddingChar = ' ')
+        {
+            if (width <= 0)
+                return "";
+            s = s ?? "";
+            if (s.Length > width)
+                return Truncate(s, width);
+            else
+                return Pad(s, width, alignment, paddingChar);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Counts the number of occurrences of the given character in the string.
+        /// </summary>
+        /// <param name="s">The string to count characters in. if null, 0 is returned.</param>
+        /// <param name="charToCount"></param>
+        /// <returns></returns>
+        public static int CountCharacter([Nullable]this string s, char charToCount)
+        {
+            return s?.Where(c => c == charToCount).Count() ?? 0;
+            //| Would it be more efficient to write a loop?
+        }
+
+        #region SafeSubstring
+
+        [return: Nullable]
+        public static string SafeSubstring([Nullable]this string s, int start, int length)
         {
             if (s == null)
                 return null;
@@ -1020,7 +1210,8 @@ namespace JohnLambe.Util
             //TOOD: start < 0 ?
         }
 
-        public static string SafeSubstring(this string s, int start)
+        [return: Nullable]
+        public static string SafeSubstring([Nullable]this string s, int start)
         {
             if (s == null)
                 return null;
@@ -1028,5 +1219,7 @@ namespace JohnLambe.Util
                 return "";
             return s.Substring(start);
         }
+
+        #endregion
     }
 }

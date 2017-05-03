@@ -94,6 +94,7 @@ namespace JohnLambe.Util
         /// <exception cref="NullReferenceException">If this is not null.</exception>
         public static T NotNull<T>(this T value, string message = null, Type exceptionType = null)
             where T: class
+            // Restricted to reference types. See comment (in this position) on ArgNotNull regarding generic types.
         {
             return CheckNotNull(value, message, exceptionType);
         }
@@ -130,6 +131,8 @@ namespace JohnLambe.Util
         /// <exception cref="ArgumentNullException">If this is not null.</exception>
         public static T ArgNotNull<T>(this T value, string parameterName = null, string message = null)
             where T : class
+            // This is restricted to reference types, since it could be annoying to have the extension method appearing in intellisense for types that can't be null.
+            // It could be useful when T is a generic type, which may be a value or reference type. In that case CheckArgNotNull can be used.
         {
             return CheckArgNotNull(value, parameterName, message);
         }
@@ -150,6 +153,5 @@ namespace JohnLambe.Util
         }
 
     }
-
 
 }

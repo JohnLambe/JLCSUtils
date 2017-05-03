@@ -89,13 +89,6 @@ namespace MvpFramework
 
         #endregion
 
-        /*
-                public virtual Type GetModel(string modelName)
-                {
-                    return Type.GetType(modelName);  //TODO apply default namespace
-                }
-        */
-
         /// <summary>
         /// Get a presenter of a known concrete type.
         /// </summary>
@@ -119,7 +112,7 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// Same as <see cref="GetPresenterForModel{TPresenter, TModel}(TModel)"/> except that the types (generic type paramters to that method)
+        /// Same as <see cref="GetPresenterForModel{TPresenter, TModel}(TModel)"/> except that the types (generic type parameters to that method)
         /// are passed as parameters.
         /// </summary>
         /// <typeparam name="TPresenter"></typeparam>
@@ -267,7 +260,14 @@ namespace MvpFramework
         /// <summary>
         /// Assemblies to scan for resolving by Action / Model.
         /// </summary>
-        public virtual Assembly[] Assemblies { get; set; }
+        public virtual Assembly[] Assemblies
+        {
+            get { return _assemblies; }
+            set { _assemblies = value?.Distinct().ToArray(); }
+            // Note: Distinct() currently (2017?) preserves the order of elements, but its contract does not require this.
+            // This class currently does not require the order to be preserved, but preserving the order could be more intuitive for debugging.
+        }
+        private Assembly[] _assemblies;
 
         /*
         /// <summary>
@@ -289,13 +289,13 @@ namespace MvpFramework
         }
         */
 
-            /// <summary>
-            /// Get the View for a given Presenter.
-            /// </summary>
-            /// <typeparam name="TView"></typeparam>
-            /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
-            /// <param name="presenter"></param>
-            /// <returns></returns>
+        /// <summary>
+        /// Get the View for a given Presenter.
+        /// </summary>
+        /// <typeparam name="TView"></typeparam>
+        /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
+        /// <param name="presenter"></param>
+        /// <returns></returns>
         public virtual TView GetViewForPresenter<TView, TPresenter>(TPresenter presenter)
             where TView : IView
             where TPresenter : IPresenter

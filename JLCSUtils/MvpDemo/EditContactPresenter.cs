@@ -70,7 +70,17 @@ namespace MvpDemo
                 Message = "Confirmation message\nLine 2"
             });
         }
-        
+
+        [MvpHandler("Test")]
+        public void TestEventHandler()
+        {
+            UiController.ShowMessage(
+            new ConfirmationDialog()
+            {
+                Title = "TestEventHandler",
+                Message = "TestEventHandler"
+            });
+        }
 
         protected readonly IUiController UiController;
     }

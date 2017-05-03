@@ -136,7 +136,7 @@ namespace MvpFramework.Binding
             foreach (var method in target?.GetType().GetMethods())             // all methods
             {
                 foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()      // all attributes of each method
-                    .Where(a => a.Enabled && (handlerId == null || a.Id.Equals(handlerId))    // attributes for the specified handler on this method
+                    .Where(a => a.Enabled && (handlerId == null || (a.Id?.Equals(handlerId) ?? false))    // attributes for the specified handler on this method
                     && FilterMatches(filter,a.Filter))                // apply the filter
                     )              
                 {

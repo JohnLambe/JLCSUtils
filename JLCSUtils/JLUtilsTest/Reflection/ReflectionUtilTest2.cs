@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
@@ -17,24 +18,28 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void IsOverride_Method()
         {
-            Assert.IsTrue(ReflectionUtil.IsOverride(typeof(Level3).GetMethod("TestMethod")), "Override");
+            Multiple(
+                () => Assert.IsTrue(ReflectionUtil.IsOverride(typeof(Level3).GetMethod("TestMethod")), "Override"),
 
-            Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level1).GetMethod("TestMethod")), "Base virtual declaration");
+                () => Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level1).GetMethod("TestMethod")), "Base virtual declaration"),
 
-            Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level3).GetMethod("NonVirtualMethod")), "Non-virtual");
+                () => Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level3).GetMethod("NonVirtualMethod")), "Non-virtual")
+            );
         }
 
         [TestMethod]
         public void IsOverride_Property()
         {
-            Assert.IsTrue(ReflectionUtil.IsOverride(typeof(Level3).GetProperty("Property")), "Override");
+            Multiple(
+                () => Assert.IsTrue(ReflectionUtil.IsOverride(typeof(Level3).GetProperty("Property")), "Override"),
 
-            Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level1).GetProperty("Property")), "Base virtual declaration");
+                () => Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level1).GetProperty("Property")), "Base virtual declaration"),
 
-            Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level3).GetProperty("NonVirtualProperty")), "Non-virtual");
-            Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level4).GetProperty("NonVirtualProperty")), "Non-virtual, using subclass of the declaring one");  // GetProperty returns an instance with non-public members different to the one in the previouse case.
+                () => Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level3).GetProperty("NonVirtualProperty")), "Non-virtual"),
+                () => Assert.IsFalse(ReflectionUtil.IsOverride(typeof(Level4).GetProperty("NonVirtualProperty")), "Non-virtual, using subclass of the declaring one"),  // GetProperty returns an instance with non-public members different to the one in the previouse case.
 
-            Assert.IsTrue(ReflectionUtil.IsOverride(typeof(Level5).GetProperty("WriteOnlyProperty")), "write-only");
+                () => Assert.IsTrue(ReflectionUtil.IsOverride(typeof(Level5).GetProperty("WriteOnlyProperty")), "write-only")
+            );
         }
 
         #endregion
@@ -42,33 +47,39 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void GetBaseDefinition()
         {
-            Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level1).GetProperty("Property")), "base property");
+            Multiple(
+                () => Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level1).GetProperty("Property")), "base property"),
 
-            Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level3).GetProperty("Property")), "Override");
-            Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level4).GetProperty("Property")), "Override");
+                () => Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level3).GetProperty("Property")), "Override"),
+                () => Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level4).GetProperty("Property")), "Override"),
 
-            Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level5).GetProperty("Property")), "Override - two levels down");
+                () => Assert.AreEqual(typeof(Level1).GetProperty("Property"), ReflectionUtil.GetBaseDefinition(typeof(Level5).GetProperty("Property")), "Override - two levels down")
+            );
         }
 
         [TestMethod]
         public void GetOverriddenMethod()
         {
-            Assert.AreEqual(null, ReflectionUtil.GetOverriddenMethod(typeof(Level1).GetMethod("TestMethod")), "base property");
+            Multiple(
+                () => Assert.AreEqual(null, ReflectionUtil.GetOverriddenMethod(typeof(Level1).GetMethod("TestMethod")), "base property"),
 
-            Assert.AreEqual(typeof(Level1).GetMethod("TestMethod").GetDescription(), ReflectionUtil.GetOverriddenMethod(typeof(Level3).GetMethod("TestMethod")).GetDescription(), "Override");
+                () => Assert.AreEqual(typeof(Level1).GetMethod("TestMethod").GetDescription(), ReflectionUtil.GetOverriddenMethod(typeof(Level3).GetMethod("TestMethod")).GetDescription(), "Override"),
 
-            Assert.AreEqual(typeof(Level3).GetMethod("TestMethod").GetDescription(), ReflectionUtil.GetOverriddenMethod(typeof(Level5).GetMethod("TestMethod")).GetDescription(), "Override - two levels down");
+                () => Assert.AreEqual(typeof(Level3).GetMethod("TestMethod").GetDescription(), ReflectionUtil.GetOverriddenMethod(typeof(Level5).GetMethod("TestMethod")).GetDescription(), "Override - two levels down")
+            );
         }
 
         [TestMethod]
         public void GetOverriddenProperty()
         {
-            Assert.AreEqual(null, ReflectionUtil.GetOverriddenProperty(typeof(Level1).GetProperty("Property")), "base property");
+            Multiple(
+                () => Assert.AreEqual(null, ReflectionUtil.GetOverriddenProperty(typeof(Level1).GetProperty("Property")), "base property"),
 
-            Assert.AreEqual(typeof(Level1).GetProperty("Property").GetDescription(), ReflectionUtil.GetOverriddenProperty(typeof(Level3).GetProperty("Property")).GetDescription(), "Override");
-            Assert.AreEqual(typeof(Level1).GetProperty("Property").GetDescription(), ReflectionUtil.GetOverriddenProperty(typeof(Level4).GetProperty("Property")).GetDescription(), "Override, using subclass of declaring class");
+                () => Assert.AreEqual(typeof(Level1).GetProperty("Property").GetDescription(), ReflectionUtil.GetOverriddenProperty(typeof(Level3).GetProperty("Property")).GetDescription(), "Override"),
+                () => Assert.AreEqual(typeof(Level1).GetProperty("Property").GetDescription(), ReflectionUtil.GetOverriddenProperty(typeof(Level4).GetProperty("Property")).GetDescription(), "Override, using subclass of declaring class"),
 
-            Assert.AreEqual(typeof(Level3).GetProperty("Property").GetDescription(), ReflectionUtil.GetOverriddenProperty(typeof(Level5).GetProperty("Property")).GetDescription(), "Override - two levels down");
+                () => Assert.AreEqual(typeof(Level3).GetProperty("Property").GetDescription(), ReflectionUtil.GetOverriddenProperty(typeof(Level5).GetProperty("Property")).GetDescription(), "Override - two levels down")
+            );
         }
 
         #region GetDescription

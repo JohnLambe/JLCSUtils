@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Binding\ModelBinderWrapperTest.cs" />
     <Compile Include="Binding\MvpEventAttributeTest.cs" />
+    <Compile Include="Dialog\ExceptionToDialogMapTest.cs" />
     <Compile Include="Menu\MenuBuilderTest.cs" />
     <Compile Include="Menu\OptionCollectionBuilderTest.cs" />
     <Compile Include="RegistrationHelperTest.cs" />
@@ -67,6 +68,10 @@
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">
       <Project>{A6CC2DD9-BB55-4697-A6FF-8F43657A23DF}</Project>
       <Name>DiExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JLUtilsTest\JLUtilsTest.csproj">
+      <Project>{4657d479-5e37-4acd-bfdb-3d7b099ef67b}</Project>
+      <Name>JLUtilsTest</Name>
     </ProjectReference>
     <ProjectReference Include="..\JLUtils\JLUtils.csproj">
       <Project>{2C2E5049-976D-408F-A67D-1463271F3E98}</Project>

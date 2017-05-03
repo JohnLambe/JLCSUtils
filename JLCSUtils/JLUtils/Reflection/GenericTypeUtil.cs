@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -73,11 +74,12 @@ namespace JohnLambe.Util.Reflection
 
         /// <summary>
         /// If this is a nullable value type, the underlying type is returned, otherwise this type is returned.
+        /// If this is null, null is returned.
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static Type GetNonNullableType(this Type t)
-            => Nullable.GetUnderlyingType(t) ?? t;
+        public static Type GetNonNullableType([Nullable] this Type t)
+            => t==null ? null : Nullable.GetUnderlyingType(t) ?? t;
 
         /// <summary>
         /// If the given cannot be assigned null (i.e. if it is neither a nullable value type, nor a reference type),

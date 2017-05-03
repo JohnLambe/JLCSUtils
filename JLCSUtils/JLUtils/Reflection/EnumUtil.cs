@@ -148,14 +148,6 @@ namespace JohnLambe.Util.Reflection
     }
 
     /// <summary>
-    /// Flags that an enum constant (in an enum flagged with <see cref="HybridEnumAttribute"/>) should be trated as a flag.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class EnumFlagAttribute : EnumAttribute
-    {
-    }
-
-    /// <summary>
     /// Placed on a bitmask in an enum flagged with <see cref="HybridEnumAttribute"/>.
     /// Specifies how the bits specified by the value of the attributed item are interpreted.
     /// </summary>
@@ -164,18 +156,85 @@ namespace JohnLambe.Util.Reflection
     {
         /// <summary>
         /// Treat these bits as being this type.
-        /// The value of the bits (shifted to make the bring the least significant bit in the mask to bit position 0),
+        /// <para>If <see cref="bool"/>, it should be considered true iff ANDing the enum value with the enum constant value yeilds a non-zero value.</para>
+        /// <para>
+        /// For all other types, the value of the bits (shifted to bring the least significant bit in the mask to bit position 0),
         /// as an integer, is cast to this type.
+        /// </para>
         /// </summary>
         public virtual Type DataType { get; set; }
 
         /// <summary>
         /// Treat these bits as a signed (two's complement) value.
-        /// The value sign-extended (based on the most significant bit) before casting to <see cref="DataType"/>.
+        /// The value is sign-extended (based on the most significant bit) before casting to <see cref="DataType"/>.
         /// </summary>
         public virtual bool Signed { get; set; }
 
         // Shift?
     }
 
+    /// <summary>
+    /// Flags that an enum constant (in an enum flagged with <see cref="HybridEnumAttribute"/>) should be treated as a flag.
+    /// <para>This is the same as a Boolean <see cref="EnumHybridMemberAttribute"/>.</para>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EnumFlagAttribute : EnumHybridMemberAttribute
+    {
+        public EnumFlagAttribute()
+        {
+            DataType = typeof(bool);
+        }
+    }
+
+    /// <summary>
+    /// Flags that an enum constant should be treated as a mask,
+    /// i.e. it identifies a group of bits (its set bits) which serve a certain purpose,
+    /// or the result of ORing a collection or related flag enum constants (so that ANDing with this value extracts that set of flags).
+    /// </summary>
+    /// <remarks>This may be used by tools that provide a list of options based on an enum (so that the mask values can be omitted when
+    /// a list of the actual or flag values is required).</remarks>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EnumMaskAttribute : EnumAttribute
+    {
+    }
+
+    /// <summary>
+    /// Flags that an enum constant should be hidden in some list
+    /// (For example, for special values not shown in a user interface).
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EnumHiddenAttribute : EnumAttribute
+    {
+    }
+
+    /// <summary>
+    /// Flags that the attributed enum field represents a null/blank or similar value.
+    /// </summary>
+    /// <remarks>Tools may use this to represent the value as blank, or map it to null when converting to other types.</remarks>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EnumNullValueAttribute : EnumAttribute
+    {
+    }
+
+    /// <summary>
+    /// Flags that an enum field is a duplicate (i.e. there is another one with the same value),
+    /// and should be excluded from lists of unique values.
+    /// All duplicates except the preferred one (the one to use when showing only unique items) should have this attribute.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EnumDuplicateAttribute : EnumAttribute
+    {
+    }
+
+    /// <summary>
+    /// Flags an enum value as obsolete, i.e. supported only for backward compatibility.
+    /// </summary>
+    /// <remarks>Tools may use this to display it in a different style, or hide it.
+    /// Tools could use <see cref="ObsoleteAttribute"/> for this purpose too,
+    /// but it may be desirable to change the display of an item without generating compiler warnings for its use.
+    /// </remarks>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class EnumObsoleteAttribute : EnumAttribute
+    {
+    }
 }

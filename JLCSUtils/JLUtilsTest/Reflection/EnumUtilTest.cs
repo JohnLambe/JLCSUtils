@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using JohnLambe.Util.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
     [TestClass]
@@ -23,8 +25,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void HasAnyFlag()
         {
             System.AttributeTargets x = AttributeTargets.Class | AttributeTargets.Assembly;
-            Assert.IsTrue(x.HasAnyFlag(AttributeTargets.Class | AttributeTargets.Delegate));
-            Assert.IsFalse(x.HasAnyFlag(AttributeTargets.Method | AttributeTargets.ReturnValue));
+
+            Multiple(
+                () => Assert.IsTrue(x.HasAnyFlag(AttributeTargets.Class | AttributeTargets.Delegate)),
+                () => Assert.IsFalse(x.HasAnyFlag(AttributeTargets.Method | AttributeTargets.ReturnValue))
+            );
         }
 
         /// <summary>
@@ -50,8 +55,10 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void HasAnyFlagValidated()
         {
             System.ConsoleModifiers x = ConsoleModifiers.Control;
-            Assert.IsTrue(x.HasAnyFlag(ConsoleModifiers.Control | ConsoleModifiers.Alt));
-            Assert.IsFalse(x.HasAnyFlag(ConsoleModifiers.Alt));
+            Multiple(
+                () => Assert.IsTrue(x.HasAnyFlag(ConsoleModifiers.Control | ConsoleModifiers.Alt)),
+                () => Assert.IsFalse(x.HasAnyFlag(ConsoleModifiers.Alt))
+            );
         }
 
         [TestMethod]
