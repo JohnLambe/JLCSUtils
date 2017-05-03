@@ -14,6 +14,10 @@ using MvpFramework.Menu;
 
 namespace MvpFramework.WinForms
 {
+    /// <summary>
+    /// A control that holds a set of buttons, provided as an <see cref="IOptionCollection"/>,
+    /// or generated based on a Presenter.
+    /// </summary>
     public partial class ButtonContainer : UserControl, IControlBinderExt
     {
         public ButtonContainer()
@@ -316,6 +320,7 @@ namespace MvpFramework.WinForms
         [Description("Filters handles of the presenter.")]
         //[DefaultValue(null)]   // with no default, Form Designer can't set to null.
         public virtual string Filter { get; set; }
+        //| Could default to a value derived from Name.
 
         /// <summary>
         /// Default width of each button, in pixels.
@@ -437,9 +442,16 @@ namespace MvpFramework.WinForms
     }
 
 
+    /// <summary>
+    /// A layout and orientation of a row of buttons.
+    /// </summary>
+    /// <seealso cref="ButtonContainer"/>
     public enum ButtonContainerLayout
     {
-        LeftToRight,
+        /// <summary>
+        /// Horizontal row of buttons from left to right.
+        /// </summary>
+        LeftToRight = 1,
         RightToLeft,
         TopToBottom,
         BottomToTop,

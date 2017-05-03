@@ -61,6 +61,7 @@
     <Compile Include="FilterDelegates\NullableFilterDelegate.cs" />
     <Compile Include="ConfigProvider\IConfigProvider.cs" />
     <Compile Include="ConfigProvider\IconReposityConfigProvider.cs" />
+    <Compile Include="Interfaces\CommonInterfaces.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />

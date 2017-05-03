@@ -26,11 +26,11 @@ namespace MvpFrameworkTest.Dialog
             // Act / Assert:
 
             Multiple(
-                () => Assert.AreEqual(typeof(ErrorDialog), map.GetDialogTypeForExceptionType(typeof(Exception))),
-                () => Assert.AreEqual(typeof(ErrorDialog), map.GetDialogTypeForExceptionType(typeof(System.NullReferenceException))),
+                () => Assert.AreEqual(typeof(ErrorDialogType), map.GetDialogTypeForExceptionType(typeof(Exception))),
+                () => Assert.AreEqual(typeof(ErrorDialogType), map.GetDialogTypeForExceptionType(typeof(System.NullReferenceException))),
 
-                () => Assert.AreEqual(typeof(ConfirmationDialog), map.GetDialogTypeForExceptionType(typeof(System.IO.IOException))),
-                () => Assert.AreEqual(typeof(ConfirmationDialog), map.GetDialogTypeForExceptionType(typeof(System.IO.FileNotFoundException)))
+                () => Assert.AreEqual(typeof(ConfirmationDialogType), map.GetDialogTypeForExceptionType(typeof(System.IO.IOException))),
+                () => Assert.AreEqual(typeof(ConfirmationDialogType), map.GetDialogTypeForExceptionType(typeof(System.IO.FileNotFoundException)))
             );
         }
 
