@@ -6,17 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
     [TestClass]
     public class ReflectionUtilTest
     {
-        [TestMethod]
-        public void GetPropertyValue()
+        protected ClassForTest CreateTestObject()
         {
-            // Arrange:
-
             var x = new ClassForTest();
             x.Property1 = new ClassForTest();
             x.Property2 = 900;
@@ -24,11 +22,93 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             x.Property1.Property1 = new ClassForTest();
             x.Property1.Property1.Property3 = "asdf";
 
+            return x;
+        }
+
+        [TestMethod]
+        public void GetPropertyValue()
+        {
+            // Arrange:
+            var x = CreateTestObject();
+
             // Act / Assert:
 
             Assert.AreEqual(900, ReflectionUtil.TryGetPropertyValue<int>(x, "Property2"), "Failed on first level");
             Assert.AreEqual(12345, ReflectionUtil.TryGetPropertyValue<int>(x, "Property1.Property2"), "Failed on second level");
             Assert.AreEqual(4, ReflectionUtil.TryGetPropertyValue<int>(x, "Property1.Property1.Property3.Length"));
+        }
+
+        [TestMethod]
+        public void GetPropertyValue_Nullability_PropertyDoesNotExist()
+        {
+            // Arrange:
+            var x = CreateTestObject();
+
+            // Act / Assert:
+
+            // Nullable:
+            Multiple(
+                // Primitive value:
+
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2.NonExistant"), "first level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2.NonExistant.NonExistant2"), "2nd level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2?.NonExistant.NonExistant2"), "3rd level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2?.NonExistant?.NonExistant2"), "3rd level"),
+
+                // Non-nullable first part:
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2!.NonExistant")),
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2!.NonExistant.NonExistant2")),
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2!.NonExistant?.NonExistant2")),
+
+                () =>
+                    AssertThrows<KeyNotFoundException>(() =>
+                        ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2@.NonExistant")),
+                () =>
+                AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property2@.NonExistant.NonExistant2")),
+
+                // Object value:
+
+                // Nullable:
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1.NonExistant"), "first level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1.NonExistant.NonExistant2"), "2nd level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1?.NonExistant.NonExistant2"), "3rd level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1?.NonExistant?.NonExistant2"), "3rd level"),
+
+                // Non-nullable first part:
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant")),
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant.NonExistant2")),
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant?.NonExistant2")),
+
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1@.NonExistant")),
+                () => AssertThrows<KeyNotFoundException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1@.NonExistant.NonExistant2"))
+            );
+        }
+
+        [TestMethod]
+        public void GetPropertyValue_Nullability_Null()
+        {
+            // Arrange:
+            var x = CreateTestObject();
+            x.Property1 = null;
+
+            // Act / Assert:
+
+            Multiple(
+                // Primitive value:
+
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<object>(x, "Property1@.Property2"), "first level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<ClassForTest>(x, "Property1@.Property1@.NonExistant2"), "2nd level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1?.NonExistant!.NonExistant2"), "3rd level"),
+
+                // These succeed because the non-nullable part is not reached:
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1?.NonExistant@.NonExistant2"), "3rd level"),
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1?.NonExistant.NonExistant2!"), "3rd level"),
+
+                // Non-nullable first part: (similar to other tests in GetPropertyValue_Nullability_PropertyDoesNotExist, except this time it should throw NullReferenceException rather than KeyNotFoundException).
+                () => AssertThrows<NullReferenceException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant")),
+                () => AssertThrows<NullReferenceException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant.NonExistant2"))
+            );
+
         }
 
         [TestMethod]

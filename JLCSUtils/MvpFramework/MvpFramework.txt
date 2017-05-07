@@ -45,6 +45,9 @@ TODO:
 	WinForms controls:
 		*WinForms Validation events
 		ValidationMode
+		Menus:
+			Popup menu bound similarly to ButtonContainer.
+			Main menu.
 	Binding Validation:
 		Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
 		Throw exception when a presenter handler cannot be bound.
@@ -55,15 +58,19 @@ TODO:
 		Presenter Interface: Consumer of presenter would reference Presenter type.
 			Less clear separation of concerns between presenters. Would typically require the View interface and model type to be public (visible to presenter consumer) since they are typcially generic parameters.
 		View Interface?: Presenter would reference View concrete type. Not recommended.
-
+	Binding that doesn't need require matching string literals (works with refactoring tools):
+		Event to return method name (implementations would use nameof).
+		Generate code using nameof? - CodeDOM doesn't seem to support it.
+			Generate in new partial class?
 
 Possible additions:
-	Map handlers (by ID) to events on View Interface? [MvpEvent]
 	Rejected: Map handlers (by ID) from the view to methods on the Presenter Interface?
+	Bind poco view which doesn't have to implement any interface (using attributes) ?
 
 To Test:
 	RefreshView(Control)  - to refresh control and children from model.
 	Provide the ability to declare a property on the View to recieve the model (without the View having a type parameter).
+	Map handlers (by ID) to events on View Interface? [MvpEvent]
 
 Done:
 	ViewBase.Bind: Could move most of the binding code from the View to the framework.

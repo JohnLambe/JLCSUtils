@@ -10,7 +10,7 @@ namespace MvpFramework
     /// <summary>
     /// Base class for attributes that flag a class as a Presenter or View to be registered automatically.
     /// </summary>
-    public abstract class MvpClassAttribute : MvpAttributeBase
+    public abstract class MvpClassAttribute : MvpEnabledAttributeBase
     {
         /// <summary>
         /// The Presenter/View Interface, that the DI container should map to the attributed class.
@@ -110,7 +110,7 @@ namespace MvpFramework
         AllowMultiple = true,     // could be used for multiple model types
         Inherited = false         // the attribute is defined at the level at which mappings are declared. Mappings may not be declared at lower levels in the hierarchy.
         )]
-    public class ActionInterfaceAttribute : MvpAttributeBase
+    public class ActionInterfaceAttribute : MvpEnabledAttributeBase
     {
         /// <summary>
         /// The type of model handled.

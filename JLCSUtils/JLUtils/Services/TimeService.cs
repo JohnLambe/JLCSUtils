@@ -74,7 +74,7 @@ namespace MvpFramework.Services
         /// <summary>
         /// The requested time interval expired.
         /// </summary>
-        Expired,
+        Expired = 1,
         /// <summary>
         /// Something caused it to return early.
         /// </summary>

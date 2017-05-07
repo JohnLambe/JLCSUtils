@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Binding\!NamespaceDoc.cs" />
     <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
@@ -52,12 +53,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Binding\ViewControlBinder.cs" />
+    <Compile Include="Dialog\!NamespaceDoc.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
     <Compile Include="Dialog\ExceptionToDialogMap.cs" />
     <Compile Include="IPresenter.cs" />
+    <Compile Include="Menu\!NamespaceDoc.cs" />
     <Compile Include="QueryGenerator.cs" />
+    <Compile Include="WinForms\!NamespaceDoc.cs" />
     <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
     <Compile Include="MvpUiComponentConsts.cs" />
+    <Compile Include="WinForms\Binding\!NamespaceDoc.cs" />
     <Compile Include="WinForms\Binding\GeneralControlBinder.cs" />
     <Compile Include="Binding\HandlerResolver.cs" />
     <Compile Include="Binding\ModelBinderWrapper.cs" />
@@ -105,6 +110,7 @@
     <Compile Include="WinForms\ButtonContainer.Designer.cs">
       <DependentUpon>ButtonContainer.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForms\Controls\!NamespaceDoc.cs" />
     <Compile Include="WinForms\Controls\MvpButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -170,8 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MvpFramework.txt" />
-    <Content Include="WinForms\!ReadMe.txt" />
-    <Content Include="WinForms\Util\!ReadMe.txt" />
+    <Compile Include="WinForms\Util\!NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

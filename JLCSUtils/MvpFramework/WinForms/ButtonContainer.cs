@@ -165,6 +165,10 @@ namespace MvpFramework.WinForms
                 Controls[0].Dispose();
             }
             _nextButtonCoords = new Point();
+
+            // Remove handlers for changes to the model:
+            foreach (var buttonModel in Buttons.Children)
+                buttonModel.Changed -= ButtonModel_Changed;
         }
 
         /// <summary>
@@ -173,14 +177,31 @@ namespace MvpFramework.WinForms
         /// <param name="buttonModel"></param>
         protected virtual void AddButton(MenuItemModel buttonModel)
         {
-            Control button = CreateButtonControl(buttonModel);
+            if (buttonModel.Visible)
+            {
+                Control button = CreateButtonControl(buttonModel);
 
-            button.Click += (sender, args) => Button_Click(sender, new ButtonClickedEventArgs(buttonModel));
+                button.Click += (sender, args) => Button_Click(sender, new ButtonClickedEventArgs(buttonModel));
 
-            PopulateButton(button, buttonModel);
+                buttonModel.Tag = button;
 
-            if (button.Parent == null)   // if an overridden PopulateButton assigns Parent, keep its value
-                button.Parent = this;
+                PopulateButton(button, buttonModel);
+
+                if (button.Parent == null)   // if an overridden PopulateButton assigns Parent, keep its value
+                    button.Parent = this;
+            }
+
+            buttonModel.Changed += ButtonModel_Changed;   // attach this handler even if not visible, so that we will be notified if it becomes Visible
+        }
+
+        /// <summary>
+        /// Fired when the model of a button changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        protected virtual void ButtonModel_Changed(MenuItemModel sender, MenuItemModel.ChangedEventArgs args)
+        {
+
         }
 
         /// <summary>
@@ -248,6 +269,8 @@ namespace MvpFramework.WinForms
 
             button.Location = _nextButtonCoords;
             button.Anchor = ButtonAnchor;
+
+            button.Enabled = buttonModel.Enabled;
 
             switch (Orientation)
             {

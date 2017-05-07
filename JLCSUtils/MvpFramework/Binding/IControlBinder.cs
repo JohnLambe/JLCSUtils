@@ -4,6 +4,7 @@ using System;
 using JohnLambe.Util.Collections;
 using System.Reflection;
 using System.Linq;
+using MvpFramework.Menu;
 
 namespace MvpFramework.Binding
 {
@@ -51,4 +52,18 @@ namespace MvpFramework.Binding
     public interface IControlBinderFactory : IFactory<IControlBinder, object>
     {
     }
+
+
+/*
+    public interface IMvpBinding
+    {
+        IControlBinderFactory ControlBinderFactory { get; }
+        IPresenterBinderInterface PresenterBinderInterface { get; }
+    }
+
+    public interface IPresenterBinderInterface
+    {
+        MenuItemModel GetOption(string id);
+    }
+*/
 }

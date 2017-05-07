@@ -267,6 +267,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         /// Run multiple tests, report the results to Console output,
         /// and report the worst outcome as the outome of this test.
         /// <para>The InnerException of the exception thrown is the exception thrown on the first failed test.</para>
+        /// <para>The tests are run in series, in the order given.</para>
         /// </summary>
         /// <param name="delegates">The tests to be run.</param>
         /// <exception/>

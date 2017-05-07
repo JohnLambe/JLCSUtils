@@ -13,45 +13,164 @@ namespace MvpFramework.Services
     /// </summary>
     public interface IEnvironmentBasicService
     {
+        /// <summary>
+        /// <see cref="Environment.MachineName"/>.
+        /// </summary>
         string MachineName { get; }
+
+        /// <summary>
+        /// <see cref="Environment.HasShutdownStarted"/>.
+        /// </summary>
         bool HasShutdownStarted { get; }
+
+        /// <summary>
+        /// <see cref="Environment.Is64BitOperatingSystem"/>.
+        /// </summary>
         bool Is64BitOperatingSystem { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.Is64BitProcess"/>.
+        /// </summary>
         bool Is64BitProcess { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.NewLine"/>.
+        /// </summary>
         string NewLine { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.OSVersion"/>.
+        /// </summary>
         OperatingSystem OSVersion { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.ProcessorCount"/>.
+        /// </summary>
         int ProcessorCount { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.UserDomainName"/>.
+        /// </summary>
         string UserDomainName { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.UserInteractive"/>.
+        /// </summary>
         bool UserInteractive { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.UserName"/>.
+        /// </summary>
         string UserName { get; }
     }
 
     public interface IEnvironmentService : IEnvironmentBasicService
     {
+        /// <summary>
+        /// <see cref="Environment.CommandLine"/>.
+        /// </summary>
         string CommandLine { get; }
+
+        /// <summary>
+        /// <see cref="Environment.CurrentDirectory"/>.
+        /// </summary>
         string CurrentDirectory { get; /*set;*/ }
-        //int CurrentManagedThreadId { get; }
-        //int ExitCode { get; set; }
-        //string StackTrace { get; }
+
+        /// <summary>
+        /// <see cref="Environment.CurrentManagedThreadId"/>.
+        /// </summary>
+        int CurrentManagedThreadId { get; }
+
+        /// <summary>
+        /// <see cref="Environment.ExitCode"/>.
+        /// </summary>
+        int ExitCode { get; set; }
+
+        /// <summary>
+        /// <see cref="Environment.StackTrace"/>.
+        /// </summary>
+        string StackTrace { get; }
+        
+        /// <summary>
+        /// <see cref="Environment.SystemDirectory"/>
+        /// </summary>
         string SystemDirectory { get; }
+
+        /// <summary>
+        /// <see cref="Environment.SystemPageSize"/>
+        /// </summary>
         int SystemPageSize { get; }
+
         //int TickCount { get; }  // Use ITimeService
+
+        /// <summary>
+        /// <see cref="Environment.Version"/>
+        /// </summary>
         Version Version { get; }
+
+        /// <summary>
+        /// <see cref="Environment.WorkingSet"/>
+        /// </summary>
         long WorkingSet { get; }
 
         //void Exit(int exitCode);
+
+        /// <summary>
+        /// <see cref="Environment.ExpandEnvironmentVariables(string)"/>
+        /// </summary>
         string ExpandEnvironmentVariables(string name);
-        void FailFast(string message);
-        void FailFast(string message, Exception exception);
+
+        /// <summary>
+        /// <see cref="Environment.FailFast(string, Exception)"/>
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        void FailFast(string message, Exception exception = null);
+        
+        /// <summary>
+        /// <see cref="Environment.GetCommandLineArgs"/>
+        /// </summary>
+        /// <returns></returns>
         string[] GetCommandLineArgs();
-        string GetEnvironmentVariable(string variable);
-        string GetEnvironmentVariable(string variable, EnvironmentVariableTarget target);
-        IDictionary GetEnvironmentVariables();
-        IDictionary GetEnvironmentVariables(EnvironmentVariableTarget target);
-        string GetFolderPath(SpecialFolder folder);
-        string GetFolderPath(SpecialFolder folder, SpecialFolderOption option);
+        
+        /// <summary>
+        /// <see cref="Environment.GetEnvironmentVariable(string, EnvironmentVariableTarget)"/>
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        string GetEnvironmentVariable(string variable, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process);
+        
+        /// <summary>
+        /// <see cref="Environment.GetEnvironmentVariable(string, EnvironmentVariableTarget)"/>
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        IDictionary GetEnvironmentVariables(EnvironmentVariableTarget target = EnvironmentVariableTarget.Process);
+        
+        //string GetFolderPath(SpecialFolder folder);
+        /// <summary>
+        /// <see cref="Environment.GetFolderPath(SpecialFolder, SpecialFolderOption)"/>
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        string GetFolderPath(SpecialFolder folder, SpecialFolderOption option = SpecialFolderOption.None); //TODO: Check that this is default for the other overload
+
+        /// <summary>
+        /// <see cref="Environment.GetLogicalDrives"/>
+        /// </summary>
+        /// <returns></returns>
         string[] GetLogicalDrives();
-        void SetEnvironmentVariable(string variable, string value);
-        void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target);
+
+        //void SetEnvironmentVariable(string variable, string value);
+        /// <summary>
+        /// <see cref="Environment.SetEnvironmentVariable(string, string, EnvironmentVariableTarget)"/>
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process); //TODO: Check that this is default for the other overload
     }
 
 
@@ -81,6 +200,7 @@ namespace MvpFramework.Services
         public virtual string UserName => Environment.UserName;
     }
 
+
     /// <summary>
     /// A class that holds environmental parameters (details provided by the <see cref="System.Environment"/> class), initially populated with those of the current system.
     /// This can be used to keep/store a copy of these details.
@@ -104,7 +224,7 @@ namespace MvpFramework.Services
 
         public virtual string UserDomainName { get; set; } = Environment.UserDomainName;
 
-        public bool UserInteractive { get; set; } = Environment.UserInteractive;
+        public virtual bool UserInteractive { get; set; } = Environment.UserInteractive;
 
         public virtual string UserName { get; set; } = Environment.UserName;
     }

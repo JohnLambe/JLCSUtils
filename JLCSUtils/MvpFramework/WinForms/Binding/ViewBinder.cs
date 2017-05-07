@@ -11,6 +11,7 @@ using MvpFramework.WinForms.Binding;
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util;
 using JohnLambe.Util.Collections;
+using MvpFramework.Menu;
 
 namespace MvpFramework.WinForms.Binding
 {
@@ -87,19 +88,7 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
         public virtual void RefreshView(Control control)
         {
-            if (control == null)
-            {
-                //TODO: Populate all bound properties of the View itself
-
-                //TODO: Bind by MvpEventAttribute
-
-                /*
-                var viewTitle = ModelBinder.Title;
-                if (viewTitle != null)
-                    View.Text = viewTitle;
-                */
-
-            }
+            //TODO: Provide a way to refresh only properties on the View itself ?
 
             if (Binders != null)
             {
@@ -120,6 +109,11 @@ namespace MvpFramework.WinForms.Binding
         public virtual void FireHandler(string handlerId, EventArgs args = null)
         {
             PresenterBinder.GetHandler(handlerId).Invoke(View, args ?? EventArgs.Empty);
+        }
+
+        public virtual MenuItemModel GetOption(string id)
+        {
+
         }
 
         /// <summary>

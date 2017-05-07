@@ -278,6 +278,11 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual bool? Checked { get; set; }  = null;
 
+        public virtual void Refresh()
+        {
+            Changed?.Invoke(this, new ChangedEventArgs(MenuItemChangeType.Refresh));
+        }
+
         //TODO: Could copy attribute to property:
         public virtual MenuAttributeBase Attribute { get; set; }  // may be null
                                                                   // so that properties of subclasses of the attribute can be used by a consumer of this class.
@@ -296,21 +301,25 @@ namespace MvpFramework.Menu
             /// </summary>
             None = 0,
             /// <summary>
+            /// Force a refresh of a user interface displaying the item.
+            /// </summary>
+            Refresh = 1,
+            /// <summary>
             /// A change other than those indicated by members of this enum.
             /// </summary>
-            Other = 1,
+            Other = 2,
             /// <summary>
             /// The DisplayName has changed.
             /// </summary>
-            Name = 2,
+            Name = 4,
             /// <summary>
             /// The Enabled state has changed.
             /// </summary>
-            Enabled = 4,
+            Enabled = 8,
             /// <summary>
             /// The Visible state has changed.
             /// </summary>
-            Visible = 8
+            Visible = 16,
         };
 
         /// <summary>
@@ -329,7 +338,7 @@ namespace MvpFramework.Menu
             {
                 ChangeType = changeType;
             }
-            public MenuItemChangeType ChangeType { get; protected set; }
+            public virtual MenuItemChangeType ChangeType { get; protected set; }
         }
 
         /// <summary>

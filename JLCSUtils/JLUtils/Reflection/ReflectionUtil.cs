@@ -223,13 +223,6 @@ namespace JohnLambe.Util.Reflection
 
         #region AssignProperty
 
-        /*
-        public static void AssignProperty(object target, string propertyName, object value)
-        {
-            AssignProperty(target, propertyName, value, false);
-        }
-        */
-
         /// <summary>
         /// Assign a specified property of the given object.
         /// </summary>
@@ -238,6 +231,8 @@ namespace JohnLambe.Util.Reflection
         /// <param name="value"></param>
         /// <param name="ignoreInvalid">Iff true, no exception is raised if the property does not exist.
         /// (Exceptions are still raised for invalid property values).</param>
+        [Obsolete("Use SetProperty")]
+        //TODO: Consider dropping, or making conversion logic the same as SetProperty.
         public static void AssignProperty(object target, string propertyName, object value, bool ignoreInvalid = false)
         {
             var property = target.GetType().GetProperty(propertyName);
@@ -496,12 +491,76 @@ namespace JohnLambe.Util.Reflection
         };
 
         /// <summary>
+        /// An option on a property referece, specifying how null or invalid values are handled.
+        /// <para>
+        /// In strings passed to <see cref="TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="GetSetProperty(ref object, string, PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
+        /// this is specified by a character (specified by <see cref="EnumMappedValueAttribute"/> here) after the property name.
+        /// </para>
+        /// </summary>
+        public enum PropertyNullabilityModifier
+        {
+            /// <summary>
+            /// No nullability modifier is present.
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// The value may be null and/or the property may not exist.
+            /// </summary>
+            [EnumMappedValue('?')]
+            Nullable = 1,
+            /// <summary>
+            /// The property must exist but may have a null value.
+            /// </summary>
+            [EnumMappedValue('@')]
+            ExistsNullable = 2,
+            /// <summary>
+            /// The value must not be null.
+            /// (The property must exist, since there couldn't be a non-null value otherwise.)
+            /// </summary>
+            [EnumMappedValue('!')]
+            NonNullable = 3
+        }        
+
+        /// <summary>
+        /// Parse a property name with an optional suffix for a modifier, into the name and modifier.
+        /// </summary>
+        /// <param name="propertyReferece"></param>
+        /// <param name="modifier">The modifier of the property reference.</param>
+        /// <returns></returns>
+        private static string ParsePropertyReference(string propertyReferece, out PropertyNullabilityModifier modifier)
+        {
+            var modifierCharacter = propertyReferece.CharAt(propertyReferece.Length - 1);  // get the last character
+            switch(modifierCharacter)   //TODO: Use attribute
+            {
+                case '?':
+                    modifier = PropertyNullabilityModifier.Nullable;
+                    break;
+                case '@':
+                    modifier = PropertyNullabilityModifier.ExistsNullable;
+                    break;
+                case '!':
+                    modifier = PropertyNullabilityModifier.NonNullable;
+                    break;
+                default:
+                    modifier = PropertyNullabilityModifier.None;
+                    return propertyReferece;
+            }
+            return propertyReferece.Substring(0, propertyReferece.Length-1);
+        }
+
+        public static bool IsNullable(this PropertyNullabilityModifier modifier)
+            => modifier <= PropertyNullabilityModifier.ExistsNullable;
+
+        /// <summary>
         /// Get/Set the value of a property, and read the property metadata.
         /// </summary>
         /// <param name="target">The object on which to evaluate the property.
         /// For nested properties, this is the innermost object on exit.</param>
-        /// <param name="propertyName">Property name. Can be a nested property.</param>
-        /// <param name="action"></param>
+        /// <param name="propertyName">Property name. Can be a nested property.
+        /// Each property name in the chain can be suffixed with a symbol to specify nullability - see <see cref="PropertyNullabilityModifier"/>.
+        /// <para>The format is (ABNF): *( name [modifier] ".") name [modifier] .</para>
+        /// </param>
+        /// <param name="action">What to do - see <see cref="PropertyAction"/>.</param>
         /// <param name="value">The value to set; or a reference to receive the value (on Get).
         /// Ignored for <see cref="PropertyAction.GetProperty"/>.
         /// </param>
@@ -509,31 +568,74 @@ namespace JohnLambe.Util.Reflection
         /// In this case, it is set to null on failure (if a property does not exist, or nested value that this property is on, is null).
         /// </para>
         /// <returns>The details of the innermost property. null if <paramref name="target"/> or the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
-        private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value)
+        private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         { 
             PropertyInfo property = null;
             string[] levels = propertyName.Split('.');
+            PropertyNullabilityModifier nullabilityModifier = defaultNullability;
+            object rootTarget = target;
+
             for (int level = 0; level < levels.Length; level++)
             {
+                var currentLevelNullabilityModifier = nullabilityModifier;  // the nullability modifier on the previous part, which applies at this level
+
+                // Parse the property reference (into name and nullability):
+                string localPropertyName = ParsePropertyReference(levels[level], out nullabilityModifier);
+                if (nullabilityModifier == PropertyNullabilityModifier.None)    // if none specified explicitly
+                    nullabilityModifier = defaultNullability;                 // use the default
+
+                // Determine whether this level is null:
+                Exception ex = null;
+                bool isNull = false;
                 if (target == null)         // trying to dereference a null (before the last level)
+                {
+                    isNull = true;
+                    if (!currentLevelNullabilityModifier.IsNullable())    // null and not nullable
+                    {
+                        ex = new NullReferenceException("Null reference in '" + propertyName + "'"
+                                    + " on (root) " + GetDebugDisplay(rootTarget)
+                                + ": '" + localPropertyName + "' (level " + level + ") is null");
+                    }
+                }
+                else
+                {
+                    property = target.GetType().GetProperty(localPropertyName);
+                    if (property == null)               // property does not exist
+                    {
+                        isNull = true;
+                        if (currentLevelNullabilityModifier != PropertyNullabilityModifier.Nullable)
+                        {
+                            ex = new KeyNotFoundException("Property does not exist in '" + propertyName + "'"
+                                    + " on (root) " + GetDebugDisplay(rootTarget)
+                                    + " last part: " + GetDebugDisplay(target)
+                                    + ": '" + localPropertyName + "' (level " + level + ") not found");
+                        }
+                    }
+                }
+
+                if(isNull)
                 {
                     if (action == PropertyAction.GetValue)
                         value = null;
-                    return null;
+                    // if 'Set' operation, it is ignored.
+
+                    if (ex != null)
+                        throw ex;
+
+                    return null;    // no property to return
                 }
-                property = target.GetType().GetProperty(levels[level]);
-                if (property == null)               // property does not exist
+                else
                 {
-                    if(action == PropertyAction.GetValue)               
-                        value = null;
-                    return null;
+                    Diagnostic.Diagnostics.Assert(ex == null, "ReflectionUtil.GetSetProperty: Exception was set with isNull=false");
                 }
+
                 if (level < levels.Length - 1)  // not last (innermost) level
                 {   // dereference object at this level:
                     target = property.GetValue(target);
                 }
             }
-            switch(action)
+
+            switch (action)
             {
                 case PropertyAction.GetValue:
                     value = property.GetValue(target);
@@ -565,10 +667,10 @@ namespace JohnLambe.Util.Reflection
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <returns>The property value.</returns>
         //| Could call this "ReadProperty".
-        public static T TryGetPropertyValue<T>(object target, string propertyName)
+        public static T TryGetPropertyValue<T>(object target, string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object value = null;
-            GetSetProperty(ref target, propertyName, PropertyAction.GetValue, ref value);
+            GetSetProperty(ref target, propertyName, PropertyAction.GetValue, ref value, defaultNullability);
             // Note: target is passed by value to this method. Any change to it is ignored.
             return (T)value;
         }
@@ -581,14 +683,27 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target">The object to set the property on.</param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <param name="value">The value to set.</param>
-        public static void TrySetPropertyValue<T>(object target, string propertyName, T value)
+        public static void TrySetPropertyValue<T>(object target, string propertyName, T value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object valueObject = value;
-            GetSetProperty(ref target, propertyName, PropertyAction.SetValue, ref valueObject);
+            GetSetProperty(ref target, propertyName, PropertyAction.SetValue, ref valueObject, defaultNullability);
             // Note: target is passed by value to this method. Any change to it is ignored.
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Returns a description of the given object for display for diagnostics purposes.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static string GetDebugDisplay(object value)
+        {
+            return (value?.ToString() ?? "<null>") + " (type: " + value.GetType().Name + ")";
+            //TODO: Use System.Diagnostics.DebuggerDisplayAttribute
+        }
+
     }
 
     #region BindingFlagsExt
@@ -731,5 +846,29 @@ namespace JohnLambe.Util.Reflection
     }
 
     #endregion
+
+
+    //| Choice of modifiers in property reference strings:
+    //|
+    //| Visible ASCII characters:
+    //|
+    //| Symbol Other uses or associations
+    //| .used
+    //| ? nullable; question/doubt; help; '?.'
+    //| !	proposed C# feature: non-nullable reference type; logical NOT; comment; ! path; error
+    //| @	Prefix for variable or expression in Razor.; email address; this?
+    //| #	expected to be followed by a number/ID?
+    //| $	hexadecimal; currency?
+    //| %	display as percentage; modulo
+    //| &^	address-of, dereference; BBC BASIC: hexadecimal
+    //| "'()[]{}	brackets, quotes; expected to be matched
+    //| / * + -	mathematical operators
+    //| ,:;|	separators; C comma operator; comment (';','|'); bitwise or ('|')
+    //| <>	brackets, comparison
+    //| =	assignment / equality; name/value separator
+    //| `	quote; Maths: decorator; separator (.NET generic type names); too different to '?' and '!' ?
+    //| ~approximate; bitwise NOT; BBC BASIC: display in hex.
+    //| \	path separator; escaping next character
+    //| 'A'-'Z','a'-'z','0'-'9','_'	identifier characters
 
 }

@@ -12,7 +12,11 @@ namespace MvpFramework.Binding
     /// </summary>
     // Subclasses are not necessarily required to be independent of the UI framework, but any that have dependendies on one,
     // must be declared in a namespace relating to that framework.
-    public abstract class MvpAttributeBase : Attribute, IEnabledAttribute
+    public abstract class MvpAttributeBase : Attribute
+    {
+    }
+
+    public abstract class MvpEnabledAttributeBase : MvpAttributeBase, IEnabledAttribute
     {
         /// <summary>
         /// True to enable handling of this attribute.
@@ -28,7 +32,7 @@ namespace MvpFramework.Binding
     /// Flags a method as a handler that can be invoked from a view.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class MvpHandlerAttribute : MvpAttributeBase
+    public class MvpHandlerAttribute : MvpEnabledAttributeBase
     {
         public MvpHandlerAttribute(string id = null)
         {
@@ -194,7 +198,7 @@ namespace MvpFramework.Binding
     /// <para>A class can bind multiple classes of control, using multiple instances of this attribute.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-    public class ControlBinderAttribute : MvpAttributeBase
+    public class ControlBinderAttribute : MvpEnabledAttributeBase
     {
         public ControlBinderAttribute(Type forControl)
         {
@@ -217,7 +221,7 @@ namespace MvpFramework.Binding
     /// <seealso cref="AttributedControlBinder"/>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class MvpBoundControlAttribute : MvpAttributeBase
+    public class MvpBoundControlAttribute : MvpEnabledAttributeBase
     {
         /*
         /// <summary>
@@ -242,7 +246,7 @@ namespace MvpFramework.Binding
     /// Base class for attributes for properties whose value defines a mapping between a view and a model or presenter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public abstract class MvpMappingPropertyBaseAttribute : MvpAttributeBase
+    public abstract class MvpMappingPropertyBaseAttribute : MvpEnabledAttributeBase
     {
     }
 
@@ -326,7 +330,7 @@ namespace MvpFramework.Binding
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class MvpBinderStringAttribute : MvpAttributeBase
+    public class MvpBinderStringAttribute : MvpEnabledAttributeBase
     {
     }
 
@@ -412,7 +416,7 @@ namespace MvpFramework.Binding
     /// Binds the attributed property on a view to a property of the model.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class MvpBindAttribute : MvpAttributeBase
+    public class MvpBindAttribute : MvpEnabledAttributeBase
     {
         /// <summary>
         /// Value of <see cref="Key"/> to bind the whole model (the model instance rather than a member of it).
@@ -440,6 +444,42 @@ namespace MvpFramework.Binding
         public virtual bool Required { get; set; } = true;
     }
 
+    /// <summary>
+    /// Specifies the type of the model to be used with the attributed View.
+    /// This can be used on a view class or interface.
+    /// </summary>
+    /// <remarks>
+    /// This can be used instead of a generic type parameter.
+    /// The WinForms designer does not support classes with generic type parameters.
+    /// 
+    /// DOESN'T DO ANYTHING YET, BUT CAN BE USED FOR DOCUMENTATION.
+    /// </remarks>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    public class ModelTypeAttribute : MvpAttributeBase
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="modelType">The type of the model.</param>
+        public ModelTypeAttribute(Type modelType)
+        {
+            this.ModelTypes = new Type[] { modelType };
+        }
+
+        public ModelTypeAttribute(Type[] modelTypes)
+        {
+            this.ModelTypes = modelTypes;
+        }
+
+        /// <summary>
+        /// The types of model supported by this View.
+        /// If more than one, the view can accept any of them.
+        /// Any types assignable to these types can be used as the model.
+        /// <para>A value of null should be interpreted the same as if the attribute was not defined, i.e. the type of the model is not specified.</para>
+        /// <para>If this is empty, it means that the view has no model.</para>
+        /// </summary>
+        public virtual Type[] ModelTypes { get; protected set; }
+    }
+
     #endregion
 
     #region For View Interfaces
@@ -450,7 +490,7 @@ namespace MvpFramework.Binding
     /// </summary>
     [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
     //|TODO?: Could allow multiple.
-    public class MvpEventAttribute : MvpAttributeBase
+    public class MvpEventAttribute : MvpEnabledAttributeBase
     {
         public MvpEventAttribute(string id = null)
         {

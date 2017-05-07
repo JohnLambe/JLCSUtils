@@ -51,6 +51,7 @@
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="ConfigProvider\IconRepository.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />
+    <Compile Include="Documentation\DiagramAttribute.cs" />
     <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="ConfigProvider\FileImageLoaderConfigProvider.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Reflection\BoundProperty.cs" />
     <Compile Include="Reflection\PropertyDefaultUtil.cs" />
     <Compile Include="Reflection\PropertyInfoExtension.cs" />
+    <Compile Include="Services\!NamespaceDoc.cs" />
     <Compile Include="Services\SessionLock.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />
@@ -83,7 +85,7 @@
     <Compile Include="Reflection\AttributeUtil.cs" />
     <Compile Include="Reflection\EnumAttributeUtil.cs" />
     <Compile Include="Reflection\GenericTypeUtil.cs" />
-    <Compile Include="Services\Security\HashedPassword.cs" />
+    <Compile Include="Security\HashedPassword.cs" />
     <Compile Include="Services\EnvironmentService.cs" />
     <Compile Include="Services\RandomService.cs" />
     <Compile Include="Services\TimeService.cs" />
@@ -146,9 +148,6 @@
     <Compile Include="Validation\Validators.cs" />
     <Compile Include="Var.cs" />
     <Compile Include="Xml\XmlUtil.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Services\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

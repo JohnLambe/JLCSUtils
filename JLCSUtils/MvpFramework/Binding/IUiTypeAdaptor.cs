@@ -20,7 +20,7 @@ namespace MvpFramework.Binding
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class UiTypeAttribute : MvpAttributeBase
+    public class UiTypeAdaptorAttribute : MvpEnabledAttributeBase
     {
         /// <summary>
         /// The class that acts as an adaptor for the attributed item.
