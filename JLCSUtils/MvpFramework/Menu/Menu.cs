@@ -367,7 +367,6 @@ namespace MvpFramework.Menu
         public virtual event ChangedDelegate Changed;
 
         #endregion
-
     }
 
 

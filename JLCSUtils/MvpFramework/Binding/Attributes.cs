@@ -262,6 +262,8 @@ namespace MvpFramework.Binding
     /// The property on the model is populated from the control when the specified event is fired.
     /// </para>
     /// </summary>
+    //TODO: Support event that returns the value.
+    //    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
     public class MvpModelPropertyAttribute : MvpMappingPropertyBaseAttribute
     {
         public MvpModelPropertyAttribute(string valuePropertyName)
@@ -332,6 +334,40 @@ namespace MvpFramework.Binding
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class MvpBinderStringAttribute : MvpEnabledAttributeBase
     {
+    }
+
+    /// <summary>
+    /// Causes the attributed event to be fired before and/or after binding.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
+    public class MvpBindingEventAttribute : MvpEnabledAttributeBase
+    {
+        /// <summary>
+        /// Specifies whether the event is fired before and/or after binding.
+        /// </summary>
+        public virtual EventFireTime When { get; set; }
+    }
+
+    /// <summary>
+    /// For controls that implement <see cref="IControlBinder"/>:
+    /// This causes child controls of the attributed control to be bound in the usual way.
+    /// This is the normal behaviour for controls that don't implement <see cref="IControlBinder"/>.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class MvpBindChildrenAttribute : MvpEnabledAttributeBase
+    {
+    }
+
+    /// <summary>
+    /// Specifies whether an event fires before or after an action.
+    /// </summary>
+    [Flags]
+    public enum EventFireTime
+    {
+        Never = 0,
+        Before = 1,
+        After = 2,
+        BeforeAndAfter = 3
     }
 
     /*

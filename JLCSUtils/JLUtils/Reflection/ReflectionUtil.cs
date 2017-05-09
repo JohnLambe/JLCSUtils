@@ -211,13 +211,13 @@ namespace JohnLambe.Util.Reflection
                     + ")"
                 ))
                 */
-                if (!MiscUtil.CastNoReturn<PropertyInfo>(member,
-                    m => result = TypeUtil.TypeNameOrVoid(m.PropertyType)
-                        + " " + m.DeclaringType.FullName + "." + m.Name
-                    ))
-                {
-                    result = member.DeclaringType.FullName + ": " + member?.ToString();
-                }
+            if (!MiscUtil.CastNoReturn<PropertyInfo>(member,
+                m => result = TypeUtil.TypeNameOrVoid(m.PropertyType)
+                    + " " + m.DeclaringType.FullName + "." + m.Name
+                ))
+            {
+                result = member.DeclaringType.FullName + ": " + member?.ToString();
+            }
             return result;
         }
 
@@ -282,7 +282,7 @@ namespace JohnLambe.Util.Reflection
         /// <typeparam name="T">The </typeparam>
         /// <returns></returns>
         public static T Create<T>(this Type type, params object[] arguments)
-            where T: class
+            where T : class
         {
             /* old version:
             var argumentTypes = new Type[arguments.Length];
@@ -295,7 +295,7 @@ namespace JohnLambe.Util.Reflection
             }
             return CreateT<T>(type,argumentTypes,arguments);
             */
-            return CreateT<T>(type, ReflectionUtil.ArrayOfTypes(arguments), arguments);            
+            return CreateT<T>(type, ReflectionUtil.ArrayOfTypes(arguments), arguments);
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="arguments"></param>
         /// <returns></returns>
         public static T CreateT<T>(Type type, Type[] argumentTypes, object[] arguments)
-            where T: class
+            where T : class
         {
             return (T)type.GetConstructor(argumentTypes).Invoke(arguments);
         }
@@ -325,7 +325,7 @@ namespace JohnLambe.Util.Reflection
             if (values == null)
                 return null;
             Type[] result = new Type[values.Length];    // same length as given array
-            for(int i = 0; i < values.Length; i++)
+            for (int i = 0; i < values.Length; i++)
             {
                 result[i] = values[i]?.GetType();
             }
@@ -399,7 +399,7 @@ namespace JohnLambe.Util.Reflection
                 : target.GetType();                                                         // otherwise, get the type of `target`
             foreach (var method in targetType.GetMethods(flags.BindingFlags()))
             {   // for each overload/method
-                if( method.Name.Equals(methodName) )     // if the method has the requested name
+                if (method.Name.Equals(methodName))     // if the method has the requested name
                 {
                     bool fail = false;
                     var parameters = method.GetParameters();
@@ -519,7 +519,7 @@ namespace JohnLambe.Util.Reflection
             /// </summary>
             [EnumMappedValue('!')]
             NonNullable = 3
-        }        
+        }
 
         /// <summary>
         /// Parse a property name with an optional suffix for a modifier, into the name and modifier.
@@ -530,7 +530,7 @@ namespace JohnLambe.Util.Reflection
         private static string ParsePropertyReference(string propertyReferece, out PropertyNullabilityModifier modifier)
         {
             var modifierCharacter = propertyReferece.CharAt(propertyReferece.Length - 1);  // get the last character
-            switch(modifierCharacter)   //TODO: Use attribute
+            switch (modifierCharacter)   //TODO: Use attribute
             {
                 case '?':
                     modifier = PropertyNullabilityModifier.Nullable;
@@ -545,7 +545,7 @@ namespace JohnLambe.Util.Reflection
                     modifier = PropertyNullabilityModifier.None;
                     return propertyReferece;
             }
-            return propertyReferece.Substring(0, propertyReferece.Length-1);
+            return propertyReferece.Substring(0, propertyReferece.Length - 1);
         }
 
         public static bool IsNullable(this PropertyNullabilityModifier modifier)
@@ -569,7 +569,7 @@ namespace JohnLambe.Util.Reflection
         /// </para>
         /// <returns>The details of the innermost property. null if <paramref name="target"/> or the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
         private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
-        { 
+        {
             PropertyInfo property = null;
             string[] levels = propertyName.Split('.');
             PropertyNullabilityModifier nullabilityModifier = defaultNullability;
@@ -613,7 +613,7 @@ namespace JohnLambe.Util.Reflection
                     }
                 }
 
-                if(isNull)
+                if (isNull)
                 {
                     if (action == PropertyAction.GetValue)
                         value = null;
@@ -641,7 +641,7 @@ namespace JohnLambe.Util.Reflection
                     value = property.GetValue(target);
                     break;
                 case PropertyAction.SetValue:
-                    property.SetValue(target, GeneralTypeConverter.Convert<object>(value,property.PropertyType));
+                    property.SetValue(target, GeneralTypeConverter.Convert<object>(value, property.PropertyType));
                     break;
             }
             return property;
@@ -702,6 +702,22 @@ namespace JohnLambe.Util.Reflection
         {
             return (value?.ToString() ?? "<null>") + " (type: " + value.GetType().Name + ")";
             //TODO: Use System.Diagnostics.DebuggerDisplayAttribute
+        }
+
+        /// <summary>
+        /// Invokes a delegate on the default value of the type <typeparamref name="T"/>.
+        /// <para>
+        /// This can be used like this:<br/>
+        /// <code>InstanceInvoke&lt;ClassForTest&gt;(x => nameof(x.Property2))</code> returns "Property2".<br/>
+        /// Since nameof cannot take an expression as a parameter, it would otherwise be necessary to declare an instance to do this.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="d"></param>
+        /// <returns>The return value of the delegate <paramref name="d"/>.</returns>
+        public static string InstanceInvoke<T>(Func<T, string> d)
+        {
+            return d.Invoke(default(T));
         }
 
     }

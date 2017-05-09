@@ -57,6 +57,7 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="presenter"></param>
         protected virtual void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
         {
+            bool bindChildren = true;
             var binder = binderFactory.Create(control);
             if (binder != null)
             {
@@ -74,11 +75,16 @@ namespace MvpFramework.WinForms.Binding
                 {
                     binder.BindModel(ModelBinder, presenter);
                 }
+
+                bindChildren = control.GetType().GetCustomAttribute<MvpBindChildrenAttribute>()?.Enabled ?? false;
             }
 
-            foreach (Control childControl in control.Controls)
+            if (bindChildren)
             {
-                BindControl(childControl, binderFactory, presenter);
+                foreach (Control childControl in control.Controls)
+                {
+                    BindControl(childControl, binderFactory, presenter);
+                }
             }
         }
 
@@ -111,10 +117,12 @@ namespace MvpFramework.WinForms.Binding
             PresenterBinder.GetHandler(handlerId).Invoke(View, args ?? EventArgs.Empty);
         }
 
+        /*
         public virtual MenuItemModel GetOption(string id)
         {
 
         }
+        */
 
         /// <summary>
         /// Collection of binders for the controls in this view.

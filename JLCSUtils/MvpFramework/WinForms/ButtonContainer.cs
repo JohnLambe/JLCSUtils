@@ -167,8 +167,11 @@ namespace MvpFramework.WinForms
             _nextButtonCoords = new Point();
 
             // Remove handlers for changes to the model:
-            foreach (var buttonModel in Buttons.Children)
-                buttonModel.Changed -= ButtonModel_Changed;
+            if (Buttons != null)
+            {
+                foreach (var buttonModel in Buttons.Children)
+                    buttonModel.Changed -= ButtonModel_Changed;
+            }
         }
 
         /// <summary>

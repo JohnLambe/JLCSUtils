@@ -58,6 +58,12 @@ namespace DiExtension.SimpleInject
                 public virtual IDiContext RegisterAndBuilpUpInstance(string name, object instance, bool buildUp = true);
         */
 
+        /// <summary>
+        /// Run dependency injection on an instance (inject properties).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public virtual T BuildUp<T>(T target)
         {
             InstanceProducer producer;

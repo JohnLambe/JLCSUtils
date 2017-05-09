@@ -1001,6 +1001,26 @@ namespace MvpFramework
     public static class KeyboardKeyExtension
     {
         /// <summary>
+        /// Returns the modifers of this <see cref="KeyboardKey"/> as a <see cref="System.ConsoleModifiers"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static ConsoleModifiers ConsoleModifiers(this KeyboardKey value)
+            => (value.HasFlag(KeyboardKey.Alt) ? System.ConsoleModifiers.Alt : 0)
+            | (value.HasFlag(KeyboardKey.Shift) ? System.ConsoleModifiers.Shift : 0)
+            | (value.HasFlag(KeyboardKey.Control) ? System.ConsoleModifiers.Control : 0);
+
+        /// <summary>
+        /// Convert a <see cref="System.ConsoleModifiers"/> to a <see cref="KeyboardKey"/> with no base key.
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <returns></returns>
+        public static KeyboardKey FromConsoleModifiers(System.ConsoleModifiers modifiers)
+            => (modifiers.HasFlag(System.ConsoleModifiers.Alt) ? KeyboardKey.Alt : 0)
+            | (modifiers.HasFlag(System.ConsoleModifiers.Shift) ? KeyboardKey.Shift : 0)
+            | (modifiers.HasFlag(System.ConsoleModifiers.Control) ? KeyboardKey.Control : 0);
+
+        /// <summary>
         /// Convert to a <see cref="System.ConsoleKey"/>, without the modifier keys.
         /// </summary>
         /// <param name="value"></param>
@@ -1018,11 +1038,9 @@ namespace MvpFramework
         /// Convert to a <see cref="KeyboardKey"/>.
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="modifiers"></param>
         /// <returns></returns>
-        public static KeyboardKey ToKeyboardKey(ConsoleKey value)
-        {
-            return (KeyboardKey)value;
-        }
-
+        public static KeyboardKey ToKeyboardKey(ConsoleKey value, ConsoleModifiers modifiers = 0)
+            => (KeyboardKey)value | FromConsoleModifiers(modifiers);
     }
 }

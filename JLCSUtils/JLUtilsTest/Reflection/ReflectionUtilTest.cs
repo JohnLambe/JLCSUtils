@@ -239,6 +239,15 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object), typeof(ClassForTestBase), typeof(ClassForTest) }));
         }
 
+        [TestMethod]
+        public void InstanceInvoke()
+        {
+            // This would be equivalent but gives a compilation error:
+            //   Assert.AreEqual("Property2", nameof(default(ClassForTest).Property2);
+
+            Assert.AreEqual("Property2", ReflectionUtil.InstanceInvoke<ClassForTest>(x => nameof(x.Property2)));
+        }
+
     }
 
     public class ClassForTestBase
