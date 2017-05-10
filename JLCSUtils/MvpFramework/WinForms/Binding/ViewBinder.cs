@@ -57,7 +57,7 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="presenter"></param>
         protected virtual void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
         {
-            bool bindChildren = true;
+            bool bindChildren = true;     // children are bound by default (so that controls on panels, etc. are scanned)
             var binder = binderFactory.Create(control);
             if (binder != null)
             {
@@ -77,10 +77,16 @@ namespace MvpFramework.WinForms.Binding
                 }
 
                 bindChildren = control.GetType().GetCustomAttribute<MvpBindChildrenAttribute>()?.Enabled ?? false;
+                    // By default, controls that implement IControlBinder do not have their children bound (because the children are probably used by the control and bound by it if necessary),
+                    // but this can be overridden with the attribute.
             }
 
+            // if this control implements the interface, add its handler to the event:
+            if (control is IOptionUpdate && control != View)
+                OptionUpdate += args => ((IOptionUpdate)control).UpdateOption(args);
+
             if (bindChildren)
-            {
+            {   // bind the children of this control:
                 foreach (Control childControl in control.Controls)
                 {
                     BindControl(childControl, binderFactory, presenter);

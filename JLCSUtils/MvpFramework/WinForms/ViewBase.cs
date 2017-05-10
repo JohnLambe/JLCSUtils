@@ -15,7 +15,7 @@ namespace MvpFramework.WinForms
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
-    public class ViewBase : UserControl, IView
+    public class ViewBase : UserControl, IView, IOptionUpdate
     {
         public ViewBase()
         {
@@ -36,8 +36,8 @@ namespace MvpFramework.WinForms
 
             // Set the 'Model' property if there is one: 
             // (So derived classes can declare one of the expected type. This doesn't use a type parameter because the Forms Designer does not support it.)
-            ReflectionUtil.TrySetPropertyValue(this, "Model", model);
-            //TODO: Move to non-WinForms-specific ViewBinder
+//            ReflectionUtil.TrySetPropertyValue(this, "Model", model);
+//            //TODO: Move to non-WinForms-specific ViewBinder
 
             /*
             if (binderFactory != null)
@@ -58,16 +58,11 @@ namespace MvpFramework.WinForms
             */
         }
 
-        /*
-        /// <summary>
-        /// Collection of binders for the controls in this view.
-        /// </summary>
-        protected virtual IList<IControlBinder> Binders { get; private set; }
-        */
-
         /// <summary>
         /// (Re)populate the view from the model (to update it when the model changes).
         /// </summary>
+        // Implements IView method.
+        // Not virtual because the other overload should be overridden instead.
         public void RefreshView()
         {
             RefreshView(null);
@@ -80,22 +75,21 @@ namespace MvpFramework.WinForms
         protected virtual void RefreshView(Control control)
         {
             ViewBinder.RefreshView(control);
-            /*
-            if (Binders != null)
-            {
-                foreach (var binder in Binders)
-                {
-                    if(control == null || )
-                    binder.Refresh();
-                }
-            }
-            */
         }
 
         /// <summary>
         /// Binds this View to the Model and Presenter.
         /// </summary>
         protected virtual ViewBinder ViewBinder { get; private set; }
+
+        #region IOptionUpdate
+
+        public virtual void UpdateOption(OptionUpdateArgs args)
+        {
+            ViewBinder.UpdateOption(args);
+        }
+
+        #endregion
 
         #endregion
 

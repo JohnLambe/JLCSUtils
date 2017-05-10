@@ -18,11 +18,11 @@ namespace MvpFramework.WinForms
     /// A control that holds a set of buttons, provided as an <see cref="IOptionCollection"/>,
     /// or generated based on a Presenter.
     /// </summary>
-    public partial class ButtonContainer : UserControl, IControlBinderExt
+    public partial class ButtonContainer : UserControl, IControlBinderExt, IOptionUpdate
     {
         public ButtonContainer()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         public override void Refresh()
@@ -43,32 +43,32 @@ namespace MvpFramework.WinForms
             // Dummy buttons to see the layout:
 
             SuspendLayout();
-/*
-            AddButton(new MenuItemModel()
-            {
-                Attribute = new MvpHandlerAttribute()
-                {
-                    DisplayName = "Button 1"
-                }
-            }
-                );
-            AddButton(new HandlerResolver.Handler()
-            {
-                Attribute = new MvpHandlerAttribute()
-                {
-                    DisplayName = "B2"
-                }
-            }
-                );
-            AddButton(new HandlerResolver.Handler()
-            {
-                Attribute = new MvpHandlerAttribute()
-                {
-                    DisplayName = "Button 3"
-                }
-            }
-                );
-                */
+            /*
+                        AddButton(new MenuItemModel()
+                        {
+                            Attribute = new MvpHandlerAttribute()
+                            {
+                                DisplayName = "Button 1"
+                            }
+                        }
+                            );
+                        AddButton(new HandlerResolver.Handler()
+                        {
+                            Attribute = new MvpHandlerAttribute()
+                            {
+                                DisplayName = "B2"
+                            }
+                        }
+                            );
+                        AddButton(new HandlerResolver.Handler()
+                        {
+                            Attribute = new MvpHandlerAttribute()
+                            {
+                                DisplayName = "Button 3"
+                            }
+                        }
+                            );
+                            */
             ResumeLayout();
         }
 
@@ -96,7 +96,7 @@ namespace MvpFramework.WinForms
 
         protected virtual void Populate()
         {
-            if(!string.IsNullOrEmpty(Filter))
+            if (!string.IsNullOrEmpty(Filter))
             {
 
             }
@@ -105,11 +105,12 @@ namespace MvpFramework.WinForms
 
         protected virtual void PopulateButtons(PresenterBinderWrapper presenterBinder)
         {
-            PopulateButtons(new OptionCollectionBuilder().Build(presenterBinder.Presenter, Filter));
+            Buttons = new OptionCollectionBuilder().Build(presenterBinder.Presenter, Filter);
+            PopulateButtons(Buttons);
         }
 
         protected virtual void PopulateButtons(IOptionCollection buttons)
-        { 
+        {
             ClearButtons();
 
             if (buttons != null)
@@ -153,6 +154,8 @@ namespace MvpFramework.WinForms
                     ResumeLayout();
                 }
             }
+
+            ModelChanged = false;
         }
 
         /// <summary>
@@ -160,11 +163,12 @@ namespace MvpFramework.WinForms
         /// </summary>
         protected virtual void ClearButtons()
         {
-            while(Controls.Count > 0)
+            while (Controls.Count > 0)
             {
                 Controls[0].Dispose();
             }
             _nextButtonCoords = new Point();
+            ModelChanged = false;
 
             // Remove handlers for changes to the model:
             if (Buttons != null)
@@ -197,6 +201,8 @@ namespace MvpFramework.WinForms
             buttonModel.Changed += ButtonModel_Changed;   // attach this handler even if not visible, so that we will be notified if it becomes Visible
         }
 
+        #region Updates
+
         /// <summary>
         /// Fired when the model of a button changes.
         /// </summary>
@@ -204,8 +210,56 @@ namespace MvpFramework.WinForms
         /// <param name="args"></param>
         protected virtual void ButtonModel_Changed(MenuItemModel sender, MenuItemModel.ChangedEventArgs args)
         {
-
+            ModelChanged = true;
         }
+
+        /// <summary>
+        /// After calling this, updates to the model do not cause an update to the UI
+        /// until a subsequent call to <see cref="ResumeUpdate"/>.
+        /// Calls are nested, so <see cref="ResumeUpdate"/> has to be called the same number of times as this,
+        /// to reenable updates.
+        /// </summary>
+        public virtual void SuspendUpdate()
+        {
+            UpdatesSuspendedCount++;
+        }
+
+        /// <summary>
+        /// Resumes updates after a call to <see cref="SuspendUpdate"/>.
+        /// </summary>
+        public virtual void ResumeUpdate()
+        {
+            UpdatesSuspendedCount--;
+            if(UpdatesSuspendedCount == 0)
+            {
+                RefreshIfUpdated();
+            }
+            if (UpdatesSuspendedCount < 0)
+                UpdatesSuspendedCount = 0;
+        }
+
+        /// <summary>
+        /// Refrshes the buttons from the model if they are flagged as updated (by <see cref="ModelChanged"/>).
+        /// </summary>
+        protected virtual void RefreshIfUpdated()
+        {
+            if (ModelChanged)
+                Populate();
+        }
+
+        /// <summary>
+        /// The count of nested calls to <see cref="SuspendUpdate"/> (0 if not suspended).
+        /// </summary>
+        protected int UpdatesSuspendedCount { get; private set; }
+
+        /// <summary>
+        /// True iff the model is flagged as changed.
+        /// </summary>
+        /// <seealso cref="SuspendUpdate"/>
+        /// <seealso cref="RefreshIfUpdated"/>
+        protected virtual bool ModelChanged { get; set; }
+
+        #endregion
 
         /// <summary>
         /// Handles a click on one of the buttons.
@@ -302,6 +356,20 @@ namespace MvpFramework.WinForms
                 ButtonHeight     // explicit height given
                 : Orientation == Orientation.Horizontal ? Height - Margin.Top - Margin.Bottom   // fill the space between the vertical margins
                 : height;
+
+        public virtual void UpdateOption(OptionUpdateArgs args)
+        {
+            if (Buttons != null)
+            {
+                SuspendUpdate();
+                foreach (var buttonModel in Buttons.Children)
+                {
+                    if (buttonModel.Matches(args.Id, args.Filter))
+                        args.OnUpdate(new OptionUpdateContext(buttonModel));
+                }
+                ResumeUpdate();
+            }
+        }
 
         /// <summary>
         /// -1 for left to right or bottom to top, otherwise 1.

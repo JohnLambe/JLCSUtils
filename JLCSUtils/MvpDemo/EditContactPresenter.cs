@@ -43,7 +43,7 @@ namespace MvpDemo
             View.RefreshView();
         }
 
-        [MvpHandler(Filter = new string[] { "RightPanel" })]
+        [MvpHandler(Filter = new [] { "RightPanel" })]
         public void Command1()
         {
             UiController.ShowMessage("Command1", "Dialog Title");
@@ -59,6 +59,14 @@ namespace MvpDemo
                 Message = "Error message"
             });
         }
+
+        [MvpHandler(SingleFilter = "RightPanel")]
+        public void DisableAll()
+        {
+            // Disable all buttons in the panel:
+            (View as IOptionUpdate).UpdateOption(new OptionUpdateArgs() { Filter = "RightPanel", OnUpdate = args => args.Option.Enabled = false });
+        }
+
 
         [MvpHandler(Filter = new string[] { "RightPanel" })]
         public void ConfirmationDialog()

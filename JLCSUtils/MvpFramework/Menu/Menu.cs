@@ -288,6 +288,10 @@ namespace MvpFramework.Menu
                                                                   // so that properties of subclasses of the attribute can be used by a consumer of this class.
                                                                   // Attributes are not the only way to populate this.
 
+        internal virtual bool Matches(string id, string filter)
+        {
+            return id == Id || (Filter?.Contains(filter) ?? false);
+        }
 
         #region Events
 

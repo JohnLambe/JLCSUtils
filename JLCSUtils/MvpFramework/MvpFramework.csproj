@@ -49,6 +49,7 @@
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
+    <Compile Include="Binding\OptionUpdate.cs" />
     <Compile Include="Binding\ViewBinderBase.cs">
       <SubType>Component</SubType>
     </Compile>

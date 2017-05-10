@@ -54,16 +54,17 @@ namespace MvpFramework.Binding
     }
 
 
-/*
-    public interface IMvpBinding
-    {
-        IControlBinderFactory ControlBinderFactory { get; }
-        IPresenterBinderInterface PresenterBinderInterface { get; }
-    }
 
-    public interface IPresenterBinderInterface
-    {
-        MenuItemModel GetOption(string id);
-    }
-*/
+    /*
+        public interface IMvpBinding
+        {
+            IControlBinderFactory ControlBinderFactory { get; }
+            IPresenterBinderInterface PresenterBinderInterface { get; }
+        }
+
+        public interface IPresenterBinderInterface
+        {
+            MenuItemModel GetOption(string id);
+        }
+    */
 }
