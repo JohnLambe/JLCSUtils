@@ -18,8 +18,11 @@ namespace MvpFramework.Binding
         /// Bind the given model and presenter to the control.
         /// </summary>
         /// <param name="modelBinder"></param>
+        /// <param name="presenter"></param>
         void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter);
         //TODO: Change to void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenter);
+
+//TODO:        void BindModel(MvpBindingContext context);
 
         /// <summary>
         /// Update the control from the model.

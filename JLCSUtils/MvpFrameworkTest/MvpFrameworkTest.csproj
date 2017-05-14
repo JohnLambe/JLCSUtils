@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AcceleratorCaptionUtilTest.cs" />
     <Compile Include="Binding\ModelBinderWrapperTest.cs" />
     <Compile Include="Binding\MvpEventAttributeTest.cs" />
     <Compile Include="Dialog\ExceptionToDialogMapTest.cs" />

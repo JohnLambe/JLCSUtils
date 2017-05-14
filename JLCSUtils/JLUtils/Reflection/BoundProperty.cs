@@ -103,6 +103,9 @@ namespace JohnLambe.Util.Reflection
         public virtual string DisplayName
             => CaptionUtil.GetDisplayName(Property);
 
+        public virtual string Description
+            => CaptionUtil.GetDescriptionFromAttribute(Property);
+
         /// <summary>
         /// The object that declares this property.
         /// If this object was created using a nested property name, this returns the nested object.

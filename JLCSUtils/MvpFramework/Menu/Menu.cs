@@ -288,9 +288,15 @@ namespace MvpFramework.Menu
                                                                   // so that properties of subclasses of the attribute can be used by a consumer of this class.
                                                                   // Attributes are not the only way to populate this.
 
+        /// <summary>
+        /// True if this item matches either the given Id or Filter.
+        /// </summary>
+        /// <param name="id">Value to match <see cref="Id"/>, if not null.</param>
+        /// <param name="filter">Value to match <see cref="Filter"/>, if not null.</param>
+        /// <returns>true iff this item matches.</returns>
         internal virtual bool Matches(string id, string filter)
         {
-            return id == Id || (Filter?.Contains(filter) ?? false);
+            return (id != null && id == Id) || (filter != null && (Filter?.Contains(filter) ?? false));
         }
 
         #region Events

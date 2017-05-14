@@ -106,7 +106,7 @@ namespace MvpFramework
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-    public class SortOrder : Attribute
+    public class SortOrderAttribute : Attribute
     {
         /// <summary>
         /// Whether sorting on the attributed item is ascending or descending.

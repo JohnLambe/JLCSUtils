@@ -151,6 +151,19 @@ namespace JohnLambe.Util.Diagnostic
             AssertInternal(false, message);
         }
 
+        /// <summary>
+        /// Equivalent to <see cref="Fail(string)"/>, but indicates that a certain value of an enum type is not recognised.
+        /// Used in code that handles all known values of an enum and that might break when a new value is added.
+        /// </summary>
+        /// <param name="message"></param>
+        [Conditional("DEBUG")]
+        [Conditional("ASSERTIONS")]
+        [Conditional("ASSERTIONS_LOW")]
+        public static void UnhandledEnum(Enum enumValue)
+        {
+            Fail("Unrecognised enum value: " + enumValue + " (" + enumValue.GetType().FullName + ")"); ;
+        }
+
         [Conditional("DEBUG")]
         [Conditional("ASSERTIONS")]
         [Conditional("ASSERTIONS_LOW")]

@@ -78,5 +78,10 @@ namespace MvpDemo
         {
             throw new Exception("Test");
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            new FormGeneratorDemo().Show();
+        }
     }
 }

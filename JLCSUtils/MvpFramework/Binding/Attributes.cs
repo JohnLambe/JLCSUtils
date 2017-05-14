@@ -2,6 +2,7 @@
 using JohnLambe.Util.Reflection;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MvpFramework.Binding
 {
@@ -26,38 +27,16 @@ namespace MvpFramework.Binding
     }
 
 
-    #region For Presenters
-
     /// <summary>
-    /// Flags a method as a handler that can be invoked from a view.
+    /// Base class for attributes that can be used to generate a user interface element.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class MvpHandlerAttribute : MvpEnabledAttributeBase
+    public abstract class MvpUiAttributeBase : MvpEnabledAttributeBase
     {
-        public MvpHandlerAttribute(string id = null)
-        {
-          this.Id = id;
-        }
-
         /// <summary>
         /// The ID of the handler, referenced in the user interface.
         /// null to derive from the method name (NOT IMPLEMENTED YET).
         /// </summary>
         public virtual string Id { get; set; }
-        
-        [Obsolete("Use Id")] // Renamed to Id. ('Name' could be confused with a name for display).
-        public virtual string Name
-        {
-            get { return Id; }
-            set { Id = value; }
-        }        
-
-        /*
-        /// <summary>
-        /// Set to false on an attribute on an overridden member, to disable a handler attribute on a base class.
-        /// </summary>
-        public virtual bool Enabled { get; set; } = true;
-        */
 
         /// <summary>
         /// Sorting order in a list of handlers.
@@ -95,13 +74,12 @@ namespace MvpFramework.Binding
             }
         }
 
-
         // Details for generating a UI item:
 
         public virtual bool AutoGenerate { get; set; } = false;
 
         /// <summary>
-        /// The name displayed on this item in the UI.
+        /// The name displayed for this item in the UI.
         /// </summary>
         public virtual string DisplayName { get; set; }
         //TODO?: Localisation.
@@ -109,7 +87,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Keystroke to invoke this item.
         /// </summary>
-        public virtual KeyboardKey HotKey { get; set; }  
+        public virtual KeyboardKey HotKey { get; set; }
 
         /// <summary>
         /// Character to choose this item in the UI when in a list, or a WinForms accelerator character, etc.
@@ -123,9 +101,10 @@ namespace MvpFramework.Binding
         public virtual string IconId { get; set; }
 
         /// <summary>
-        /// true iff this is the default button or default item in a list, etc.
+        /// An identifier of a group of items (commands or properties).
+        /// This can be used by the user interface to group field controls or buttons, etc.
         /// </summary>
-        public virtual bool IsDefault { get; set; }
+        public virtual string Group { get; set; }
 
         /// <summary>
         /// Rights or roles required to access this item.
@@ -135,6 +114,36 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual string[] Rights { get; set; }
         //TODO?: Change type to an interface, IPrivilege (same for all similar 'Rights' properties).
+    }
+
+
+    #region For Presenters
+
+    /// <summary>
+    /// Flags a method as a handler that can be invoked from a view.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public class MvpHandlerAttribute : MvpUiAttributeBase
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="id">Value of <see cref="Id"/>.</param>
+        public MvpHandlerAttribute(string id = null)
+        {
+            this.Id = id;
+        }
+        
+        [Obsolete("Use Id")] // Renamed to Id. ('Name' could be confused with a name for display).
+        public virtual string Name
+        {
+            get { return Id; }
+            set { Id = value; }
+        }        
+
+        /// <summary>
+        /// true iff this is the default button or default item in a list, etc.
+        /// </summary>
+        public virtual bool IsDefault { get; set; }
 
         //TOOO?: public virtual object ModalResult { get; set; }
     }
@@ -170,22 +179,81 @@ namespace MvpFramework.Binding
         public virtual string ShortName { get; set; }
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    public class GroupDefinitionAttribute : MvpUiAttributeBase, IUiGroupModel
+    {
+        /// <summary>
+        /// Represents the group of all items that have no group defined.
+        /// </summary>
+        public static IUiGroupModel Ungrouped
+            => new GroupDefinitionAttribute()
+            {
+                Id = "",                
+            };
+    }
+
+    public interface IUiGroupModel
+    {
+        /// <summary>
+        /// The ID of the handler, referenced in the user interface.
+        /// </summary>
+        string Id { get; }
+
+//        string ParentId { get; set; }
+
+        /// <summary>
+        /// Sorting order weight.
+        /// </summary>
+        int Order { get; }
+
+
+        // Details for generating a UI item:
+
+        bool AutoGenerate { get; }
+
+        /// <summary>
+        /// The name displayed on this item in the UI.
+        /// </summary>
+        string DisplayName { get; }
+
+        /// <summary>
+        /// Keystroke to invoke this item.
+        /// </summary>
+        KeyboardKey HotKey { get; }
+
+        /// <summary>
+        /// Character to choose this item in the UI when in a list, or a WinForms accelerator character, etc.
+        /// </summary>
+        char AcceleratorChar { get; }
+
+        /// <summary>
+        /// The icon to be displayed in the UI for this item.
+        /// </summary>
+        [IconId]
+        string IconId { get; }
+
+        /*
+        /// <summary>
+        /// Rights or roles required to access this item.
+        /// To access this, the user must have one of the rights specified by an element of the array.
+        /// The format of the string depends on the consming system. It may specify a combination of rights/roles.
+        /// (So elements of the array are ORed, but rights may be ANDed within each element.)
+        /// </summary>
+        public virtual string[] Rights { get; set; }
+        */
+    }
+
     #endregion
 
 
     #region For Models
 
-    /*
-    /// <summary>
-    /// Flags a property to be mapped to the title of a view (e.g. window title).
-    /// </summary>
-    //TODO: Remove - the Model shouldn't specify anything about the View.
-    [Obsolete]
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class ViewTitleAttribute : MvpAttributeBase
+    public class MvpDisplayAttribute : MvpAttributeBase
     {
+        public virtual bool IsVisible { get; set; } = true;
+
+        public virtual char AcceleratorChar { get; set; } = AcceleratorCaptionUtil.None;
     }
-    */
 
     #endregion
 
@@ -246,6 +314,7 @@ namespace MvpFramework.Binding
     /// Base class for attributes for properties whose value defines a mapping between a view and a model or presenter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    //TODO: Support on Event. The event returns the property name or handler ID.
     public abstract class MvpMappingPropertyBaseAttribute : MvpEnabledAttributeBase
     {
     }
@@ -367,7 +436,7 @@ namespace MvpFramework.Binding
         Never = 0,
         Before = 1,
         After = 2,
-        BeforeAndAfter = 3
+        BeforeAndAfter = Before | After
     }
 
     /*
@@ -501,6 +570,9 @@ namespace MvpFramework.Binding
             this.ModelTypes = new Type[] { modelType };
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="modelTypes"><see cref="ModelTypes"/></param>
         public ModelTypeAttribute(Type[] modelTypes)
         {
             this.ModelTypes = modelTypes;
@@ -514,6 +586,12 @@ namespace MvpFramework.Binding
         /// <para>If this is empty, it means that the view has no model.</para>
         /// </summary>
         public virtual Type[] ModelTypes { get; protected set; }
+
+        /// <summary>
+        /// Default nullability handling of bound property names.
+        /// (The value of the defaultNullability parameter to <see cref="ReflectionUtil.TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>).
+        /// </summary>
+        public virtual PropertyNullabilityModifier Nullability { get; set; }
     }
 
     #endregion
@@ -521,12 +599,21 @@ namespace MvpFramework.Binding
     #region For View Interfaces
 
     /// <summary>
-    /// Specifies a handler ID for an event on a view interface (to be bound to a <see cref="MvpHandlerAttribute"/>).
-    /// <para>NOT IMPLEMENTED YET</para>
+    /// Specifies a handler ID for an event on a View, View Interface or constant on a View Interface Extension Class (to be bound to a <see cref="MvpHandlerAttribute"/>).
+    /// <para>CURRENTLY IMPLEMENTED FOR VIEWS ONLY.</para>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
     //|TODO?: Could allow multiple.
-    public class MvpEventAttribute : MvpEnabledAttributeBase
+    public abstract class MvpEventDefinitionAttributeBase : MvpEnabledAttributeBase
+    {
+        /// <summary>
+        /// Iff true, an exception is thrown if no handler is bound to this.
+        /// <para>NOT IMPLEMENTED YET.</para>
+        /// </summary>
+        public virtual bool Required { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
+    public class MvpEventAttribute : MvpEventDefinitionAttributeBase
     {
         public MvpEventAttribute(string id = null)
         {
@@ -540,6 +627,37 @@ namespace MvpFramework.Binding
         public virtual string Id { get; set; }
     }
 
+    /// <summary>
+    /// Placed on a constant on a View Interface Extension Class whose value is a handler ID for an event.
+    /// <para>It is recommended to specify this on a constant and reference the constant in <see cref="MvpHandlerAttribute"/> instances, to avoid using a string literal.</para>
+    /// <para>NOT IMPLEMENTED YET.</para>
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public abstract class MvpEventDefinitionAttribute : MvpEventDefinitionAttributeBase
+    {
+    }
+
     #endregion
 
+
+    #region For Controls
+
+    /// <summary>
+    /// Defines a mapping between controls and the types they handle.
+    /// Used for generating controls from a model.
+    /// </summary>
+    public class MvpControlMappingAttribute : MvpEnabledAttributeBase
+    {
+        /// <summary>
+        /// Name of the static method on control classes, for generating a UI.
+        /// </summary>
+        public const string CreateControlMethod = "CreateControl";
+
+        /// <summary>
+        /// The data type handled (displayed / edited) by this control.
+        /// </summary>
+        public virtual Type ForType { get; set; }
+    }
+
+    #endregion
 }

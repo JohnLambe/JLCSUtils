@@ -85,6 +85,7 @@ namespace MvpFramework.WinForms
         /// </summary>
         protected readonly Color DefaultButtonsBackColor;
 
+        [MvpBind(MvpBindAttribute.Model)]
         public virtual MessageDialogViewModel Model { get; set; }
     }
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using JohnLambe.Util.Text;
 using JohnLambe.Util.Reflection;
+using System.ComponentModel.DataAnnotations;
 
 namespace MvpFramework.Binding
 {
@@ -87,17 +88,34 @@ namespace MvpFramework.Binding
        */
 
         /// <summary>
+        /// The collection of groups (of properties), sorted.
+        /// </summary>
+        public virtual IEnumerable<IUiGroupModel> Groups
+            => Model.GetType().GetCustomAttributes<GroupDefinitionAttribute>(true)
+                .OrderBy(a => a.Order);
+
+        /// <summary>
+        /// Returns all properties in the specifed group.
+        /// </summary>
+        /// <param name="groupId">The group to get.
+        /// null for all groups.
+        /// "" for all properties with no Group.
+        /// </param>
+        /// <returns></returns>
+        public virtual IEnumerable<ModelPropertyBinder> GetPropertiesByGroup(string groupId)
+            => Model.GetType().GetProperties()
+                .Select(p => new ModelPropertyBinder(Model, p))
+                .Where(p => groupId == null || (p.Group ?? "") == groupId)
+                .OrderBy(p => p.Order);     // same order as Properties
+
+        /// <summary>
         /// All bindable properties of the model.
         /// (All objects that could be returned from <see cref="GetProperty"/>.)
         /// </summary>
         public virtual IEnumerable<ModelPropertyBinder> Properties
-        {
-            get
-            {
-                return Model.GetType().GetProperties()
-                    .Select(p => new ModelPropertyBinder(Model, p));
-            }
-        }
+            => Model.GetType().GetProperties()
+                    .Select(p => new ModelPropertyBinder(Model, p))
+                    .OrderBy(p => p.Order);
 
         /// <summary>
         /// Get an object representing the binding of a requested property, and allowing reading and writing the property value.
@@ -124,17 +142,25 @@ namespace MvpFramework.Binding
 
 
     /// <summary>
-    /// Metadata of property on an instance.
+    /// Metadata of a property on an instance.
     /// Provides access to the property value.
     /// </summary>
     public class ModelPropertyBinder : BoundProperty<object, object>
     {
         public ModelPropertyBinder(object target, PropertyInfo property) : base(target, property)
         {
+            Init();
         }
 
         public ModelPropertyBinder(object target, string propertyName) : base(target, propertyName)
         {
+            Init();
+        }
+
+        protected void Init()
+        {
+            _displayAttribute = Property?.GetCustomAttribute<DisplayAttribute>();
+            _mvpDisplayAttribute = Property?.GetCustomAttribute<MvpDisplayAttribute>();
         }
 
         /// <summary>
@@ -146,6 +172,26 @@ namespace MvpFramework.Binding
             get { return Property?.PropertyType; }
         }
 
+        public virtual int Order
+            => _displayAttribute?.GetOrder() ?? 0;
+
+        /// <summary>
+        /// true if this property is visible in user interfaces.
+        /// </summary>
+        public virtual bool IsVisible
+            => _mvpDisplayAttribute?.IsVisible ?? true;
+
+        public virtual bool AutoGenerate
+            => _displayAttribute?.GetAutoGenerateField() ??
+            _mvpDisplayAttribute?.IsVisible ??
+            true;
+
+        public virtual string Group
+            => _displayAttribute?.GetGroupName() ?? "";
+
+        //TODO: Lazily initialise:
+        protected DisplayAttribute _displayAttribute;
+        protected MvpDisplayAttribute _mvpDisplayAttribute;  
     }
 
 }

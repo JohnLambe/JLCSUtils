@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Encoding
 {
+    /// <summary>
+    /// Converts between byte arrays and other types.
+    /// </summary>
     public static class BinaryConverter
     {
+        /// <summary>
+        /// Converts a <see cref="long"/> to an array of <see cref="byte"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static byte[] FromLong(long value)
         {
             return new byte[]
@@ -23,6 +31,11 @@ namespace JohnLambe.Util.Encoding
             };
         }
 
+        /// <summary>
+        /// Converts an array of <see cref="byte"/> to a <see cref="long"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static long ToLong(byte[] value)
         {
             return value[0]

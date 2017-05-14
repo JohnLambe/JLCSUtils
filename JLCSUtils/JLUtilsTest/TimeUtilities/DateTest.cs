@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using JohnLambe.Util.TimeUtilities;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace JohnLambe.Tests.JLUtilsTest.TimeUtilities
 {
@@ -23,17 +24,21 @@ namespace JohnLambe.Tests.JLUtilsTest.TimeUtilities
         [TestMethod]
         public void LessThan()
         {
-            Assert.IsTrue(new Date(2016,10,20) < new Date(2016, 10, 21));
-            Assert.IsFalse(new Date(2020, 1, 5) < new Date(2020, 1, 5), "Equal");
-            Assert.IsFalse(new Date(2020, 1, 5) < new Date(2019, 9, 15), "Higher");
+            Multiple(
+                () => Assert.IsTrue(new Date(2016,10,20) < new Date(2016, 10, 21)),
+                () => Assert.IsFalse(new Date(2020, 1, 5) < new Date(2020, 1, 5), "Equal"),
+                () => Assert.IsFalse(new Date(2020, 1, 5) < new Date(2019, 9, 15), "Higher")
+            );
         }
 
         [TestMethod]
         public void GreaterThan()
         {
-            Assert.IsFalse(new Date(2016, 9, 29) > new Date(2016, 10, 21));
-            Assert.IsFalse(new Date(2020, 1, 5) > new Date(2020, 1, 5), "Equal");
-            Assert.IsTrue(new Date(2020, 1, 5) > new Date(2019, 9, 15), "Higher");
+            Multiple(
+                () => Assert.IsFalse(new Date(2016, 9, 29) > new Date(2016, 10, 21)),
+                () => Assert.IsFalse(new Date(2020, 1, 5) > new Date(2020, 1, 5), "Equal"),
+                () => Assert.IsTrue(new Date(2020, 1, 5) > new Date(2019, 9, 15), "Higher")
+            );
         }
 
         [TestMethod]

@@ -58,6 +58,12 @@
       <DependentUpon>EditContactView.cs</DependentUpon>
     </Compile>
     <Compile Include="EditContactPresenter.cs" />
+    <Compile Include="FormGeneratorDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGeneratorDemo.Designer.cs">
+      <DependentUpon>FormGeneratorDemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Heirarchical\TestHView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -78,6 +84,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="EditContactView.resx">
       <DependentUpon>EditContactView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormGeneratorDemo.resx">
+      <DependentUpon>FormGeneratorDemo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Heirarchical\TestHView.resx">
       <DependentUpon>TestHView.cs</DependentUpon>

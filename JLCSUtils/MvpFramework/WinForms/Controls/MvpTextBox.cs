@@ -13,6 +13,7 @@ namespace MvpFramework.WinForms.Controls
     /// <see cref="TextBox"/> that can be bound automatically by the MVP framework.
     /// </summary>
     [MvpBoundControl]
+    [MvpControlMapping(ForType = typeof(string))]
     public class MvpTextBox : TextBox
     {
         /// <summary>
@@ -22,10 +23,15 @@ namespace MvpFramework.WinForms.Controls
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
         public virtual string ModelProperty { get; set; }
+/*        {
+            get { return GetModelProperty?.Invoke(); }
+//            set;
+        }
+*/
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
-        //        [MvpModelProperty("Text", "TextChanged")]
+        //[MvpModelProperty("Text", "TextChanged")]
         public event GetNameDelegate GetModelProperty;
 
         [Category(MvpUiComponentConsts.DesignerCategory)]

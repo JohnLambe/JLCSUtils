@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util.Validation;
+using MvpFramework.Binding;
 
 namespace MvpDemo.Model
 {
+    [GroupDefinition(Id = "Additional", DisplayName = "Additional Details")]
     public class Contact  // could also be called ContactModel
     {
+        [MvpDisplay(IsVisible = false)]
         public int Id { get; set; }
 
         [MaxLength(20)]   // sets maximum length of edit box control
@@ -17,6 +20,7 @@ namespace MvpDemo.Model
         public string Name { get; set; }
 
         [InvalidValue("X")]
+        [Display(Order = 2000)]
         public string Address
         {
             get { return _address; }
@@ -24,6 +28,26 @@ namespace MvpDemo.Model
         }
         protected string _address;
 
+        [Phone]
+        [Display(Order = 1000)]
+        public string PhoneNumber { get; set; }
+
+        [Phone]
+        [Display(Order = 1000)]
+        public string PhoneNumber2 { get; set; }
+
+        [Phone]
+        [Display(Order = 1010)]
+        public string FaxNumber { get; set; }
+
+        [Display(GroupName = "Additional")]
+        public string Comment { get; set; }
+
+        [Display(GroupName = "Additional", Name = "Other details")]
+        public string Other { get; set; }
+
+
+        [Display(AutoGenerateField = false)]
         public virtual string EntityDescription => "Contact";
     }
 

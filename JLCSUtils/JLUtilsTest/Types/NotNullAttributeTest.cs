@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using JohnLambe.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace JohnLambe.Tests.JLUtilsTest.Types
 {
@@ -23,10 +24,12 @@ namespace JohnLambe.Tests.JLUtilsTest.Types
             var attribute = new NotNullAttribute();
 
             // Act/Assert:
-            Assert.IsTrue(attribute.IsDefaultAttribute());
-            Assert.IsTrue(attribute.IsValid(5));
-            Assert.IsTrue(attribute.IsValid(""));
-            Assert.IsFalse(attribute.IsValid(null));
+            Multiple(
+                () => Assert.IsTrue(attribute.IsDefaultAttribute()),
+                () => Assert.IsTrue(attribute.IsValid(5)),
+                () => Assert.IsTrue(attribute.IsValid("")),
+                () => Assert.IsFalse(attribute.IsValid(null))
+            );
         }
     }
 }

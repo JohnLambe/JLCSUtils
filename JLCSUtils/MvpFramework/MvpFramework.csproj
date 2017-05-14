@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcceleratorCaptionUtil.cs" />
     <Compile Include="Binding\!NamespaceDoc.cs" />
     <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Dialog\!NamespaceDoc.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
     <Compile Include="Dialog\ExceptionToDialogMap.cs" />
+    <Compile Include="FormGeneratorBase.cs" />
     <Compile Include="IPresenter.cs" />
     <Compile Include="Menu\!NamespaceDoc.cs" />
     <Compile Include="QueryGenerator.cs" />
@@ -112,6 +114,12 @@
       <DependentUpon>ButtonContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="WinForms\Controls\!NamespaceDoc.cs" />
+    <Compile Include="WinForms\Controls\GeneratorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\Controls\GeneratorControl.Designer.cs">
+      <DependentUpon>GeneratorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinForms\Controls\MvpButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -130,6 +138,7 @@
     <Compile Include="WinForms\EmbeddableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="WinForms\FormGenerator.cs" />
     <Compile Include="WinForms\MvpFrameworkConstants.cs" />
     <Compile Include="WinForms\ResolverExtension.cs" />
     <Compile Include="WinForms\Util\WinFormsUtil.cs" />
@@ -186,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\ButtonContainer.resx">
       <DependentUpon>ButtonContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Controls\GeneratorControl.resx">
+      <DependentUpon>GeneratorControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\MessageDialogView.resx">
       <DependentUpon>MessageDialogView.cs</DependentUpon>

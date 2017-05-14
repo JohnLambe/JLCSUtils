@@ -8,9 +8,16 @@ namespace MvpFramework.Menu
 {
     // from JohnLambe.Utils.WebUtils.Menu
 
+    /// <summary>
+    /// Flags the attributed class to be invokable from a menu (or anything that can function like a menu)
+    /// - creates a menu item or equivalent.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple=true, Inherited=false)]
     public abstract class MenuAttributeBase : Attribute
     {
+        /// <summary>
+        /// Id (as used in <see cref="ParentId"/>) of the root of the main menu structure.
+        /// </summary>
         public const string DefaultMenuSetId = "";
 
         /// <summary>
@@ -83,13 +90,20 @@ namespace MvpFramework.Menu
     /// </summary>
     public class MenuItemAttribute : MenuAttributeBase
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="parentId">Value of <see cref="MenuAttributeBase.ParentId"/>.</param>
+        /// <param name="displayName">Value of <see cref="MenuAttributeBase.DisplayName"/>.</param>
         public MenuItemAttribute(string parentId, string displayName = null)
         {
             ParentId = parentId;
             DisplayName = displayName;
         }
 
-        public virtual MenuStyle Style { get; set; }
+        /// <summary>
+        /// A visual style or type of menu item.
+        /// </summary>
+        public virtual UiItemType Style { get; set; }
 
         public override bool IsMenu => false;
     }
@@ -98,7 +112,7 @@ namespace MvpFramework.Menu
     /// Type or style of a menu or sub-menu.
     /// These specify different ways or styles of displaying the menu.
     /// </summary>
-    public enum MenuStyle
+    public enum UiItemType
     {
         /// <summary>
         /// In the style of a main menu, typically dropped down from the top of a window,
@@ -119,7 +133,13 @@ namespace MvpFramework.Menu
 
         ToolBar,
 
-        Custom
+        PageControl,
+        TabPage,
+
+        Custom1 = 200,
+        Custom2,
+        Custom3,
+        Custom4,
     };
 
     /// <summary>
@@ -128,6 +148,11 @@ namespace MvpFramework.Menu
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]
     public class MenuAttribute : MenuAttributeBase
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="parentId">Value of <see cref="MenuAttributeBase.ParentId"/>.</param>
+        /// <param name="id">Value of <see cref="MenuAttributeBase.Id"/>.</param>
+        /// <param name="displayName">Value of <see cref="MenuAttributeBase.DisplayName"/>.</param>
         public MenuAttribute(string parentId = null, string id = null, string displayName = null)
         {
             ParentId = parentId;
@@ -163,11 +188,17 @@ namespace MvpFramework.Menu
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
     public class DefaultMenuSetId : Attribute
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="menuSetId">Value of <see cref="MenuSetId"/>.</param>
         public DefaultMenuSetId(string menuSetId)
         {
             this.MenuSetId = menuSetId;
         }
 
+        /// <summary>
+        /// The default <see cref="MenuAttributeBase.MenuSetId"/> for the assembly.
+        /// </summary>
         public virtual string MenuSetId { get; set; }
     }
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using JohnLambe.Util;
 using JohnLambe.Util.Types;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace ExperimentalTest
 {
@@ -33,8 +34,10 @@ namespace ExperimentalTest
             IntID y = new IntID();
 
             // Assert:
-            Assert.AreEqual(Value, (int)x);
-            Assert.AreEqual(0, (int)y);
+            Multiple(
+                () => Assert.AreEqual(Value, (int)x),
+                () => Assert.AreEqual(0, (int)y)
+            );
         }
 
         [TestMethod]
@@ -43,9 +46,11 @@ namespace ExperimentalTest
             IntID x = (IntID)5, y = (IntID)10, z = (IntID)5;
             IntID a = x;
 
-            Assert.AreEqual(x, z);
-            Assert.AreEqual(x, a);
-            Assert.AreNotEqual(x, y);
+            Multiple(
+                () => Assert.AreEqual(x, z),
+                () => Assert.AreEqual(x, a),
+                () => Assert.AreNotEqual(x, y)
+            );
         }
     }
 }

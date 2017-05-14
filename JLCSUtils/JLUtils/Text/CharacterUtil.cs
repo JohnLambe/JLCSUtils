@@ -13,6 +13,8 @@ namespace JohnLambe.Util.Text
 {
     public static class CharacterUtil
     {
+        #region Character sets
+
         /// <summary>
         /// Decimal digit characters, in ascending order.
         /// </summary>
@@ -42,6 +44,17 @@ namespace JohnLambe.Util.Text
         /// Characters allowed in identifiers such as those used in code.
         /// </summary>
         public const string IdentifierCharacters = AsciiCapitalLetters + AsciiLowercaseLetters + Digits + "_";
+
+        #endregion
+
+        #region Characters
+
+        /// <summary>
+        /// The ASCII ESC (Escape) character.
+        /// </summary>
+        public const char Asc_ESC = '\x1B';
+
+        #endregion
 
         /// <summary>
         /// Repeat the character <paramref name="count"/> times.

@@ -616,5 +616,44 @@ namespace JohnLambe.Tests.JLUtilsTest
 
             );
         }
+
+        [TestMethod]
+        public void IsStartOfWord()
+        {
+            string s = "one two.Three\tfour\r\nLine2";
+            for (int position = 0; position < s.Length; position++)
+            {
+                Assert.AreEqual(position == 0 || position == 4 || position == 14 || position == 20, StrUtil.IsStartOfWord(s,position, false), "Position: " + position + "; Punctuation: false" );
+                Assert.AreEqual(position == 0 || position == 4 || position == 14 || position == 20 || position == 8, StrUtil.IsStartOfWord(s, position), "Position: " + position + "; Punctuation: default");
+            }
+        }
+
+        [TestMethod]
+        public void IsAllUpperCase()
+        {
+            Multiple(
+                () => Assert.AreEqual(true, StrUtil.IsAllUpperCase("ASD S AD D - DSFDF")),
+                () => Assert.AreEqual(false, StrUtil.IsAllUpperCase("ASD S AD D - DSFDxF"))
+            );
+        }
+
+        [TestMethod]
+        public void IsAllLowerCase()
+        {
+            Multiple(
+                () => Assert.AreEqual(true, StrUtil.IsAllLowerCase("jhdfkdshf . dsdfdfs")),
+                () => Assert.AreEqual(false, StrUtil.IsAllLowerCase("sdfd f H"))
+            );
+        }
+
+        [TestMethod]
+        public void ContainsControlCharacter()
+        {
+            Multiple(
+                () => Assert.AreEqual(false, StrUtil.ContainsControlCharacter(null)),
+                () => Assert.AreEqual(false, StrUtil.ContainsControlCharacter("sdfd f H")),
+                () => Assert.AreEqual(true, StrUtil.ContainsControlCharacter("sdfd f H\t A"))
+            );
+        }
     }
 }

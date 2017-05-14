@@ -41,12 +41,12 @@ namespace JohnLambe.Tests.JLUtilsTest
         {
             TestUtil.AssertThrows(typeof(Exception),
                 () => Console.WriteLine(proxy.InvalidProperty),
-                "Exception not thrown on trying to invoke get invalid property value"
+                "Exception not thrown on trying to get invalid property value"
                 );
 
             TestUtil.AssertThrows(typeof(Exception),
                 () => proxy.InvalidProperty2 = "value",
-                "Exception not thrown on trying to invoke set invalid property value"
+                "Exception not thrown on trying to set invalid property value"
                 );
 
             TestUtil.AssertThrows(typeof(Exception),

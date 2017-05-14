@@ -47,7 +47,7 @@ TODO:
 		ValidationMode
 		Menus:
 			Popup menu bound similarly to ButtonContainer.
-			Main menu.
+			Main menu UI (using MenuAttribute).
 	Binding Validation:
 		Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
 		Throw exception when a presenter handler cannot be bound.
@@ -62,6 +62,9 @@ TODO:
 		Event to return method name (implementations would use nameof).
 		Generate code using nameof? - CodeDOM doesn't seem to support it.
 			Generate in new partial class?
+	Resolving for action and model: Return presenter and view that populate automatically from the model and use base classes for the action.
+	Caching of property metadata (lazily populated).
+	FormGenerator: Alignment of boxes - controls inside group box don't align with those not in one.
 
 Possible additions:
 	Rejected: Map handlers (by ID) from the view to methods on the Presenter Interface?

@@ -748,6 +748,19 @@ namespace JohnLambe.Util
 
         #endregion
 
+        public static string RemoveCharacter(this string s, char remove)
+        {
+            if (s == null)
+                return null;
+            StringBuilder stringbuilder = new StringBuilder(s.Length);
+            foreach (char currentCharacter in s)
+            {
+                if (currentCharacter != remove)   // if it contains it
+                    stringbuilder.Append(currentCharacter);
+            }
+            return stringbuilder.ToString();
+        }
+
         /// <summary>
         /// Remove specified characters from a string.
         /// If <paramref name="s"/> is null, null is returned.
@@ -775,7 +788,6 @@ namespace JohnLambe.Util
         {
             ContainsOnly = 1,
             ContainsAny,
-
         }
 
         /// <summary>
@@ -1194,6 +1206,51 @@ namespace JohnLambe.Util
             return s?.Where(c => c == charToCount).Count() ?? 0;
             //| Would it be more efficient to write a loop?
         }
+
+        /// <summary>
+        /// True iff the given position in the string is the start of a word.
+        /// À character is considered to be at the start of a word if it is at the start of the string, or is immediately preceded by whitespace
+        /// or optionally, punctuation.
+        /// </summary>
+        /// <param name="s">The string. If null, false is returned.</param>
+        /// <param name="position">The 0-based index of the character to test. If out of range, false is returned.</param>
+        /// <param name="recognisePunctuation">Iff true, a character is considered to be at the start of a word if it immediately preceded by punctuation.</param>
+        /// <returns>true if the given character is at the start of a word.</returns>
+        public static bool IsStartOfWord([Nullable]string s, int position, bool recognisePunctuation = true)
+        {
+            if (s == null || position < 0 || position > s.Length)   // null or out of range
+                return false;
+            if (Char.IsWhiteSpace(s[position]) || (recognisePunctuation && Char.IsPunctuation(s[position])))
+                return false;
+            if (position == 0 || Char.IsWhiteSpace(s[position - 1]))
+                return true;
+            if (recognisePunctuation && Char.IsPunctuation(s[position - 1]))
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// True iff the string is all capitals, i.e. if it contains no lowercase letters.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static bool IsAllUpperCase(this string s)
+            => !s.Any(c => Char.IsLower(c));
+
+        /// <summary>
+        /// True iff the string is all lower case, i.e. if it contains no capital letters.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static bool IsAllLowerCase(this string s)
+            => !s.Any(c => Char.IsUpper(c));
+
+        /// <summary>
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns>True iff the string contains any control character.</returns>
+        public static bool ContainsControlCharacter(this string s)
+            => s != null && s.Any(c => Char.IsControl(c));
 
         #region SafeSubstring
 

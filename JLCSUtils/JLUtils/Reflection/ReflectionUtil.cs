@@ -8,6 +8,7 @@ using System.Diagnostics.Contracts;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.TypeConversion;
 using JohnLambe.Util.Validation;
+using JohnLambe.Types;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -342,10 +343,15 @@ namespace JohnLambe.Util.Reflection
         /// <param name="methodName"></param>
         /// <param name="arguments">Arguments to the method to be called.</param>
         /// <returns></returns>
-        public static T CallStaticMethod<T>(Type target, string methodName, params object[] arguments)
+        /// <exception cref="MissingMemberException">If the method does not exist.</exception>
+        /// <exception cref="AmbiguousMatchException">If there is more than one matching method.</exception>
+        /// <exception cref="NullReferenceException">If <paramref name="target"/> is null.</exception>
+        public static T CallStaticMethod<T>([NotNull]Type target, string methodName, params object[] arguments)
         {
             //TODO: if there are overloads, find the one that matches arguments
             var method = target.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public); //, new Type[] { });
+            if (method == null)
+                throw new MissingMemberException("Static method '" + methodName + "' does not exist on " + target.FullName, methodName);
             return (T)method.Invoke(target, arguments);
         }
 
@@ -489,37 +495,6 @@ namespace JohnLambe.Util.Reflection
             /// </summary>
             SetValue
         };
-
-        /// <summary>
-        /// An option on a property referece, specifying how null or invalid values are handled.
-        /// <para>
-        /// In strings passed to <see cref="TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="GetSetProperty(ref object, string, PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
-        /// this is specified by a character (specified by <see cref="EnumMappedValueAttribute"/> here) after the property name.
-        /// </para>
-        /// </summary>
-        public enum PropertyNullabilityModifier
-        {
-            /// <summary>
-            /// No nullability modifier is present.
-            /// </summary>
-            None = 0,
-            /// <summary>
-            /// The value may be null and/or the property may not exist.
-            /// </summary>
-            [EnumMappedValue('?')]
-            Nullable = 1,
-            /// <summary>
-            /// The property must exist but may have a null value.
-            /// </summary>
-            [EnumMappedValue('@')]
-            ExistsNullable = 2,
-            /// <summary>
-            /// The value must not be null.
-            /// (The property must exist, since there couldn't be a non-null value otherwise.)
-            /// </summary>
-            [EnumMappedValue('!')]
-            NonNullable = 3
-        }
 
         /// <summary>
         /// Parse a property name with an optional suffix for a modifier, into the name and modifier.
@@ -720,6 +695,37 @@ namespace JohnLambe.Util.Reflection
             return d.Invoke(default(T));
         }
 
+    }
+
+    /// <summary>
+    /// An option on a property referece, specifying how null or invalid values are handled.
+    /// <para>
+    /// In strings passed to <see cref="TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="GetSetProperty(ref object, string, PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
+    /// this is specified by a character (specified by <see cref="EnumMappedValueAttribute"/> here) after the property name.
+    /// </para>
+    /// </summary>
+    public enum PropertyNullabilityModifier
+    {
+        /// <summary>
+        /// No nullability modifier is present.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// The value may be null and/or the property may not exist.
+        /// </summary>
+        [EnumMappedValue('?')]
+        Nullable = 1,
+        /// <summary>
+        /// The property must exist but may have a null value.
+        /// </summary>
+        [EnumMappedValue('@')]
+        ExistsNullable = 2,
+        /// <summary>
+        /// The value must not be null.
+        /// (The property must exist, since there couldn't be a non-null value otherwise.)
+        /// </summary>
+        [EnumMappedValue('!')]
+        NonNullable = 3
     }
 
     #region BindingFlagsExt

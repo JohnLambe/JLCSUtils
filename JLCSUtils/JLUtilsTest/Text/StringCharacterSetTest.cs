@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using JohnLambe.Util.Text;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 namespace JohnLambe.Tests.JLUtilsTest.Text
 {
@@ -29,9 +30,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
             StringCharacterSet s = new StringCharacterSet();
             s.StringValue = "ABCDEFGH--IJK";
 
-            Assert.AreEqual(true, s.Contains('A'));
-            Assert.AreEqual(false, s.Contains('Z'));
-            Assert.AreEqual(true, s.Contains('-'), "duplicate");
+            Multiple(
+                () => Assert.AreEqual(true, s.Contains('A')),
+                () => Assert.AreEqual(false, s.Contains('Z')),
+                () => Assert.AreEqual(true, s.Contains('-'), "duplicate")
+            );
         }
     }
 }

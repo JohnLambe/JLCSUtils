@@ -1,5 +1,6 @@
 ﻿namespace MvpFramework.WinForms
 {
+    /*
     public class MvpFrameworkConstants
     {
         /// <summary>
@@ -7,4 +8,5 @@
         /// </summary>
         public const string MvpCategory = "MVP";
     }
+    */
 }

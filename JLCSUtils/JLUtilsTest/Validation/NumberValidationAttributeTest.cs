@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using JohnLambe.Util.Validation;
 using System.ComponentModel.DataAnnotations;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
 namespace JohnLambe.Tests.JLUtilsTest.Validation
 {
     [TestClass]
@@ -20,9 +22,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
                 MinimumValue = 2000
             };
 
-            Assert.IsFalse(attrib.IsValid(500));
-            Assert.IsTrue(attrib.IsValid(2000));
-            Assert.IsTrue(attrib.IsValid(3000));
+            Multiple(
+                () => Assert.IsFalse(attrib.IsValid(500)),
+                () => Assert.IsTrue(attrib.IsValid(2000)),
+                () => Assert.IsTrue(attrib.IsValid(3000))
+            );
         }
 
         [TestMethod]
@@ -33,10 +37,12 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
                 MaximumValue = -300
             };
 
-            Assert.IsFalse(attrib.IsValid(-100.5));
-            Assert.IsFalse(attrib.IsValid(2));
-            Assert.IsTrue(attrib.IsValid(-300));
-            Assert.IsTrue(attrib.IsValid(-800.2));
+            Multiple(
+                () => Assert.IsFalse(attrib.IsValid(-100.5)),
+                () => Assert.IsFalse(attrib.IsValid(2)),
+                () => Assert.IsTrue(attrib.IsValid(-300)),
+                () => Assert.IsTrue(attrib.IsValid(-800.2))
+            );
         }
 
         [TestMethod]
@@ -48,10 +54,12 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
                 MaximumValue = 80.92
             };
 
-            Assert.IsFalse(attrib.IsValid(80.39));
-            Assert.IsTrue(attrib.IsValid(80.4));
-            Assert.IsTrue(attrib.IsValid(80.5));
-            Assert.IsFalse(attrib.IsValid(80.93));
+            Multiple(
+                () => Assert.IsFalse(attrib.IsValid(80.39)),
+                () => Assert.IsTrue(attrib.IsValid(80.4)),
+                () => Assert.IsTrue(attrib.IsValid(80.5)),
+                () => Assert.IsFalse(attrib.IsValid(80.93))
+            );
         }
 
     }

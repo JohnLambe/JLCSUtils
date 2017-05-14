@@ -357,6 +357,10 @@ namespace MvpFramework.WinForms
                 : Orientation == Orientation.Horizontal ? Height - Margin.Top - Margin.Bottom   // fill the space between the vertical margins
                 : height;
 
+        /// <summary>
+        /// <see cref="IOptionUpdate.UpdateOption(OptionUpdateArgs)"/>
+        /// </summary>
+        /// <param name="args"></param>
         public virtual void UpdateOption(OptionUpdateArgs args)
         {
             if (Buttons != null)
@@ -410,7 +414,7 @@ namespace MvpFramework.WinForms
         /// <summary>
         /// Filters handlers of the presenter.
         /// </summary>
-        [Category(MvpFrameworkConstants.MvpCategory)]
+        [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description("Filters handles of the presenter.")]
         //[DefaultValue(null)]   // with no default, Form Designer can't set to null.
         public virtual string Filter { get; set; }
@@ -514,11 +518,17 @@ namespace MvpFramework.WinForms
         /// </summary>
         public class ButtonClickedEventArgs : EventArgs
         {
+            /// <summary>
+            /// </summary>
+            /// <param name="button">Value of <see cref="Button"/>.</param>
             public ButtonClickedEventArgs(MenuItemModel button)
             {
                 this.Button = button;
             }
 
+            /// <summary>
+            /// The model of the button that was clicked.
+            /// </summary>
             public virtual MenuItemModel Button { get; }
 
             /// <summary>
@@ -546,10 +556,25 @@ namespace MvpFramework.WinForms
         /// Horizontal row of buttons from left to right.
         /// </summary>
         LeftToRight = 1,
+        /// <summary>
+        /// Horizontal row of buttons from right to left.
+        /// </summary>
         RightToLeft,
+        /// <summary>
+        /// Vertical row of buttons from top to bottom.
+        /// </summary>
         TopToBottom,
+        /// <summary>
+        /// Vertical row of buttons from bottom to top.
+        /// </summary>
         BottomToTop,
+        /// <summary>
+        /// Horizontal row of buttons, centred.
+        /// </summary>
         HorizontalCentred,
+        /// <summary>
+        /// Vertical row of buttons, centred.
+        /// </summary>
         VerticalCentred
     }
 
