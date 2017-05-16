@@ -115,7 +115,8 @@ namespace MvpFramework
                 switch(existingAction ?? ExistingAction)
                 {
                     case ExistingAccelerartorAction.Remove:
-                        caption = caption.RemoveCharacter(AcceleratorIndicator);
+//                        caption = caption.RemoveCharacter(AcceleratorIndicator);
+                        caption = RemoveAccelerator(caption);
                         break;
                     case ExistingAccelerartorAction.ConvertToWord:
                         caption = ConvertAcceleratorIndicator(caption);
@@ -339,21 +340,28 @@ namespace MvpFramework
             {
                 acceleratorPosition = caption.IndexOf(AcceleratorIndicator, acceleratorPosition);      // find next '&'
                                                                                                        // Using a starting offset of acceleratorPosition is not necessary (because previous matches have been removed) but probably improves performance.
-                if (acceleratorPosition > -1 && acceleratorPosition < caption.Length - 1)   // if '&' found and not the last character
+                if (acceleratorPosition > -1)   // if '&' found
                 {
-                    if (acceleratorPosition > 0 && acceleratorPosition < caption.Length
+                    if (acceleratorPosition > 0 && acceleratorPosition < caption.Length - 1
                         && (AddedAcceleratorPrefix.HasValue && caption[acceleratorPosition-1] == AddedAcceleratorPrefix)          // if a prefix is defined and mathces (a suffix without a prefix is not supported)
-                        && (!AddedAcceleratorSuffix.HasValue || caption[acceleratorPosition + 2] == AddedAcceleratorSuffix)       // if the suffix is NOT defined OR matches (because it is optional)
+                        && (!AddedAcceleratorSuffix.HasValue || caption.CharAt(acceleratorPosition + 2) == AddedAcceleratorSuffix)       // if the suffix is NOT defined OR matches (because it is optional)
                         )
                     {
-                        caption = caption.Remove(acceleratorPosition - 1, AddedAcceleratorSuffix.HasValue ? 4 : 3);  // remove the character itself, the accelerator indicator ('&') and the enclosing characters
+                        int start = acceleratorPosition - 1;
+                        int len = AddedAcceleratorSuffix.HasValue ? 4 : 3;
+                        if (caption.CharAt(acceleratorPosition - 2) == ' ')   // if preceded by SPACE
+                        {
+                            start--;
+                            len++;
+                        }
+                        caption = caption.Remove(start, len);  // remove the character itself, the accelerator indicator ('&') and the enclosing characters
                     }
                     else
                     {
                         caption = caption.Remove(acceleratorPosition, 1);   // just remove the accelerator indicator ('&')
                     }
                 }
-            } while (acceleratorPosition > -1);   // repeat until there are no AcceleratorIndicator ('&') characters left
+            } while (acceleratorPosition > -1 && acceleratorPosition < caption.Length);   // repeat until there are no AcceleratorIndicator ('&') characters left
             return caption;
         }
 

@@ -55,11 +55,11 @@ namespace DiExtension
 
             int parameterIndex = 0;                               // index of the parameter
             int contextArgsIndex = 0;                             // index of next unused element in contextArgs
-            bool? createParam = null;                             // true iff the current parameter is to be populated from the context arguments
             foreach (var parameter in parameters)
             {
                 if (parameterIndex >= startIndex && (parameterIndex <= endIndex || endIndex == -1))
                 {
+                    bool? createParam = null;                             // true iff the current parameter is to be populated from the context arguments
                     if (selector != null)
                         createParam = selector.Invoke(parameter);
                     if (createParam == null)

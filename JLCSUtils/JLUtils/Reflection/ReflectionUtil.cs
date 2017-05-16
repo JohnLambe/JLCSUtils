@@ -367,6 +367,8 @@ namespace JohnLambe.Util.Reflection
         {
             //TODO: if there are overloads, find the one that matches arguments
             var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public); //, ArrayOfTypes(arguments), );
+            if (method == null)
+                throw new MissingMemberException("Method '" + methodName + "' does not exist on " + target.GetType().FullName, methodName);
             if (method.IsStatic)
                 target = null;      // necessary for static constructors only
             return (T)method.Invoke(target, arguments);

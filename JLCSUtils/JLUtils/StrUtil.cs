@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows;
 using JohnLambe.Types;
 using JohnLambe.Util.Diagnostic;
+using System.Runtime.CompilerServices;
 
 namespace JohnLambe.Util
 {
@@ -700,7 +701,8 @@ namespace JohnLambe.Util
         /// <param name="length">Number of characters. Must be 0 or positive.
         /// If longer than the string, the whole string is returned.</param>
         /// <returns></returns>
-        public static string EndSubstring(this string s, int length)
+        [return: Nullable]
+        public static string EndSubstring([NotNull]this string s, int length)
         {
             if (s == null)
                 return null;
@@ -716,12 +718,21 @@ namespace JohnLambe.Util
         /// <param name="index">0-based index of a character.</param>
         /// <param name="defaultValue">Value to return if the string is null or <see cref="index"/> is out of range.</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char CharAt(this string s, int index, char defaultValue = '\0')
         {
             return CharAtNullable(s, index, defaultValue).Value;
             // this won't be null because we gave a non-null defaultValue.
         }
 
+        /// <summary>
+        /// Returns the character at index <see cref="index"/>.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="index">0-based index of a character.</param>
+        /// <param name="defaultValue">Value to return if the string is null or <see cref="index"/> is out of range.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char? CharAtNullable(this string s, int index, char? defaultValue = null)
         {
             if (s == null || index >= s.Length || index < 0)
@@ -748,7 +759,14 @@ namespace JohnLambe.Util
 
         #endregion
 
-        public static string RemoveCharacter(this string s, char remove)
+        /// <summary>
+        /// Remove all occurrences of a specified character from the string.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="remove">The character to remove.</param>
+        /// <returns>The string with <paramref name="remove"/> removed.</returns>
+        [return: Nullable]
+        public static string RemoveCharacter([Nullable]this string s, char remove)
         {
             if (s == null)
                 return null;
@@ -769,7 +787,8 @@ namespace JohnLambe.Util
         /// <param name="remove">Characters to be removed. null is treated the same as "".</param>
         /// <param name="removeExcept">If true, all characters except those specified are removed. Otherwise, those specified are removed.</param>
         /// <returns>A copy of the string with characters removed.</returns>
-        public static string RemoveCharacters(this string s, string remove, bool removeExcept = false)
+        [return: Nullable]
+        public static string RemoveCharacters([Nullable]this string s, string remove, bool removeExcept = false)
         {
             if (s == null)
                 return null;

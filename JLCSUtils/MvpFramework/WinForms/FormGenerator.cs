@@ -64,7 +64,7 @@ namespace MvpFramework.WinForms
             // and attaches an event handler for other validation).
 
             var captionControl = new Label();
-            captionControl.Text = AccelCaptionUtil.SetAccelerator(context.PropertyBinder.DisplayName,AcceleratorCaptionUtil.Auto);
+            captionControl.Text = Accelerators.SetAccelerator(context.PropertyBinder.DisplayName,AcceleratorCaptionUtil.Auto);
             captionControl.Left = HSpacing;
             captionControl.Top = VSpacing / 2;
             panel.Controls.Add(captionControl);
@@ -90,7 +90,7 @@ namespace MvpFramework.WinForms
             context.ParentControl.Controls.SetChildIndex(panel, 0);
         }
 
-        protected override Type GetControlForType(Type dataType)
+        protected override Type GetControlTypeForDataType(Type dataType)
         {
             return typeof(TextBox);  //XXX temporary
         }

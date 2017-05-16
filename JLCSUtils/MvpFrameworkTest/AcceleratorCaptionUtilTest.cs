@@ -80,7 +80,8 @@ namespace MvpFrameworkTest
             Multiple(
                 () => Assert.AreEqual("Undo", util.SetAccelerator("Undo [&Z]", null, AcceleratorCaptionUtil.ExistingAccelerartorAction.Remove)),
                 () => Assert.AreEqual("&Undo", util.SetAccelerator("Undo [&Z]", 'u', AcceleratorCaptionUtil.ExistingAccelerartorAction.Remove)),
-                () => Assert.AreEqual("Undo [&.]", util.SetAccelerator("Undo [&Z]", '.', AcceleratorCaptionUtil.ExistingAccelerartorAction.Remove))
+                () => Assert.AreEqual("Undo [&.]", util.SetAccelerator("Undo [&Z]", '.', AcceleratorCaptionUtil.ExistingAccelerartorAction.Remove)),
+                () => Assert.AreEqual("Undo", util.SetAccelerator("Und&o [&U]", null, AcceleratorCaptionUtil.ExistingAccelerartorAction.Remove))
             );
         }
 

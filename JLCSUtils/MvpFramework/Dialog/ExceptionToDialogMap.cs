@@ -148,6 +148,10 @@ namespace MvpFramework.Dialog
             DropCache();
         }
 
+        /// <summary>
+        /// Remove any mapping for a given exception type.
+        /// </summary>
+        /// <param name="exceptionType"></param>
         public virtual void RemoveMapping(Type exceptionType)
         {
             _mappings.Remove(exceptionType);
@@ -210,7 +214,7 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// The defined mappings.
         /// </summary>
-        protected IDictionary<Type, Type> _mappings = new Dictionary<Type,Type>();
+        protected IDictionary<Type, Type> _mappings = new Dictionary<Type,Type>();  //TODO Use TypeMap
         /// <summary>
         /// Cache of resolved mappings.
         /// </summary>

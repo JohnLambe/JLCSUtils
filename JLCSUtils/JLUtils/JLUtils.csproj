@@ -50,6 +50,7 @@
     <Compile Include="Collections\EnumeratorUtil.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Collections\KeyExistsException.cs" />
+    <Compile Include="Collections\TypeMap.cs" />
     <Compile Include="ConfigProvider\IconRepository.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />
     <Compile Include="Documentation\DiagramAttribute.cs" />

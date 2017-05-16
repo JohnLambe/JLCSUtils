@@ -1,7 +1,11 @@
-﻿using JohnLambe.Types;
+﻿using DiExtension;
+using JohnLambe.Types;
+using JohnLambe.Util.Collections;
+using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.FilterDelegates;
 using JohnLambe.Util.Reflection;
 using MvpFramework.Binding;
+using MvpFramework.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,6 +23,12 @@ namespace MvpFramework
     public abstract class FormGeneratorBase<TControl>
         where TControl : class
     {
+        public FormGeneratorBase()
+        {
+            CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type,Type>(DataTypeToControlTypeMap);
+        }
+
+
         /// <summary>
         /// The user interface control into which the generated controls will be added.
         /// </summary>
@@ -31,25 +41,38 @@ namespace MvpFramework
 
         public virtual AutoSizeOption AutoSize { get; set; } = AutoSizeOption.Grow;
 
+        /*
         /// <summary>
         /// Coordinates (top left) of first control caption.
         /// </summary>
-//        public virtual Point Coords { get; set; }
-
+                public virtual Point Coords { get; set; }
+        */
 
         /// <summary>
-        /// 
+        /// Generate controls from the model.
         /// </summary>
-        public virtual void Generate(string groupId = null, FilterDelegate<IUiGroupModel> groupFilter = null, FilterDelegate<ModelPropertyBinder> propertyFilter = null)
+        /// <param name="groupFilter">
+        /// Delegate to filter groups to generate controls for.
+        /// null for all.
+        /// </param>
+        /// <param name="propertyFilter">
+        /// Delegate to filter propertis within each group, to generate controls for.
+        /// null for all.
+        /// </param>
+        public virtual void Generate(FilterDelegate<IUiGroupModel> groupFilter = null, FilterDelegate<ModelPropertyBinder> propertyFilter = null)
         {
             if (Target != null && Model != null)
             {
+                StartGenerate();
+
                 GenerateGroup(GroupDefinitionAttribute.Ungrouped, propertyFilter);
 
                 foreach (var group in Model.Groups.Where(g => groupFilter == null || groupFilter(g)))
                 {
                     GenerateGroup(group, propertyFilter);
                 }
+
+                EndGenerate();
             }
         }
 
@@ -96,10 +119,16 @@ namespace MvpFramework
         }
 
 
+        /// <summary>
+        /// Called once before generating a collection of controls.
+        /// </summary>
         public virtual void StartGenerate()
         {
         }
 
+        /// <summary>
+        /// Called after generaating a collection of controls.
+        /// </summary>
         public virtual void EndGenerate()
         {
         }
@@ -117,47 +146,117 @@ namespace MvpFramework
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="group"></param>
-        /// <param name="propertyBinder"></param>
+        /// <param name="context"></param>
         public virtual TControl CreateControl([NotNull]ControlGeneratorContext context)
         {
             BeforeCreateControl(context);
 
-            var controlType = GetControlForType(context.PropertyBinder.PropertyType);
-            try
-            {
-                context.NewControl = ReflectionUtil.CallStaticMethod<TControl>(controlType, MvpControlMappingAttribute.CreateControlMethod, context);
-            }
-            catch (MissingMemberException)
-            {
-                context.NewControl = ReflectionUtil.Create<TControl>(controlType);
-            }
+            OnCreateControl(context);
 
             AfterCreateControl(context);
 
-            return null;
+            return context.NewControl;
         }
 
+        /// <summary>
+        /// Called before creating a control.
+        /// This can modify the context and/or populate <see cref="ControlGeneratorContext.NewControl"/> in <paramref name="context"/>,
+        /// thus preventing the usual method of creating the control (including calling <see cref="OnCreateControl(ControlGeneratorContext)"/>).
+        /// </summary>
+        /// <param name="context"></param>
         protected virtual void BeforeCreateControl([NotNull]ControlGeneratorContext context)
         {
         }
 
+        /// <summary>
+        /// Creates a control.
+        /// </summary>
+        /// <param name="context"></param>
+        protected virtual void OnCreateControl([NotNull]ControlGeneratorContext context)
+        {
+            if (context.NewControl == null)   // if not already created
+            {
+                var controlType = GetControlTypeForDataType(context.PropertyBinder.PropertyType);
+                try
+                {
+                    context.NewControl = ReflectionUtil.CallStaticMethod<TControl>(controlType, MvpControlMappingAttribute.CreateControlMethod, context);
+                }
+                catch (MissingMemberException)
+                {
+                    context.NewControl = ReflectionUtil.Create<TControl>(controlType);
+                }
+            }
+            Diagnostics.Assert(context.NewControl != null, "FormGeneratorBase.OnCreateControl: NewControl==null");
+
+            DiContext?.BuildUp(context.NewControl);                       // run dependincy injection if we have a DI container
+
+            (context.NewControl as IGeneratableControl)?.ControlGeneratation(context);  // call if it implements the interface
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         protected virtual void AfterCreateControl([NotNull]ControlGeneratorContext context)
         {
         }
+
 
         /// <summary>
         /// Get a UI control that handles a given data type.
         /// </summary>
         /// <param name="dataType"></param>
         /// <returns></returns>
-        protected virtual Type GetControlForType(Type dataType)
+        protected virtual Type GetControlTypeForDataType(Type dataType)
         {
-            return null;
+            return CachedDataTypeToControlTypeMap[dataType];
         }
 
 
-        protected virtual AcceleratorCaptionUtil AccelCaptionUtil { get; } = new AcceleratorCaptionUtil();
+        #region Scanning for mappings
+
+        /// <summary>
+        /// Scan a list of assemblies and register mappings.
+        /// </summary>
+        /// <param name="assemblies">The list of assemblies to scan. If empty, the calling assembly is scanned.</param>
+        public virtual void ScanAssemblies(params Assembly[] assemblies)
+        {
+            if (assemblies.Length == 0)
+                assemblies = new Assembly[] { Assembly.GetCallingAssembly() };
+            Scan(assemblies);
+        }
+
+        public virtual void Scan(IEnumerable<Assembly> assemblies)
+        {
+            foreach (var attrib in assemblies.SelectMany(a => a.GetTypes()).SelectMany(t => t.GetAttributesWithMember<MvpControlMappingAttribute, Type>()))
+            {
+                AddMapping(attrib.Attribute.ForType, attrib.DeclaringMember);
+            }
+        }
+
+        #endregion
+
+        public virtual void AddMapping(Type dataType, Type controlType)
+        {
+            DataTypeToControlTypeMap.Add(dataType, controlType);
+        }
+
+
+        /// <summary>
+        /// Dependency injection context from which new controls are injected.
+        /// </summary>
+        public virtual IDiContext DiContext { get; set; }
+
+        /// <summary>
+        /// Tracks accelerator characters in the generated controls.
+        /// </summary>
+        protected virtual AcceleratorCaptionUtil Accelerators { get; } = new AcceleratorCaptionUtil();
+
+        /// <summary>
+        /// Maps the type of data displayed/edited to a type of control to handle it.
+        /// </summary>
+        protected TypeMap DataTypeToControlTypeMap { get; } = new TypeMap();
+        protected ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap;
 
 
         /// <summary>
@@ -183,11 +282,29 @@ namespace MvpFramework
             /// </summary>
             public virtual TControl ParentControl { get; set; }
 
+            /// <summary>
+            /// The control being generated.
+            /// </summary>
             public virtual TControl NewControl { get; set; }
 
+            /// <summary>
+            /// The index of the control in its parent.
+            /// </summary>
             public virtual int Index { get; set; }
 
+            /// <summary>
+            /// For consumers of this framework to add data to.
+            /// </summary>
             public virtual IDictionary<string, object> CustomProperties { get; } = new Dictionary<string, object>();
+        }
+
+        public interface IGeneratableControl
+        {
+            /// <summary>
+            /// Called by the form generator after construction, and running dependency injection if applicable.
+            /// </summary>
+            /// <param name="context"></param>
+            void ControlGeneratation(ControlGeneratorContext context);
         }
 
     }
