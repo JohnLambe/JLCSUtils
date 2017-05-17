@@ -262,6 +262,18 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         [TestMethod]
+        public void RemoveCharacter()
+        {
+            Multiple(
+                () => Assert.AreEqual("asdfghjk", @"\\asd\\\\fgh\\jk\".RemoveCharacter('\\')),
+                () => Assert.AreEqual("aqwertya", "aqwertya".RemoveCharacter('A'), "Shouldn't be case sensitive"),
+                () => Assert.AreEqual(null, ((string)null).RemoveCharacter('/')),
+                () => Assert.AreEqual("", "\x7f\x7f\x7f\x7f\x7f".RemoveCharacter('\x7f')),
+                () => Assert.AreEqual("", "".RemoveCharacter('é'))
+                );
+        }
+
+        [TestMethod]
         public void Repeat()
         {
             Multiple(

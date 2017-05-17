@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Binding;
+using DiExtension;
 
 namespace MvpFramework.WinForms
 {
@@ -13,8 +14,13 @@ namespace MvpFramework.WinForms
     /// </summary>
     public class FormGenerator : FormGeneratorBase<Control>
     {
+        public FormGenerator(IDiContext diContext = null) : base(diContext)
+        {
+        }
+
         public override void StartGenerate()
         {
+            AddMapping(typeof(object), typeof(TextBox));
             base.StartGenerate();
             Target.SuspendLayout();
         }
@@ -90,11 +96,12 @@ namespace MvpFramework.WinForms
             context.ParentControl.Controls.SetChildIndex(panel, 0);
         }
 
+        /*
         protected override Type GetControlTypeForDataType(Type dataType)
         {
             return typeof(TextBox);  //XXX temporary
         }
-
+        */
 
         /// <summary>
         /// X-coordinate of field controls.

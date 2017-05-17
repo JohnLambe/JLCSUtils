@@ -18,10 +18,6 @@ ChainableContext
 More automatic registration.
 
 
-Locating Presenter for Model:
-	- Attribute on presenter to indicate supported Model types.
-	- Attributed constructor parameter (to flag a parameter as the model).
-	- Generic type parameter?
 
 Change exceptions to ActivationException ?
 

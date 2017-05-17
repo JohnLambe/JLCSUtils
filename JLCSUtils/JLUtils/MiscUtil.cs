@@ -38,6 +38,8 @@ namespace JohnLambe.Util
 
         #region IfNotNull
 
+        // written before ?? operator and params parameters.
+
         /// <summary>
         /// Use a delegate with this as a parameter if this is not null/default:
         /// <para>If `a` is null or the default for its type, the default value of the return type is returned.

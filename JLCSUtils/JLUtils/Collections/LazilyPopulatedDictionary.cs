@@ -15,7 +15,7 @@ namespace JohnLambe.Util.Collections
     /// </summary>
     /// <typeparam name="K">Key type</typeparam>
     /// <typeparam name="V">Value type</typeparam>
-    public interface ISimpleLookup<K,V>
+    public interface ISimpleLookup<K, V>
     {
         /// <summary>
         /// Get the value corresponding to the given key.
@@ -36,6 +36,26 @@ namespace JohnLambe.Util.Collections
         /// <returns>true iff the value was found.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="key"/> is null.</exception>
         bool TryGetValue(K key, out V value);
+    }
+
+    public static class SimpleLookupExtension
+    {
+        /// <summary>
+        /// Try to look up a key, and return the default value of the value type if it is not found.
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="lookup"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static V TryGetValue<K,V>(this ISimpleLookup<K,V> lookup, K key)
+        {
+            V value;
+            if (lookup.TryGetValue(key, out value))
+                return value;
+            else
+                return default(V);
+        }
     }
 
     /// <summary>

@@ -81,7 +81,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
                 // null:
                 () => Assert.AreEqual(0, TypeUtil.IsMoreSpecific(null, null)),
                 () => AssertGreaterThan(0, TypeUtil.IsMoreSpecific(typeof(ITest), null)),
-                () => AssertLessThan(0, TypeUtil.IsMoreSpecific(null, typeof(ITest)))
+                () => AssertLessThan(0, TypeUtil.IsMoreSpecific(null, typeof(ITest))),
+
+                () => Assert.AreEqual(0, TypeUtil.IsMoreSpecific(typeof(ITest), typeof(string)), "types with no relation to each other")
             );
         }
 

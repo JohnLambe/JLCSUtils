@@ -120,7 +120,6 @@ namespace DiExtension.SimpleInject
         /// <returns>The attribute, or null if does not have one.</returns>
         protected static InjectAttribute GetAttributeForConsumer(InjectionConsumerInfo consumer)
         {
-            /*TODO: Test and replace with this:*/
             return ((ICustomAttributeProvider)consumer.Target.Parameter ?? (ICustomAttributeProvider)consumer.Target.Member)
                 .GetCustomAttribute<InjectAttribute>();
                 /*/

@@ -118,10 +118,10 @@ namespace JohnLambe.Util.Reflection
 
         /// <summary>
         /// Determine which type is "more specific", according to this definition:<br/>
-        /// X is more specific than Y iff X is assignable from Y (i.e. X=Y is valid) but not vice versa,
+        /// X is more specific than Y iff Y is assignable from X (i.e. Y=X is valid) but not vice versa,
         /// except that anything is more specific than null.
         /// <para>Any subclass of a class is more specific than that class.
-        /// Classes are more specific than interfaces they implement.</para>
+        /// Classes are more specific than interfaces that they implement.</para>
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -132,18 +132,18 @@ namespace JohnLambe.Util.Reflection
         /// </returns>
         /// <remarks>This is used where the two types are types supported by different handlers.
         /// The one that supports the "more specific" type is a more specific (less general) handler and is usually preferred when both could be used.
+        /// <para>The return value is chosen for consistency with <see cref="IComparer{T}"/>.</para>
         /// </remarks>
-        //| The return value is chosen for consistency with IComparable.
         public static int IsMoreSpecific([Nullable] Type a, [Nullable] Type b)
         {
-            if (a == null && b == null)
+            if (a == b)
             {
-                return 0;
+                return 0;               // equal, therefore equally specific (may be null)
             }
-            else  // at least one is not null
+            else  // at least one is not null (if both were null, they'd be equal)
             {
                 if (a == null)          // only `a` is null
-                    return -1;
+                    return -1;          // `a` is less specific because everything else is more specific than null
                 else if (b == null)     // only `b` is null 
                     return 1;
             }

@@ -23,8 +23,9 @@ namespace MvpFramework
     public abstract class FormGeneratorBase<TControl>
         where TControl : class
     {
-        public FormGeneratorBase()
+        public FormGeneratorBase(IDiContext diContext = null)
         {
+            this.DiContext = diContext;
             CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type,Type>(DataTypeToControlTypeMap);
         }
 
@@ -209,24 +210,28 @@ namespace MvpFramework
         /// <returns></returns>
         protected virtual Type GetControlTypeForDataType(Type dataType)
         {
-            return CachedDataTypeToControlTypeMap[dataType];
+            return CachedDataTypeToControlTypeMap.TryGetValue(dataType);
         }
 
 
         #region Scanning for mappings
 
         /// <summary>
-        /// Scan a list of assemblies and register mappings.
+        /// Scan assemblies and register mappings.
         /// </summary>
         /// <param name="assemblies">The list of assemblies to scan. If empty, the calling assembly is scanned.</param>
-        public virtual void ScanAssemblies(params Assembly[] assemblies)
+        public virtual void Scan(params Assembly[] assemblies)
         {
             if (assemblies.Length == 0)
                 assemblies = new Assembly[] { Assembly.GetCallingAssembly() };
-            Scan(assemblies);
+            ScanAssemblies(assemblies);
         }
 
-        public virtual void Scan(IEnumerable<Assembly> assemblies)
+        /// <summary>
+        /// Scan assemblies and register mappings.
+        /// </summary>
+        /// <param name="assemblies">The list of assemblies to scan. If empty, this does nothing.</param>
+        public virtual void ScanAssemblies(IEnumerable<Assembly> assemblies)
         {
             foreach (var attrib in assemblies.SelectMany(a => a.GetTypes()).SelectMany(t => t.GetAttributesWithMember<MvpControlMappingAttribute, Type>()))
             {
@@ -245,7 +250,7 @@ namespace MvpFramework
         /// <summary>
         /// Dependency injection context from which new controls are injected.
         /// </summary>
-        public virtual IDiContext DiContext { get; set; }
+        protected virtual IDiContext DiContext { get; private set; }
 
         /// <summary>
         /// Tracks accelerator characters in the generated controls.
@@ -255,8 +260,8 @@ namespace MvpFramework
         /// <summary>
         /// Maps the type of data displayed/edited to a type of control to handle it.
         /// </summary>
-        protected TypeMap DataTypeToControlTypeMap { get; } = new TypeMap();
-        protected ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap;
+        protected readonly TypeMap DataTypeToControlTypeMap = new TypeMap();
+        protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
 
 
         /// <summary>
@@ -288,8 +293,9 @@ namespace MvpFramework
             public virtual TControl NewControl { get; set; }
 
             /// <summary>
-            /// The index of the control in its parent.
+            /// The 1-based index of the control in its parent.
             /// </summary>
+            /// <remarks>This is suitable for a WinForms <see cref="System.Windows.Forms.Control.TabIndex"/> value.</remarks>
             public virtual int Index { get; set; }
 
             /// <summary>

@@ -255,7 +255,7 @@ namespace JohnLambe.Util
         /// <typeparam name="TItem"></typeparam>
         /// <typeparam name="TReturn"></typeparam>
         /// <param name="enumerable"></param>
-        /// <param name="del">Delegate to be executed on each item in `enumerable`.</param>
+        /// <param name="del">Delegate to be executed on each item in <paramref name="enumerable"/>.</param>
         /// <param name="separator">Separator added between non-null items.</param>
         /// <returns></returns>
         public static string ConcatForEach<TItem, TReturn>(IEnumerable<TItem> enumerable, Func<TItem, TReturn> del, string separator = null)
@@ -373,7 +373,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
-        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p1">the first part. null if <paramref name="s"/> is null.</param>
         /// <param name="p2">the second part, or null if there is only one or no parts.</param>
         public static void SplitToVars(this string s, char separator, out string p1, out string p2)
         {   // separate implementation, rather than calling the other overload, for efficiency.
@@ -399,7 +399,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
-        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p1">the first part. null if <paramref name="s"/> is null.</param>
         /// <param name="p2">the second part, or null if there is only one or no parts.</param>
         public static void SplitToVars(this string s, char[] separator, out string p1, out string p2)
         {
@@ -423,7 +423,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
-        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p1">the first part. null if <paramref name="s"/> is null.</param>
         /// <param name="p2">the second part, or null if there is only one part.</param>
         /// <param name="p3">the third part, or null if there is fewer than three parts.</param>
         public static void SplitToVars(this string s, char separator, out string p1, out string p2, out string p3)
@@ -450,7 +450,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
-        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p1">the first part. null if <paramref name="s"/> is null.</param>
         /// <param name="p2">the second part, or null if there is only one part.</param>
         /// <param name="p3">the third part, or null if there is fewer than three parts.</param>
         /// <param name="p4">the fourth part, or null if there is fewer than four parts.</param>
@@ -485,7 +485,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
-        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p1">the first part. null if <paramref name="s"/> is null.</param>
         /// <param name="p2">the second part, or null if there is only one or no parts.</param>
         public static void SplitWholeToVars(this string s, char[] separator, out string p1, out string p2)
         {
@@ -514,7 +514,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="separator">the separator</param>
-        /// <param name="p1">the first part. null if `s` is null.</param>
+        /// <param name="p1">the first part. null if <paramref name="s"/> is null.</param>
         /// <param name="p2">the second part, or null if there is only one part.</param>
         /// <param name="p3">the third part, or null if there is fewer than three parts.</param>
         public static void SplitWholeToVars(this string s, char[] separator, out string p1, out string p2, out string p3)

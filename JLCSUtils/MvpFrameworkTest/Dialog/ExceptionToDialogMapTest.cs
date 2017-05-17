@@ -119,7 +119,7 @@ namespace MvpFrameworkTest.Dialog
 
             // Assert:
 
-            Assert.AreEqual(typeof(InternalErrorDialog), model.GetType());
+            Assert.AreEqual(typeof(ErrorDialog), model.GetType());
             Assert.AreEqual(ex.Message, model.Message);
         }
 

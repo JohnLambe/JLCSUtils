@@ -81,6 +81,7 @@
     <Compile Include="Reflection\PropertyInfoExtension.cs" />
     <Compile Include="Services\!NamespaceDoc.cs" />
     <Compile Include="Services\SessionLock.cs" />
+    <Compile Include="Text\Ascii.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />
     <Compile Include="Reflection\AssemblyUtil.cs" />

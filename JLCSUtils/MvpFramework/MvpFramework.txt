@@ -21,6 +21,11 @@ Automated enforcement:
   Static analysis of source code could check more thoroughly.
 
 
+Locating Presenter for Model:
+	*- Attribute on presenter to indicate supported Model types.
+	- Attributed constructor parameter (to flag a parameter as the model).
+	- Generic type parameter?
+
 
 TODO:
 	General exception handler: Handles unhandled exceptions on anything invoked by the framework.
@@ -58,13 +63,14 @@ TODO:
 		Presenter Interface: Consumer of presenter would reference Presenter type.
 			Less clear separation of concerns between presenters. Would typically require the View interface and model type to be public (visible to presenter consumer) since they are typcially generic parameters.
 		View Interface?: Presenter would reference View concrete type. Not recommended.
-	Binding that doesn't need require matching string literals (works with refactoring tools):
+	Binding that doesn't require matching string literals (works with refactoring tools):
 		Event to return method name (implementations would use nameof).
 		Generate code using nameof? - CodeDOM doesn't seem to support it.
 			Generate in new partial class?
 	Resolving for action and model: Return presenter and view that populate automatically from the model and use base classes for the action.
 	Caching of property metadata (lazily populated).
 	FormGenerator: Alignment of boxes - controls inside group box don't align with those not in one.
+
 
 Possible additions:
 	Rejected: Map handlers (by ID) from the view to methods on the Presenter Interface?

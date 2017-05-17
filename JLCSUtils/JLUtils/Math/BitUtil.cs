@@ -27,10 +27,10 @@ r = MultiplyDeBruijnBitPosition[((uint32_t)((v & -v) * 0x077CB531U)) >> 27];
         #region LowSetBit
 
         /// <summary>
-        /// Returns the bit index of the least significant bit in `value` that is set.
+        /// Returns the bit index of the least significant bit in <paramref name="value"/> that is set.
         /// </summary>
         /// <param name="value"></param>
-        /// <returns>bit index: 0-31, or -1 if `value` is 0.</returns>
+        /// <returns>bit index: 0-31, or -1 if <paramref name="value"/> is 0.</returns>
         public static int LowSetBit(uint value)
         {
             // Rather than a loop with up to 32 iterations,
@@ -65,10 +65,10 @@ r = MultiplyDeBruijnBitPosition[((uint32_t)((v & -v) * 0x077CB531U)) >> 27];
         }
 
         /// <summary>
-        /// Returns the bit index of the least significant bit in `value` that is set.
+        /// Returns the bit index of the least significant bit in <paramref name="value"/> that is set.
         /// </summary>
         /// <param name="value"></param>
-        /// <returns>bit index: 0-7, or -1 if `value` is 0 (no bit set).</returns>
+        /// <returns>bit index: 0-7, or -1 if <paramref name="value"/> is 0 (no bit set).</returns>
         public static int ByteLowSetBit(byte value)
         {
             if (value == 0)

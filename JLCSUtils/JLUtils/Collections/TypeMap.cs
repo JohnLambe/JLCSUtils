@@ -8,8 +8,28 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Collections
 {
+    /// <summary>
+    /// Holds mappings where the domain of the key forms a heirarchy and mappings can be defined
+    /// at different levels of the heirarchy,
+    /// and when looking up a key, the match at the lowest level (most specific) is returned.
+    /// <para>One only mapping per key can be defined. A value can have multiple keys mapped to it.</para>
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     public abstract class HMap<K, V> : ISimpleLookup<K, V>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key1"></param>
+        /// <param name="key2"></param>
+        /// <returns>&gt;0 if a <paramref name="key2"/> </returns>
+        protected abstract int IsMoreSpecific(K key1, K key2);
+
+        protected abstract bool Matches(K key1, K key2);
+
+        #region ISimpleLookup
+
         public virtual V this[K key]
         {
             get
@@ -21,10 +41,6 @@ namespace JohnLambe.Util.Collections
                     throw new KeyNotFoundException();
             }
         }
-
-        protected abstract int IsMoreSpecific(K key1, K key2);
-
-        protected abstract bool Matches(K key1, K key2);
 
         public virtual bool TryGetValue(K key, out V value)
         {
@@ -75,6 +91,8 @@ namespace JohnLambe.Util.Collections
             return match;
         }
 
+        #endregion
+
         public virtual void Add(K key, V value)
         {
             _map.Add(key, value);
@@ -85,6 +103,10 @@ namespace JohnLambe.Util.Collections
             _map.Remove(key);
         }
 
+        /// <summary>
+        /// Remove all mappings to the given value.
+        /// </summary>
+        /// <param name="value"></param>
         public virtual void RemoveByValue(V value)
         {
             var mappings = _map.Where(m => m.Value.Equals(value));
@@ -94,7 +116,7 @@ namespace JohnLambe.Util.Collections
             }
         }
 
-        protected IDictionary<K, V> _map;
+        protected IDictionary<K, V> _map = new Dictionary<K,V>();
     }
 
 

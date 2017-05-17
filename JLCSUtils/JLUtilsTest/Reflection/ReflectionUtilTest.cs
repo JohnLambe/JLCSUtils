@@ -106,7 +106,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
                 // Non-nullable first part: (similar to other tests in GetPropertyValue_Nullability_PropertyDoesNotExist, except this time it should throw NullReferenceException rather than KeyNotFoundException).
                 () => AssertThrows<NullReferenceException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant")),
-                () => AssertThrows<NullReferenceException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant.NonExistant2"))
+                () => AssertThrows<NullReferenceException>(() => ReflectionUtil.TryGetPropertyValue<int?>(x, "Property1!.NonExistant.NonExistant2")),
+
+                () => Assert.AreEqual(null, ReflectionUtil.TryGetPropertyValue<object>(null, "property") )
             );
 
         }

@@ -22,7 +22,7 @@ namespace JohnLambe.Util.Reflection
 
         /// <summary>
         /// Returns a list of all supertypes of the given one, starting at the highest (base class)
-        /// and ending with (and including) `target` itself.
+        /// and ending with (and including) <paramref name="target"/> itself.
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>

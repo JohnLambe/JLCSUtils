@@ -50,9 +50,14 @@ namespace JohnLambe.Util.Text
         #region Characters
 
         /// <summary>
-        /// The ASCII ESC (Escape) character.
+        /// 'Euro' symbol (U+20AC).
         /// </summary>
-        public const char Asc_ESC = '\x1B';
+        public const char Euro = '€';
+
+        /// <summary>
+        /// Yen (Japanese) and Yuan (Chinese) symbol U+00A5.
+        /// </summary>
+        public const char Yen = '¥';
 
         #endregion
 
