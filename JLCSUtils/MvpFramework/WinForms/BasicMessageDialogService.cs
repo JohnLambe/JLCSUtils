@@ -8,6 +8,9 @@ using System.Windows;
 
 namespace MvpFramework.WinForms
 {
+    /// <summary>
+    /// A basic implementation of <see cref="IMessageDialogService"/>.
+    /// </summary>
     public class BasicMessageDialogService : IMessageDialogService
     {
         public virtual TResult ShowMessage<TResult>(IMessageDialogModel<TResult> messageModel)

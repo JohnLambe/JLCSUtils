@@ -50,7 +50,7 @@ namespace JohnLambe.Util.Types
             }
         }
 
-        public static NullableBool ToNullableBoolean(bool? value)
+        public static NullableBool ToNullableBool(bool? value)
         {
             switch (value)
             {

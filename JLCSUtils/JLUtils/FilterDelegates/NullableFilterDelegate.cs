@@ -67,4 +67,23 @@ namespace JohnLambe.Util.FilterDelegates
                 }
         */
     }
+
+    public static class NullableFilterDelegateConst<T>
+    {
+        /// <summary>
+        /// Delegate that always retuns true.
+        /// </summary>
+        public static NullableFilterDelegate<T> True => x => true;
+
+        /// <summary>
+        /// Delegate that always retuns false.
+        /// </summary>
+        public static NullableFilterDelegate<T> False => x => false;
+
+        /// <summary>
+        /// Delegate that always retuns null.
+        /// </summary>
+        public static NullableFilterDelegate<T> Null => x => null;
+    }
+
 }

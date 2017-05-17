@@ -1,4 +1,4 @@
-﻿using JohnLambe.Types;
+﻿using JohnLambe.Util.Types;
 using JohnLambe.Util;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Diagnostic;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Binding;
 using DiExtension;
+using JohnLambe.Util;
 
 namespace MvpFramework.WinForms
 {
@@ -20,7 +21,8 @@ namespace MvpFramework.WinForms
 
         public override void StartGenerate()
         {
-            AddMapping(typeof(object), typeof(TextBox));
+            AddMapping(typeof(object), typeof(TextBox));  //XXX temporary
+
             base.StartGenerate();
             Target.SuspendLayout();
         }
@@ -84,7 +86,7 @@ namespace MvpFramework.WinForms
             dataControl.Width = panel.Width - HSpacing - dataControl.Left;   // fill width of panel
             dataControl.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
-            dataControl.Tag = context.PropertyBinder.Name;
+            dataControl.Tag = "" + GeneralControlBinder.TagPrefix + StrUtil.BlankPropagate(ModelProperty, ".") + context.PropertyBinder.Name + GeneralControlBinder.TagSuffix;
 
             panel.Height = dataControl.Bottom + VSpacing / 2;
 
@@ -95,13 +97,6 @@ namespace MvpFramework.WinForms
             context.ParentControl.Controls.Add(panel);
             context.ParentControl.Controls.SetChildIndex(panel, 0);
         }
-
-        /*
-        protected override Type GetControlTypeForDataType(Type dataType)
-        {
-            return typeof(TextBox);  //XXX temporary
-        }
-        */
 
         /// <summary>
         /// X-coordinate of field controls.

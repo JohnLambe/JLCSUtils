@@ -35,3 +35,6 @@ Factories:
 
 Injection of owner (the instance receiving the item being injected) on property/method injection.
 
+Restriction on what can be injected, by type and receiving type (or namespace or attributes).
+
+Register a singleton (or attribute a type to do this by default?) to have clones injected.

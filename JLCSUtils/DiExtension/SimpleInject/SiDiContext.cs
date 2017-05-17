@@ -17,7 +17,7 @@ using SimpleInjector;
 
 namespace DiExtension.SimpleInject
 {
-    public class SiDiContext : IDiContext, IDiResolver, IDiTypeRegistrar
+    public class SiDiContext : IDiContext, IDiResolver, IDiTypeRegistrar, IDiInstanceRegistrar
     {
         /// <summary>
         /// Initialise with a new <see cref="global::SimpleInjector.Container"/>.
@@ -116,6 +116,22 @@ namespace DiExtension.SimpleInject
             return this;
         }
 
+        public virtual IDiContext RegisterInstance(Type serviceType, object instance)
+        {
+            Container.RegisterSingleton(serviceType, instance);
+            return this;
+        }
+
+        void IDiInstanceRegistrar.RegisterInstance(object instance)
+        {
+            RegisterInstance(instance);
+        }
+
+        void IDiInstanceRegistrar.RegisterInstance(Type serviceType, object instance)
+        {
+            RegisterInstance(serviceType, instance);
+        }
+
         /// <summary>
         /// Get an instance of type `T` from the DI container.
         /// </summary>
@@ -149,6 +165,7 @@ namespace DiExtension.SimpleInject
                 //RegisterType(serviceType, type);
         }
 
+
         /// <summary>
         /// SimpleInjector's container.
         /// </summary>
@@ -156,7 +173,7 @@ namespace DiExtension.SimpleInject
     }
 
 
-    public class SiExtendedDiContext : SiDiContext, IExtendedDiContext
+    public class SiExtendedDiContext : SiDiContext, IExtendedDiContext, IDiExtInstanceRegistrar
     {
         public SiExtendedDiContext() : base()
         {

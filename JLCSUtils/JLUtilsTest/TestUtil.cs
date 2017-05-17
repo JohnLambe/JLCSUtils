@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
 using System.Collections;
-using JohnLambe.Types;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Tests.JLUtilsTest
 {

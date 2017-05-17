@@ -19,4 +19,15 @@ namespace DiExtension
     {
         void RegisterType(Type serviceType, Type implementationType);
     }
+
+    public interface IDiInstanceRegistrar
+    {
+        void RegisterInstance(object instance);
+        void RegisterInstance(Type serviceType, object instance);
+    }
+
+    public interface IDiExtInstanceRegistrar : IDiInstanceRegistrar
+    {
+        void RegisterInstance(string name, object instance, bool buildUp = false);
+    }
 }

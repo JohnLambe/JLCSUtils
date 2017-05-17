@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Binding;
+using JohnLambe.Util;
 
 namespace MvpFramework.WinForms.Controls
 {
@@ -28,6 +29,7 @@ namespace MvpFramework.WinForms.Controls
             {
                 Target = this,
                 Model = ModelBinder,
+                ModelProperty = this.ModelProperty
             };
             generator.Generate();
         }
@@ -41,6 +43,10 @@ namespace MvpFramework.WinForms.Controls
             ModelBinder = new ModelBinderWrapper(model);
         }
 
+        /// <summary>
+        /// Parent property of the properties that generated controls are bound to.
+        /// (null or "" for the modl itself (root)).
+        /// </summary>
         [Category(MvpUiComponentConsts.DesignerCategory)]
         public virtual string ModelProperty { get; set; }
 

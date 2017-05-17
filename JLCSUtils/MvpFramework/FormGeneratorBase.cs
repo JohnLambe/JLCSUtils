@@ -1,5 +1,5 @@
 ﻿using DiExtension;
-using JohnLambe.Types;
+using JohnLambe.Util.Types;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.FilterDelegates;
@@ -23,6 +23,10 @@ namespace MvpFramework
     public abstract class FormGeneratorBase<TControl>
         where TControl : class
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="diContext"><see cref="DiContext"/></param>
         public FormGeneratorBase(IDiContext diContext = null)
         {
             this.DiContext = diContext;
@@ -40,7 +44,13 @@ namespace MvpFramework
         /// </summary>
         public virtual ModelBinderWrapper Model { get; set; }
 
-        public virtual AutoSizeOption AutoSize { get; set; } = AutoSizeOption.Grow;
+        /// <summary>
+        /// Parent property of the properties that generated controls are bound to.
+        /// (null or "" for the modl itself (root)).
+        /// </summary>
+        public virtual string ModelProperty { get; set; }
+
+//        public virtual AutoSizeOption AutoSize { get; set; } = AutoSizeOption.Grow;
 
         /*
         /// <summary>
@@ -154,7 +164,8 @@ namespace MvpFramework
 
             OnCreateControl(context);
 
-            AfterCreateControl(context);
+            if(context.NewControl != null)
+                AfterCreateControl(context);
 
             return context.NewControl;
         }
@@ -164,7 +175,8 @@ namespace MvpFramework
         /// This can modify the context and/or populate <see cref="ControlGeneratorContext.NewControl"/> in <paramref name="context"/>,
         /// thus preventing the usual method of creating the control (including calling <see cref="OnCreateControl(ControlGeneratorContext)"/>).
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Details of the control being created.<br/>
+        /// <see cref="ControlGeneratorContext.NewControl"/> is null on entry.</param>
         protected virtual void BeforeCreateControl([NotNull]ControlGeneratorContext context)
         {
         }
@@ -172,12 +184,20 @@ namespace MvpFramework
         /// <summary>
         /// Creates a control.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">
+        /// Details of the control being created.<br/>
+        /// <see cref="ControlGeneratorContext.NewControl"/> is null on entry,
+        /// and is assigned by this method if a control is generated.
+        /// If it is null on exit, no control is created.
+        /// </param>
         protected virtual void OnCreateControl([NotNull]ControlGeneratorContext context)
         {
             if (context.NewControl == null)   // if not already created
             {
                 var controlType = GetControlTypeForDataType(context.PropertyBinder.PropertyType);
+                if (controlType == null)    // no type mapping
+                    return;                 // no control is created
+
                 try
                 {
                     context.NewControl = ReflectionUtil.CallStaticMethod<TControl>(controlType, MvpControlMappingAttribute.CreateControlMethod, context);
@@ -195,9 +215,11 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// 
+        /// Called after generating a control.
+        /// Not called for any property for which a control is not generated.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Details of the control being created.<br/>
+        /// <see cref="ControlGeneratorContext.NewControl"/> is not null.</param>
         protected virtual void AfterCreateControl([NotNull]ControlGeneratorContext context)
         {
         }
@@ -241,6 +263,11 @@ namespace MvpFramework
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataType">Data type of a property.</param>
+        /// <param name="controlType">The control to generate for properties of type <see cref="dataType"/>.</param>
         public virtual void AddMapping(Type dataType, Type controlType)
         {
             DataTypeToControlTypeMap.Add(dataType, controlType);
@@ -248,7 +275,7 @@ namespace MvpFramework
 
 
         /// <summary>
-        /// Dependency injection context from which new controls are injected.
+        /// Dependency injection context from which generated controls are injected.
         /// </summary>
         protected virtual IDiContext DiContext { get; private set; }
 
@@ -304,6 +331,9 @@ namespace MvpFramework
             public virtual IDictionary<string, object> CustomProperties { get; } = new Dictionary<string, object>();
         }
 
+        /// <summary>
+        /// A control that can be used by the control generator.
+        /// </summary>
         public interface IGeneratableControl
         {
             /// <summary>

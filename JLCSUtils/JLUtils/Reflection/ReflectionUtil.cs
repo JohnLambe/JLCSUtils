@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.TypeConversion;
 using JohnLambe.Util.Validation;
-using JohnLambe.Types;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Reflection
 {

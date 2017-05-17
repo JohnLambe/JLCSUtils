@@ -1,4 +1,4 @@
-﻿using JohnLambe.Types;
+﻿using JohnLambe.Util.Types;
 using JohnLambe.Util.TypeConversion;
 using System;
 using System.Collections.Generic;

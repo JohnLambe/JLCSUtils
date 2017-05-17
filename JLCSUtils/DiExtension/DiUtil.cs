@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DiExtension.Attributes;
 using JohnLambe.Util.Collections;
+using JohnLambe.Util.Types;
 using System.Reflection;
+using JohnLambe.Util.FilterDelegates;
 
 namespace DiExtension
 {
@@ -98,6 +100,73 @@ namespace DiExtension
                 // still null if there was no InjectAttribute.
                 return fromContextParam;
             };
+
+        /// <summary>
+        /// Registers the value of each readable non-primitive property, with a non-null value, of the given object as a singleton.
+        /// </summary>
+        /// <param name="diContext"></param>
+        /// <param name="source"></param>
+        public static void RegisterProperties([NotNull]this IDiInstanceRegistrar diContext, object source, FilterDelegate<PropertyInfo> propertyFilter = null)
+        {
+            if (source != null)
+            {
+                propertyFilter = propertyFilter ?? FilterDelegateConst<PropertyInfo>.True;
+                foreach (var property in source.GetType().GetProperties()
+                    .Where(p => p.CanRead && propertyFilter(p) && !p.PropertyType.IsPrimitive && p.PropertyType!=typeof(string)))
+                {
+                    var value = property.GetValue(source, null);
+                    if (value != null)
+                        diContext.RegisterInstance(property.PropertyType, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="diContext"></param>
+        /// <param name="source"></param>
+        /// <param name="propertyFilter"></param>
+        /// <param name="recurseFilter"></param>
+        /// <param name="levels">Number of levels to recurse. 0 for top level only (no recursion).</param>
+        public static void RegisterPropertiesNested([NotNull]this IDiInstanceRegistrar diContext, object source, 
+            FilterDelegate<PropertyInfo> propertyFilter = null,
+            FilterDelegate<PropertyInfo> recurseFilter = null,
+            int levels = 1)
+        {
+            if (source != null)
+            {
+                propertyFilter = propertyFilter ?? FilterDelegateConst<PropertyInfo>.True;
+                foreach (var property in source.GetType().GetProperties()
+                    .Where(p => p.CanRead && propertyFilter(p) && !p.PropertyType.IsPrimitive && p.PropertyType != typeof(string)))
+                {
+                    var value = property.GetValue(source, null);
+                    if (value != null)
+                    {
+                        diContext.RegisterInstance(property.PropertyType, value);
+                        if (levels > 0 && (recurseFilter?.Invoke(property) ?? true))
+                        {
+                            diContext.RegisterPropertiesNested(value,propertyFilter,recurseFilter,levels-1);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void RegisterPropertiesNamed([NotNull]this IDiExtInstanceRegistrar diContext, object source, string namePrefix = null, FilterDelegate<PropertyInfo> propertyFilter = null)
+        {
+            if (source != null)
+            {
+                propertyFilter = propertyFilter ?? FilterDelegateConst<PropertyInfo>.True;
+                foreach (var property in source.GetType().GetProperties()
+                    .Where( p => p.CanRead && propertyFilter(p)))
+                {
+                    var value = property.GetValue(source, null);
+                    if (value != null)
+                        diContext.RegisterInstance(property.Name, (namePrefix ?? "") + value);
+                }
+            }
+        }
 
     }
 }

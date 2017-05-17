@@ -119,5 +119,14 @@ namespace JohnLambe.Util.Text
         public const char DoubleQuote = '"';
         public const char SingleQuote = '\'';
 
+
+        /// <summary>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>true iff the given character is in the ASCII character set.</returns>
+        public static bool IsAscii(char value)
+            => (int)value < 0x80;
+
     }
+
 }

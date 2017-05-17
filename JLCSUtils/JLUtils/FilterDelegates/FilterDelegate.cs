@@ -8,23 +8,53 @@ namespace JohnLambe.Util.FilterDelegates
 {
     public delegate bool FilterDelegate<T>(T candidate);
 
+    /// <summary>
+    /// Extension methods of <see cref="FilterDelegate{T}"/>.
+    /// </summary>
     public static class FilterDelegateExt
     {
+        /// <summary>
+        /// Returns a delegate that returns true when both of the given delegate return true.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static FilterDelegate<T> And<T>(this FilterDelegate<T> a, FilterDelegate<T> b)
         {
             return candidate => (a(candidate) && b(candidate));
         }
 
+        /// <summary>
+        /// Returns a delegate that returns true when either of the given delegate return true.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static FilterDelegate<T> Or<T>(this FilterDelegate<T> a, FilterDelegate<T> b)
         {
             return candidate => (a(candidate) || b(candidate));
         }
 
+        /// <summary>
+        /// Returns a delegate that returns true when the given delegate returns false.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a"></param>
+        /// <returns></returns>
         public static FilterDelegate<T> Not<T>(this FilterDelegate<T> a)
         {
             return candidate => (!a(candidate));
         }
 
+        /// <summary>
+        /// Returns a delegate that returns true when any of the given delegate return true.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static FilterDelegate<T> Or<T>(params FilterDelegate<T>[] p)
         {
             return
@@ -39,6 +69,7 @@ namespace JohnLambe.Util.FilterDelegates
                     }
             );
         }
+
 
         /* Example usage:
           
@@ -65,4 +96,18 @@ namespace JohnLambe.Util.FilterDelegates
         }
 */
     }
+
+    public static class FilterDelegateConst<T>
+    {
+        /// <summary>
+        /// Delegate that always retuns true.
+        /// </summary>
+        public static FilterDelegate<T> True => x => true;
+
+        /// <summary>
+        /// Delegate that always retuns false.
+        /// </summary>
+        public static FilterDelegate<T> False => x => false;
+    }
+
 }

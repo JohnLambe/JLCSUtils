@@ -2,7 +2,7 @@
 //   See licence.
 ////////////////////////////////////////
 
-using JohnLambe.Types;
+using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Text
 {
+    /// <summary>
+    /// Utility methods related to characters.
+    /// </summary>
     public static class CharacterUtil
     {
         #region Character sets
@@ -55,7 +58,7 @@ namespace JohnLambe.Util.Text
         public const char Euro = '€';
 
         /// <summary>
-        /// Yen (Japanese) and Yuan (Chinese) symbol U+00A5.
+        /// Yen (Japanese) and Yuan (Chinese) symbol (U+00A5).
         /// </summary>
         public const char Yen = '¥';
 

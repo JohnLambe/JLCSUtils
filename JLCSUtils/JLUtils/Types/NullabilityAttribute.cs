@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JohnLambe.Types
+namespace JohnLambe.Util.Types
 {
     /// <summary>
     /// Attribute that specifies whether an item can be null.

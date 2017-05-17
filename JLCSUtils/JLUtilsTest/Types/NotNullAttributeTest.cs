@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using JohnLambe.Types;
+using JohnLambe.Util.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 

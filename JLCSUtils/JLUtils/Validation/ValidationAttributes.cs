@@ -2,6 +2,7 @@
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.TypeConversion;
+using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -233,6 +234,62 @@ namespace JohnLambe.Util.Validation
 
 
     /// <summary>
+    /// Flags that the attributed item holds a filename or directory name.
+    /// </summary>
+    public class FilenameValidationAttribute : StringValidationAttribute
+    {
+        public virtual FilePathCompleteness PathType { get; set; } = FilePathCompleteness.Any;
+        public virtual FileExistsState Exists { get; set; } = FileExistsState.Any;
+        public virtual NullableBool HasExtension { get; set; } = NullableBool.Null;
+        public virtual NullableBool IsDirectory { get; set; } = NullableBool.Null;
+        public virtual bool AllowWildcard { get; set; } = true;
+
+        public virtual string[] Extensions { get; set; }
+    }
+
+    [Flags]
+    public enum FileExistsState
+    {
+        /// <summary>
+        /// No file/directory exists with the given filename/pathname.
+        /// </summary>
+        MatchNone = 1,
+
+        /// <summary>
+        /// The filename/pathname matches exactly one file or directory.
+        /// </summary>
+        MatchOne = 2,
+        
+        /// <summary>
+        /// The (wildcarded) filename/pathname matches multiple files or directories.
+        /// </summary>
+        MatchMultiple = 3,
+
+        Exists = MatchOne | MatchMultiple,
+        Any = MatchNone | Exists
+    }
+
+    [Flags]
+    public enum FilePathCompleteness
+    {
+        /// <summary>
+        /// A filename with no directory information.
+        /// </summary>
+        LeafName = 1,
+        /// <summary>
+        /// A relative path: A path that does not start from a root.
+        /// </summary>
+        RelativePath = 2,
+        /// <summary>
+        /// A full (absolute) pathname, including a root.
+        /// </summary>
+        FullPath = 4,
+
+        Any = LeafName | RelativePath | FullPath
+    }
+
+
+    /// <summary>
     /// Metadata or validation information for numberic values.
     /// </summary>
     public class NumberValidationAttribute : ValidationAttributeBase
@@ -307,7 +364,7 @@ namespace JohnLambe.Util.Validation
         Thousands,
         /// <summary>
         /// Grouped into lakh crore (10,00,00,00,00,000), crore (1,00,00,000) and lakh (1,00,000) (Indian digit grouping, widely used in South Asia).
-        /// The least significant three digits are in one group. The rest is in groups of two digits.
+        /// The least significant three digits are in one group. The rest are in groups of two digits.
         /// </summary>
         CroreLakh,
 

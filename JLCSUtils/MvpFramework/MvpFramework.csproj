@@ -139,7 +139,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WinForms\FormGenerator.cs" />
-    <Compile Include="WinForms\MvpFrameworkConstants.cs" />
     <Compile Include="WinForms\ResolverExtension.cs" />
     <Compile Include="WinForms\Util\WinFormsUtil.cs" />
     <Compile Include="WinForms\ViewBase.cs">

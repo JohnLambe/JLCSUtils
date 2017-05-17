@@ -33,6 +33,9 @@ namespace MvpFramework.Binding
     //| Could be called "TagControlBinder", "GeneralWinFormsControlBinder", or "WinFormsTagControlBinder".
     public class GeneralControlBinder : IControlBinderExt
     {
+        public const char TagPrefix = '[';
+        public const char TagSuffix = ']';
+
         /// <summary>
         /// Creates a <see cref="GeneralControlBinder"/> for the given control if it can be bound,
         /// otherwise, returns null.
@@ -98,7 +101,7 @@ namespace MvpFramework.Binding
             string tag = control.Tag?.ToString();
             if (tag != null)
             {
-                return tag.ExtractEnclosed('[', ']');
+                return tag.ExtractEnclosed(TagPrefix, TagSuffix);
                 //ControlToBind.GetType().GetProperty(_propertyName);
             }
             return null;
