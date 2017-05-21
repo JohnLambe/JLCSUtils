@@ -56,6 +56,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
@@ -87,6 +88,7 @@
     <Compile Include="DependencyInjection\ConfigInject\ForTest.cs" />
     <Compile Include="DependencyInjection\DiTest.cs" />
     <Compile Include="DependencyInjection\ForTest.cs" />
+    <Compile Include="Diagnostic\DiagnosticStringUtilTest.cs" />
     <Compile Include="DictionaryUtilsTest.cs" />
     <Compile Include="Di\AutoEventWirerTest.cs" />
     <Compile Include="Di\AutoFactoryTest.cs" />
@@ -97,7 +99,7 @@
     <Compile Include="Di\ConfigInject\ConfigInjectTest.cs" />
     <Compile Include="Di\ConstructorResolutionTest.cs" />
     <Compile Include="Di\ForTest.cs" />
-    <Compile Include="Di\ParameterInjection.cs" />
+    <Compile Include="Di\ParameterInjectionTest.cs" />
     <Compile Include="Di\SiExtensionTest.cs" />
     <Compile Include="DynamicProxyTest.cs" />
     <Compile Include="Io\FilingUtilsTest.cs" />

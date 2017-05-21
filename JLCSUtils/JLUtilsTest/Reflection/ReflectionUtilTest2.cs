@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+using JohnLambe.Util.Diagnostic;
 
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
@@ -87,7 +88,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         [TestMethod]
         public void GetDescription_Null()
         {
-            Assert.AreEqual(null, ReflectionUtil.GetDescription(null));
+            Assert.AreEqual(null, DiagnosticStringUtil.GetDescription(null));
         }
 
         [TestMethod]

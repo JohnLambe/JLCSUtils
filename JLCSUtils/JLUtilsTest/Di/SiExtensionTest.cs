@@ -60,6 +60,53 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
         }
 
 
+        [TestMethod]
+        public void RegisterSingleton()
+        {
+            // Arrange:
+            var expectedInstance = new TestRegisteredObject1() { Property1 = "test" };
+            _context.RegisterInstance(expectedInstance);
+
+            // Act:
+            var resolvedInstance = _context.Container.GetInstance<TestRegisteredObject1>();
+
+            // Assert:
+            Assert.AreEqual(expectedInstance, resolvedInstance);
+            Assert.AreEqual("test", resolvedInstance.Property1);
+        }
+
+        [TestMethod]
+        public void RegisterSingleton_WrongCompileTimeType()
+        {
+            // Arrange:
+            object expectedInstance = new TestRegisteredObject1() { Property1 = "test" };
+            _context.RegisterInstance(expectedInstance);
+
+            // Act:
+            var resolvedInstance = _context.Container.GetInstance<TestRegisteredObject1>();
+            // Does not return the registered instance because it is registered for Type object.
+            // Returns a new instance of TestRegisteredObject1.
+
+            // Assert:
+            Assert.AreNotEqual(expectedInstance, resolvedInstance);
+            Assert.AreNotEqual("test", resolvedInstance.Property1);
+        }
+
+        [TestMethod]
+        public void RegisterInstanceByRuntimeType()
+        {
+            // Arrange:
+            object expectedInstance = new TestRegisteredObject1() { Property1 = "test" };
+            _context.RegisterInstanceByRuntimeType(expectedInstance);
+
+            // Act:
+            var resolvedInstance = _context.Container.GetInstance<TestRegisteredObject1>();
+
+            // Assert:
+            Assert.AreEqual(expectedInstance, resolvedInstance);
+            Assert.AreEqual("test", resolvedInstance.Property1);
+        }
+
         public void Setup()
         {
             _context.RegisterInstance("GlobalValue", "(Global Value)");

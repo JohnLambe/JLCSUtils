@@ -53,6 +53,7 @@
     <Compile Include="Collections\TypeMap.cs" />
     <Compile Include="ConfigProvider\IconRepository.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />
+    <Compile Include="Diagnostic\DiagnosticStringUtil.cs" />
     <Compile Include="Documentation\DiagramAttribute.cs" />
     <Compile Include="Documentation\DocumentationAttribute.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />

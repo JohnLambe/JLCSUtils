@@ -32,8 +32,8 @@ namespace DiExtension.SimpleInject
         public virtual bool SelectProperty(Type type, PropertyInfo prop)
         {
             var attribute = prop.GetCustomAttribute<InjectAttribute>();
-            if ( attribute != null )   // if the prperty has the attribute
-            {       //prop.GetCustomAttributes(typeof(InjectAttribute)).Any() 
+            if ( attribute?.Enabled ?? false )   // if the member has the attribute, and it's Enabled property is true
+            {
                 if (attribute.Required)   // if required
                 {
                     return true;          // we will attempt to inject it and an exception will be thrown if it cannot be resolved
@@ -42,10 +42,10 @@ namespace DiExtension.SimpleInject
                 {
                     // check that we have a value for it. Don't attempt to inject the property if we don't.
                     object value;
-                    return _configProvider.GetValue(PropertyInjectionDiBehavior.GetKeyForMember(prop), prop.PropertyType, out value);  // true iff it can be resolved
+                    return _configProvider.GetValue(PropertyInjectionDiBehavior.GetKeyForMember(prop,attribute), prop.PropertyType, out value);  // true iff it can be resolved
                 }
             }
-            return false;
+            return false;    // this won't be injected by this behavior
         }
 
         /// <summary>

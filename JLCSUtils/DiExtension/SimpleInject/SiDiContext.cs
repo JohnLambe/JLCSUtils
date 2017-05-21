@@ -14,9 +14,13 @@ using JohnLambe.Util.Collections;
 using JohnLambe.Util.TypeConversion;
 
 using SimpleInjector;
+using JohnLambe.Util.Types;
 
 namespace DiExtension.SimpleInject
 {
+    /// <summary>
+    /// Dependency injection container that extends SimpleInjector's container.
+    /// </summary>
     public class SiDiContext : IDiContext, IDiResolver, IDiTypeRegistrar, IDiInstanceRegistrar
     {
         /// <summary>
@@ -110,9 +114,16 @@ namespace DiExtension.SimpleInject
             Container.Register(serviceType, implementationType);
         }
 
-        public virtual IDiContext RegisterInstance(object instance)
+        public virtual IDiContext RegisterInstance<TService>(TService instance)
+            where TService : class
         {
-            Container.RegisterSingleton(instance);
+            Container.RegisterSingleton<TService>(instance);
+            return this;
+        }
+
+        public virtual IDiContext RegisterInstanceByRuntimeType([NotNull] object instance)
+        {
+            Container.RegisterSingleton(instance.GetType(), instance);
             return this;
         }
 
@@ -122,10 +133,12 @@ namespace DiExtension.SimpleInject
             return this;
         }
 
+        /*  Uses extension method instead:
         void IDiInstanceRegistrar.RegisterInstance(object instance)
         {
             RegisterInstance(instance);
         }
+        */
 
         void IDiInstanceRegistrar.RegisterInstance(Type serviceType, object instance)
         {

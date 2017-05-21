@@ -9,6 +9,7 @@ using JohnLambe.Util.Text;
 using JohnLambe.Util.TypeConversion;
 using JohnLambe.Util.Validation;
 using JohnLambe.Util.Types;
+using JohnLambe.Util.Diagnostic;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -190,37 +191,6 @@ namespace JohnLambe.Util.Reflection
         }
 
         #endregion
-
-        /// <summary>
-        /// Converts the member to a string, with more detail than <see cref="MemberInfo.ToString"/>.
-        /// This always returns the same value for two instances that reference the same member, even if an instance
-        /// was returned from a different type (that inherited the member).
-        /// </summary>
-        /// <param name="member"></param>
-        /// <returns>The </returns>
-        public static string GetDescription(this MemberInfo member)
-        {
-            if (member == null)
-                return null;
-            string result = null;
-            /*
-            if(!MiscUtil.CastNoReturn<MethodInfo>(member,
-                m => result = TypeUtil.TypeNameOrVoid(m.ReturnType)
-                    + " " + m.DeclaringType.FullName + "." + m.Name
-                    + "("
-                    + (m.GetParameters()?.ToString() ?? "")  //TODO: convert the parameters to a string in C# syntax
-                    + ")"
-                ))
-                */
-            if (!MiscUtil.CastNoReturn<PropertyInfo>(member,
-                m => result = TypeUtil.TypeNameOrVoid(m.PropertyType)
-                    + " " + m.DeclaringType.FullName + "." + m.Name
-                ))
-            {
-                result = member.DeclaringType.FullName + ": " + member?.ToString();
-            }
-            return result;
-        }
 
         #region AssignProperty
 
@@ -570,7 +540,7 @@ namespace JohnLambe.Util.Reflection
                     if (!currentLevelNullabilityModifier.IsNullable())    // null and not nullable
                     {
                         ex = new NullReferenceException("Null reference in '" + propertyName + "'"
-                                    + " on (root) " + GetDebugDisplay(rootTarget)
+                                    + " on (root) " + DiagnosticStringUtil.GetDebugDisplay(rootTarget)
                                 + ": '" + localPropertyName + "' (level " + level + ") is null");
                     }
                 }
@@ -583,8 +553,8 @@ namespace JohnLambe.Util.Reflection
                         if (currentLevelNullabilityModifier != PropertyNullabilityModifier.Nullable)
                         {
                             ex = new KeyNotFoundException("Property does not exist in '" + propertyName + "'"
-                                    + " on (root) " + GetDebugDisplay(rootTarget)
-                                    + " last part: " + GetDebugDisplay(target)
+                                    + " on (root) " + DiagnosticStringUtil.GetDebugDisplay(rootTarget)
+                                    + " last part: " + DiagnosticStringUtil.GetDebugDisplay(target)
                                     + ": '" + localPropertyName + "' (level " + level + ") not found");
                         }
                     }
@@ -671,17 +641,6 @@ namespace JohnLambe.Util.Reflection
 
 
         /// <summary>
-        /// Returns a description of the given object for display for diagnostics purposes.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static string GetDebugDisplay(object value)
-        {
-            return (value?.ToString() ?? "<null>") + " (type: " + value.GetType().Name + ")";
-            //TODO: Use System.Diagnostics.DebuggerDisplayAttribute
-        }
-
-        /// <summary>
         /// Invokes a delegate on the default value of the type <typeparamref name="T"/>.
         /// <para>
         /// This can be used like this:<br/>
@@ -698,6 +657,16 @@ namespace JohnLambe.Util.Reflection
         }
 
     }
+
+    /*
+    public static class Instance
+    {
+        public static string Name<T>(Func<T, string> d)
+        {
+            return d.Invoke(default(T));
+        }
+    }
+    */
 
     /// <summary>
     /// An option on a property referece, specifying how null or invalid values are handled.

@@ -96,7 +96,6 @@ namespace MvpFramework
             if(!CanHandle(actionInterface,modelType))
                 return 0;
 
-
         }
         */
     }

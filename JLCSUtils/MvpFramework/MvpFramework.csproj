@@ -58,10 +58,11 @@
     <Compile Include="Dialog\!NamespaceDoc.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
     <Compile Include="Dialog\ExceptionToDialogMap.cs" />
-    <Compile Include="FormGeneratorBase.cs" />
+    <Compile Include="Generator\AutoPresenter.cs" />
+    <Compile Include="Generator\FormGeneratorBase.cs" />
     <Compile Include="IPresenter.cs" />
     <Compile Include="Menu\!NamespaceDoc.cs" />
-    <Compile Include="QueryGenerator.cs" />
+    <Compile Include="Generator\QueryGenerator.cs" />
     <Compile Include="WinForms\!NamespaceDoc.cs" />
     <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
     <Compile Include="MvpUiComponentConsts.cs" />
@@ -139,6 +140,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WinForms\FormGenerator.cs" />
+    <Compile Include="WinForms\AutoView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\AutoView.Designer.cs">
+      <DependentUpon>AutoView.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinForms\ResolverExtension.cs" />
     <Compile Include="WinForms\Util\WinFormsUtil.cs" />
     <Compile Include="WinForms\ViewBase.cs">
@@ -197,6 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\Controls\GeneratorControl.resx">
       <DependentUpon>GeneratorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\AutoView.resx">
+      <DependentUpon>AutoView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\MessageDialogView.resx">
       <DependentUpon>MessageDialogView.cs</DependentUpon>

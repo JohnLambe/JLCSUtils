@@ -9,6 +9,7 @@ using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
 using DiExtension.Attributes;
 using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework
 {
@@ -296,7 +297,7 @@ namespace MvpFramework
         /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
         /// <param name="presenter"></param>
         /// <returns></returns>
-        public virtual TView GetViewForPresenter<TView, TPresenter>(TPresenter presenter)
+        public virtual TView GetViewForPresenter<TView, TPresenter>([NotNull]TPresenter presenter)
             where TView : IView
             where TPresenter : IPresenter
         {
@@ -335,7 +336,7 @@ namespace MvpFramework
         /// <typeparam name="TView"></typeparam>
         /// <param name="presenterType"></param>
         /// <returns></returns>
-        public virtual TView GetViewForPresenterType<TView>(Type presenterType)
+        public virtual TView GetViewForPresenterType<TView>([NotNull] Type presenterType)
             where TView : IView
         {
             Diagnostics.PreCondition(presenterType != null);

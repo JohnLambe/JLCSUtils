@@ -98,8 +98,14 @@ namespace MvpFramework
 
         #endregion
 
+        /// <summary>
+        /// The MVP Model.
+        /// </summary>
         protected virtual TModel Model { get; private set; }
 
+        /// <summary>
+        /// The View for this Presenter.
+        /// </summary>
         protected readonly TView View;
         //protected virtual TView View { get; private set; }
 

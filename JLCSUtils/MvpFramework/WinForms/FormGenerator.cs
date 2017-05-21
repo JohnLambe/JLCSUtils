@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using MvpFramework.Binding;
 using DiExtension;
 using JohnLambe.Util;
+using MvpFramework.Gemerator;
 
 namespace MvpFramework.WinForms
 {

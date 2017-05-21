@@ -22,9 +22,24 @@ namespace DiExtension
 
     public interface IDiInstanceRegistrar
     {
-        void RegisterInstance(object instance);
+//        void RegisterInstance<TService>(object instance);
         void RegisterInstance(Type serviceType, object instance);
     }
+
+    public static class DiInstantaceRegistrarExtension
+    {
+        /// <summary>
+        /// Register an instance by its compile-time type.
+        /// </summary>
+        /// <typeparam name="TService">The type to be resolved to <paramref name="instance"/>.</typeparam>
+        /// <param name="registrar"></param>
+        /// <param name="instance">The instance to be registered.</param>
+        public static void RegisterInstance<TService>(this IDiInstanceRegistrar registrar, object instance)
+        {
+            registrar.RegisterInstance(typeof(TService), instance);
+        }
+    }
+
 
     public interface IDiExtInstanceRegistrar : IDiInstanceRegistrar
     {
