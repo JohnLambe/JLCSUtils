@@ -10,6 +10,7 @@ using JohnLambe.Util.Reflection;
 using DiExtension.Attributes;
 using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.Types;
+using JohnLambe.Util.Collections;
 
 namespace MvpFramework
 {
@@ -27,31 +28,31 @@ namespace MvpFramework
         /// <summary>
         /// Conventional suffix in names of Presenter classes.
         /// </summary>
-        protected const string PresenterSuffix = "Presenter";
+        protected string PresenterSuffix => "Presenter";
 
         /// <summary>
         /// Conventional suffix in names of View classes.
         /// </summary>
-        protected const string ViewSuffix = "View";
+        protected string ViewSuffix => "View";
 
         /// <summary>
         /// Optional suffix in names of Model classes.
         /// (Domain classes usually won't use it. A Model for a certain type of dialog probably would.)
         /// </summary>
-        protected const string ModelSuffix = "Model";
+        protected string ModelSuffix => "Model";
 
         /// <summary>
         /// Prefix of names of interfaces.
         /// </summary>
-        protected const string InterfacePrefix = "I";
+        protected string InterfacePrefix => "I";
 
-        protected const string PresenterNamespace = PresenterSuffix;
+        protected string PresenterNamespace => PresenterSuffix;
 
-        protected const string ViewNamespace = ViewSuffix;
+        protected string ViewNamespace => ViewSuffix;
 
-        protected const string InterfaceSuffix = "Interface";
+        protected string InterfaceSuffix => "Interface";
 
-        protected const string ViewInterfaceNamespace = ViewSuffix + InterfaceSuffix;
+        protected string ViewInterfaceNamespace => ViewSuffix + InterfaceSuffix;
 
         #endregion
 
@@ -336,10 +337,28 @@ namespace MvpFramework
         /// <typeparam name="TView"></typeparam>
         /// <param name="presenterType"></param>
         /// <returns></returns>
+        [return: NotNull]
         public virtual TView GetViewForPresenterType<TView>([NotNull] Type presenterType)
             where TView : IView
         {
             Diagnostics.PreCondition(presenterType != null);
+
+            Type viewType = PresenterToViewMap?.TryGetValue(presenterType);
+            if (viewType != null)
+            {
+                try
+                {
+                    TView view = GetInstance<TView>(viewType);              // get an instance of this type
+                    if(view == null)
+                        throw new DependencyInjectionException("Failed to resolve View for Presenter type by explicit mapping: " + presenterType.FullName
+                            + " -> " + viewType.FullName + "; Cannot resolve " + viewType.Name);
+                }
+                catch (Exception ex)
+                {
+                    throw new DependencyInjectionException("Failed to resolve View for Presenter type by explicit mapping: " + presenterType.FullName
+                        + " -> " + viewType.FullName + "; Exception on resolving " + viewType.Name, ex);
+                }
+            }
 
             // form the conventional simple name:
             string simpleName = presenterType.Name.RemoveSuffix(PresenterSuffix) + ViewSuffix;
@@ -373,7 +392,7 @@ namespace MvpFramework
             Type viewClassType = GetTypeByName(viewClassName, presenterType.Assembly);      // get the type for this name
             if (viewClassType != null)
             {
-                var result = GetInstance<TView>(viewInterfaceType);              // get an implementation of this interface
+                var result = GetInstance<TView>(viewClassType);              // get an instance of this type
                 if (result != null)
                     return result;
             }
@@ -481,6 +500,28 @@ namespace MvpFramework
                 assm = Assembly.GetEntryAssembly();
             return assm.GetType(typeName);
         }
+
+        #endregion
+
+        #region Mappings
+
+        /// <summary>
+        /// Define a mapping from a Presenter type to a View type.
+        /// This overrides the convention-based resolution.
+        /// </summary>
+        /// <param name="presenterType"></param>
+        /// <param name="viewType"></param>
+        public virtual void AddPresenterToViewMapping(Type presenterType, Type viewType)
+        {
+            Diagnostics.PreCondition(typeof(IPresenterBase).IsAssignableFrom(presenterType), presenterType.FullName + " is not a Presenter type");
+            Diagnostics.PreCondition(typeof(IView).IsAssignableFrom(viewType), viewType.FullName + " is not a View type");
+
+            if (PresenterToViewMap == null)
+                PresenterToViewMap = new Dictionary<Type, Type>();
+            PresenterToViewMap[presenterType] = viewType;
+        }
+
+        protected IDictionary<Type,Type> PresenterToViewMap;
 
         #endregion
     }

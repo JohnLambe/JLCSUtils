@@ -16,12 +16,10 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
         public void ParameterInjection()
         {
             // Arrange:
-
             _context.Container.Register(typeof(TestClassForParameterInjection));
             _context.RegisterInstance("Param1", 100);
 
             // Act:
-
             TestClassForParameterInjection instance = _context.Container.GetInstance<TestClassForParameterInjection>();
 
             // Assert:
@@ -42,7 +40,6 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
             _context.RegisterInstance("Param1", expectedInstance);
 
             // Act:
-
             var instance = _context.Container.GetInstance<TestClassForParameterObjectInjection>();
 
             // Assert:
@@ -65,11 +62,10 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
 
             _context.Container.Register(typeof(TestClassForParameterInjectionByPropertyOfResolved));
 
-            // Test Setup:
+            // Test the Setup:
             Assert.AreEqual(expectedInstance, _context.GetInstance<TestInjectedObjectClass1>(), "Wrong instance resolved before test");
 
             // Act:
-
             var instance = _context.Container.GetInstance<TestClassForParameterInjectionByPropertyOfResolved>();
 
             // Assert:

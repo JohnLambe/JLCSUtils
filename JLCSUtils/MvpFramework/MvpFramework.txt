@@ -70,6 +70,7 @@ TODO:
 	Resolving for action and model: Return presenter and view that populate automatically from the model and use base classes for the action.
 	Caching of property metadata (lazily populated).
 	FormGenerator: Alignment of boxes - controls inside group box don't align with those not in one.
+	Drop-down button bound to handlers using Filter.
 
 
 Possible additions:

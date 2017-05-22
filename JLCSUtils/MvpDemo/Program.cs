@@ -16,6 +16,7 @@ using JohnLambe.Util.Reflection;
 using MvpFramework.WinForms;
 using MvpFramework.Dialog;
 using JohnLambe.Util.Misc;
+using MvpFramework.Generator;
 
 namespace MvpDemo
 {
@@ -79,6 +80,9 @@ namespace MvpDemo
             var assemblies = AssemblyUtil.GetReferencedAssemblies(Assembly.GetEntryAssembly(),true);
             
             Resolver = new DiMvpResolver(DiContext);
+
+            Resolver.AddPresenterToViewMapping(typeof(IAutoPresenter),typeof(AutoView));
+
             DiContext.Container.RegisterSingleton<IDiResolver>(DiContext);
             DiContext.Container.RegisterSingleton(Resolver);
             //                typeof(MvpResolver),Resolver);
@@ -92,7 +96,7 @@ namespace MvpDemo
 
             new RegistrationHelper(Resolver, DiContext).ScanAssemblies(assemblies.ToArray()); // Assembly.GetExecutingAssembly());
 
-            DiContext.Container.Register(typeof(IUiController),typeof(MvpFramework.WinForms.UiController));
+            DiContext.Container.Register(typeof(IUiController), typeof(MvpFramework.WinForms.UiController));
 
             DiContext.Container.Register(typeof(IIconRepository<string,object>), typeof(NullIconRepository<string,object>));
 

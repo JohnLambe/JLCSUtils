@@ -10,15 +10,19 @@ using System.Windows.Forms;
 
 using MvpFramework;
 using MvpDemo.Model;
+using MvpFramework.Generator;
 
 namespace MvpDemo
 {
     public partial class MainForm : Form
     {
-        public MainForm(IPresenterFactory<IEditContactPresenter,Contact> editContactFactory, IPresenterFactory<Heirarchical.ITestHPresenter,TestHViewModel> hpresenterFactory)
+        public MainForm(IPresenterFactory<IEditContactPresenter,Contact> editContactFactory, IPresenterFactory<Heirarchical.ITestHPresenter,TestHViewModel> hpresenterFactory
+//            ,  IPresenterFactory<IAutoPresenter,object> autoPresenter
+            )
         {
             this.EditContactFactory = editContactFactory;
             this.HPresenterFactory = hpresenterFactory;
+//            this.AutoPresenter = autoPresenter;
 
             InitializeComponent();
         }
@@ -36,6 +40,7 @@ namespace MvpDemo
 
         protected readonly IPresenterFactory<IEditContactPresenter,Contact> EditContactFactory;
         protected readonly IPresenterFactory<Heirarchical.ITestHPresenter, TestHViewModel> HPresenterFactory;
+        protected readonly IPresenterFactory<IAutoPresenter, object> AutoPresenter;
         
 
         private void btnEmbedded_Click(object sender, EventArgs e)
@@ -82,6 +87,16 @@ namespace MvpDemo
         private void button3_Click(object sender, EventArgs e)
         {
             new FormGeneratorDemo().Show();
+        }
+
+        private void uiAutoView_Click(object sender, EventArgs e)
+        {
+            var model = new Contact()
+            {
+                Name = "name"
+            };
+            AutoPresenter.Create(model).Show();
+
         }
     }
 }

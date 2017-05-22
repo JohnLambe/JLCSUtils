@@ -13,11 +13,13 @@ namespace MvpFramework.Generator
     {
     }
 
-    [Presenter(Interface = typeof(IAutoPresenter))]
+    //[Presenter(Interface = typeof(IAutoPresenter))]
     public class AutoPresenter<TView, TModel> : PresenterBase<TView, TModel>, IAutoPresenter
         where TView : IView
     {
-        public AutoPresenter(TView view, TModel model = default(TModel), [Inject] IControlBinderFactory binderFactory = null) : base(view, model, binderFactory)
+        public AutoPresenter(TView view,
+            [MvpParam] TModel model = default(TModel),
+            [Inject] IControlBinderFactory binderFactory = null) : base(view, model, binderFactory)
         {
         }
     }

@@ -204,7 +204,7 @@ namespace DiExtension.SimpleInject
             ProviderChain.RegisterProvider(Dictionary);
             ConstructorResolutionBehavior.RegisterWith(Container.Options);
 
-            PropertyInjectionBehavior = PropertyInjectionDiBehavior.RegisterWith(Container.Options,this);
+            PropertyInjectionBehavior = PropertyInjectionDiBehavior.RegisterWith(Container.Options,this,this);
             CacheValues = true;
 
             base.Init();
