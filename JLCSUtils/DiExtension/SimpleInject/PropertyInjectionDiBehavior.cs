@@ -77,7 +77,7 @@ namespace DiExtension.SimpleInject
                     ?? consumer.Target.Member.Name;  // use the property/parameter name
                 if (consumer.Target.Parameter != null && key != null && key.Length > 0)  // if a paramter and key is not null or blank
                 {
-                    key = char.ToUpper(key[0]) + key.Substring(1);   // make the first letter captial
+                    key = char.ToUpper(key[0]) + key.Substring(1);   // make the first letter capital
                 }
             }
             return key;

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Environment;
 
-namespace MvpFramework.Services
+namespace JohnLambe.Util.Services
 {
     /// <summary>
     /// A service that provides details of the current system (details provided by the <see cref="System.Environment"/> class.

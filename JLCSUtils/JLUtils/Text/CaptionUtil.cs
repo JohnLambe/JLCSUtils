@@ -31,7 +31,7 @@ namespace JohnLambe.Util.Text
             if (s == null)
                 return null;
 
-            bool previousWasCaptial = false;
+            bool previousWasCapital = false;
             bool previousWasSpace = true;      // treat start of string the same as following a SPACE
             int charIndex = 0;
 
@@ -44,16 +44,16 @@ namespace JohnLambe.Util.Text
                     if (!previousWasSpace)
                     {
                         bool nextIsLower = char.IsLower(s.CharAt(charIndex + 1));
-                        if (!previousWasCaptial || nextIsLower)        // capital preceded or followed by non-capital
+                        if (!previousWasCapital || nextIsLower)        // capital preceded or followed by non-capital
                             result.Append(' ');         // insert SPACE before
                     }
                     result.Append(c);
-                    previousWasCaptial = true;
+                    previousWasCapital = true;
                     previousWasSpace = false;
                 }
                 else
                 {
-                    previousWasCaptial = false;
+                    previousWasCapital = false;
                     if (c == '_' || c == ' ')
                     {
                         result.Append(' ');

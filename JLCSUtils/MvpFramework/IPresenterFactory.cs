@@ -11,7 +11,6 @@ namespace MvpFramework
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam">Type of the parameter to the Create method.</typeparam>
     public interface IPresenterFactory<TPresenter>
         where TPresenter : IPresenter
     {

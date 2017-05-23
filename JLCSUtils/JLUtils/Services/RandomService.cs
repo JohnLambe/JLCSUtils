@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MvpFramework.Services
+namespace JohnLambe.Util.Services
 {
     /// <summary>
     /// Service for returning random numbers.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MvpFramework.Services
+namespace JohnLambe.Util.Services
 {
     /// <summary>
     /// A service for accessing the system time and time zone.
@@ -173,7 +173,7 @@ namespace MvpFramework.Services
 
         public override SleepEndReason Sleep(int duration)
         {
-            base.Sleep(Math.Min(duration, MaximumSleepTime));
+            base.Sleep(System.Math.Min(duration, MaximumSleepTime));
             if(AdvanceTimeOnSleep)
                 AdvanceTime((int)(duration / TimeSpan.TicksPerMillisecond));
             return SleepEndReason.Expired;

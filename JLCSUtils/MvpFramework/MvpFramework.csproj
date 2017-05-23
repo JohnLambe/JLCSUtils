@@ -185,10 +185,6 @@
       <Project>{2c2e5049-976d-408f-a67d-1463271f3e98}</Project>
       <Name>JLUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SimpleInjectorTest\SimpleInjectorTest.csproj">
-      <Project>{F91533CE-62CA-44AF-8596-E85508E4B612}</Project>
-      <Name>SimpleInjectorTest</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="MvpFramework.txt" />

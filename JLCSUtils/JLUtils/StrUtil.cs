@@ -5,7 +5,6 @@ using System.Text;
 
 using JohnLambe.Util.Text;
 using System.Diagnostics.Contracts;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.Diagnostic;

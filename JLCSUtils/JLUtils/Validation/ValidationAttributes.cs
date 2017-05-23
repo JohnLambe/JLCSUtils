@@ -121,7 +121,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// All letters are capital.
         /// </summary>
-        AllCaptial,
+        AllCapital,
         /// <summary>
         /// The first letter of each word is captial.
         /// Capital letters in other positions are also valid.
