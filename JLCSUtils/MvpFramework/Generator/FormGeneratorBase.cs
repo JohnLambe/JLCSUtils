@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util;
 
 namespace MvpFramework.Generator
 {
@@ -25,10 +26,12 @@ namespace MvpFramework.Generator
     {
         /// <summary/>
         /// <param name="diContext"><see cref="DiContext"/></param>
-        public FormGeneratorBase(IDiContext diContext = null)
+        protected FormGeneratorBase(ControlMappings<TControl> mappings, IDiContext diContext = null)
         {
             this.DiContext = diContext;
-            CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type,Type>(DataTypeToControlTypeMap);
+            _mappings = mappings/**.ArgNotNull()*/
+                ?? DefaultMappings;
+//            CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type,Type>(DataTypeToControlTypeMap);
         }
 
 
@@ -235,10 +238,11 @@ namespace MvpFramework.Generator
         /// <returns>the control to be used for displaying/editing data of type <paramref name="dataType"/>.</returns>
         protected virtual Type GetControlTypeForDataType(Type dataType)
         {
-            return CachedDataTypeToControlTypeMap.TryGetValue(dataType);
+            return _mappings.TryGetValue(dataType);
         }
 
 
+        /*
         #region Scanning for mappings
 
         /// <summary>
@@ -265,7 +269,8 @@ namespace MvpFramework.Generator
         }
 
         #endregion
-
+*/
+        //TODO: Remove
         /// <summary>
         /// Define a mapping from a data type to a control type that handles it.
         /// </summary>
@@ -277,9 +282,9 @@ namespace MvpFramework.Generator
         public virtual void AddMapping(Type dataType, Type controlType)
         {
             Diagnostics.PreCondition(typeof(TControl).IsAssignableFrom(controlType));
-            DataTypeToControlTypeMap.Add(dataType, controlType);
+            _mappings.AddMapping(dataType, controlType);
         }
-
+        
 
         /// <summary>
         /// Dependency injection context from which generated controls are injected.
@@ -294,9 +299,12 @@ namespace MvpFramework.Generator
         /// <summary>
         /// Maps the type of data displayed/edited to a type of control to handle it.
         /// </summary>
-        protected readonly TypeMap DataTypeToControlTypeMap = new TypeMap();
-        protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
+//        protected /*readonly*/ TypeMap DataTypeToControlTypeMap = new TypeMap();
+//        protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
 
+        protected ControlMappings<TControl> _mappings;
+
+        public static ControlMappings<TControl> DefaultMappings = new ControlMappings<TControl>(); //TODO: Remove
     }
 
     /// <summary>
@@ -365,4 +373,83 @@ namespace MvpFramework.Generator
         Shrink = 2,
         GrowAndShrink = Grow | Shrink
     }
+
+
+    public class ControlMappings<TControl>
+        where TControl: class
+    {
+        public ControlMappings()
+        {
+            CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type, Type>(DataTypeToControlTypeMap);
+        }
+
+
+        #region Scanning for mappings
+
+        /// <summary>
+        /// Scan assemblies and register mappings.
+        /// </summary>
+        /// <param name="assemblies">The list of assemblies to scan. If empty, the calling assembly is scanned.</param>
+        public virtual void Scan(params Assembly[] assemblies)
+        {
+            if (assemblies.Length == 0)
+                assemblies = new Assembly[] { Assembly.GetCallingAssembly() };
+            ScanAssemblies(assemblies);
+        }
+
+        /// <summary>
+        /// Scan assemblies and register mappings.
+        /// </summary>
+        /// <param name="assemblies">The list of assemblies to scan. If empty, this does nothing.</param>
+        public virtual void ScanAssemblies(IEnumerable<Assembly> assemblies)
+        {
+            foreach (var attrib in assemblies.SelectMany(a => a.GetTypes()).SelectMany(t => t.GetAttributesWithMember<MvpControlMappingAttribute, Type>()))
+                // restrict to concrete classes?
+            {
+                AddMapping(attrib.Attribute.ForType, attrib.DeclaringMember);
+            }
+        }
+
+        /*
+        public virtual void ScanAssemblies(IEnumerable<Assembly> assemblies)
+        {
+            foreach (var controlType in assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsClass && !t.IsAbstract))    // all concrete classes
+            {
+                var attribute = controlType.GetCustomAttribute<MvpControlMappingAttribute>(false);
+                foreach (var dataType in attribute.ForTypes)
+                {
+                    AddMapping(dataType, controlType);
+                }
+            }
+        }
+        */
+
+        #endregion
+
+        /// <summary>
+        /// Define a mapping from a data type to a control type that handles it.
+        /// </summary>
+        /// <param name="dataType">Data type of a property.</param>
+        /// <param name="controlType">
+        /// The control to generate for properties of type <see cref="dataType"/>.
+        /// This must be assignable to <typeparamref name="TControl"/>.
+        /// </param>
+        public virtual void AddMapping(Type dataType, Type controlType)
+        {
+            Diagnostics.PreCondition(typeof(TControl).IsAssignableFrom(controlType));
+            DataTypeToControlTypeMap.Add(dataType, controlType);
+        }
+
+        public virtual Type TryGetValue(Type dataType)
+        {
+            return DataTypeToControlTypeMap.TryGetValue(dataType);
+        }
+
+        /// <summary>
+        /// Maps the type of data displayed/edited to a type of control to handle it.
+        /// </summary>
+        protected readonly TypeMap DataTypeToControlTypeMap = new TypeMap();
+        protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
+    }
+
 }

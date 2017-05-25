@@ -8,6 +8,7 @@ using MvpFramework.Binding;
 using DiExtension;
 using JohnLambe.Util;
 using MvpFramework.Generator;
+using System.Reflection;
 
 namespace MvpFramework.WinForms
 {
@@ -16,7 +17,8 @@ namespace MvpFramework.WinForms
     /// </summary>
     public class FormGenerator : FormGeneratorBase<Control>
     {
-        public FormGenerator(IDiContext diContext = null) : base(diContext)
+        public FormGenerator(ControlMappings<Control> mappings = null, IDiContext diContext = null)
+            : base(mappings,diContext)
         {
         }
 
@@ -113,4 +115,6 @@ namespace MvpFramework.WinForms
         /// </summary>
         protected const int HSpacing = 4;
     }
+
+
 }
