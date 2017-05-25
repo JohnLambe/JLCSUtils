@@ -115,11 +115,34 @@ namespace MvpFramework.Menu
                 Rights = attribute.Rights,
                 Filter = attribute.Filter,
                 Attribute = attribute,
-                // Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
+                //| Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
             };
+            if(attribute is GenerateMenuItemAttribute)
+            {
+                item.HandlerType = null;
+                item.ModelType = handlerType;
+                item.Invoked += InvokeGeneratedItem;// GeneratedItem_Invoked;
+            }
             allItems.Add(id, item);
             return item;
         }
+
+        /*
+        /// <summary>
+        /// Fired when a presenter for a generated view is requried.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="args"></param>
+        protected virtual void GeneratedItem_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args)
+        {
+            
+        }
+        */
+
+        /// <summary>
+        /// Fired when a presenter for a generated view is requried.
+        /// </summary>
+        public virtual event MenuItemModel.InvokedDelegate InvokeGeneratedItem;
 
         /// <summary>
         /// Name of static method to be invoked (if present) on invoking a menu item.

@@ -14,7 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MvpFramework.Gemerator
+namespace MvpFramework.Generator
 {
     /// <summary>
     /// Populates a user interface control with a user interface for a given model, or selected properties of it.
@@ -23,9 +23,7 @@ namespace MvpFramework.Gemerator
     public abstract class FormGeneratorBase<TControl>
         where TControl : class
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary/>
         /// <param name="diContext"><see cref="DiContext"/></param>
         public FormGeneratorBase(IDiContext diContext = null)
         {
@@ -35,7 +33,7 @@ namespace MvpFramework.Gemerator
 
 
         /// <summary>
-        /// The user interface control into which the generated controls will be added.
+        /// The user interface (container) control into which the generated controls will be added.
         /// </summary>
         public virtual TControl Target { get; set; }
 
@@ -87,6 +85,11 @@ namespace MvpFramework.Gemerator
             }
         }
 
+        /// <summary>
+        /// Generate controls from the model, for a specified group.
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="propertyFilter"></param>
         public virtual void GenerateGroup(IUiGroupModel group, FilterDelegate<ModelPropertyBinder> propertyFilter)
         {
             TControl parentControl;
@@ -100,7 +103,7 @@ namespace MvpFramework.Gemerator
                 .Where(p => (propertyFilter == null || propertyFilter(p)) && p.AutoGenerate)
                 )
             {
-                var context = new ControlGeneratorContext()
+                var context = new ControlGeneratorContext<TControl>()
                 {
                     Group = group,
                     ParentControl = parentControl,
@@ -145,7 +148,7 @@ namespace MvpFramework.Gemerator
         }
 
         /// <summary>
-        /// 
+        /// Creates a user interface for a group of controls and adds it to the target container.
         /// </summary>
         /// <param name="parent">The parent group, or null for the root.</param>
         /// <param name="group">The model of the group to be created.</param>
@@ -155,10 +158,10 @@ namespace MvpFramework.Gemerator
         }
 
         /// <summary>
-        /// 
+        /// Creates a control and adds it to the target container.
         /// </summary>
         /// <param name="context"></param>
-        public virtual TControl CreateControl([NotNull]ControlGeneratorContext context)
+        public virtual TControl CreateControl([NotNull]ControlGeneratorContext<TControl> context)
         {
             BeforeCreateControl(context);
 
@@ -177,7 +180,7 @@ namespace MvpFramework.Gemerator
         /// </summary>
         /// <param name="context">Details of the control being created.<br/>
         /// <see cref="ControlGeneratorContext.NewControl"/> is null on entry.</param>
-        protected virtual void BeforeCreateControl([NotNull]ControlGeneratorContext context)
+        protected virtual void BeforeCreateControl([NotNull]ControlGeneratorContext<TControl> context)
         {
         }
 
@@ -190,7 +193,7 @@ namespace MvpFramework.Gemerator
         /// and is assigned by this method if a control is generated.
         /// If it is null on exit, no control is created.
         /// </param>
-        protected virtual void OnCreateControl([NotNull]ControlGeneratorContext context)
+        protected virtual void OnCreateControl([NotNull]ControlGeneratorContext<TControl> context)
         {
             if (context.NewControl == null)   // if not already created
             {
@@ -200,7 +203,7 @@ namespace MvpFramework.Gemerator
 
                 try
                 {
-                    context.NewControl = ReflectionUtil.CallStaticMethod<TControl>(controlType, MvpControlMappingAttribute.CreateControlMethod, context);
+                    context.NewControl = ReflectionUtil.CallStaticMethod<TControl>(controlType, MvpGenerateControlAttribute.GenerateControlMethod, context);
                 }
                 catch (MissingMemberException)
                 {
@@ -211,7 +214,7 @@ namespace MvpFramework.Gemerator
 
             DiContext?.BuildUp(context.NewControl);                       // run dependincy injection if we have a DI container
 
-            (context.NewControl as IGeneratableControl)?.ControlGeneratation(context);  // call if it implements the interface
+            (context.NewControl as IGeneratableControl<TControl>)?.ControlGeneratation(context);  // call if it implements the interface
         }
 
         /// <summary>
@@ -220,16 +223,16 @@ namespace MvpFramework.Gemerator
         /// </summary>
         /// <param name="context">Details of the control being created.<br/>
         /// <see cref="ControlGeneratorContext.NewControl"/> is not null.</param>
-        protected virtual void AfterCreateControl([NotNull]ControlGeneratorContext context)
+        protected virtual void AfterCreateControl([NotNull]ControlGeneratorContext<TControl> context)
         {
         }
 
 
         /// <summary>
-        /// Get a UI control that handles a given data type.
+        /// Get the UI control to be used for a given data type.
         /// </summary>
         /// <param name="dataType"></param>
-        /// <returns></returns>
+        /// <returns>the control to be used for displaying/editing data of type <paramref name="dataType"/>.</returns>
         protected virtual Type GetControlTypeForDataType(Type dataType)
         {
             return CachedDataTypeToControlTypeMap.TryGetValue(dataType);
@@ -264,12 +267,16 @@ namespace MvpFramework.Gemerator
         #endregion
 
         /// <summary>
-        /// 
+        /// Define a mapping from a data type to a control type that handles it.
         /// </summary>
         /// <param name="dataType">Data type of a property.</param>
-        /// <param name="controlType">The control to generate for properties of type <see cref="dataType"/>.</param>
+        /// <param name="controlType">
+        /// The control to generate for properties of type <see cref="dataType"/>.
+        /// This must be assignable to <typeparamref name="TControl"/>.
+        /// </param>
         public virtual void AddMapping(Type dataType, Type controlType)
         {
+            Diagnostics.PreCondition(typeof(TControl).IsAssignableFrom(controlType));
             DataTypeToControlTypeMap.Add(dataType, controlType);
         }
 
@@ -290,59 +297,58 @@ namespace MvpFramework.Gemerator
         protected readonly TypeMap DataTypeToControlTypeMap = new TypeMap();
         protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
 
+    }
+
+    /// <summary>
+    /// Details provided when creating a control.
+    /// </summary>
+    public class ControlGeneratorContext<TControl>
+    {
+        /// <summary>
+        /// The UI group of the new new control is in.
+        /// This will have been passed in a previous call to <see cref="FormGeneratorBase{TControl}.CreateGroup"/>.
+        /// </summary>
+        public virtual IUiGroupModel Group { get; set; }
 
         /// <summary>
-        /// Details provided when creating a control.
+        /// The property to be bound to the new control.
         /// </summary>
-        public class ControlGeneratorContext
-        {
-            /// <summary>
-            /// The UI group of the new new control is in.
-            /// This will have been passed in a previous call to <see cref="FormGeneratorBase{TControl}.CreateGroup"/>.
-            /// </summary>
-            public virtual IUiGroupModel Group { get; set; }
-
-            /// <summary>
-            /// The property to be bound to the new control.
-            /// </summary>
-            public virtual ModelPropertyBinder PropertyBinder { get; set; }
-
-            /// <summary>
-            /// The UI control that the new control is to be placed in
-            /// (typically corresponds to <see cref="Group"/>, and is the control returned by
-            /// the call to <see cref="FormGeneratorBase{TControl}.CreateGroup(IUiGroupModel, IUiGroupModel)"/> for that group).
-            /// </summary>
-            public virtual TControl ParentControl { get; set; }
-
-            /// <summary>
-            /// The control being generated.
-            /// </summary>
-            public virtual TControl NewControl { get; set; }
-
-            /// <summary>
-            /// The 1-based index of the control in its parent.
-            /// </summary>
-            /// <remarks>This is suitable for a WinForms <see cref="System.Windows.Forms.Control.TabIndex"/> value.</remarks>
-            public virtual int Index { get; set; }
-
-            /// <summary>
-            /// For consumers of this framework to add data to.
-            /// </summary>
-            public virtual IDictionary<string, object> CustomProperties { get; } = new Dictionary<string, object>();
-        }
+        public virtual ModelPropertyBinder PropertyBinder { get; set; }
 
         /// <summary>
-        /// A control that can be used by the control generator.
+        /// The UI control that the new control is to be placed in
+        /// (typically corresponds to <see cref="Group"/>, and is the control returned by
+        /// the call to <see cref="FormGeneratorBase{TControl}.CreateGroup(IUiGroupModel, IUiGroupModel)"/> for that group).
         /// </summary>
-        public interface IGeneratableControl
-        {
-            /// <summary>
-            /// Called by the form generator after construction, and running dependency injection if applicable.
-            /// </summary>
-            /// <param name="context"></param>
-            void ControlGeneratation(ControlGeneratorContext context);
-        }
+        public virtual TControl ParentControl { get; set; }
 
+        /// <summary>
+        /// The control being generated.
+        /// </summary>
+        public virtual TControl NewControl { get; set; }
+
+        /// <summary>
+        /// The 1-based index of the control in its parent.
+        /// </summary>
+        /// <remarks>This is suitable for a WinForms <see cref="System.Windows.Forms.Control.TabIndex"/> value.</remarks>
+        public virtual int Index { get; set; }
+
+        /// <summary>
+        /// For consumers of this framework to add data to.
+        /// </summary>
+        public virtual IDictionary<string, object> CustomProperties { get; } = new Dictionary<string, object>();
+    }
+
+    /// <summary>
+    /// A control that can be used by the control generator.
+    /// </summary>
+    public interface IGeneratableControl<TControl>
+    {
+        /// <summary>
+        /// Called by the form generator after construction, and running dependency injection if applicable.
+        /// </summary>
+        /// <param name="context"></param>
+        void ControlGeneratation(ControlGeneratorContext<TControl> context);
     }
 
     [Flags]

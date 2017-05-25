@@ -15,7 +15,6 @@ namespace MvpFramework
     /// Could be subclassed for custom presenter factory logic.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
-    /// <typeparam name="TParam1"></typeparam>
     public class PresenterFactory<TPresenter> :
         IPresenterFactory<TPresenter>,
         INestedPresenterFactory
@@ -108,11 +107,15 @@ namespace MvpFramework
                         // Determine the view to be injected (if there are no parameters, the View is not injected):
                         try
                         {
-                            view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
-                        }
-                        catch (Exception)   //TODO: Exception type
-                        {   // if resolving the view for the declared presenter type (usually an interface) fails, try for the concrete type of presenter being created:
+                            // Try resolving for the concrete type first.
+                            // This is important for KnownPresenterFactory, where TPresenter may be a base interface (even IPresenter),
+                            // but still relevant for other cases (for exmaple, a particular Presenter implementation may have its own View that overrides
+                            // the usual one for the presenter's interface - Views are often specific to Presenter implementations).
                             view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                        }
+                        catch (Exception)   //TODO: Restrict exception type
+                        {   // if resolving the view for the concrete presenter type fails, try for the declared type (usually an interface; possibly a base class) of presenter being created:
+                            view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
                         }
                     }
                     //| Could provide parameters for context-based injection of View.

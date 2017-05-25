@@ -13,6 +13,7 @@ namespace MvpFramework.WinForms.Controls
     /// <see cref="ComboBox"/> that can be bound automatically by the MVP framework.
     /// </summary>
     [MvpBoundControl]
+//    [MvpControlMapping(ForType = typeof(Enum))]  //TODO: Implement automatic mapping for Enums
     public class MvpComboBox : ComboBox
     {
         /// <summary>

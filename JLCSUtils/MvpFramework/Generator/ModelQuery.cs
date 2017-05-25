@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using MvpFramework.Binding;
+using System.Reflection;
+
+namespace MvpFramework.Generator
+{
+    public class ModelQuery
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="all">All items of the specified type.</param>
+        /// <param name="modelType"></param>
+        /// <param name="id">Specifies which query to use (for models with multiple <see cref="ListGeneratorAttribute"/> methods.</param>
+        /// <returns></returns>
+        public static IQueryable ApplyQuery<TModel>(IQueryable<TModel> all, Type modelType = null, string id = null)
+        {
+            if (modelType == null)
+                modelType = typeof(TModel);
+            MethodInfo method = modelType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(m => m.IsDefined(typeof(ListGeneratorAttribute),false)).FirstOrDefault();
+
+            return (IQueryable) method.Invoke(null, new object[] { all });
+        }
+
+        //TODO: Inject additional parameters from DI container.
+        //  Choose between multiple ListGeneratorAttribute methods.
+        //  Apply modifier methods.
+    }
+}

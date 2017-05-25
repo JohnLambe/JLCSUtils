@@ -62,6 +62,11 @@ namespace MvpFramework.Menu
         public virtual KeyboardKey HotKey { get; set; }
 
         /// <summary>
+        /// A visual style or type of menu or item.
+        /// </summary>
+        public virtual UiItemType Style { get; set; }
+
+        /// <summary>
         /// True iff this is a (sub)menu.
         /// </summary>
         public virtual bool IsMenu { get; }
@@ -86,9 +91,17 @@ namespace MvpFramework.Menu
     }
 
     /// <summary>
+    /// Attribute for an item (leaf) in a menu.
+    /// </summary>
+    public class MenuItemAttributeBase: MenuAttributeBase
+    {
+        public override bool IsMenu => false;
+    }
+
+    /// <summary>
     /// Adds an item to a menu.
     /// </summary>
-    public class MenuItemAttribute : MenuAttributeBase
+    public class MenuItemAttribute : MenuItemAttributeBase
     {
         /// <summary>
         /// </summary>
@@ -99,13 +112,22 @@ namespace MvpFramework.Menu
             ParentId = parentId;
             DisplayName = displayName;
         }
+    }
 
+    /// <summary>
+    /// Placed on a model class to specify that an menu item should be generated for it.
+    /// </summary>
+    public class GenerateMenuItemAttribute : MenuItemAttributeBase
+    {
         /// <summary>
-        /// A visual style or type of menu item.
         /// </summary>
-        public virtual UiItemType Style { get; set; }
-
-        public override bool IsMenu => false;
+        /// <param name="parentId">Value of <see cref="MenuAttributeBase.ParentId"/>.</param>
+        /// <param name="displayName">Value of <see cref="MenuAttributeBase.DisplayName"/>.</param>
+        public GenerateMenuItemAttribute(string parentId, string displayName = null)
+        {
+            ParentId = parentId;
+            DisplayName = displayName;
+        }
     }
 
     /// <summary>
@@ -114,6 +136,8 @@ namespace MvpFramework.Menu
     /// </summary>
     public enum UiItemType
     {
+        None = 0,
+
         /// <summary>
         /// In the style of a main menu, typically dropped down from the top of a window,
         /// or a ribbon control.
@@ -128,6 +152,7 @@ namespace MvpFramework.Menu
         /// <summary>
         /// A group of items within a menu, such as a panel within a tab in a ribbon,
         /// or a group of items separated by a separator line in a vertical menu.
+        /// This may be a sub-menu, depending on the UI implementation.
         /// </summary>
         Group,
 
@@ -136,7 +161,12 @@ namespace MvpFramework.Menu
         PageControl,
         TabPage,
 
-        Custom1 = 200,
+        Menu,
+        MenuItem,
+
+        Button,
+
+        Custom1 = 0x10000,
         Custom2,
         Custom3,
         Custom4,

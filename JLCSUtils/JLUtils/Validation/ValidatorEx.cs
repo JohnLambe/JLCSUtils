@@ -163,7 +163,7 @@ namespace JohnLambe.Util.Validation
         /// <returns>true iff valid.</returns>
         public virtual bool TryValidateValue(object instance, object value, MemberInfo member, ValidationResults results)
         {
-            return TryValidateValue(instance, value, member.GetCustomAttributes(true).Cast<ValidationAttribute>(), results, member.Name, CaptionUtil.GetDisplayName(member));
+            return TryValidateValue(instance, value, member.GetCustomAttributes<ValidationAttribute>(true), results, member.Name, CaptionUtil.GetDisplayName(member));
         }
 
         /// <summary>

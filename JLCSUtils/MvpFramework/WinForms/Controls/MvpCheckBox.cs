@@ -1,4 +1,5 @@
 ﻿using MvpFramework.Binding;
+using MvpFramework.Generator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ namespace MvpFramework.WinForms.Controls
     /// </summary>
     [DefaultEvent("CheckStateChanged")]  // Fired on setting the state of tri-state check boxes to Indeterminate, in addition to when CheckedChanged is fired.
     [MvpBoundControl]
-    [MvpControlMapping(ForType = typeof(bool))]
+    [MvpControlMapping(ForTypes = new [] { typeof(bool), typeof(bool?) })]
     public class MvpCheckBox : CheckBox
     {
         /// <summary>

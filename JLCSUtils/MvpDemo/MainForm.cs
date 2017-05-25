@@ -16,13 +16,14 @@ namespace MvpDemo
 {
     public partial class MainForm : Form
     {
-        public MainForm(IPresenterFactory<IEditContactPresenter,Contact> editContactFactory, IPresenterFactory<Heirarchical.ITestHPresenter,TestHViewModel> hpresenterFactory
-//            ,  IPresenterFactory<IAutoPresenter,object> autoPresenter
+        public MainForm(IPresenterFactory<IEditContactPresenter,Contact> editContactFactory,
+            IPresenterFactory<Heirarchical.ITestHPresenter,TestHViewModel> hpresenterFactory,
+            IPresenterFactory<IAutoPresenter,object> autoPresenterFactory
             )
         {
             this.EditContactFactory = editContactFactory;
             this.HPresenterFactory = hpresenterFactory;
-//            this.AutoPresenter = autoPresenter;
+            this.AutoPresenterFactory = autoPresenterFactory;
 
             InitializeComponent();
         }
@@ -40,7 +41,7 @@ namespace MvpDemo
 
         protected readonly IPresenterFactory<IEditContactPresenter,Contact> EditContactFactory;
         protected readonly IPresenterFactory<Heirarchical.ITestHPresenter, TestHViewModel> HPresenterFactory;
-        protected readonly IPresenterFactory<IAutoPresenter, object> AutoPresenter;
+        protected readonly IPresenterFactory<IAutoPresenter, object> AutoPresenterFactory;
         
 
         private void btnEmbedded_Click(object sender, EventArgs e)
@@ -93,9 +94,11 @@ namespace MvpDemo
         {
             var model = new Contact()
             {
-                Name = "name"
+                Name = "name",
+                PhoneNumber = "+353-1-12345",
+                Comment = "This is a comment."
             };
-            AutoPresenter.Create(model).Show();
+            AutoPresenterFactory.Create(model).Show();
 
         }
     }

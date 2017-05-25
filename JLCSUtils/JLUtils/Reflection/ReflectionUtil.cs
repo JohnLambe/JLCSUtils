@@ -280,6 +280,7 @@ namespace JohnLambe.Util.Reflection
         public static T CreateT<T>(Type type, Type[] argumentTypes, object[] arguments)
             where T : class
         {
+            //TODO: Give correct exception when constructor does not exist.
             return (T)type.GetConstructor(argumentTypes).Invoke(arguments);
         }
 

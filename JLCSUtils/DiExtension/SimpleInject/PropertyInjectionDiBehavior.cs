@@ -279,7 +279,7 @@ namespace DiExtension.SimpleInject
                 + ": " + (existingBehaviorException.Message ?? "")
                 : "Resolving failed for " + consumer.Target.Name
                 ) 
-                + StrUtil.NullPropagate(" (", consumer.Target.Member.DeclaringType.FullName, " ", consumer.Target.Member?.ToString()
+                + StrUtil.NullPropagate(" (", consumer.Target?.Member?.DeclaringType?.FullName, " ", consumer.Target.Member?.ToString()
                     + (consumer.Target.Parameter != null ? " - Parameter#" + consumer.Target.Parameter.Position.ToString() : ""),
                     ")")    // shouldn't be null
                 + "\n"

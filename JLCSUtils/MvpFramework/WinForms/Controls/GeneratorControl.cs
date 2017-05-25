@@ -8,8 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Binding;
-using JohnLambe.Util;
-using MvpFramework.Gemerator;
 
 namespace MvpFramework.WinForms.Controls
 {

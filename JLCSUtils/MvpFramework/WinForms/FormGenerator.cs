@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using MvpFramework.Binding;
 using DiExtension;
 using JohnLambe.Util;
-using MvpFramework.Gemerator;
+using MvpFramework.Generator;
 
 namespace MvpFramework.WinForms
 {
@@ -56,14 +56,14 @@ namespace MvpFramework.WinForms
             return groupBox;
         }
 
-        public override Control CreateControl(ControlGeneratorContext context)
+        public override Control CreateControl(ControlGeneratorContext<Control> context)
         {
             base.CreateControl(context);
 
             return null;
         }
 
-        protected override void AfterCreateControl(ControlGeneratorContext context)
+        protected override void AfterCreateControl(ControlGeneratorContext<Control> context)
         {
             var panel = new Panel();
             panel.Dock = DockStyle.Top;

@@ -2,7 +2,6 @@
 using JohnLambe.Util.Reflection;
 using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace MvpFramework.Binding
 {
@@ -259,6 +258,7 @@ namespace MvpFramework.Binding
     }
 
     #region Generator attributes
+    //TODO: Move to MvpFramework.Generator
 
     /// <summary>
     /// Attributes for methods that generate view of data.
@@ -701,39 +701,6 @@ namespace MvpFramework.Binding
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public abstract class MvpEventDefinitionAttribute : MvpEventDefinitionAttributeBase
-    {
-    }
-
-    #endregion
-
-
-    #region For Controls
-
-    /// <summary>
-    /// Defines a mapping between controls and the types they handle.
-    /// Used for generating controls from a model.
-    /// </summary>
-    public class MvpControlMappingAttribute : MvpEnabledAttributeBase
-    {
-        /// <summary>
-        /// Name of the static method on control classes, for generating a UI.
-        /// </summary>
-        public const string CreateControlMethod = "CreateControl";
-
-        /// <summary>
-        /// The data type handled (displayed / edited) by this control.
-        /// </summary>
-        public virtual Type ForType { get; set; }
-    }
-
-    /// <summary>
-    /// Flags a static method to be called by the form generator engine (<see cref="Generator.FormGeneratorBase"/>)
-    /// to create the control.
-    /// The method must be called <see cref="MvpControlMappingAttribute.CreateControlMethod"/>.
-    /// <para>For use on static methods of controls only.</para>
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class MvpGenerateControlAttribute : MvpAttributeBase
     {
     }
 

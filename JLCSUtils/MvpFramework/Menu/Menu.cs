@@ -7,6 +7,7 @@ using JohnLambe.Util.Encoding;
 using System.Diagnostics;
 using JohnLambe.Util;
 using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.Menu
 {
@@ -208,6 +209,9 @@ namespace MvpFramework.Menu
                 return level;
             }
         }
+
+        [Nullable]
+        public virtual Type ModelType { get; set; }
 
         /// <summary>
         /// Return a text representation of the menu tree of this item and all its children (including indirect children).

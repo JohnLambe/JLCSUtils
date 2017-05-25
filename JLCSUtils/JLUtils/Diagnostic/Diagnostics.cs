@@ -122,7 +122,7 @@ namespace JohnLambe.Util.Diagnostic
                 throw new AssertionFailedException(message);
             //TODO: Get stack trace
             else
-                throw ReflectionUtil.Create<Exception>(exceptionClass, message);
+                throw ReflectionUtil.CreateT<Exception>(exceptionClass, new Type[] { typeof(string) }, new object[] { message });
         }
 
         [Conditional("DEBUG")]

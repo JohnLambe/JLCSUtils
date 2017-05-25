@@ -100,6 +100,8 @@ namespace MvpDemo
 
             DiContext.Container.Register(typeof(IIconRepository<string,object>), typeof(NullIconRepository<string,object>));
 
+            DiContext.Container.Register(typeof(IAutoView), typeof(MvpFramework.WinForms.AutoView));
+
 
             //            DiContext.ScanAssembly();  // same as passing this.GetType().Assembly
 

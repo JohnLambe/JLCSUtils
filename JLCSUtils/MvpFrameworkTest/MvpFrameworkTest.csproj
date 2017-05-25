@@ -58,6 +58,8 @@
     <Compile Include="Binding\ModelBinderWrapperTest.cs" />
     <Compile Include="Binding\MvpEventAttributeTest.cs" />
     <Compile Include="Dialog\ExceptionToDialogMapTest.cs" />
+    <Compile Include="Generator\FormGeneratorBaseTest.cs" />
+    <Compile Include="Generator\ModelQueryTest.cs" />
     <Compile Include="Menu\MenuBuilderTest.cs" />
     <Compile Include="Menu\OptionCollectionBuilderTest.cs" />
     <Compile Include="RegistrationHelperTest.cs" />

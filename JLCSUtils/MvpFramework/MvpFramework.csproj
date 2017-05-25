@@ -58,8 +58,10 @@
     <Compile Include="Dialog\!NamespaceDoc.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
     <Compile Include="Dialog\ExceptionToDialogMap.cs" />
+    <Compile Include="Generator\Attributes.cs" />
     <Compile Include="Generator\AutoPresenter.cs" />
     <Compile Include="Generator\FormGeneratorBase.cs" />
+    <Compile Include="Generator\ModelQuery.cs" />
     <Compile Include="IPresenter.cs" />
     <Compile Include="Menu\!NamespaceDoc.cs" />
     <Compile Include="Generator\QueryGenerator.cs" />
