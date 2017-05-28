@@ -251,8 +251,8 @@ namespace JohnLambe.Util
         /// Concatenates the result of a delegate executed on each item in an enumerable.
         /// 
         /// </summary>
-        /// <typeparam name="TItem"></typeparam>
-        /// <typeparam name="TReturn"></typeparam>
+        /// <typeparam name="TItem">The type of item in the sequence.</typeparam>
+        /// <typeparam name="TReturn">The return type of the delegate.</typeparam>
         /// <param name="enumerable"></param>
         /// <param name="del">Delegate to be executed on each item in <paramref name="enumerable"/>.</param>
         /// <param name="separator">Separator added between non-null items.</param>
@@ -275,6 +275,17 @@ namespace JohnLambe.Util
             }
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Concatenate each item in a sequence into a string.
+        /// </summary>
+        /// <typeparam name="TItem"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <param name="del"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        public static string Concat<TItem>(IEnumerable<TItem> enumerable, string separator = null)
+            => ConcatForEach(enumerable, (x) => x.ToString(), separator);
 
         /// <summary>
         /// Total length of a string consisting of all non-null items in <see cref="parts"/>
@@ -806,6 +817,19 @@ namespace JohnLambe.Util
         {
             ContainsOnly = 1,
             ContainsAny,
+        }
+
+        /// <summary>
+        /// True if this string contains only characters in <paramref name="characters"/>.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="characters"></param>
+        /// <returns></returns>
+        public static bool ContainsOnlyCharacters(this string s, string characters)
+        {
+            if (characters == null)
+                return string.IsNullOrEmpty(s);          // if no characters in the set, then if there is any character in `s`, it fails.
+            return ContainsOnlyCharacters(s, new StringCharacterSet(characters));
         }
 
         /// <summary>

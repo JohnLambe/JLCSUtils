@@ -12,6 +12,13 @@ namespace JohnLambe.Util
         public static readonly VoidDelegate NullDelegate = () => {};
     }
 
+    public static class DelegateUtil<T>
+    {
+        /// <summary>
+        /// A delegate (with one parameter) that does nothing.
+        /// </summary>
+        public static readonly VoidDelegate NullDelegate = () => { };
+    }
 
     // Common delegates:
 

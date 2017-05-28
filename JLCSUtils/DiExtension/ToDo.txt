@@ -8,7 +8,7 @@ Method injection ? (How often would it be used? Can use SimpleInjector context-b
 *Config inject with delegate.
 Specify whether to cache for each registration.
 
-Resolve by type, then inject only a property value of the resolved instance: ?
+*Resolve by type, then inject only a property value of the resolved instance: ?
 	e.g.	[Inject(typeof(User),"Name")]  // inject the user name (User.Name)
 
 ChainableContext
@@ -19,7 +19,7 @@ More automatic registration.
 
 
 
-Change exceptions to ActivationException ?
+*Change exceptions to ActivationException
 
 Event injection:
 	- On creating event handler object, add it to relevant event handlers on existing objects previously created by DI container.

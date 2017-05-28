@@ -28,15 +28,15 @@ namespace MvpDemo.Model
         }
         protected string _address;
 
-        [Phone]
+        [PhoneNumberValidation]
         [Display(Order = 1000)]
         public string PhoneNumber { get; set; }
 
-        [Phone]
+        [PhoneNumberValidation]
         [Display(Order = 1000)]
         public string PhoneNumber2 { get; set; }
 
-        [Phone]
+        [PhoneNumberValidation]
         [Display(Order = 1010)]
         public string FaxNumber { get; set; }
 

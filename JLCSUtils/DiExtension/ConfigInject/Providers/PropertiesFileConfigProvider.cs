@@ -8,13 +8,21 @@ using System.Threading.Tasks;
 
 namespace DiExtension.ConfigInject.Providers
 {
+    /// <summary>
+    /// Provider that reads a file in the Java Properties format.
+    /// <para>
+    /// Each line is in the format: &lt;Name&gt; "=" &lt;Value&gt;<br/>
+    /// Where &lt;Name&gt; can be a heirarchical key with levels separated by '.'.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
     public class PropertiesFileConfigProvider<TValue> : DictionaryConfigProviderBase<TValue>
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="filename">Filename of the XML document.</param>
-        /// <param name="xPath">The root property to use. null for the root.</param>
+        /// <param name="filename">Filename of the properties file.</param>
+        /// <param name="root">The root property to use. null for the root.</param>
         public PropertiesFileConfigProvider(string filename, string root = null)
             : this(File.ReadAllLines(filename), root)
         {

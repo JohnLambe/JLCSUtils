@@ -1,4 +1,6 @@
-﻿using JohnLambe.Util.Misc;
+﻿using JohnLambe.Util;
+using JohnLambe.Util.Misc;
+using JohnLambe.Util.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace DiExtension.ConfigInject.Providers
         {
             if (iconId == null)
                 return null;
-            return iconId.ToString() + "-" + state.ToString();
+            return iconId.ToString() + StrUtil.BlankPropagate("-", EnumAttributeUtil.FromEnum<string,EnumMappedValueAttribute>(state));
         }
     }
 
@@ -46,6 +48,6 @@ namespace DiExtension.ConfigInject.Providers
             return Provider.GetValue<T>(key, requiredType, out value);
         }
 
-        protected readonly IConfigProvider Provider;
+        protected virtual IConfigProvider Provider { get; set; }
     }
 }

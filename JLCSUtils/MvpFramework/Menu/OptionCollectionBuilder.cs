@@ -18,7 +18,7 @@ namespace MvpFramework.Menu
         /// Build a list of options from handlers on a given object.
         /// </summary>
         /// <param name="target">The object with the handler methods.</param>
-        /// <param name="filter">Value to filter handlers by (using their <see cref="MvpHandlerAttribute.Filter"/> property or equivalent).</param>
+        /// <param name="filter">Value to filter handlers by (using their <see cref="MvpUiAttributeBase.Filter"/> property or equivalent).</param>
         /// <returns>the collection of menu items / options.</returns>
         public virtual OptionCollection Build(object target, string filter)
         {

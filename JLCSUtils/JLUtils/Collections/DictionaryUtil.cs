@@ -33,7 +33,7 @@ namespace JohnLambe.Util.Collections
         }
 
         /// <summary>
-        /// Returns the value that the IDictionary.TryGetValue assigns to its 'out' parameter.
+        /// Returns the value that <see cref="IDictionary{K,V}.TryGetValue"/> assigns to its 'out' parameter.
         /// </summary>
         /// <typeparam name="K"></typeparam>
         /// <typeparam name="V"></typeparam>

@@ -10,6 +10,9 @@ using System.Reflection;
 
 namespace DiExtension.ConfigInject.Providers
 {
+    /// <summary>
+    /// Provider that reads from assembly resources.
+    /// </summary>
     public class ResourceConfigProvider : IConfigProvider
     {
         public ResourceConfigProvider(ResourceManager resourceManager, CultureInfo culture)
@@ -18,15 +21,17 @@ namespace DiExtension.ConfigInject.Providers
             Culture = culture;
         }
 
-        /*
-        public ResourceConfigProvider(Assembly assm)
+        public ResourceConfigProvider(Assembly assm, string baseNamespace = null)
         {
-            var resourceManager = new global::System.Resources.ResourceManager(assm. + ".Properties.Resources", assm);
+            if(baseNamespace == null)
+            {
+                throw new NotImplementedException();  //TODO: Choose resource manager
+            }
+            var resourceManager = new global::System.Resources.ResourceManager(baseNamespace + ".Properties.Resources", assm);
             if (resourceManager == null)
                 throw new ArgumentException("No ResourceManager found in assembly " + assm);
             ResourceMgr = resourceManager;
         }
-        */
 
         public virtual bool GetValue<T>(string key, Type requiredType, out T value)
         {

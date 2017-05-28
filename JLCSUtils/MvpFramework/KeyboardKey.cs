@@ -139,9 +139,9 @@ namespace MvpFramework
         // Summary:
         //     The IME Hanguel mode key. (maintained for compatibility; use HangulMode)
         //| This is included for consistency with the WinForms type.
-        [EnumDuplicate]
-        [Obsolete,EnumObsolete]
-        HanguelMode = 21,
+//        [EnumDuplicate]
+//        [Obsolete,EnumObsolete]
+//        HanguelMode = 21,
         //
         // Summary:
         //     The IME Hangul mode key.
@@ -176,7 +176,9 @@ namespace MvpFramework
         //
         // Summary:
         //     The IME nonconvert key.
-        IMENonconvert = 29,
+        [EnumDuplicate]
+        IMENonconvert = 29,  // Matches WinForms capitalisation
+        IMENonConvert = 29,
         //
         // Summary:
         //     The IME accept key, replaces System.Windows.Forms.Keys.IMEAceept.
@@ -184,9 +186,9 @@ namespace MvpFramework
         //
         // Summary:
         //     The IME accept key. Obsolete, use System.Windows.Forms.Keys.IMEAccept instead.
-        [EnumDuplicate]
-        [Obsolete, EnumObsolete]
-        IMEAceept = 30,
+//        [EnumDuplicate]
+//        [Obsolete, EnumObsolete]
+//        IMEAceept = 30,
         //
         // Summary:
         //     The IME mode change key.

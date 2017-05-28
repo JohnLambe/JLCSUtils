@@ -448,6 +448,15 @@ namespace JohnLambe.Util.Reflection
                 return type.IsAssignableFrom(value.GetType());
         }
 
+        /// <summary>
+        /// Returns true if this type is the given type or a subclass of it.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool IsTypeOrSubclassOf(this Type type, [NotNull] Type c)
+            => type == c || type.IsSubclassOf(c);
+
         #region GetProperty
 
         /// <summary>

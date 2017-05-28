@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JohnLambe.Util.Collections;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
 namespace JohnLambe.Tests.JLUtilsTest.Collections
 {
     [TestClass]
@@ -27,14 +29,15 @@ namespace JohnLambe.Tests.JLUtilsTest.Collections
             Setup();
 
             // Assert:
+            Multiple(
+                () => Assert.AreEqual("Value10", Lookup[10]),
+                () => Assert.AreEqual(1, TimesFired),
+                () => Assert.AreEqual("Value10", Lookup[10]),     // look up again
+                () => Assert.AreEqual(1, TimesFired),             // didn't reevaluate
 
-            Assert.AreEqual("Value10", Lookup[10]);
-            Assert.AreEqual(1, TimesFired);
-            Assert.AreEqual("Value10", Lookup[10]);     // look up again
-            Assert.AreEqual(1, TimesFired);             // didn't reevaluate
-
-            Assert.AreEqual("Value11", Lookup[11]);     // look up a different value
-            Assert.AreEqual(2, TimesFired);             
+                () => Assert.AreEqual("Value11", Lookup[11]),     // look up a different value
+                () => Assert.AreEqual(2, TimesFired)            
+            );
         }
 
         protected void Setup()

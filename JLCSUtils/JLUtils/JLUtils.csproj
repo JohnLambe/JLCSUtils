@@ -50,11 +50,12 @@
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Collections\KeyExistsException.cs" />
     <Compile Include="Collections\TypeMap.cs" />
-    <Compile Include="ConfigProvider\IconRepository.cs" />
+    <Compile Include="ConfigProvider\FileLoaderConfigProvider.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />
     <Compile Include="Diagnostic\DiagnosticStringUtil.cs" />
     <Compile Include="Documentation\DiagramAttribute.cs" />
     <Compile Include="Documentation\DocumentationAttribute.cs" />
+    <Compile Include="Documentation\IProvidesDescription.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="ConfigProvider\FileImageLoaderConfigProvider.cs" />
     <Compile Include="Exceptions\AssertionFailedException.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Services\SessionLock.cs" />
     <Compile Include="Text\Ascii.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
+    <Compile Include="Validation\Attributes.cs" />
+    <Compile Include="Validation\ValidationAttributeBase.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />
     <Compile Include="Reflection\AssemblyUtil.cs" />
     <Compile Include="Reflection\AttributeUtil.cs" />

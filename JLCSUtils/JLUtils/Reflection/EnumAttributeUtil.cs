@@ -45,6 +45,8 @@ namespace JohnLambe.Util.Reflection
         }
 
         public virtual object Value { get; protected set; }
+
+        // public virtual string Domain { get; set; }
     }
 
 }

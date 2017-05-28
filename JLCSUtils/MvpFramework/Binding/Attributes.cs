@@ -126,7 +126,7 @@ namespace MvpFramework.Binding
     {
         /// <summary>
         /// </summary>
-        /// <param name="id">Value of <see cref="Id"/>.</param>
+        /// <param name="id">Value of <see cref="MvpUiAttributeBase.Id"/>.</param>
         public MvpHandlerAttribute(string id = null)
         {
             this.Id = id;
@@ -171,9 +171,11 @@ namespace MvpFramework.Binding
 
         /// <summary>
         /// A shorter version of the display name, for use when space is more limited.
-        /// <para>If this is present, and <see cref="DisplayName"/> is null, this should NOT be considered
+        /// <para>
+        /// If this is present, and <see cref="DisplayNameAttribute.DisplayName"/> is null, this should NOT be considered
         /// a default for it (if there is another method of getting a default name (for example, using the code name of the attributed item),
-        /// it should be used).</para>
+        /// it should be used).
+        /// </para>
         /// </summary>
         public virtual string ShortName { get; set; }
     }
@@ -449,7 +451,7 @@ namespace MvpFramework.Binding
 
     /// <summary>
     /// Flags a property whose value is a binder string.
-    /// Supported property types are <see cref="string"/>, <see cref="string[]"/> (each element is a binder string)
+    /// Supported property types are <see cref="string"/>, <see cref="string"/>[] (each element is a binder string)
     /// and anything whose <see cref="object.ToString()"/> method returns the required value.
     /// <para>Syntax:
     /// <code>

@@ -178,11 +178,11 @@ namespace MvpFramework.Generator
 
         /// <summary>
         /// Called before creating a control.
-        /// This can modify the context and/or populate <see cref="ControlGeneratorContext.NewControl"/> in <paramref name="context"/>,
-        /// thus preventing the usual method of creating the control (including calling <see cref="OnCreateControl(ControlGeneratorContext)"/>).
+        /// This can modify the context and/or populate <see cref="ControlGeneratorContext{TControl}.NewControl"/> in <paramref name="context"/>,
+        /// thus preventing the usual method of creating the control (including calling <see cref="OnCreateControl(ControlGeneratorContext{TControl})"/>).
         /// </summary>
         /// <param name="context">Details of the control being created.<br/>
-        /// <see cref="ControlGeneratorContext.NewControl"/> is null on entry.</param>
+        /// <see cref="ControlGeneratorContext{TControl}.NewControl"/> is null on entry.</param>
         protected virtual void BeforeCreateControl([NotNull]ControlGeneratorContext<TControl> context)
         {
         }
@@ -192,7 +192,7 @@ namespace MvpFramework.Generator
         /// </summary>
         /// <param name="context">
         /// Details of the control being created.<br/>
-        /// <see cref="ControlGeneratorContext.NewControl"/> is null on entry,
+        /// <see cref="ControlGeneratorContext{TControl}.NewControl"/> is null on entry,
         /// and is assigned by this method if a control is generated.
         /// If it is null on exit, no control is created.
         /// </param>
@@ -225,7 +225,7 @@ namespace MvpFramework.Generator
         /// Not called for any property for which a control is not generated.
         /// </summary>
         /// <param name="context">Details of the control being created.<br/>
-        /// <see cref="ControlGeneratorContext.NewControl"/> is not null.</param>
+        /// <see cref="ControlGeneratorContext{TControl}.NewControl"/> is not null.</param>
         protected virtual void AfterCreateControl([NotNull]ControlGeneratorContext<TControl> context)
         {
         }
@@ -276,7 +276,7 @@ namespace MvpFramework.Generator
         /// </summary>
         /// <param name="dataType">Data type of a property.</param>
         /// <param name="controlType">
-        /// The control to generate for properties of type <see cref="dataType"/>.
+        /// The control to generate for properties of type <paramref name="dataType"/>.
         /// This must be assignable to <typeparamref name="TControl"/>.
         /// </param>
         public virtual void AddMapping(Type dataType, Type controlType)
@@ -297,11 +297,8 @@ namespace MvpFramework.Generator
         protected virtual AcceleratorCaptionUtil Accelerators { get; } = new AcceleratorCaptionUtil();
 
         /// <summary>
-        /// Maps the type of data displayed/edited to a type of control to handle it.
+        /// Mappings of data types to control types.
         /// </summary>
-//        protected /*readonly*/ TypeMap DataTypeToControlTypeMap = new TypeMap();
-//        protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
-
         protected ControlMappings<TControl> _mappings;
 
         public static ControlMappings<TControl> DefaultMappings = new ControlMappings<TControl>(); //TODO: Remove

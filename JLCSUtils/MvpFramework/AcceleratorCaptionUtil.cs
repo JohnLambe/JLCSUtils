@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MvpFramework
 {
     /// <summary>
-    /// Utility for working with WinForms accelerator characters in captions (letters prefixed with '&' to indicate the shortcut key, using <see cref="KeyboardKey.Alt"/>).
+    /// Utility for working with WinForms accelerator characters in captions (letters prefixed with &apos;&amp;&apos; to indicate the shortcut key, using <see cref="KeyboardKey.Alt"/>).
     /// <para>
     /// This adds/removes accelerator characters, and tracks what characters are used in its context (for checking for duplicates).
     /// When there is no suitable character in the caption to make the acceleratotr character, a character can be added for use as an accelerator character (refered to here as an "Added Accelerator Character").
@@ -61,7 +61,8 @@ namespace MvpFramework
         /// (without any special processing).
         /// </summary>
         /// <param name="caption"></param>
-        /// <returns>String for display (human-readable).</returns>
+        /// <returns>String for display (human-readable). null if <paramref name="caption"/> is null.</returns>
+        [return: Nullable]
         public virtual string CaptionToDisplayName([Nullable]string caption)
         {
             return RemoveAccelerator(caption);
@@ -177,6 +178,12 @@ namespace MvpFramework
             return caption;
         }
 
+        /// <summary>
+        /// Set the accelerator character in the given caption to an automatically generated one.
+        /// </summary>
+        /// <param name="caption"></param>
+        /// <param name="existingAction">What to do if there is already an accelerator character in the caption.</param>
+        /// <returns>The caption with accelerator character set.</returns>
         public virtual string GenerateAccelerator([Nullable]string caption, ExistingAccelerartorAction? existingAction = null)
         {
             return SetAccelerator(caption, Auto, existingAction);
@@ -284,7 +291,7 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// Evaluate how desirable a character is to use an accelerator character.
+        /// Evaluate how desirable a given character is to use an accelerator character in the given caption.
         /// </summary>
         /// <param name="caption"></param>
         /// <param name="position">0-based index of the candidate accelerator character. Must be in range.</param>

@@ -18,11 +18,15 @@ namespace MvpFramework.Generator
         /// <param name="modelType"></param>
         /// <param name="id">Specifies which query to use (for models with multiple <see cref="ListGeneratorAttribute"/> methods.</param>
         /// <returns></returns>
+        /// <exception cref="KeyNotFoundException">If the requested query does not exist.</exception>
         public static IQueryable ApplyQuery<TModel>(IQueryable<TModel> all, Type modelType = null, string id = null)
         {
             if (modelType == null)
                 modelType = typeof(TModel);
             MethodInfo method = modelType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(m => m.IsDefined(typeof(ListGeneratorAttribute),false)).FirstOrDefault();
+
+            if (method == null)
+                throw new KeyNotFoundException("List generator not found on " + modelType.FullName + " (" + (id ?? "") + ")");
 
             return (IQueryable) method.Invoke(null, new object[] { all });
         }

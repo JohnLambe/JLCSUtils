@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleInjector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -10,7 +11,7 @@ namespace DiExtension
     /// <summary>
     /// Exception that occurs on dependency injection or setup of the container.
     /// </summary>
-    public class DependencyInjectionException : Exception
+    public class DependencyInjectionException : ActivationException
     {
         public DependencyInjectionException() : base()
         {

@@ -65,7 +65,7 @@ namespace MvpFramework
                 }
                 catch (Exception ex)
                 {
-                    throw new DependencyInjectionException("Failed to resolve Presenter type or constructor: " + ex.Message, ex);
+                    Resolver.ThrowException("Failed to resolve Presenter type or constructor: " + ex.Message, ex);
                 }
             }
         }

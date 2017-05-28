@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
+
 namespace JohnLambe.Tests.JLUtilsTest.Collections
 {
     [TestClass]
@@ -14,9 +17,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Collections
         [TestMethod]
         public void Count()
         {
-            Assert.AreEqual(10, EnumeratorUtil.Count("0123456789".GetEnumerator()));
-            Assert.AreEqual(0, EnumeratorUtil.Count(new LinkedList<int>().GetEnumerator()), "empty list");
-            Assert.AreEqual(0, EnumeratorUtil.Count<string>(null), "null");
+            Multiple(
+                () => Assert.AreEqual(10, EnumeratorUtil.Count("0123456789".GetEnumerator())),
+                () => Assert.AreEqual(0, EnumeratorUtil.Count(new LinkedList<int>().GetEnumerator()), "empty list"),
+                () => Assert.AreEqual(0, EnumeratorUtil.Count<string>(null), "null")
+            );
         }
     }
 }

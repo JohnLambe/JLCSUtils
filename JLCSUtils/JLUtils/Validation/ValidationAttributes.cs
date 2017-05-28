@@ -14,48 +14,8 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Validation
 {
-    //TODO: Remove "Validation" from these names, except RegexValidationAttribute.
+    //TODO: Remove "Validation" from these names, except RegexValidationAttribute ?
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)] //TODO: Review
-    public abstract class ValidationAttributeBase : System.ComponentModel.DataAnnotations.ValidationAttribute
-    {
-        /// <summary>
-        /// If this is not <see cref="ValidationResultType.Error"/>, then when an item fails validation,
-        /// it generates a message of that type.
-        /// </summary>
-        public virtual ValidationResultType ResultType { get; set; } = ValidationResultType.Error;
-
-        //
-        // Summary:
-        //     Validates the specified value with respect to the current validation attribute.
-        //
-        // Parameters:
-        //   value:
-        //     The value to validate.
-        //
-        //   validationContext:
-        //     The context information about the validation operation.
-        //
-        // Returns:
-        //     An instance of the System.ComponentModel.DataAnnotations.ValidationResult class.
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            if (ResultType < ValidationResultType.Error                    // if this can return only warnings / messages, or modify the value
-                && !validationContext.GetSupportedFeatures().HasAnyFlag(ValidationFeatures.Warnings | ValidationFeatures.Modification)   // and that is not supported
-                )
-            {   
-                return ValidationResult.Success;    // treat as valid
-            }
-
-            var results = new ValidationResults(validationContext.GetSupportedFeatures(), ResultType);
-            IsValid(ref value, validationContext, results);
-            return results.Result;
-        }
-
-        protected virtual void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
-        {
-        }
-    }
 
     /// <summary>
     /// For validation of string values.
@@ -148,6 +108,48 @@ namespace JohnLambe.Util.Validation
     }
 
     /// <summary>
+    /// The data item holds a phone number.
+    /// </summary>
+    /// <remarks><see cref="PhoneAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
+    public class PhoneNumberValidationAttribute : StringValidationAttribute
+    {
+        public override string DefaultDescritpion => "A phone number";
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            if (value == null || value.ToString() == "")            // blank or null is valid
+                return;   // valid
+
+            if (!ValidatePhoneNumber(value))                    // validate using PhoneAttribute
+                results.Fail();
+
+            base.IsValid(ref value, validationContext, results);
+        }
+
+        /// <summary>
+        /// Validates a phone number in the same way as <see cref="PhoneAttribute"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool ValidatePhoneNumber(object value)
+            => _phoneAttribute.IsValid(value);
+
+        /// <summary>
+        /// Instance to use for validating values passed to instances of this class.
+        /// This class does not change its state.
+        /// </summary>
+        private static PhoneAttribute _phoneAttribute = new PhoneAttribute();
+    }
+
+    /// <summary>
+    /// The data item holds a postcode.
+    /// </summary>
+    /// <remarks><see cref="PhoneNumberAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
+    public class PostcodeValidationAttribute : StringValidationAttribute
+    {
+    }
+
+    /// <summary>
     /// Specifies a value that is not allowed as a value of the attributed item.
     /// </summary>
     public class InvalidValueAttribute : ValidationAttributeBase
@@ -174,18 +176,11 @@ namespace JohnLambe.Util.Validation
     }
 
     /// <summary>
-    /// The data item holds a phone number.
-    /// </summary>
-    [Obsolete("Use DataAnnotations")]
-    public class PhoneNumberValidationAttribute : StringValidationAttribute
-    {
-    }
-
-    /// <summary>
     /// The data item holds an email address.
     /// </summary>
     public class EmailValidationAttribute : StringValidationAttribute
     {
+        public override string DefaultDescritpion => "An email address";
     }
 
     /// <summary>
@@ -245,6 +240,8 @@ namespace JohnLambe.Util.Validation
         public virtual bool AllowWildcard { get; set; } = true;
 
         public virtual string[] Extensions { get; set; }
+
+        public override string DefaultDescritpion => "A file or directory name";
     }
 
     [Flags]
@@ -286,6 +283,16 @@ namespace JohnLambe.Util.Validation
         FullPath = 4,
 
         Any = LeafName | RelativePath | FullPath
+    }
+
+
+    /// <summary>
+    /// The data item holds a URL.
+    /// </summary>
+    /// <remarks><see cref="PhoneNumberAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
+    public class UrlValidationAttribute : StringValidationAttribute
+    {
+        public override string DefaultDescritpion => "A URL";
     }
 
 
@@ -390,6 +397,7 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class CurrencyValidationAttribute : NumberValidationAttribute
     {
+        public override string DefaultDescritpion => "A monetary amount";
     }
 
 
@@ -425,12 +433,21 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class DateTimeAttribute : ValidationAttributeBase
     {
+        /// <summary>
+        /// The components of the date/time that are present.
+        /// </summary>
         public virtual TimePrecision TimeParts { get; set;}
 
         /// <summary>
         /// Number of decimal places in seconds (for display and entry).
         /// </summary>
         public virtual int SecondsDecimalPlaces { get; set; }
+
+        /// <summary>
+        /// What the time part should be populated with when the value represents only a date.
+        /// </summary>
+        public virtual TimePartOption TimePartOption { get; set; }
+        //TODO: Set the time part on validation.
     }
 
     [Flags]
@@ -447,6 +464,33 @@ namespace JohnLambe.Util.Validation
         Date = Year | Month | Day,
         TimeOfDay = Hour | Minute | Second | SecondsFraction,
         Full = Date | TimeOfDay
+    }
+
+    public enum TimePartOption
+    {
+        Unspecified = 0,
+
+        /// <summary>
+        /// The value represents a date and time.
+        /// </summary>
+        Normal = 1,
+        
+        /// <summary>
+        /// The value represents a date only.
+        /// The time part should be midnight (00:00:00).
+        /// </summary>
+        StartOfDay,
+
+        /// <summary>
+        /// The value represents a date only.
+        /// The time part should be latest value representable (~23:59:59.999).
+        /// It may be the highest value representable in a system (e.g. a database) that the value is stored in rather than <see cref="DateTime"/>.
+        /// <para>
+        /// This may be used for dates at the end of a range (or expiry dates or deadlines that include the day itself),
+        /// so that comparing a full date/time (less than or greater than) to this value yields the expected result.
+        /// </para>
+        /// </summary>
+        EndOfDay,
     }
 
 }

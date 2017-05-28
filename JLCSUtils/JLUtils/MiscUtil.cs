@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util
 {
+    /// <summary>
+    /// Mescellaneous utilities.
+    /// </summary>
     public static class MiscUtil
     {
 
@@ -36,6 +39,7 @@ namespace JohnLambe.Util
             return default(T);
         }
 
+        /*
         #region IfNotNull
 
         // written before ?? operator and params parameters.
@@ -92,6 +96,7 @@ namespace JohnLambe.Util
         }
 
         #endregion
+        */
 
         #endregion
 

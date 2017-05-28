@@ -11,7 +11,6 @@ using MvpFramework.WinForms.Binding;
 
 namespace MvpFramework.WinForms
 {
-
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
@@ -33,29 +32,6 @@ namespace MvpFramework.WinForms
         {
             ViewBinder = new ViewBinder();
             ViewBinder.Bind(model, presenter, binderFactory, this);
-
-            // Set the 'Model' property if there is one: 
-            // (So derived classes can declare one of the expected type. This doesn't use a type parameter because the Forms Designer does not support it.)
-//            ReflectionUtil.TrySetPropertyValue(this, "Model", model);
-//            //TODO: Move to non-WinForms-specific ViewBinder
-
-            /*
-            if (binderFactory != null)
-            {
-                Binders = new List<IControlBinder>();
-                var modelBinder = new ModelBinderWrapper(model);
-                //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
-                foreach (Control control in Controls)
-                {
-                    var binder = binderFactory.Create(control, presenter);
-                    if (binder != null)
-                    {
-                        Binders.Add(binder);
-                        binder.BindModel(modelBinder, presenter);
-                    }
-                }
-            }
-            */
         }
 
         /// <summary>

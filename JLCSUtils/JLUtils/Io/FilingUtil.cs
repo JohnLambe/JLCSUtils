@@ -1,5 +1,7 @@
 ﻿// by John Lambe - Public Domain.
 
+using JohnLambe.Util.Types;
+using JohnLambe.Util.Validation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +14,7 @@ namespace JohnLambe.Util.Io
     /// <summary>
     /// Utilities for working with files or filing systems.
     /// </summary>
+    /// <seealso cref="PathUtil"/>
     public static class FilingUtil
     {
         /// <summary>
@@ -21,7 +24,8 @@ namespace JohnLambe.Util.Io
         /// <param name="createDirectory">Iff true, and the directory of the file doesn't exist, it is created.</param>
         /// <returns>Stream for the opened file.</returns>
         /// <exception>Can throw the same exceptions as File.OpenWrite or File.Create.</exception>
-        public static FileStream OpenAppendOrCreate(string filename, bool createDirectory = false)
+        /// <seealso cref="DirectoryUtil"/> - for anything which involves scanning directories.</para>
+        public static FileStream OpenAppendOrCreate([FilenameValidation] string filename, bool createDirectory = false)
         {
             try
             {
@@ -45,5 +49,6 @@ namespace JohnLambe.Util.Io
                 }
             }
         }
+
     }
 }

@@ -63,12 +63,11 @@ namespace MvpFramework.Dialog
     {
     }
 
-
     /// <summary>
     /// Delegate to be fired when the user responds to a message.
     /// </summary>
-    /// <param name="dialog">The <see cref="MessageDialogModel"/> to which the response relates.</param>
-    /// <param name="messageDialogResult">The chosen option - the same as the return value from <see cref="IMessageDialogService.ShowMessage(MessageDialogModel)"/>.</param>
+    /// <param name="dialog">The <see cref="IMessageDialogModel"/> to which the response relates.</param>
+    /// <param name="messageDialogResult">The chosen option - the same as the return value from <see cref="IMessageDialogService.ShowMessage{TResult}(IMessageDialogModel{TResult})"/>.</param>
     public delegate void MessageDialogRespondedDelegate(IMessageDialogModel dialog, MessageDialogRespondedEventArgs args);
 
     /// <summary>

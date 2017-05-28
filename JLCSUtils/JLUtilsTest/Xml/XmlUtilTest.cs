@@ -4,6 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JohnLambe.Util.Xml;
 using System.Xml;
 
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+
+
 namespace JohnLambe.Tests.JLUtilsTest.Xml
 {
     [TestClass]
@@ -27,16 +30,27 @@ namespace JohnLambe.Tests.JLUtilsTest.Xml
         {
             string leaf;
 
-            Assert.AreEqual("a/b/c/d", XmlUtil.GetXpathParent("a/b/c/d/e", out leaf));
-            Assert.AreEqual("e", leaf);
+            Multiple(
+                () =>
+                {
+                    Assert.AreEqual("a/b/c/d", XmlUtil.GetXpathParent("a/b/c/d/e", out leaf));
+                    Assert.AreEqual("e", leaf);
+                },
 
-            Assert.AreEqual("a/b/c/d", XmlUtil.GetXpathParent("a/b/c/d/e"));
+                () => Assert.AreEqual("a/b/c/d", XmlUtil.GetXpathParent("a/b/c/d/e")),
 
-            Assert.AreEqual("", XmlUtil.GetXpathParent("onelevel", out leaf));
-            Assert.AreEqual("onelevel", leaf);
+                () =>
+                {
+                    Assert.AreEqual("", XmlUtil.GetXpathParent("onelevel", out leaf));
+                    Assert.AreEqual("onelevel", leaf);
+                },
 
-            Assert.AreEqual("root/level1//two//three", XmlUtil.GetXpathParent("root/level1//two//three/leaf", out leaf));
-            Assert.AreEqual("leaf", leaf);
+                () =>
+                {
+                    Assert.AreEqual("root/level1//two//three", XmlUtil.GetXpathParent("root/level1//two//three/leaf", out leaf));
+                    Assert.AreEqual("leaf", leaf);
+                }
+            );
         }
 
         [TestCategory("NotImplemented")]
@@ -85,11 +99,13 @@ namespace JohnLambe.Tests.JLUtilsTest.Xml
         [TestMethod]
         public void GetSubNodeValue()
         {
-            Assert.AreEqual(1234, _document.GetSubNodeValueDefault<int>("root/a/intValue"));
-            Assert.AreEqual(-45.432m, _document.GetSubNodeValueDefault<decimal>("root/a/floatValue"));
+            Multiple(
+                () => Assert.AreEqual(1234, _document.GetSubNodeValueDefault<int>("root/a/intValue")),
+                () => Assert.AreEqual(-45.432m, _document.GetSubNodeValueDefault<decimal>("root/a/floatValue")),
 
-            Assert.AreEqual(1234m, _document.GetSubNodeValueDefault<decimal>("root/a/intValue"));
-            Assert.AreEqual("01234", _document.GetSubNodeValueDefault<string>("root/a/intValue"));
+                () => Assert.AreEqual(1234m, _document.GetSubNodeValueDefault<decimal>("root/a/intValue")),
+                () => Assert.AreEqual("01234", _document.GetSubNodeValueDefault<string>("root/a/intValue"))
+            );
         }
 
         [TestMethod]
@@ -101,9 +117,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Xml
         [TestMethod]
         public void GetSubNodeValue_Default()
         {
-            Assert.AreEqual(85.4m, _document.GetSubNodeValueDefault<decimal>("root/notfound/floatValue", 85.4m), "default given");
-            Assert.AreEqual(null, _document.GetSubNodeValueDefault<double?>("root/notfound/floatValue"), "nullable");
-            Assert.AreEqual(0, _document.GetSubNodeValueDefault<int>("root/notfound/floatValue"));
+            Multiple(
+                () => Assert.AreEqual(85.4m, _document.GetSubNodeValueDefault<decimal>("root/notfound/floatValue", 85.4m), "default given"),
+                () => Assert.AreEqual(null, _document.GetSubNodeValueDefault<double?>("root/notfound/floatValue"), "nullable"),
+                () => Assert.AreEqual(0, _document.GetSubNodeValueDefault<int>("root/notfound/floatValue"))
+                );
         }
 
         #endregion

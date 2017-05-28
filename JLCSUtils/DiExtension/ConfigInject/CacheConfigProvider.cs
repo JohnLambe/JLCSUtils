@@ -12,9 +12,9 @@ namespace DiExtension.ConfigInject
     /// </summary>
     public class CacheConfigProvider : IConfigProvider
     {
-        public CacheConfigProvider(IConfigProvider internalRepository)
+        public CacheConfigProvider(IConfigProvider internalProvider)
         {
-            this.InternalProvider = internalRepository;
+            this.InternalProvider = internalProvider;
         }
 
         public virtual bool GetValue<T>(string key, Type requiredType, out T value)

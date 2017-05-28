@@ -28,6 +28,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\MvpFramework.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
@@ -55,6 +56,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Binding\ViewControlBinder.cs" />
+    <Compile Include="CommonIcons.cs" />
     <Compile Include="Dialog\!NamespaceDoc.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
     <Compile Include="Dialog\ExceptionToDialogMap.cs" />

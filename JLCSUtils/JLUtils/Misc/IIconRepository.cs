@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Util.Reflection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,27 +16,40 @@ namespace JohnLambe.Util.Misc
         /// <summary>
         /// The normal state of an icon.
         /// </summary>
+        [EnumMappedValue("")]
         Normal = 0,
+        
         /// <summary>
         /// The 'Hot tracked' state, e.g. on for a mouse over.
         /// </summary>
+        [EnumMappedValue("h")]
         HotTracked,
+        
         /// <summary>
         /// An appearance like a button being pushed down, for when they mouse etc. is held down on the icon.
         /// </summary>
+        [EnumMappedValue("p")]
         Pressed,
+        
         /// <summary>
         /// An appearance that indicates that the action represented by the icon is not available.
         /// </summary>
+        [EnumMappedValue("d")]
         Disabled,
+
         /// <summary>
         /// 'Selected' appearance, for when an item can be selected from a group/list of items.
         /// </summary>
+        [EnumMappedValue("s")]
         Selected,
+
         /// <summary>
         /// Can be used by consumers of this library.
         /// </summary>
-        Custom
+        Custom1 = 0x10000,
+        Custom2,
+        Custom3,
+        Custom4
     }
 
 

@@ -17,13 +17,13 @@ namespace JohnLambe.Tests.JLUtilsTest.Db
             Console.WriteLine(sql);
             Console.WriteLine();
 
-            Assert.AreEqual(("create table StringComparison (id int not null primary key, name varchar(50) );\n"
-            + "insert into StringComparison (id, name) values( 0, \"CurrentCulture\" );\n"
-            + "insert into StringComparison (id, name) values( 1, \"CurrentCultureIgnoreCase\" );\n"
-            + "insert into StringComparison (id, name) values( 2, \"InvariantCulture\" );\n"
-            + "insert into StringComparison (id, name) values( 3, \"InvariantCultureIgnoreCase\" );\n"
-            + "insert into StringComparison (id, name) values( 4, \"Ordinal\" );\n"
-            + "insert into StringComparison (id, name) values( 5, \"OrdinalIgnoreCase\" );\n")
+            Assert.AreEqual(("create table StringComparison (Id int not null primary key, Name varchar(50) );\n"
+            + "insert into StringComparison (Id, Name) values( 0, \"CurrentCulture\" );\n"
+            + "insert into StringComparison (Id, Name) values( 1, \"CurrentCultureIgnoreCase\" );\n"
+            + "insert into StringComparison (Id, Name) values( 2, \"InvariantCulture\" );\n"
+            + "insert into StringComparison (Id, Name) values( 3, \"InvariantCultureIgnoreCase\" );\n"
+            + "insert into StringComparison (Id, Name) values( 4, \"Ordinal\" );\n"
+            + "insert into StringComparison (Id, Name) values( 5, \"OrdinalIgnoreCase\" );\n")
             .RemoveCharacters(" \r\n"),
             sql.RemoveCharacters(" \r\n"));
 

@@ -84,6 +84,7 @@
     <Compile Include="Collections\CollectionUtilsTest.cs" />
     <Compile Include="Collections\EnumerationUtilsTest.cs" />
     <Compile Include="Collections\TypeMapTest.cs" />
+    <Compile Include="ConfigProvider\IconRepositoryTest.cs" />
     <Compile Include="Db\EnumToSqlTest.cs" />
     <Compile Include="DependencyInjection\ConfigInject\ConfigInjectTest.cs" />
     <Compile Include="DependencyInjection\ConfigInject\ForTest.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="Reflection\ReflectionUtilTest2.cs" />
     <Compile Include="Reflection\TypeUtilTest.cs" />
     <Compile Include="Security\HashedPasswordTest.cs" />
-    <Compile Include="StrUtilsTest.cs" />
+    <Compile Include="StrUtilTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TestUtilTest.cs" />
     <Compile Include="Text\CaptionUtilsTest.cs" />

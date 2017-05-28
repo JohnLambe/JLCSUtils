@@ -349,13 +349,13 @@ namespace MvpFramework
                 try
                 {
                     TView view = GetInstance<TView>(viewType);              // get an instance of this type
-                    if(view == null)
-                        throw new DependencyInjectionException("Failed to resolve View for Presenter type by explicit mapping: " + presenterType.FullName
+                    if (view == null)
+                        ThrowException("Failed to resolve View for Presenter type by explicit mapping: " + presenterType.FullName
                             + " -> " + viewType.FullName + "; Cannot resolve " + viewType.Name);
                 }
                 catch (Exception ex)
                 {
-                    throw new DependencyInjectionException("Failed to resolve View for Presenter type by explicit mapping: " + presenterType.FullName
+                    ThrowException("Failed to resolve View for Presenter type by explicit mapping: " + presenterType.FullName
                         + " -> " + viewType.FullName + "; Exception on resolving " + viewType.Name, ex);
                 }
             }
@@ -524,6 +524,11 @@ namespace MvpFramework
         protected IDictionary<Type,Type> PresenterToViewMap;
 
         #endregion
+
+        public virtual void ThrowException(string message, Exception innerException = null)
+        {
+            throw new Exception(message, innerException);
+        }
     }
 
 
@@ -621,6 +626,12 @@ namespace MvpFramework
                 return fromCreateParam;
             };
 
+        /*
+        public virtual void ThrowException(string message, Exception innerException)
+        {
+            throw new DependencyInjectionException(message, innerException);
+        }
+        */
     }
 
 }

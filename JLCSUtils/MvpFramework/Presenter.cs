@@ -31,7 +31,7 @@ namespace MvpFramework
     {
         public PresenterBase(
             TView view,                                                   // resolved by MVP framework
-            TModel model = default(TModel),                               // from parameter when creating
+            [MvpParam] TModel model = default(TModel),                               // from parameter when creating
             [Inject] IControlBinderFactory binderFactory = null           // injected by DI
             )
         {

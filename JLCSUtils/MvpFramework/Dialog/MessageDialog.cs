@@ -138,7 +138,7 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Fire the <see cref="Responded"/> event.
         /// </summary>
-        /// <param name="messageDialogResult">The 'messageDialogResult' parameter to <see cref="RespondedDelegate"/>.</param>
+        /// <param name="messageDialogResult">The 'messageDialogResult' parameter to <see cref="MessageDialogRespondedDelegate"/>.</param>
         public virtual void FireResponded(object messageDialogResult)
         {
             Responded?.Invoke(this, new MessageDialogRespondedEventArgs(messageDialogResult));

@@ -127,6 +127,9 @@ namespace MvpFramework.WinForms
         //| Named for consistency with System.Windows.Forms.Form.Modal.
         public virtual bool Modal { get; private set; }
 
+        /// <summary>
+        /// The value to be returned to a modal caller.
+        /// </summary>
         protected virtual object ModalResult { get; set; }
     }
 }

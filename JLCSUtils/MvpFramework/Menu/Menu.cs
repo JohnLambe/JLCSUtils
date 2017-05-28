@@ -83,7 +83,7 @@ namespace MvpFramework.Menu
         public virtual KeyboardKey HotKey { get; set; }
 
         /// <summary>
-        /// <see cref="MenuAttributeBase.Parent"/>
+        /// <see cref="MenuAttributeBase.ParentId"/>
         /// </summary>
         public virtual MenuItemModel Parent { get; set; }
 

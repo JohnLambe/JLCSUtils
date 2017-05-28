@@ -20,7 +20,7 @@ namespace MvpFramework.WinForms.Controls
     {
         /// <summary>
         /// The name of the bound property on the model.
-        /// The recommended types for the bound property are <see cref="bool"/> and <see cref="bool?"/> (if the check box is tri-state).
+        /// The recommended types for the bound property are <see cref="bool"/> and bool? (if the check box is tri-state).
         /// </summary>
         [MvpModelProperty("CheckState", "CheckStateChanged")]
         //TODO?:        [MvpModelProperty("CheckState;Checked", "CheckStateChanged")]  // specify secondary properties to be used if the binding the previous one(s) fails.

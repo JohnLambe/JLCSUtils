@@ -47,7 +47,7 @@ namespace MvpFramework.Binding
     /// May return null if the control does not bind to anything.
     /// If not null, the returned instance must not be shared with any other controls (if shared, it would not be possible to refresh just one of them, for example).
     /// <para>
-    /// The <see cref="IFactory{IControlBinder, object}.Create(object)"/> method takes
+    /// The <see cref="IFactory{IControlBinder, T}.Create(T)"/> method takes
     /// a parameter of a control, and returns the control binder (or null).
     /// </para>
     /// </summary>

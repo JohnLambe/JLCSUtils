@@ -6,52 +6,50 @@ using System.Threading.Tasks;
 using System.IO;
 using JohnLambe.Util.Io;
 using System.Drawing;
+using JohnLambe.Util.ConfigProvider;
 
 namespace DiExtension.ConfigInject.Providers
 {
     /// <summary>
     /// Loads (graphics) images from the filesystem, where the key is the image leaf name.
     /// </summary>
-    public class FileImageLoaderConfigProvider : IConfigProvider
+    public class FileImageLoaderConfigProvider : FileLoaderConfigProvider
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="directory"><see cref="FileLoaderConfigProvider.Directory"/></param>
+        /// <param name="supportedExtensions"><see cref="FileLoaderConfigProvider.Extensions"/></param>
         public FileImageLoaderConfigProvider(string directory, string[] supportedExtensions = null)
         {
-            this.ImageDirectory = directory;
-            this.SupportedExtensions = supportedExtensions ?? new string[] { "png", "jpg", "bmp" };
+            this.Directory = directory;
+            this.Extensions = supportedExtensions ?? new string[] { "png", "jpg", "bmp", "ico", "gif" };
         }
 
-        public virtual bool GetValue<T>(string key, Type requiredType, out T value)
+        protected override T LoadFile<T>(string filename, Type requiredType)
         {
-            try
+            return (T)((object)Image.FromFile(filename));
+                // (Have to cast `Image` to `object` before casting to `T` because `T` may not be a reference type).
+            /*
+            if (!typeof(T).IsAssignableFrom(typeof(image)))
             {
-                object image = Image.FromFile(DirectoryUtil.GetFullFilename(Path.Combine(ImageDirectory, key + "."), SupportedExtensions));
-                    // (Have to cast `Image` to `object` before casting to `T`).
-                /*
-                if (!typeof(T).IsAssignableFrom(typeof(image)))
-                {
-                    value = default(T);
-                    return false;
-                }
-                */
-                value = (T)image;
-                return true;
-            }
-            catch(IOException e) when (e is FileNotFoundException || e is DirectoryNotFoundException)
-            {   // not found
                 value = default(T);
                 return false;
             }
+            */
         }
 
+        /*
         /// <summary>
         /// The pathname of the directory containing the image files.
         /// </summary>
-        protected readonly string ImageDirectory;
+        protected readonly string Directory;
 
         /// <summary>
         /// The prioritised list of extensions of image files supported.
         /// The image is loaded with the first of these that exists.
+        /// <para>Supports <see cref="DirectoryUtil.Extension_Any"/>.</para>
         /// </summary>
-        protected string[] SupportedExtensions { get; private set; }
+        protected string[] Extensions { get; private set; }
+        */
     }
 }

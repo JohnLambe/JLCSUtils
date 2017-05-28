@@ -11,6 +11,20 @@ namespace JohnLambe.Util.Reflection
     /// </summary>
     public static class AttributeUtil
     {
+        /*
+        /// <summary>
+        /// Returns all attributes of types assignable to <typeparamref name="T"/> (which may be an interface).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="provider"></param>
+        /// <param name="inherited"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> GetAttributes<T>(this ICustomAttributeProvider provider, bool inherited = true)
+        {
+            return provider.GetCustomAttributes(inherited).OfType<T>();
+        }
+        */
+
         public static T GetCustomAttribute<T>(this ICustomAttributeProvider provider)
         {
             foreach (var attribute in provider.GetCustomAttributes(true))

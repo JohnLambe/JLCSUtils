@@ -10,6 +10,7 @@ namespace JohnLambe.Tests.JLUtilsTest
     [TestClass]
     public class MiscUtilTest
     {
+        /*
         [TestMethod]
         public void IfNotNull()
         {
@@ -44,6 +45,7 @@ namespace JohnLambe.Tests.JLUtilsTest
             int len =
                 s == null ? 0 : (s.Trim() == null ? 0 : s.Trim().Length);
         }
+        */
 
         [TestMethod]
         public void DisposeAndNull_Disposable()

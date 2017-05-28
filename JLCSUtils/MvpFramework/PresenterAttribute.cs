@@ -104,6 +104,7 @@ namespace MvpFramework
     //| and tag the interface with an attribute.
     //| An attribute on the presenter enables specifying a preference for one implementing presenter over others
     //| (and having some presenters not be resolved automatically to handle the type).
+    /*
 
     [AttributeUsage(AttributeTargets.Interface,
         AllowMultiple = true,     // could be used for multiple model types
@@ -117,6 +118,8 @@ namespace MvpFramework
         /// </summary>
         public virtual Type ModelType { get; set; }
     }
+    */
+
 
     /// <summary>
     /// Flags a View for automatic registration with the DI system.

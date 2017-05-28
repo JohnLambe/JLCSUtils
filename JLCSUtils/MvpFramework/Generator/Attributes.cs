@@ -33,7 +33,7 @@ namespace MvpFramework.Generator
     }
 
     /// <summary>
-    /// Flags a static method to be called by the form generator engine (<see cref="Generator.FormGeneratorBase"/>)
+    /// Flags a static method to be called by the form generator engine (<see cref="Generator.FormGeneratorBase{TControl}"/>)
     /// to create the control.
     /// The method must be called <see cref="GenerateControlMethod"/>.
     /// <para>For use on static methods of controls only.</para>
