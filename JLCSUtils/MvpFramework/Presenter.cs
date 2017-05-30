@@ -12,7 +12,6 @@ using JohnLambe.Util;
 
 namespace MvpFramework
 {
-
     /// <summary>
     /// A presenter that implements <see cref="IDisposable"/>.
     /// </summary>
@@ -29,6 +28,11 @@ namespace MvpFramework
     public class PresenterBase<TView, TModel> : IPresenter, INotifyOnDispose
         where TView : IView
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="view">The View for this Presenter.</param>
+        /// <param name="model">The Model.</param>
+        /// <param name="binderFactory"></param>
         public PresenterBase(
             TView view,                                                   // resolved by MVP framework
             [MvpParam] TModel model = default(TModel),                               // from parameter when creating

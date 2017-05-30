@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MvpFramework
 {
+    /// <summary>
+    /// A View that appears in a window.
+    /// </summary>
     public interface IWindowView : IView
     {
         void Show();

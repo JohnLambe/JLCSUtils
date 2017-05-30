@@ -14,7 +14,6 @@ using JohnLambe.Util.Collections;
 
 namespace MvpFramework
 {
-
     /// <summary>
     /// Resolves the Presenter for a Model, View for a Presenter,
     /// and other MVP-related resolving.
@@ -46,12 +45,24 @@ namespace MvpFramework
         /// </summary>
         protected string InterfacePrefix => "I";
 
+        /// <summary>
+        /// The last part of the Presenter's namespace.
+        /// </summary>
         protected string PresenterNamespace => PresenterSuffix;
 
+        /// <summary>
+        /// The last part of the View's namespace.
+        /// </summary>
         protected string ViewNamespace => ViewSuffix;
 
+        /// <summary>
+        /// String appended to the namespace of Views and Presenters, for a namespace for interfaces.
+        /// </summary>
         protected string InterfaceSuffix => "Interface";
 
+        /// <summary>
+        /// Last part of the namespace for a View interface.
+        /// </summary>
         protected string ViewInterfaceNamespace => ViewSuffix + InterfaceSuffix;
 
         #endregion
@@ -527,7 +538,7 @@ namespace MvpFramework
 
         public virtual void ThrowException(string message, Exception innerException = null)
         {
-            throw new Exception(message, innerException);
+            throw new DependencyInjectionException(message, innerException);
         }
     }
 

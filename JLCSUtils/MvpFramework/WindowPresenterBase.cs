@@ -20,14 +20,22 @@ namespace MvpFramework
         {
         }
 
+        /// <summary>
+        /// Close the window.
+        /// </summary>
         public virtual void Close()
         {
             View.Close();
         }
 
+        /// <summary>
+        /// Set <see cref="ModalResult"/> and close the window.
+        /// </summary>
+        /// <param name="modalResult">The modal result - see <see cref="ModalResult"/>.</param>
         protected virtual void Close(object modalResult)
         {
             ModalResult = modalResult;
+            View.Close();
         }
 
         /// <summary>

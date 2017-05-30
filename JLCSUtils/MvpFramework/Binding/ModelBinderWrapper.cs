@@ -172,6 +172,9 @@ namespace MvpFramework.Binding
             get { return Property?.PropertyType; }
         }
 
+        /// <summary>
+        /// Sorting order weight.
+        /// </summary>
         public virtual int Order
             => _displayAttribute?.GetOrder() ?? 0;
 
@@ -181,6 +184,9 @@ namespace MvpFramework.Binding
         public virtual bool IsVisible
             => _mvpDisplayAttribute?.IsVisible ?? true;
 
+        /// <summary>
+        /// True if a control should be generated for this property (when using UI generation).
+        /// </summary>
         public virtual bool AutoGenerate
             => _displayAttribute?.GetAutoGenerateField() ??
             _mvpDisplayAttribute?.IsVisible ??

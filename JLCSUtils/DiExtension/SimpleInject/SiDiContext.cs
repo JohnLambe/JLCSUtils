@@ -76,7 +76,7 @@ namespace DiExtension.SimpleInject
                 // From SI documentation:
                 producer = Container.GetRegistration(target.GetType(), throwOnFailure: true);
             }
-            catch (ActivationException)
+            catch (Exception ex) when(ex is ActivationException | ex is DependencyInjectionException)
             {
                 producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.ServiceType)).First();
 //                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.Registration.ImplementationType)).First();

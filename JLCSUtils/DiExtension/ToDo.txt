@@ -19,7 +19,7 @@ More automatic registration.
 
 
 
-*Change exceptions to ActivationException
+//*Change exceptions to ActivationException
 
 Event injection:
 	- On creating event handler object, add it to relevant event handlers on existing objects previously created by DI container.
@@ -33,7 +33,7 @@ Factories:
 	When interface return type of factory (or delegate to create instance) is requested from DI, generate proxy (dyanmic object, implementing interface using Impromptu Interface) that creates instance on first call to a member.
 	When a factory or delegate of any type that could be resolved is requested, return a factory/delegate that invokes the DI container to resolve the item.
 
-Injection of owner (the instance receiving the item being injected) on property/method injection.
+Injection of owner (the instance receiving the item being injected) on property/method injection (could be a property of or parameter to a constructor of the object being injected).
 
 Restriction on what can be injected, by type and receiving type (or namespace or attributes).
 

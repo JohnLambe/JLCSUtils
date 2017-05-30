@@ -1,4 +1,4 @@
-﻿using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace JohnLambe.Util.Misc
         /// <param name="iconId">Identifier of the icon. default(<typeparamref name="TKeyType"/>) and "" (when <typeparamref name="TKeyType"/> is <see cref="string"/>) are valid and cause default(<typeparamref name="TImageType"/>) to be returned.</param>
         /// <param name="state"></param>
         /// <returns>The requested icon, or default(<typeparamref name="TImageType"/>) if no icon is available.</returns>
-        TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal);
+        TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal, int size = 0);
     }
 
 
@@ -88,7 +88,7 @@ namespace JohnLambe.Util.Misc
     public sealed class NullIconRepository<TKeyType, TImageType> : IIconRepository<TKeyType, TImageType>
     //| Sealed because if it did anything else, it wouldn't be a null object.
     {
-        public TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal)
+        public TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal, int size = 0)
         {
             return default(TImageType);
         }

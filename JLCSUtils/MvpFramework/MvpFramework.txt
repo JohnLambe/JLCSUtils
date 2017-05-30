@@ -17,7 +17,7 @@ Access Rules (to prevent MVP violations):
 
 Automated enforcement:
   Some of these could be enforced by a security manager (or a class loader in Java).
-  Static analysis by Reflection could check for disallowed references in declarations of types (type members, including method parameters).
+  Static analysis by Reflection could check for disallowed references in declarations of types (type members, including method parameters) (including local variables in .NET).
   Static analysis of source code could check more thoroughly.
 
 

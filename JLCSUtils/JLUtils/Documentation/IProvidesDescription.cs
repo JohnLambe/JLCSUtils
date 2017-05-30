@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Documentation
 {
+    /// <summary>
+    /// Provides human-readable information about attributes relating to
+    /// the type or validation of an item.
+    /// </summary>
     public interface IProvidesDescription  //TODO: Rename
     {
         /// <summary>

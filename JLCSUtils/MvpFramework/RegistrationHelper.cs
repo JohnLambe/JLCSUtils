@@ -41,6 +41,10 @@ namespace MvpFramework
     /// </summary>
     public class RegistrationHelper
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="resolver"><see cref="Resolver"/></param>
+        /// <param name="diContext"><see cref="DiContext"/></param>
         public RegistrationHelper(MvpResolver resolver, IDiTypeRegistrar diContext)
         {
             this._resolver = resolver;

@@ -45,7 +45,8 @@ namespace DiExtension
         /// If null, it behaves as if it always returns null.</param>
         /// <param name="startIndex">The (0-based) index of the first parameter (in <paramref name="parameters"/>) to populate.</param>
         /// <param name="endIndex">The (0-based) index of the last parameter (in <paramref name="parameters"/>) to populate. -1 for the last parameter in <paramref name="parameters"/>.</param>
-        /// <returns>An array the same length as <paramref name="parameters"/>, with the requested range of values populated.
+        /// <returns>
+        /// An array the same length as <paramref name="parameters"/>, with the requested range of values populated.
         /// Elements outside the requested range (<paramref name="startIndex"/> to <paramref name="endIndex"/>) are null.
         /// </returns>
         public static object[] PopulateArgs(this IDiResolver diResolver, ParameterInfo[] parameters, object[] contextArgs = null, SourceSelectorDelegate selector = null, int startIndex = 0, int endIndex = -1)
@@ -102,10 +103,10 @@ namespace DiExtension
             };
 
         /// <summary>
-        /// Registers the value of each readable non-primitive property, with a non-null value, of the given object as a singleton.
+        /// Registers the value of each readable non-primitive property, with a non-null value, of the given object as a singleton in the DI container.
         /// </summary>
         /// <param name="diContext"></param>
-        /// <param name="source"></param>
+        /// <param name="source">The object whose properties to register.</param>
         public static void RegisterProperties([NotNull]this IDiInstanceRegistrar diContext, object source, FilterDelegate<PropertyInfo> propertyFilter = null)
         {
             if (source != null)
@@ -122,12 +123,12 @@ namespace DiExtension
         }
 
         /// <summary>
-        /// 
+        /// Registers the values of properties of a given object, including nested properties.
         /// </summary>
         /// <param name="diContext"></param>
-        /// <param name="source"></param>
-        /// <param name="propertyFilter"></param>
-        /// <param name="recurseFilter"></param>
+        /// <param name="source">The object whose properties to register.</param>
+        /// <param name="propertyFilter">Called on all properties. Returns true for the properties to be registered.</param>
+        /// <param name="recurseFilter">Called on all properties. Returns true on those to be scanned for nested properties.</param>
         /// <param name="levels">Number of levels to recurse. 0 for top level only (no recursion).</param>
         public static void RegisterPropertiesNested([NotNull]this IDiInstanceRegistrar diContext, object source, 
             FilterDelegate<PropertyInfo> propertyFilter = null,

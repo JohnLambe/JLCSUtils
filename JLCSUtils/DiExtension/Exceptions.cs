@@ -11,7 +11,7 @@ namespace DiExtension
     /// <summary>
     /// Exception that occurs on dependency injection or setup of the container.
     /// </summary>
-    public class DependencyInjectionException : ActivationException
+    public class DependencyInjectionException : Exception
     {
         public DependencyInjectionException() : base()
         {

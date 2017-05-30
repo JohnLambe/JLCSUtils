@@ -51,6 +51,7 @@
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
+    <Compile Include="Binding\MvpContext.cs" />
     <Compile Include="Binding\OptionUpdate.cs" />
     <Compile Include="Binding\ViewBinderBase.cs">
       <SubType>Component</SubType>
@@ -64,6 +65,7 @@
     <Compile Include="Generator\AutoPresenter.cs" />
     <Compile Include="Generator\FormGeneratorBase.cs" />
     <Compile Include="Generator\ModelQuery.cs" />
+    <Compile Include="Generator\!NamespaceDoc.cs" />
     <Compile Include="IPresenter.cs" />
     <Compile Include="Menu\!NamespaceDoc.cs" />
     <Compile Include="Generator\QueryGenerator.cs" />

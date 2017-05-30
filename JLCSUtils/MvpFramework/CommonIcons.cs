@@ -91,7 +91,7 @@ namespace MvpFramework
         public const string Confirmation = "Confirmation";
 
         /// <summary>
-        /// 
+        /// An icon related to a warning to the user (e.g. about something dangerous, or that they may be doing by mistake).
         /// </summary>
         public const string Warning = "Warning";
 
@@ -129,6 +129,8 @@ namespace MvpFramework
         /// </remarks>
         public const string No = "No";
 
+        public const string NoAll = "NoAll";
+
         /// <summary>
         /// Icon that opens a menu when clicked/tapped.
         /// </summary>
@@ -153,5 +155,48 @@ namespace MvpFramework
         /// Preferences / settings / application configuration.
         /// </summary>
         public const string Preferences = "Preferences";
+
+        #region Security
+
+        /// <summary>
+        /// Icon representing a user of the system.
+        /// </summary>
+        public const string User = "User";
+
+        /// <summary>
+        /// Log out of the system.
+        /// </summary>
+        public const string Logout = "Logout";
+
+        // Login ?
+        // Role / User group ?
+
+        /// <summary>
+        /// Log out of the system.
+        /// </summary>
+        public const string ChangePassword = "ChangePassword";
+
+        #endregion
+
+        #region File
+
+        /// <summary>
+        /// Open/load a file/document.
+        /// </summary>
+        public const string Open = "Open";
+
+        /// <summary>
+        /// Save something to persistent storage.
+        /// </summary>
+        public const string Save = "Save";
+
+        #endregion
+
+        public const string Home = "Home";
+
+        // Media actions: Playm, Stop, Rewind, etc. ?
+
+        // File types ?
+
     }
 }

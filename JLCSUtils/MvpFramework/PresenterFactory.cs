@@ -70,6 +70,10 @@ namespace MvpFramework
             }
         }
 
+        /// <summary>
+        /// Create the Presenter.
+        /// </summary>
+        /// <returns></returns>
         //TPresenter IPresenterFactory<TPresenter>.Create()
         //|TODO?: Consider making virtual.
         public TPresenter Create()
@@ -250,6 +254,12 @@ namespace MvpFramework
     public class KnownPresenterFactory<TPresenter> : PresenterFactory<TPresenter>
         where TPresenter : IPresenter
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="resolver"><see cref="PresenterFactory{TPresenter}.Resolver"/></param>
+        /// <param name="diResolver"><see cref="PresenterFactory{TPresenter}.DiResolver"/></param>
+        /// <param name="uiManager"><see cref="PresenterFactory{TPresenter}.UiManager"/></param>
+        /// <param name="targetClass">The concrete class of the presenter created by this factory - <see cref="PresenterFactory{TPresenter}.TargetClass"/>.</param>
         public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
             IResolverExtension uiManager,
             Type targetClass

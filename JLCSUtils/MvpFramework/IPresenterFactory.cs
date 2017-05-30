@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MvpFramework
 {
     /// <summary>
-    /// Interface for factory that creates a Presenter.
+    /// Interface for a factory that creates a Presenter.
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
@@ -26,7 +26,7 @@ namespace MvpFramework
     // Generic types for different parameter counts.
 
     /// <summary>
-    /// Interface for factory that creates a Presenter.
+    /// Interface for a factory that creates a Presenter.
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
@@ -43,12 +43,12 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// Interface for factory that creates a Presenter.
+    /// Interface for a factory that creates a Presenter.
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
     public interface IPresenterFactory<TPresenter, TParam1, TParam2>
         where TPresenter : IPresenter
     {
@@ -56,13 +56,13 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// Interface for factory that creates a Presenter.
+    /// Interface for a factory that creates a Presenter.
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    /// <typeparam name="TParam3"></typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam3">The type of the third parameter to the Create method.</typeparam>
     public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3>
         where TPresenter : IPresenter
     {
@@ -70,14 +70,14 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// Interface for factory that creates a Presenter.
+    /// Interface for a factory that creates a Presenter.
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    /// <typeparam name="TParam3"></typeparam>
-    /// <typeparam name="TParam4"></typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam3">The type of the third parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam4">The type of the fourth parameter to the Create method.</typeparam>
     public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4>
         where TPresenter : IPresenter
     {
@@ -85,14 +85,15 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// Interface for factory that creates a Presenter.
+    /// Interface for a factory that creates a Presenter.
     /// Can be used for automatic factory creation on dependency injection.
     /// </summary>
     /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
-    /// <typeparam name="TParam1"></typeparam>
-    /// <typeparam name="TParam2"></typeparam>
-    /// <typeparam name="TParam3"></typeparam>
-    /// <typeparam name="TParam4"></typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam3">The type of the third parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam4">The type of the fourth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam4">The type of the fifth parameter to the Create method.</typeparam>
     public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
         where TPresenter : IPresenter
     {

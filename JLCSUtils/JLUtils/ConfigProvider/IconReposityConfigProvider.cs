@@ -11,18 +11,19 @@ namespace DiExtension.ConfigInject.Providers
 {
     public abstract class IconRepositoryBase<TKeyType, TImageType> : IIconRepository<TKeyType, TImageType>
     {
-        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal)
+        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal, int size = 0)
         {
             return LoadIcon(KeyString(iconId, state));
         }
 
         protected abstract TImageType LoadIcon(string iconKey);
 
-        protected virtual string KeyString(TKeyType iconId, IconState state = IconState.Normal)
+        protected virtual string KeyString(TKeyType iconId, IconState state = IconState.Normal, int size = 0)
         {
             if (iconId == null)
                 return null;
-            return iconId.ToString() + StrUtil.BlankPropagate("-", EnumAttributeUtil.FromEnum<string,EnumMappedValueAttribute>(state));
+            return iconId.ToString() + StrUtil.BlankPropagate("-", EnumAttributeUtil.FromEnum<string,EnumMappedValueAttribute>(state))
+                + (size != 0 ? size.ToString() : "");
         }
     }
 
