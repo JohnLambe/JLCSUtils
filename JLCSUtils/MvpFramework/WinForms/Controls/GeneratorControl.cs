@@ -72,12 +72,24 @@ namespace MvpFramework.WinForms.Controls
         {
         }
 
-        /// <summary>
-        /// Parent property of the properties that generated controls are bound to.
-        /// (null or "" for the modl itself (root)).
-        /// </summary>
+        [Description("Parent property of the properties that generated controls are bound to. "
+            + "(null or \"\" for the model itself (root)).")]
         [Category(MvpUiComponentConsts.DesignerCategory)]
         public virtual string ModelProperty { get; set; }
+
+        /* TODO:
+        /// <summary>
+        /// The lowest <see cref="MvpUiAttributeBase.Order"/> value for items to be included.
+        /// </summary>
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        public virtual int StartOrder { get; set; } = int.MinValue;
+
+        /// <summary>
+        /// The highest <see cref="MvpUiAttributeBase.Order"/> value for items to be included.
+        /// </summary>
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        public virtual int EndOrder { get; set; } = int.MaxValue;
+        */
 
     }
 }

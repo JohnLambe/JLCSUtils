@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 
 namespace MvpFramework.Binding
 {
-    /// <summary>
-    /// Context provided to Presenters and Views for binding.
-    /// </summary>
-    public class MvpContext
+    public abstract class MvpContextBase
     {
         public virtual ModelBinderWrapper ModelBinder { get; }
 
         public virtual PresenterBinderWrapper PresenterBinder { get; }
+    }
+
+    /// <summary>
+    /// Context provided to Presenters and Views for binding.
+    /// </summary>
+    public class MvpContext : MvpContextBase
+    {
 
         public virtual IControlBinderFactory ControlBinderFactory { get; }
 
-        // IconRepository
+    }
+
+    public class MvpControlBindingContext : MvpContextBase
+    {
     }
 }

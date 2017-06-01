@@ -24,6 +24,7 @@ namespace MvpFramework
         /// <param name="presenter"></param>
         /// <param name="binderFactory"></param>
         void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory);
+        //TODO: Replace with void Bind(MvpContext mvpContext);
 
         /// <summary>
         /// (Re)populate the view from the model (to update it when the model changes).

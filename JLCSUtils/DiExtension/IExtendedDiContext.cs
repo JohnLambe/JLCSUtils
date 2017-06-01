@@ -24,6 +24,12 @@ namespace DiExtension
 
         void RegisterType(Type serviceType, string name);
 
+        /// <summary>
+        /// Register a named instance with the DI container.
+        /// </summary>
+        /// <param name="name">The name of this instance.</param>
+        /// <param name="instance">The instance to be registered.</param>
+        /// <param name="buildUp">Iff true, dependency injection is run on the <paramref name="instance"/> (for property injection, etc.).</param>
         void RegisterInstance(string name, object instance, bool buildUp = true);
 
         ConfigProviderChain ProviderChain { get; }

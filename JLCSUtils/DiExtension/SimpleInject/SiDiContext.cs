@@ -95,7 +95,7 @@ namespace DiExtension.SimpleInject
         /// <returns></returns>
         public virtual Type ResolveType(Type serviceType)
         {
-            return Container.GetRegistration(serviceType).Registration.ImplementationType;
+            return Container.GetRegistration(serviceType)?.Registration?.ImplementationType;
         }
 
         public override string ToString()
@@ -114,6 +114,12 @@ namespace DiExtension.SimpleInject
             Container.Register(serviceType, implementationType);
         }
 
+        /// <summary>
+        /// Register a singleton instance to be resolved by its compile-time type.
+        /// </summary>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public virtual IDiContext RegisterInstance<TService>(TService instance)
             where TService : class
         {
@@ -121,12 +127,25 @@ namespace DiExtension.SimpleInject
             return this;
         }
 
+        /// <summary>
+        /// Register a singleton instance to be resolved by its runtime type.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public virtual IDiContext RegisterInstanceByRuntimeType([NotNull] object instance)
         {
             Container.RegisterSingleton(instance.GetType(), instance);
             return this;
         }
 
+        /// <summary>
+        /// Register a singleton instance to be resolved by a specified type.
+        /// </summary>
+        /// <param name="serviceType">The type to resolve to <paramref name="instance"/>.
+        /// <paramref name="instance"/> must be of a type that is assignable to this type.
+        /// </param>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public virtual IDiContext RegisterInstance(Type serviceType, object instance)
         {
             Container.RegisterSingleton(serviceType, instance);
@@ -146,7 +165,7 @@ namespace DiExtension.SimpleInject
         }
 
         /// <summary>
-        /// Get an instance of type `T` from the DI container.
+        /// Get an instance of type <typeparamref name="T"/> from the DI container.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceType"></param>
@@ -158,7 +177,7 @@ namespace DiExtension.SimpleInject
         }
 
         /// <summary>
-        /// Get an instance of `serviceType` from the DI container.
+        /// Get an instance of <paramref name="serviceType"/> from the DI container.
         /// </summary>
         /// <typeparam name="T">Type to cast the result to (it may be any type that `serviceType` can be cast to).</typeparam>
         /// <param name="serviceType"></param>
@@ -168,10 +187,13 @@ namespace DiExtension.SimpleInject
             return (T)Container.GetInstance(serviceType);
         }
 
-        public virtual void RegisterTypes(Type serviceType)
+        public virtual void RegisterTypes(Type serviceType, params Assembly[] assemblies)
         {
+            if (assemblies == null || assemblies.Length == 0)
+                assemblies = new [] { Assembly.GetExecutingAssembly() };
+
             IEnumerable<Type> typesToRegister = 
-                Container.GetTypesToRegister(serviceType, new Assembly[] { Assembly.GetExecutingAssembly() }, new TypesToRegisterOptions() { IncludeGenericTypeDefinitions = true });
+                Container.GetTypesToRegister(serviceType, assemblies, new TypesToRegisterOptions() { IncludeGenericTypeDefinitions = true });
 
             foreach (var type in typesToRegister)
                 Container.Register(type);
@@ -186,6 +208,9 @@ namespace DiExtension.SimpleInject
     }
 
 
+    /// <summary>
+    /// Adds some features to <see cref="SiDiContext"/>.
+    /// </summary>
     public class SiExtendedDiContext : SiDiContext, IExtendedDiContext, IDiExtInstanceRegistrar
     {
         public SiExtendedDiContext() : base()
@@ -247,6 +272,12 @@ namespace DiExtension.SimpleInject
             // could implement it, at least for properties, using ConfigInject.
         }
 
+        /// <summary>
+        /// Register a named instance with the DI container.
+        /// </summary>
+        /// <param name="name">The name of this instance.</param>
+        /// <param name="instance">The instance to be registered.</param>
+        /// <param name="buildUp">Iff true, dependency injection is run on the <paramref name="instance"/> (for property injection, etc.).</param>
         public virtual void RegisterInstance(string name, object instance, bool buildUp = false)
         {
             Dictionary.AsDictionary.SetValue(name, instance);

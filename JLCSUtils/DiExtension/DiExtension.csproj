@@ -72,6 +72,7 @@
     <Compile Include="ConfigInject\Providers\PropertiesFileConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\RegistryConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\ResourceConfigProvider.cs" />
+    <Compile Include="ConfigInject\Providers\TranslateKeyConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\XmlConfigProvider.cs" />
     <Compile Include="ConfigInject\RegisterProviderAttribute.cs" />
     <Compile Include="DiContext.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="SimpleInject\InjectPropertySelectionBehavior.cs" />
     <Compile Include="SimpleInject\PropertyInjectionDiBehavior.cs" />
     <Compile Include="SimpleInject\SiDiContext.cs" />
-    <Compile Include="SimpleInject\SimpleInjectorDiContext.cs" />
     <Compile Include="Unity\UnityExtension.cs" />
     <Compile Include="Unity\UnityExtensionBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

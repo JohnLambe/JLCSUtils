@@ -67,6 +67,7 @@
     <Compile Include="Generator\ModelQuery.cs" />
     <Compile Include="Generator\!NamespaceDoc.cs" />
     <Compile Include="IPresenter.cs" />
+    <Compile Include="IReport.cs" />
     <Compile Include="Menu\!NamespaceDoc.cs" />
     <Compile Include="Generator\QueryGenerator.cs" />
     <Compile Include="WinForms\!NamespaceDoc.cs" />
