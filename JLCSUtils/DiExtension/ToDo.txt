@@ -1,6 +1,6 @@
 ﻿TODO:
 
-Method injection ? (How often would it be used? Can use SimpleInjector context-based injection instead.)
+Method injection  (How often would it be used? Can use SimpleInjector context-based injection instead.)
 	InjectAttribute on method.
 	On ExpressionBuilding, scan for relevant methods, sort, and build an Expression to invoke them, then the existing Expression ?
 	Or RegisterInitializer .
@@ -36,5 +36,6 @@ Factories:
 Injection of owner (the instance receiving the item being injected) on property/method injection (could be a property of or parameter to a constructor of the object being injected).
 
 Restriction on what can be injected, by type and receiving type (or namespace or attributes).
+	By categories of classes, where category is determined by naming convention, namespace and/or attribute.
 
 Register a singleton (or attribute a type to do this by default?) to have clones injected.

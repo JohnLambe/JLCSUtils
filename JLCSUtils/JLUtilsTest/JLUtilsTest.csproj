@@ -104,6 +104,7 @@
     <Compile Include="Di\ParameterInjectionTest.cs" />
     <Compile Include="Di\SiExtensionTest.cs" />
     <Compile Include="DynamicProxyTest.cs" />
+    <Compile Include="Encoding\EncodingExtensionTest.cs" />
     <Compile Include="Io\FilingUtilsTest.cs" />
     <Compile Include="LazyInitializeTest.cs" />
     <Compile Include="BitUtilsTest.cs" />

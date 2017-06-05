@@ -58,6 +58,7 @@
     <Compile Include="Documentation\IProvidesDescription.cs" />
     <Compile Include="Encoding\BinaryConverter.cs" />
     <Compile Include="ConfigProvider\FileImageLoaderConfigProvider.cs" />
+    <Compile Include="Encoding\EncodingExtension.cs" />
     <Compile Include="Exceptions\AssertionFailedException.cs" />
     <Compile Include="Exceptions\IUserError.cs" />
     <Compile Include="Exceptions\UserErrorException.cs" />

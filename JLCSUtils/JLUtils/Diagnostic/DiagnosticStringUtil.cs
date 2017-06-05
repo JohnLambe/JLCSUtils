@@ -52,6 +52,10 @@ namespace JohnLambe.Util.Diagnostic
                 return t.FullName;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns>true iff <paramref name="t"/> is an anonymous type.</returns>
         public static bool IsAnonymousType(Type t)
         {
             return t.Name.StartsWith("<>");

@@ -95,10 +95,10 @@ namespace MvpFramework.Generator
         /// <param name="propertyFilter"></param>
         public virtual void GenerateGroup(IUiGroupModel group, FilterDelegate<ModelPropertyBinder> propertyFilter)
         {
-            TControl parentControl;
+            TControl parentControl = null;
             if (group.Id != "")
                 parentControl = CreateGroup(null, group);
-            else
+            if(parentControl == null)
                 parentControl = Target;      // if no group, then controls are being added directly to the target control
 
             int index = 0;
@@ -155,7 +155,11 @@ namespace MvpFramework.Generator
         /// </summary>
         /// <param name="parent">The parent group, or null for the root.</param>
         /// <param name="group">The model of the group to be created.</param>
-        public virtual TControl CreateGroup(IUiGroupModel parent, IUiGroupModel group)
+        /// <returns>The UI control created for the group.
+        /// null if no control is created, and controls in the group should be added directly to the root UI control corresponding to the model.
+        /// </returns>
+        [return: Nullable]
+        public virtual TControl CreateGroup([Nullable] IUiGroupModel parent, [NotNull] IUiGroupModel group)
         {
             return null;
         }
