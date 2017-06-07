@@ -45,15 +45,28 @@ namespace JohnLambe.Util.TypeConversion
             }
 
             Type nullableUnderlyingType = Nullable.GetUnderlyingType(requiredType);  // null if not nullable
+            Type targetType = nullableUnderlyingType ?? requiredType;
 
             try
             {
-                return (T)System.Convert.ChangeType(source, nullableUnderlyingType ?? requiredType);
+                if(targetType.IsEnum && !TypeUtil.IsInteger(source))  // if converting a non-integer to an enum
+                {                                                     // this should work for integers too, but would probably be less efficient than later methods
+                    try
+                    {   // try to convert from an enum name as a string:
+                        return (T) Enum.Parse(targetType, source.ToString().Trim());
+                    }
+                    catch(SystemException ex) when(ex is ArgumentException || ex is OverflowException)
+                    {   // ignore exception and continue to try other methods
+                    }
+                }
+
+                return (T)System.Convert.ChangeType(source, targetType);
                 // if nullable, try to convert to the underlying type. System.Convert fails on trying to convert to Nullable<T>.
             }
-            catch(InvalidCastException) when(requiredType == typeof(string))  // if failed and a string is required
+            catch(InvalidCastException)   // if the cast failed, even if the target type is not a string (because the result of ToString() might be convertible to the required type)
+            //when(requiredType == typeof(string))  // if failed and a string is required
             {
-                return (T)System.Convert.ChangeType(source.ToString(), nullableUnderlyingType ?? requiredType);
+                return (T)System.Convert.ChangeType(source.ToString(), targetType);
             }
         }
 

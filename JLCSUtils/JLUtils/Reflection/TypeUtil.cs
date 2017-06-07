@@ -20,7 +20,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="value"></param>
         /// <returns>True iff the given object is of a primitive (or nullable primitive) numeric type.
         /// false if the value is null.</returns>
-        public static bool IsNumeric(Object value)
+        public static bool IsNumeric(object value)
             => value == null ? false : value.GetType().IsNumericType();
 
         /// <summary>
@@ -32,6 +32,14 @@ namespace JohnLambe.Util.Reflection
             t = t.GetNonNullableType();
             return IsIntegerTypeInternal(t) || IsFloatingPointTypeInternal(t);
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>True iff the given object is of a primitive (or nullable primitive) integer type.
+        /// false if the value is null.</returns>
+        public static bool IsInteger(object value)
+            => value == null ? false : value.GetType().IsIntegerType();
 
         /// <summary>
         /// </summary>
