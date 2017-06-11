@@ -21,6 +21,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\JLUtils.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,9 +67,11 @@
     <Compile Include="FilterDelegates\NullableFilterDelegate.cs" />
     <Compile Include="ConfigProvider\IConfigProvider.cs" />
     <Compile Include="ConfigProvider\IconReposityConfigProvider.cs" />
+    <Compile Include="GraphicUtil\ImageUtil.cs" />
     <Compile Include="Interfaces\CommonInterfaces.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
+    <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />
     <Compile Include="Misc\IconRepository.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
@@ -76,6 +79,7 @@
     <Compile Include="Misc\ImmutableAttribute.cs" />
     <Compile Include="Misc\LazyPopulatedProxy.cs" />
     <Compile Include="Misc\NotifyOnChangeProxy.cs" />
+    <Compile Include="Misc\PureFunctionAttribute.cs" />
     <Compile Include="Misc\Range.cs" />
     <Compile Include="Reflection\AttributeAndMember.cs" />
     <Compile Include="Reflection\BoundProperty.cs" />
@@ -85,7 +89,10 @@
     <Compile Include="Services\SessionLock.cs" />
     <Compile Include="Text\Ascii.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
+    <Compile Include="Types\NullableBooleanExtension.cs" />
     <Compile Include="Validation\Attributes.cs" />
+    <Compile Include="Validation\CollectionValidationAttribute.cs" />
+    <Compile Include="Validation\TypeValidationAttribute.cs" />
     <Compile Include="Validation\ValidationAttributeBase.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />
     <Compile Include="Reflection\AssemblyUtil.cs" />

@@ -23,7 +23,7 @@ namespace JohnLambe.Util.Xml
         /// <returns>the requested XML node. Returns an <see cref="XmlDocument"/> if <paramref name="xpath"/> is null or "".</returns>
         public static XmlNode LoadFromFile(string filename, string xpath = null, XmlNameTable nameTable = null)
         {
-            var doc = new XmlDocument(nameTable);
+            var doc = nameTable==null ? new XmlDocument() : new XmlDocument(nameTable);
             doc.Load(filename);
             if (!string.IsNullOrEmpty(xpath))
                 return doc.SelectSingleNode(xpath);

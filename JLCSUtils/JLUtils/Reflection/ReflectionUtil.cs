@@ -10,6 +10,7 @@ using JohnLambe.Util.TypeConversion;
 using JohnLambe.Util.Validation;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.Misc;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -169,13 +170,26 @@ namespace JohnLambe.Util.Reflection
         // Tests whether a member overrides a member of a base type.
 
         /// <summary>
+        /// True iff this method/property is an override.
+        /// False iff this is not a method or property.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static bool IsOverride(this MemberInfo member)
+        {
+            return (member as PropertyInfo)?.IsOverride() ??
+                (member as MethodInfo)?.IsOverride() ??
+                false;    // not overridable
+        }
+
+        /// <summary>
         /// True iff this method is an override.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
         public static bool IsOverride(this MethodInfo member)
         {
-            return member.IsVirtual                                    // for performance: it it's not virtual, it can't be an override
+            return member.IsVirtual                                    // if it's not virtual, it can't be an override
                 && member.DeclaringType != member.GetBaseDefinition().DeclaringType;   // if this declaration is not on the same class as the base one
         }
 
@@ -191,6 +205,178 @@ namespace JohnLambe.Util.Reflection
         }
 
         #endregion
+
+        #region Hiding
+
+        // These don't use HideBySig.
+
+        /// <summary>
+        /// True iff this member hides a member of the base type of the type on which it is declared.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        /// <remarks>This returns true if something is made inaccessible in C#. It might still be accessible from another language.</remarks>
+        public static bool IsHiding([NotNull] this MethodInfo member)
+        {
+            return !member.IsVirtual                                               // not virtual
+                && !(member.DeclaringType.BaseType?.GetMethodExact(member.Name, member.GetParameters())?.IsPrivate ?? true);  // base class member does not exist or is private
+        }
+
+        /// <summary>
+        /// Tests whether the given member hides a field or property of a base class.
+        /// </summary>
+        /// <param name="member">
+        /// The derived class member.
+        /// If this not a <see cref="FieldInfo"/> or <see cref="PropertyInfo"/>,
+        /// this method just indicates whether there is a field or property with the same name on a base class,
+        /// even though it may not actually be hidden (e.g. a property is not hidden by a method with the same name,
+        /// at least not in C#).
+        /// </param>
+        /// <returns>true iff the given member hides a base class member.</returns>
+        /// <remarks>This returns true if something is made inaccessible in C#. It might still be accessible from another language.</remarks>
+        public static bool IsHidingFieldOrProperty([NotNull] MemberInfo member)
+        {
+            if ((member as PropertyInfo)?.IsOverride() ?? false)     // if this is an overriding property
+                return false;                                        // it doesn't hide anything
+
+            var baseProperty = member.DeclaringType.BaseType?.GetProperty(member.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            if (baseProperty != null && !baseProperty.IsPrivate())   // if the property exists on the base class and is not virtual or private
+                return true;
+
+            var baseField = member.DeclaringType.BaseType?.GetField(member.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            if (baseField != null && !baseField.IsPrivate)     // hides an non-private field
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// True if this member hides a member of the base class (makes it inaccessible from code).
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        /// <remarks>This returns true if something is made inaccessible in C#. It might still be accessible from another language.</remarks>
+        public static bool IsHiding([NotNull] this FieldInfo member)
+            => IsHidingFieldOrProperty(member);
+        /*
+        return FlowControlUtil.TypeSwitch<MemberInfo, bool>(baseMember)
+            .Case<FieldInfo>(m => !m.IsPrivate)    // hides an non-private field
+            .Case<PropertyInfo>(m => !m.IsPrivate() && !m.IsVirtual())
+            .Default(false);
+            */
+
+        /// <summary>
+        /// True if this member hides a member of the base class (makes it inaccessible from code).
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        /// <remarks>This returns true if something is made inaccessible in C#. It might still be accessible from another language.</remarks>
+        public static bool IsHiding([NotNull] this PropertyInfo member)
+            => IsHidingFieldOrProperty(member);
+
+        /// <summary>
+        /// True if this member hides a member of the base class (makes it inaccessible from code).
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        /// <remarks>This returns true if something is made inaccessible in C#. It might still be accessible from another language.</remarks>
+        public static bool IsHiding([NotNull] this MemberInfo member)
+        {
+            return FlowControlUtil.TypeSwitch<MemberInfo,bool>(member)
+                .Case<PropertyInfo>(m => m.IsHiding())
+                .Case<MethodInfo>(m => m.IsHiding())
+                .Case<FieldInfo>(m => m.IsHiding())
+                .ReturnValue;
+        }
+
+        /// <summary>
+        /// True iff there is a base class member with the same name as this member,
+        /// that is not overridden by this member,
+        /// except if this and the base class member are methods with different signatures.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static bool IsHidingNonStrict([NotNull] this MemberInfo member)
+        {
+            if (member is ConstructorInfo)    // the base class constructors are not publicly visible anyway
+            {
+                return false;
+            }
+            else if (member is MethodInfo)           
+            {
+                if(IsHiding((MethodInfo)member))    // if a method that hides a base class method
+                    return true;
+
+                return member.DeclaringType.BaseType?.GetMember(member.Name).Where(m1 => !(m1 is MethodInfo)).Any() ?? false;  // if there is a base class member, other than a method, with the same name
+            }
+            else if(member is FieldInfo || member is PropertyInfo)
+            {
+                if (IsHidingFieldOrProperty(member))     // if a field or property hiding a field or property
+                    return true;
+
+                return member.DeclaringType.BaseType?.GetMember(member.Name).Where(m1 => !(m1 is FieldInfo || m1 is PropertyInfo)).Any() ?? false;    // if there is a base class member, other than a field or property, with the same name
+            }
+            else
+            {   // other types don't support overriding
+                return member.DeclaringType.BaseType?.GetMember(member.Name).Any() ?? false;    // if there is any base class member with the same name
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Returns a method by its name and parameters.
+        /// </summary>
+        /// <param name="declaringType">The type on which the method is defined.</param>
+        /// <param name="name">The name of the method (case-sensitive).</param>
+        /// <param name="p">The parameters (types and modifiers) of the parameters. Only exact matches are returned.</param>
+        /// <returns>The requested method. null if no matching method exists.</returns>
+        public static MethodInfo GetMethodExact(this Type declaringType, string name, ParameterInfo[] p, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
+        {
+            return declaringType.GetMethods(flags).Where(m => m.Name.Equals(name) && m.GetParameters().SequenceEqual(p, ParameterInfoComparer.Instance)).FirstOrDefault();
+        }
+
+        #region Property metadata
+
+        /// <summary>
+        /// True iff the property is virtual.
+        /// If it has a getter, it is considered vitual iff the getter is vitual,
+        /// otherwise, it is cnsidered virtual if the setter is vitual.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static bool IsVirtual(this PropertyInfo member)
+        {
+            return (bool)( member.GetMethod?.IsVirtual ?? member.SetMethod?.IsVirtual );
+            // fails if property has neither getter nor setter.
+        }
+
+        /// <summary>
+        /// True iff the property is private, i.e. if both getter and setter are private.
+        /// (Based on C# syntax: The visiblity of a property is the visibility of the more visible of the getter and setter).
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static bool IsPrivate(this PropertyInfo member)
+        {
+            return (member.GetMethod?.IsPrivate ?? false) || (member.SetMethod?.IsPrivate ?? false);
+        }
+
+        #endregion
+
+        /*
+        /// <summary>
+        /// Returns a list of interface methods implemented by the given method.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static IEnumerable<MethodInfo> GetImplementedMethods(this MethodInfo method)
+        {
+            method.DeclaringType.GetInterfaces().SelectMany(
+                //TODO
+                );
+        }
+        */
 
         #region AssignProperty
 
@@ -651,6 +837,18 @@ namespace JohnLambe.Util.Reflection
 
 
         /// <summary>
+        /// True iff this type implements the given interface.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        public static bool Implements(this Type type, Type interfaceType)
+        {
+            return type.GetInterfaces().Contains(interfaceType);
+        }
+
+
+        /// <summary>
         /// Invokes a delegate on the default value of the type <typeparamref name="T"/>.
         /// <para>
         /// This can be used like this:<br/>
@@ -851,26 +1049,58 @@ namespace JohnLambe.Util.Reflection
     #endregion
 
 
+    public class ParameterInfoComparer : IEqualityComparer<ParameterInfo>
+    {
+        /// <summary>
+        /// Don't create instances of this - use <see cref="Instance"/>, because it has no state.
+        /// </summary>
+        protected ParameterInfoComparer()
+        {
+        }
+
+        public virtual bool Equals(ParameterInfo x, ParameterInfo y)
+        {
+            if (x == y)   // same instance or both null
+                return true;
+            if (x == null || y == null)   // only one is null
+                return false;
+            // Compare the main properties:
+            return x.ParameterType == y.ParameterType
+                && x.IsOptional == y.IsOptional
+                && x.IsOut == y.IsOut
+                && x.IsIn == y.IsIn;
+        }
+
+        public virtual int GetHashCode(ParameterInfo obj)
+        {
+            return obj.GetHashCode();
+        }
+
+        public static ParameterInfoComparer Instance = new ParameterInfoComparer();
+    }
+
+
     //| Choice of modifiers in property reference strings:
     //|
     //| Visible ASCII characters:
     //|
-    //| Symbol Other uses or associations
-    //| .used
-    //| ? nullable; question/doubt; help; '?.'
+    //| Symbol	Other uses or associations
+    //| .	used
+    //| ?	nullable; question/doubt; help; '?.'
     //| !	proposed C# feature: non-nullable reference type; logical NOT; comment; ! path; error
-    //| @	Prefix for variable or expression in Razor.; email address; this?
+    //| @	Prefix for variable or expression in Razor; email address; this?; Twitter account; Acorn: current directory
     //| #	expected to be followed by a number/ID?
-    //| $	hexadecimal; currency?
-    //| %	display as percentage; modulo
-    //| &^	address-of, dereference; BBC BASIC: hexadecimal
+    //| $	hexadecimal; currency?; string (BASIC); Acorn: root of disc
+    //| %	display as percentage; modulo; format specifier (printf); enclosing a variable name; Acorn: library directory
+    //| &   address-of; BBC BASIC: hexadecimal
+    //| ^	dereference; power (BASIC, Pascal); bitwise XOR
     //| "'()[]{}	brackets, quotes; expected to be matched
     //| / * + -	mathematical operators
-    //| ,:;|	separators; C comma operator; comment (';','|'); bitwise or ('|')
+    //| ,:;|	separators; C comma operator; comment (';','|'); bitwise OR ('|')
     //| <>	brackets, comparison
     //| =	assignment / equality; name/value separator
     //| `	quote; Maths: decorator; separator (.NET generic type names); too different to '?' and '!' ?
-    //| ~approximate; bitwise NOT; BBC BASIC: display in hex.
+    //| ~	approximate; bitwise NOT; BBC BASIC: display in hex.
     //| \	path separator; escaping next character
     //| 'A'-'Z','a'-'z','0'-'9','_'	identifier characters
 

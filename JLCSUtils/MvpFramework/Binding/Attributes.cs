@@ -108,7 +108,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Rights or roles required to access this item.
         /// To access this, the user must have one of the rights specified by an element of the array.
-        /// The format of the string depends on the consming system. It may specify a combination of rights/roles.
+        /// The format of the string depends on the consuming system. It may specify a combination of rights/roles.
         /// (So elements of the array are ORed, but rights may be ANDed within each element.)
         /// </summary>
         public virtual string[] Rights { get; set; }
@@ -237,7 +237,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Rights or roles required to access this item.
         /// To access this, the user must have one of the rights specified by an element of the array.
-        /// The format of the string depends on the consming system. It may specify a combination of rights/roles.
+        /// The format of the string depends on the consuming system. It may specify a combination of rights/roles.
         /// (So elements of the array are ORed, but rights may be ANDed within each element.)
         /// </summary>
         public virtual string[] Rights { get; set; }

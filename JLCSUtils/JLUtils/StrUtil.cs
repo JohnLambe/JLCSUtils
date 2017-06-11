@@ -168,19 +168,48 @@ namespace JohnLambe.Util
             return ConcatWithSeparatorIncludeBlanks(separator, parts.Where(p => !string.IsNullOrEmpty(p)));
         }
 
+        /// <summary>
+        /// Concatenate a list of items, each with its own separator.
+        /// Same as <see cref="ConcatWithSeparatorsTrimEnclosed"/>, except that there is no leader.
+        /// </summary>
+        /// <param name="parts"></param>
+        /// <returns></returns>
         public static string ConcatWithSeparatorsTrim(params object[] parts)
         {
             return ConcatWithSeparatorsTrimEnclosed(null, parts);
         }
 
         /// <summary>
-        /// 
+        /// Concatenates a list of objects (converted to string using <see cref="object.ToString()"/>),
+        /// which different separators between each pair (included only when the string before and after is not blank),
+        /// and a leader (prefix) and trailer (suffix) (included when the rest of the string is not blank).
+        /// <para>
+        /// Leading and trailing space in each part, but not in separatator and the leader and trailer,
+        /// is stripped.
+        /// </para>
         /// </summary>
-        /// <param name="separator"></param>
-        /// <param name="parts"></param>
-        /// <returns></returns>
-        public static string ConcatWithSeparatorsTrimEnclosed(object leader, params object[] parts)
+        /// <param name="leader">Included at the start of the output string, unless the whole remaining string is null or blank.</param>
+        /// <param name="parts">
+        /// The items to be concatenated.
+        /// <para>
+        /// Every second (2nd, 4th, ...) item is a separator, and is included only if the string last item output before it 
+        /// is not a separator (and there is a non-blank item before it) and something is output after it.
+        /// The <paramref name="leader"/> is treated as a separator.
+        /// </para>
+        /// <para>
+        /// When there is an even number of items, the last one is a 'trailer': It is included if anything was output before it.
+        /// </para>
+        /// <para>
+        /// null values are treated as "". If the array is null, "" is returned.
+        /// </para>
+        /// </param>
+        /// <returns>The concatenated string.</returns>
+        [return: NotNull]
+        public static string ConcatWithSeparatorsTrimEnclosed([Nullable] object leader, [Nullable] params object[] parts)
         {
+            if (parts == null)
+                return "";
+
             string[] partsString = new string[parts.Length];
             int totalLength = 0;   // maximum total length
             int index = 0;
@@ -197,22 +226,29 @@ namespace JohnLambe.Util
             leader = ToNonNullString(leader);
             totalLength += ((string)leader).Length;
 
+            object currentSeparator = leader;
             StringBuilder builder = new StringBuilder(totalLength);
             for (index = 0; index < partsString.Length; index += 2)
             {
                 if (!string.IsNullOrEmpty(partsString[index]))   // if this part is not blank
                 {
-                    if (builder.Length == 0)               // if this is the first non-blank one
-                        builder.Append(leader);           // add the leader (prefix) part
-                    builder.Append(partsString[index]);   // add this part
-                    if (builder.Length > 0 && !string.IsNullOrEmpty(partsString.ElementAtOrDefault(index + 2)))  // if result is not blank so far, and next part is not null or blank
+                    if (currentSeparator != null)            // if there is a separator not yet added
                     {
-                        builder.Append(partsString[index + 1]);  // add the separator
+                        builder.Append(currentSeparator);
+                        currentSeparator = null;
                     }
+//                    if (builder.Length == 0)               // if this is the first non-blank one
+//                        builder.Append(leader);            // add the leader (prefix) part
+                    builder.Append(partsString[index]);      // add this part
+                }
+                if (currentSeparator == null && builder.Length > 0 && index < partsString.Length - 1 /*&& !string.IsNullOrEmpty(partsString.ElementAtOrDefault(index + 2))*/)  // if result is not blank so far, and next part is not null or blank
+                {
+                    currentSeparator = partsString[index + 1];  // add the separator if any later part is included
+                                                                //                    builder.Append(partsString[index + 1]);  // add the separator
                 }
             }
             if ((partsString.Length % 2) == 0 && builder.Length > 0)  // if even number of parts (then the last one is a suffix for the whole string), and not blank so far
-                builder.Append(partsString[partsString.Length - 1]);    // add the suffix
+                builder.Append(partsString[partsString.Length - 1]);    // add the trailer (suffix)
             return builder.ToString();
         }
 
@@ -281,7 +317,6 @@ namespace JohnLambe.Util
         /// </summary>
         /// <typeparam name="TItem"></typeparam>
         /// <param name="enumerable"></param>
-        /// <param name="del"></param>
         /// <param name="separator"></param>
         /// <returns></returns>
         public static string Concat<TItem>(IEnumerable<TItem> enumerable, string separator = null)
@@ -289,7 +324,7 @@ namespace JohnLambe.Util
 
         /// <summary>
         /// Total length of a string consisting of all non-null items in <see cref="parts"/>
-        /// with a separator of length <see cref="separatorLength"/>.
+        /// with a separator of length <paramref name="separatorLength"/>.
         /// </summary>
         /// <param name="separatorLength"></param>
         /// <param name="parts"></param>
@@ -313,7 +348,7 @@ namespace JohnLambe.Util
         #region Prefix/Suffix
 
         /// <summary>
-        /// If s starts with <see cref="prefix"/>, it is removed.
+        /// If s starts with <paramref name="prefix"/>, it is removed.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="prefix">The prefix to be removed. If this is null, the original string is returned.</param>
@@ -330,7 +365,7 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// If s ends with <see cref="suffix"/>, it is removed.
+        /// If s ends with <paramref name"suffix"/>, it is removed.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="suffix">The suffix to be removed. If this is null, the original string is returned.</param>
@@ -512,6 +547,7 @@ namespace JohnLambe.Util
             }
         }
 
+        /// <inheritdoc cref="SplitWholeToVars(string,char[],out string,out string,out string)"/>
         public static void SplitWholeToVars(this string s, char separator, out string p1, out string p2)
         {
             SplitWholeToVars(s, new char[] { separator }, out p1, out p2);
@@ -1004,8 +1040,8 @@ namespace JohnLambe.Util
         #endregion
 
         /// <summary>
-        /// Return the substring between the first occurrence of any character in <param name="startDelimiters"/>
-        /// and the next occurence after that of any character in <param name="endDelimiters"/>.
+        /// Return the substring between the first occurrence of any character in <paramref name="startDelimiters"/>
+        /// and the next occurence after that of any character in <paramref name="endDelimiters"/>.
         /// The delimiter characters are not included.
         /// If either the start or end delimiter (when not null) is not found, null is returned.
         /// </summary>

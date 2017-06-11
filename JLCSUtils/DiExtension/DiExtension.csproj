@@ -75,6 +75,8 @@
     <Compile Include="ConfigInject\Providers\TranslateKeyConfigProvider.cs" />
     <Compile Include="ConfigInject\Providers\XmlConfigProvider.cs" />
     <Compile Include="ConfigInject\RegisterProviderAttribute.cs" />
+    <Compile Include="ConsoleApp\Attributes.cs" />
+    <Compile Include="ConsoleApp\ConsoleAppBase.cs" />
     <Compile Include="DiContext.cs" />
     <Compile Include="DiContextConfigurer.cs" />
     <Compile Include="DiRegisterAttribute.cs" />

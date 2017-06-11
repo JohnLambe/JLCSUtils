@@ -56,6 +56,20 @@ namespace MvpFramework
         /// True iff this item should be shown in the grid.
         /// </summary>
         public virtual bool Visible { get; set; }
+
+        #region UI capabilities
+
+        /// <summary>
+        /// The UI should allow sorting on this field.
+        /// </summary>
+        public virtual bool AllowSorting { get; set; }
+
+        /// <summary>
+        /// The UI should allow filtering on this field.
+        /// </summary>
+        public virtual bool AllowFiltering { get; set; }
+
+        #endregion
     }
 
 

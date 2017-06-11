@@ -85,6 +85,7 @@ namespace MvpFramework
                 // Presenters:
                 foreach ( var presenter in
                     assembly.GetExportedTypes().Where( t => t.IsDefined<PresenterAttribute>() )
+                    // change to GetTypes() ?
                     )
                 {
                     // Get the type (usually an interface) returned by the presenter factory:

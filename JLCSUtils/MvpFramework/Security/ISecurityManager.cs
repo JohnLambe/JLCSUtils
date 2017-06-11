@@ -81,7 +81,7 @@ namespace MvpFramework.Security
         /// Rights or roles required to access something.
         /// To access the item, the user must have one of the rights specified by an element of the array.
         /// <para>
-        /// The format of the string depends on the consming system. It may specify a combination of rights/roles.
+        /// The format of the string depends on the consuming system. It may specify a combination of rights/roles.
         /// (So elements of the array are ORed, but rights may be ANDed within each element.)
         /// </para>
         /// </summary>

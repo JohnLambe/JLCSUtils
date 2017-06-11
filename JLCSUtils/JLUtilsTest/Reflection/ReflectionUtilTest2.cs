@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 using JohnLambe.Util.Diagnostic;
+using System.Reflection;
 
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
@@ -106,6 +107,39 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         */
 
         #endregion
+
+        #region GetMethod
+
+        [TestMethod]
+        public void GetMethod()
+        {
+            // Arrange:
+            var method = typeof(GetMethodTest2).GetMethod("A");
+
+            // Act:
+            var resolvedMethod = typeof(GetMethodTest).GetMethodExact("Method1", method.GetParameters());
+            //                new[] { new ParameterInfo() { ParameterType = typeof(int) });
+
+            // Assert:
+            GetMethodTest instance = new GetMethodTest();
+            string s = null;
+            Assert.AreEqual(200, resolvedMethod.Invoke(instance, new object[] { 50, s }) );
+        }
+
+        public class GetMethodTest
+        {
+            public int Method1(int x, string y) => 100;
+            public int Method1(int x, out string y) { y = null; return 200; }
+            public int method1(int x, out string y) { y = null; return 300; }
+        }
+
+        public class GetMethodTest2
+        {
+            public void A(int x, out string y) { y = null; }
+        }
+
+        #endregion
+
     }
 
 

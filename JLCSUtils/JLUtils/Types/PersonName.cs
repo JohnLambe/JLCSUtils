@@ -8,6 +8,9 @@ using JohnLambe.Util.Text;
 
 namespace JohnLambe.Util.Types
 {
+    /// <summary>
+    /// Represents a person's name, and combines and parses parts of it.
+    /// </summary>
     //[ComplexType]
     public class PersonName
     {
@@ -22,6 +25,8 @@ namespace JohnLambe.Util.Types
         /// Title/prefix.
         /// </summary>
         public virtual string Title { get; set; }
+
+        //TODO: Consider removing.
         public virtual string Suffix { get; set; }
         /// <summary>
         /// Qualifications that appear after the name.
@@ -87,45 +92,72 @@ namespace JohnLambe.Util.Types
             get
             {
                 return
-                    StrUtil.ConcatWithSeparatorsTrimEnclosed("",
-                        Title, " ",
-                        FirstNames, " ",
-                        Surname, " ",
-                        Suffix, ", ",
-                        Qualifications);
+                    StrUtil.ConcatWithSeparatorsTrim(
+                        StrUtil.ConcatWithSeparatorsTrimEnclosed(null,
+                            Title, " ",
+                            FirstNames, " ",
+                            Surname, " ",
+                            Suffix
+                            ), ", ",
+                            Qualifications
+                    );
             }
-            /*
             set
             {
+                var parts = value.NullToBlank().Split(',');
+                parts[0] = parts[0].NullToBlank().Trim();
 
+                int index = parts[0].LastIndexOf(' ');
+                Surname = parts[0].Substring(index + 1);
+
+                //TODO: Identfy title at start of this part.
+                //TODO: Identify suffix at end of this part.
+                FirstNames = parts[0].Substring(0,index);
+
+                Qualifications = parts.ElementAtOrDefault(1)?.Trim();
             }
-            */
         }
 
+        /// <summary>
+        /// Full name, with the surname first, followed by a comma.
+        /// </summary>
         //[NotMapped]
         public virtual string FormalFullName
         {
             get
             {
-                return StrUtil.ConcatWithSeparatorsTrimEnclosed("",
-                        Surname, ", ",
-                        Title, " ",
-                        FirstNames, " ",
-                        Suffix, ", ",
-                        Qualifications
+                return 
+                    StrUtil.ConcatWithSeparatorsTrim(
+                        StrUtil.ConcatWithSeparatorsTrimEnclosed(null,
+                            Surname, ", ",
+                            Title, " ",
+                            FirstNames, " ",
+                            Suffix
+                            ), ", ",
+                            Qualifications
                     );
             }
-            /*
             set
             {
+                var parts = value.Split(',');
+                Surname = parts.ElementAtOrDefault(0)?.Trim();
 
+                //TODO: Identfy title at start of this part.
+                //TODO: Identify suffix at end of this part.
+                FirstNames = parts.ElementAtOrDefault(1)?.Trim();
+
+                Qualifications = parts.ElementAtOrDefault(2)?.Trim();
             }
-            */
         }
 
         /// <summary>
         /// Name in the format: '{Firstnames} {Surname}'.
+        /// <para>
         /// Assigning this overwrites <see cref="FirstNames"/> and <see cref="Surname"/>.
+        /// The surname is assumed to be everything after the last space, unless there is no space,
+        /// in which the whole string is assumed to be the surname.
+        /// If there is a comma, the part before the comma is the surname.
+        /// </para>
         /// </summary>
         //[NotMapped]
         public virtual string SimpleName
@@ -136,10 +168,33 @@ namespace JohnLambe.Util.Types
             }
             set
             {
-                string firstNames, surname;
-                value.SplitOn(value.LastIndexOf(" "), out firstNames, out surname);
-                FirstNames = firstNames;
-                Surname = surname;
+                if (value == null)
+                {
+                    FirstNames = null;
+                    Surname = null;
+                }
+                else
+                {
+                    if (value.Contains(','))
+                    {
+                        string firstNames, surname;
+                        value.SplitOn(value.LastIndexOf(","), out surname, out firstNames);
+                        FirstNames = firstNames?.Trim();
+                        Surname = surname?.Trim();
+                    }
+                    else if (value.Contains(' '))
+                    {
+                        string firstNames, surname;
+                        value.SplitOn(value.LastIndexOf(" "), out firstNames, out surname);
+                        FirstNames = firstNames?.Trim();
+                        Surname = surname?.Trim();
+                    }
+                    else
+                    {
+                        Surname = value;
+                        FirstNames = null;
+                    }
+                }
             }
         }
 

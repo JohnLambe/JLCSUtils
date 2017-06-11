@@ -446,7 +446,13 @@ namespace JohnLambe.Tests.JLUtilsTest
                 () => Assert.AreEqual("[firstsecond - third €", StrUtil.ConcatWithSeparatorsTrimEnclosed("[", "first", null, "second", " - ", "third €"), "no trailer"),
                 () => Assert.AreEqual("firstsecond - third €", StrUtil.ConcatWithSeparatorsTrimEnclosed(null, "first", null, "second", " - ", "third €", null), "no leader"),
                 () => Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrimEnclosed("<", null, ",", "", " ", "", ">"), "all null/blank except separators, leader and trailer"),
-                () => Assert.AreEqual(" < a > ", StrUtil.ConcatWithSeparatorsTrimEnclosed(" < ", "a", " > "), "shouldn't trim leader/trailer")
+                () => Assert.AreEqual(" < a > ", StrUtil.ConcatWithSeparatorsTrimEnclosed(" < ", "a", " > "), "shouldn't trim leader/trailer"),
+                () => Assert.AreEqual("Leader: b", StrUtil.ConcatWithSeparatorsTrimEnclosed("Leader: ", "", ",", "b", ",", "", ""), "last separator omitted"),
+                () => Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrimEnclosed(null, "", ",", "", ",", "", ""), "blank - all separators omitted"),
+                () => Assert.AreEqual("first item,second item", StrUtil.ConcatWithSeparatorsTrimEnclosed("", "first item", ",", "", ",", "second item", ""), "separator omitted (avoiding double separator)"),
+                () => Assert.AreEqual("first item,second item.", StrUtil.ConcatWithSeparatorsTrimEnclosed("", "first item", ",", "", ",", "second item", "."), "trailer included"),
+                () => Assert.AreEqual("", StrUtil.ConcatWithSeparatorsTrimEnclosed("{", null, ",", "", ",", "", "}"), "all blank except leader, trailer and separators (all should be omitted)"),
+                () => Assert.AreEqual("{A}", StrUtil.ConcatWithSeparatorsTrimEnclosed("{", null, ",", "A", ",", "", "}"), "one non-blank: leader and trailer should be included")
             );
         }
 

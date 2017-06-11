@@ -81,8 +81,8 @@
     <Compile Include="AutoFactory\AutoFactoryTestBase.cs" />
     <Compile Include="ByteArrayTest.cs" />
     <Compile Include="Collections\CachedSimpleLookupTest.cs" />
-    <Compile Include="Collections\CollectionUtilsTest.cs" />
-    <Compile Include="Collections\EnumerationUtilsTest.cs" />
+    <Compile Include="Collections\CollectionUtilTest.cs" />
+    <Compile Include="Collections\EnumerationUtilTest.cs" />
     <Compile Include="Collections\TypeMapTest.cs" />
     <Compile Include="ConfigProvider\IconRepositoryTest.cs" />
     <Compile Include="Db\EnumToSqlTest.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="DependencyInjection\DiTest.cs" />
     <Compile Include="DependencyInjection\ForTest.cs" />
     <Compile Include="Diagnostic\DiagnosticStringUtilTest.cs" />
-    <Compile Include="DictionaryUtilsTest.cs" />
+    <Compile Include="DictionaryUtilTest.cs" />
     <Compile Include="Di\AutoEventWirerTest.cs" />
     <Compile Include="Di\AutoFactoryTest.cs" />
     <Compile Include="Di\AutoFactoryTest2.cs" />
@@ -105,11 +105,12 @@
     <Compile Include="Di\SiExtensionTest.cs" />
     <Compile Include="DynamicProxyTest.cs" />
     <Compile Include="Encoding\EncodingExtensionTest.cs" />
+    <Compile Include="GraphicUtil\ImageExtensionTest.cs" />
     <Compile Include="Io\FilingUtilsTest.cs" />
     <Compile Include="LazyInitializeTest.cs" />
-    <Compile Include="BitUtilsTest.cs" />
+    <Compile Include="BitUtilTest.cs" />
     <Compile Include="Encoding\HexConverterTest.cs" />
-    <Compile Include="Misc\GeneralUtilsTest.cs" />
+    <Compile Include="Misc\GeneralUtilTest.cs" />
     <Compile Include="ObjectConfigProviderTest.cs" />
     <Compile Include="ObjectExtensionTest.cs" />
     <Compile Include="OrdinalUtilsTest.cs" />
@@ -117,6 +118,11 @@
     <Compile Include="PluginFramework\PluginHostTest.cs" />
     <Compile Include="PluginFramework\TestPlugins.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ReferenceCountedObjectTest.cs" />
     <Compile Include="Reflection\AttributeUtilTest.cs" />
     <Compile Include="Reflection\PropertyDefaultUtilTest.cs" />
@@ -129,25 +135,27 @@
     <Compile Include="Reflection\PropertyInfoExtensionTest.cs" />
     <Compile Include="Reflection\ReflectionUtilTest.cs" />
     <Compile Include="Reflection\ReflectionUtilTest2.cs" />
+    <Compile Include="Reflection\ReflectionUtilTest_Hiding.cs" />
     <Compile Include="Reflection\TypeUtilTest.cs" />
     <Compile Include="Security\HashedPasswordTest.cs" />
     <Compile Include="StrUtilTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TestUtilTest.cs" />
-    <Compile Include="Text\CaptionUtilsTest.cs" />
+    <Compile Include="Text\CaptionUtilTest.cs" />
     <Compile Include="Text\StringCharacterSetTest.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />
     <Compile Include="MiscUtilTest.cs" />
     <Compile Include="TimeUtilities\DateTest.cs" />
     <Compile Include="TimeUtilities\DateTimeClassTest.cs" />
     <Compile Include="TimeUtilities\TimeTest.cs" />
-    <Compile Include="TimeUtilities\TimeUtilsTest.cs" />
+    <Compile Include="TimeUtilities\TimeUtilTest.cs" />
     <Compile Include="TypeConversion\GeneralTypeConverterTest.cs" />
     <Compile Include="Types\IDTest.cs" />
     <Compile Include="Types\NotNullAttributeTest.cs" />
     <Compile Include="Types\PersonNameTest.cs" />
     <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\TestModel.cs" />
+    <Compile Include="Validation\TypeValidationAttributeTest.cs" />
     <Compile Include="Validation\ValidatorExTest.cs" />
     <Compile Include="Xml\XmlUtilTest.cs" />
   </ItemGroup>
@@ -172,7 +180,15 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user.png" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -546,6 +546,7 @@ namespace MvpFramework.WinForms
     }
 
 
+    //TODO: Replace with System.Drawing.ContentAlignment ?
     /// <summary>
     /// A layout and orientation of a row of buttons.
     /// </summary>
