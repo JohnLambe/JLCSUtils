@@ -52,6 +52,19 @@ namespace DiExtension.SimpleInject
             return key;
         }
 
+        //TODO: Refactor to reduce duplication between this and the other overload.
+        public static string GetKeyForMember([NotNull] ParameterInfo member, [Nullable] InjectAttribute attribute = null)
+        {
+            attribute = attribute ?? member.GetCustomAttribute<InjectAttribute>();
+            var key = attribute?.Key;
+            if (key == InjectAttribute.CodeName)     // if using member name as key
+            {
+                key = member.Name;                   // use the member (property/parameter) name
+                key = char.ToUpper(key[0]) + key.Substring(1);   // make the first letter capital
+            }
+            return key;
+        }
+
         /// <summary>
         /// Get the key to use to look up a value for the given consumer.
         /// <para>
@@ -69,6 +82,8 @@ namespace DiExtension.SimpleInject
         /// <returns>The key to use.</returns>
         public static string GetKeyForConsumer([NotNull] InjectionConsumerInfo consumer, [Nullable] InjectAttribute attribute = null, bool propertyName = false)
         {
+            //TODO: Call GetKeyForMember
+
             attribute = attribute ?? GetAttributeForConsumer(consumer);
             var key = propertyName ? attribute?.Property : attribute?.Key;
             if (key == InjectAttribute.CodeName)     // if using member name as key
@@ -157,11 +172,6 @@ namespace DiExtension.SimpleInject
         {
             return ((ICustomAttributeProvider)consumer.Target.Parameter ?? (ICustomAttributeProvider)consumer.Target.Member)
                 .GetCustomAttribute<InjectAttribute>();
-                /*/
-            return consumer.Target.Parameter != null ?
-                consumer.Target.Parameter.GetCustomAttribute<InjectAttribute>()
-                : consumer.Target.Member?.GetCustomAttribute<InjectAttribute>();
-                */
         }
 
         /// <summary>

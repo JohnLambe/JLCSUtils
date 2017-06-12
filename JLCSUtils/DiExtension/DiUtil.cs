@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using DiExtension.Attributes;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Types;
@@ -62,13 +61,13 @@ namespace DiExtension
             {
                 if (parameterIndex >= startIndex && (parameterIndex <= endIndex || endIndex == -1))
                 {
-                    bool? createParam = null;                             // true iff the current parameter is to be populated from the context arguments
+                    bool? contextParam = null;                             // true iff the current parameter is to be populated from the context arguments
                     if (selector != null)
-                        createParam = selector.Invoke(parameter);
-                    if (createParam == null)
-                        createParam = contextArgsIndex < contextArgs.Length;  // not specified as a context parameter, and all context parameters have been used
+                        contextParam = selector.Invoke(parameter);
+                    if (contextParam == null)
+                        contextParam = contextArgsIndex < contextArgs.Length;  // not specified as a context parameter, and all context parameters have been used
 
-                    if (createParam.Value)
+                    if (contextParam.Value)
                     {   // Context parameter:
                         if (contextArgsIndex >= contextArgs.Length)
                             throw new InjectionFailedException("Too many parameters for injection from context", null, parameter.Name, null);
@@ -77,7 +76,7 @@ namespace DiExtension
                     }
                     else
                     {   // other parameters are injected from the DI container
-                        args[parameterIndex] = diResolver.GetInstance<object>(parameter.ParameterType);
+                        args[parameterIndex] = diResolver.GetInstanceFor<object>(parameter);
                         //TODO: trap exception and throw more specific one
                     }
                 }

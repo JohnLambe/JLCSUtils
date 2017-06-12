@@ -200,6 +200,33 @@ namespace DiExtension.SimpleInject
                 //RegisterType(serviceType, type);
         }
 
+        public virtual T GetInstanceFor<T>(MemberInfo member)
+        {
+            return GetInstance<T>(GetMemberDataType(member));
+        }
+
+        public virtual T GetInstanceFor<T>(ParameterInfo member)
+        {
+            return GetInstance<T>(member.ParameterType);
+        }
+
+        /// <summary>
+        /// Get the Type of value stored in the given member.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        /// <exception cref="DependencyInjectionException">If this member type is not supported.</exception>
+        protected virtual Type GetMemberDataType(MemberInfo member)
+        {
+            var type = (member as PropertyInfo)?.PropertyType;   // only Properties are currnetly supported
+            if (type == null)
+            {
+                throw new DependencyInjectionException("Injection failed for member " + member.ToString()
+                    + ": Member type not supported (only properties are supported)");
+            }
+            return type;
+        }
+
 
         /// <summary>
         /// SimpleInjector's container.
@@ -253,17 +280,61 @@ namespace DiExtension.SimpleInject
                 ScanAssembly(assm);
         }
 
+
+        public override T GetInstanceFor<T>(MemberInfo member)
+        {
+            var key = PropertyInjectionDiBehavior.GetKeyForMember(member);
+            if (key == null)
+            {
+                return base.GetInstanceFor<T>(member);
+            }
+            else
+            {
+                return GetValue<T>(key, GetMemberDataType(member));
+            }
+        }
+
+        public override T GetInstanceFor<T>(ParameterInfo member)
+        {
+            var key = PropertyInjectionDiBehavior.GetKeyForMember(member);
+            if (key == null)
+            {
+                return base.GetInstanceFor<T>(member);
+            }
+            else
+            {
+                return GetValue<T>(key, member.ParameterType);
+            }
+        }
+
+
         /// <summary>
         /// Resolve a ConfigInject value.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public virtual bool GetValue<T>(string name, Type type, out T value)
+        /// <typeparam name="T">Type to cast the resolved value to.</typeparam>
+        /// <param name="key"></param>
+        /// <param name="type">The required type.</param>
+        /// <param name="value">The resolved value, or default(<typeparamref name="T"/>) if not resolved.</param>
+        /// <returns>true iff resolved.</returns>
+        public virtual bool GetValue<T>(string key, Type type, out T value)
         {
-            return Provider.GetValue(name, type, out value);
+            return Provider.GetValue(key, type, out value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="type"></param>
+        /// <returns>The resolved value.</returns>
+        /// <exception cref="DependencyInjectionException">If resolving fails.</exception>
+        public virtual T GetValue<T>(string key, Type type)
+        {
+            T value;
+            if (!GetValue<T>(key, type, out value))
+                throw new DependencyInjectionException("Injection failed for key '" + key + "'; Type: " + type.FullName);
+            return value;
         }
 
         public virtual void RegisterType(Type serviceType, string name)

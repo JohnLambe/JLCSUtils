@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DiExtension;
+using DiExtension.Attributes;
 
 namespace Test.DiExtensionTest
 {
@@ -38,5 +39,37 @@ namespace Test.DiExtensionTest
         }
 
         protected SiDiContext context = new SiExtendedDiContext();
+    }
+
+
+    [TestClass]
+    public class DiUtilTest2
+    {
+        [TestMethod]
+        public void CallMethod()
+        {
+            // Arrange:
+            context.RegisterInstance("A", 1234);
+            context.RegisterInstance("Parameter2", "<b>");
+
+            // Act:
+            var result = DiUtil.CallMethod<string>(context, GetType().GetMethod("TestMethod"), this);
+
+            // Assert:
+            Assert.AreEqual("1234<b>", result);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="b">The first letter is capitalised for the key.</param>
+        /// <returns></returns>
+        public virtual string TestMethod([Inject("A")] int x, [InjectByName] string parameter2)
+        {
+            return x + parameter2;
+        }
+
+        protected SiExtendedDiContext context = new SiExtendedDiContext();
     }
 }

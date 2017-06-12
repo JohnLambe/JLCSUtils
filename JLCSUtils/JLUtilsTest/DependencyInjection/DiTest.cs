@@ -20,8 +20,8 @@ namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection
             Console.Out.WriteLine(Container.ToString());
 
             // Instances created:
-            Assert.AreNotEqual(null, Test1.Instance);
-            Assert.AreNotEqual(null, Test3.Instance);
+            Assert.AreNotEqual(Test1.Instance, null);
+            Assert.AreNotEqual(Test3.Instance, null);
 
             // Injected by type:
             Assert.AreNotEqual(null, Test1.Instance.TestBaseRef);

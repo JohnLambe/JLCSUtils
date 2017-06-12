@@ -2,6 +2,7 @@
 //   See licence.
 ////////////////////////////////////////
 
+using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,19 +17,19 @@ namespace JohnLambe.Util.Collections
     public static class CollectionUtil
     {
         /// <summary>
-        /// Add everything in <paramref name="otherCollection"/> to this collection.
+        /// Add everything in <paramref name="otherSequence"/> to this collection.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="otherCollection"></param>
-        /// <returns><paramref name="collection"/></returns>
-        public static ICollection<T> AddAll<T>(this ICollection<T> collection, IEnumerable<T> otherCollection)
+        /// <typeparam name="T">The type of the elements of both collections.</typeparam>
+        /// <param name="sequence"></param>
+        /// <param name="otherSequence"></param>
+        /// <returns><paramref name="sequence"/></returns>
+        public static ICollection<T> AddAll<T>(this ICollection<T> sequence, IEnumerable<T> otherSequence)
         {
-            foreach(var item in otherCollection)
+            foreach(var item in otherSequence)
             {
-                collection.Add(item);
+                sequence.Add(item);
             }
-            return collection;
+            return sequence;
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace JohnLambe.Util.Collections
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <param name="value"></param>
-        public static void AddIfNotNull<T>(this ICollection<T> collection, T value)
+        public static void AddIfNotNull<T>([Nullable] this ICollection<T> collection, T value)
         {
             if (value != null)
                 collection.Add(value);
@@ -50,7 +51,8 @@ namespace JohnLambe.Util.Collections
         /// <param name="collection"></param>
         /// <param name="separator"></param>
         /// <returns>The string representation of the contents of the collection, or null if <paramref name="collection"/> is null.</returns>
-        public static string CollectionToString<T>(ICollection<T> collection, string separator = ", ")
+        [return: Nullable]
+        public static string CollectionToString<T>([Nullable] ICollection<T> collection, [NotNull] string separator = ", ")
         {
             if (collection == null)
                 return null;
@@ -65,6 +67,31 @@ namespace JohnLambe.Util.Collections
                 index++;
             }
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Returns the only element in a sequence, or null if the sequence is empty.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sequence"></param>
+        /// <returns>The only element, or null.</returns>
+        /// <exception cref="InvalidOperationException">If there is more than one element in the sequence.</exception>
+        [return: Nullable]
+        public static T SingleOrDefault<T>([NotNull] this IEnumerable<T> sequence)
+        {
+            var enumerator = sequence.GetEnumerator();
+            if(!enumerator.MoveNext())
+            {
+                return default(T);               // no elements
+            }
+            else
+            {
+                var first = enumerator.Current;  // the first element
+                if(enumerator.MoveNext())
+                    throw new InvalidOperationException("Sequence has multiple elements");
+                else
+                    return first;    // this is the only element
+            }
         }
     }
 }

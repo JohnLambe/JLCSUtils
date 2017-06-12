@@ -57,8 +57,8 @@ namespace JohnLambe.Util.Xml
         /// <typeparam name="TValue"></typeparam>
         /// <param name="node"></param>
         /// <param name="xpath"></param>
-        /// <returns></returns>
-        /// <exception cref="">If </exception>
+        /// <returns>The value of the specified node.</returns>
+        /// <exception cref="">If the path matches multiple nodes, or no nodes.</exception>
         public static TValue GetSubNodeValue<TValue>(this XmlNode node, string xpath)
         {
             return node.SelectSingleNode(xpath).GetValue<TValue>();

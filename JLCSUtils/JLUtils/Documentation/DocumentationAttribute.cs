@@ -114,7 +114,12 @@ namespace JohnLambe.Util.Documentation
         /// Documentation of any attributes on the item other than <see cref="DescriptionAttribute"/>.
         /// This includes any attributes implementing <see cref="IProvidesDescription"/>.
         /// </summary>
-        Attributes = 8
+        Attributes = 8,
+
+        /// <summary>
+        /// The constant value of the item.
+        /// </summary>
+        Value = 16
     }
 
 }

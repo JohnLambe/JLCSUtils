@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,9 @@ namespace DiExtension
         /// <param name="serviceType"></param>
         /// <returns></returns>
         T GetInstance<T>(Type serviceType);
+
+        T GetInstanceFor<T>(MemberInfo member);
+        T GetInstanceFor<T>(ParameterInfo member);
 
         //| We could also have the method below, but the one above can be used in all cases,
         //| and is needed for cases where the required type is determined at run time:

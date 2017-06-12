@@ -38,7 +38,7 @@ namespace DiExtension.ConfigInject.Providers
                 // Evaluate the key at this level, replacing currentValue:
                 if (currentValue is IConfigProvider)
                 {
-                    if(! ((IConfigProvider)currentValue).GetValue(parts[level], currentRequiredType, out currentValue) )
+                    if( !((IConfigProvider)currentValue).GetValue(parts[level], currentRequiredType, out currentValue) )
                     {
                         value = default(T);
                         return false;
