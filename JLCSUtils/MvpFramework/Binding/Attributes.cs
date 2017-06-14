@@ -33,7 +33,7 @@ namespace MvpFramework.Binding
     {
         /// <summary>
         /// The ID of the handler, referenced in the user interface.
-        /// null to derive from the method name (NOT IMPLEMENTED YET).
+        /// null to derive from the method name.
         /// </summary>
         public virtual string Id { get; set; }
 
@@ -49,7 +49,7 @@ namespace MvpFramework.Binding
         public virtual string[] Filter { get; set; }
 
         /// <summary>
-        /// If there is only item in <see cref="Filter"/>, this is it.
+        /// If there is only one item in <see cref="Filter"/>, this is it.
         /// If there are none, this is null.
         /// Otherwise, an exception is thrown on reading this.
         /// </summary>

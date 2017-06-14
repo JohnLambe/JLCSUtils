@@ -72,7 +72,7 @@ namespace MvpFramework
             {
                 // Register views first, because PresenterFactory tries to resolve the view interface to the view:
                 foreach (var view in
-                    assembly.GetExportedTypes().Where(t => t.IsDefined<ViewAttribute>())
+                    assembly.GetTypes().Where(t => t.IsDefined<ViewAttribute>())
                     )
                 {
                     Type viewType = _resolver.ResolveInterfaceForViewType(view);
@@ -84,8 +84,7 @@ namespace MvpFramework
 
                 // Presenters:
                 foreach ( var presenter in
-                    assembly.GetExportedTypes().Where( t => t.IsDefined<PresenterAttribute>() )
-                    // change to GetTypes() ?
+                    assembly.GetTypes().Where( t => t.IsDefined<PresenterAttribute>() )
                     )
                 {
                     // Get the type (usually an interface) returned by the presenter factory:

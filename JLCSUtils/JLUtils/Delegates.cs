@@ -17,7 +17,7 @@ namespace JohnLambe.Util
         /// <summary>
         /// A delegate (with one parameter) that does nothing.
         /// </summary>
-        public static readonly VoidDelegate NullDelegate = () => { };
+        public static readonly VoidDelegate<T> NullDelegate = (p1) => { };
     }
 
     // Common delegates:

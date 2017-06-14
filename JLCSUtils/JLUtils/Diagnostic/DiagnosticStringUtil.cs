@@ -19,7 +19,7 @@ namespace JohnLambe.Util.Diagnostic
             }
             else
             {
-                if (instance.GetType().IsPrimitive)
+                if (instance.GetType().IsPrimitive || instance is string)
                 {
                     return instance.GetType().Name + "(" + instance + ")";
                 }

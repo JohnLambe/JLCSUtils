@@ -49,6 +49,7 @@ namespace JohnLambe.Util.TypeConversion
 
             try
             {
+                // Enum:
                 if(targetType.IsEnum && !TypeUtil.IsInteger(source))  // if converting a non-integer to an enum
                 {                                                     // this should work for integers too, but would probably be less efficient than later methods
                     try
@@ -56,6 +57,21 @@ namespace JohnLambe.Util.TypeConversion
                         return (T) Enum.Parse(targetType, source.ToString().Trim());
                     }
                     catch(SystemException ex) when(ex is ArgumentException || ex is OverflowException)
+                    {   // ignore exception and continue to try other methods
+                    }
+                }
+
+                // Guid:
+                if (targetType == typeof(Guid) && !TypeUtil.IsInteger(source))  // if converting a non-integer to an enum
+                {                                                     // this should work for integers too, but would probably be less efficient than later methods
+                    try
+                    {
+                        if (source is byte[])
+                            return (T) (object) new Guid((byte[])source);
+
+                        return (T) (object) new Guid(source.ToString());
+                    }
+                    catch (SystemException ex) when (ex is ArgumentException || ex is OverflowException || ex is FormatException)
                     {   // ignore exception and continue to try other methods
                     }
                 }

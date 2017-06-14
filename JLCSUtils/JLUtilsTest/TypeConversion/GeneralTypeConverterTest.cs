@@ -109,6 +109,28 @@ namespace JohnLambe.Tests.JLUtilsTest.TypeConversion
         }
 
         [TestMethod]
+        public void StringToGuid()
+        {
+            Multiple(
+                () => Assert.AreEqual(Guid.Empty, GeneralTypeConverter.Convert<Guid>(Guid.Empty.ToString())),
+                () => Assert.AreEqual(new Guid("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da"), GeneralTypeConverter.Convert<Guid>("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da")),
+                () => Assert.AreEqual(new Guid("d0701409-4769-4720-a39f-3b057d62cbba"), GeneralTypeConverter.Convert<Guid>("d070140947694720a39f3b057d62cbba"), "no hyphens"),
+                () => Assert.AreEqual(new Guid("d0701409-4769-4720-a39f-3b057d62cbba"), GeneralTypeConverter.Convert<Guid>("d070140947694720a39f3b057d62cbba".ToUpper()), "no hyphens, capital letters")
+            );
+        }
+
+        [TestMethod]
+        public void BytesToGuid()
+        {
+            Multiple(
+                () => Assert.AreEqual(Guid.Empty, GeneralTypeConverter.Convert<Guid>(new Guid("00000000-0000-0000-0000-000000000000").ToByteArray())),
+                () => Assert.AreEqual(new Guid("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da"), GeneralTypeConverter.Convert<Guid>(new Guid("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da").ToByteArray()))
+            );
+        }
+
+        #region Object
+
+        [TestMethod]
         public void Convert_ObjectToString()
         {
             Assert.AreEqual(ToString(), GeneralTypeConverter.Convert<string>(this));
@@ -127,6 +149,8 @@ namespace JohnLambe.Tests.JLUtilsTest.TypeConversion
         {
             public override string ToString() => "-100";
         }
+
+        #endregion
 
         //TODO: null
 
