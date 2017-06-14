@@ -66,6 +66,14 @@ namespace MvpFramework.WinForms.Controls
         }
 
         /// <summary>
+        /// Removes all generated controls within this control.
+        /// </summary>
+        public virtual void Reset()
+        {
+            Controls.Clear();
+        }
+
+        /// <summary>
         /// Implements <see cref="IControlBinder.MvpRefresh"/>.
         /// </summary>
         public virtual void MvpRefresh()

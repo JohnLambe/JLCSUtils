@@ -39,3 +39,5 @@ Restriction on what can be injected, by type and receiving type (or namespace or
 	By categories of classes, where category is determined by naming convention, namespace and/or attribute.
 
 Register a singleton (or attribute a type to do this by default?) to have clones injected.
+
+Optionally run Validation Attributes (on the value to be injected) on injection.

@@ -106,6 +106,28 @@ namespace DiExtension.Attributes
         /// </summary>
         public virtual bool ByType { get; set; } = true;
 
+        /// <summary>
+        /// true to run Validation Attributes on the value to be injected.
+        /// false to ignore them.
+        /// If not assigned, the container's default is used.
+        /// </summary>
+        [Obsolete("NOT IMPLEMENTED YET")]
+        public virtual bool Validate
+        {
+            get
+            {
+                if (_validate == null)
+                    throw new InvalidOperationException("'" + nameof(Validate) + "' value not set");
+                return _validate.Value;
+            }
+            set { _validate = value; }
+        }
+        protected virtual bool? GetValidateValue()
+        {
+            return _validate;
+        }
+        protected bool? _validate;
+
         /*
         /// <summary>
         /// Iff false, a different instance is used each time.
