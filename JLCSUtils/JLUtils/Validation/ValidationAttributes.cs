@@ -448,6 +448,35 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual TimePartOption TimePartOption { get; set; }
         //TODO: Set the time part on validation.
+
+        public virtual TimeValidationOptions Options { get; set; }
+
+        /// <summary>
+        /// Minimum (earliest) allowed value.
+        /// </summary>
+        public virtual DateTime Minimum { get; set; } = DateTime.MinValue;
+
+        /// <summary>
+        /// Maximum (latest) allowed value.
+        /// </summary>
+        public virtual DateTime Maximum { get; set; } = DateTime.MaxValue;
+
+        // Options to add:
+        //   Restrict days of week?
+        //   Min. and Max. time of day?
+        //   Min. and Max. difference to current time (TimeSpans).
+        //   Default to current time?
+
+        /*
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+            DateTime timeValue = GeneralTypeConverter.Convert<DateTime>(value);
+            if (timeValue < Minimum || timeValue > Maximum)
+                results.Add("Date/time is outside the allowed range");  //TODO Show range
+            //TODO other properties
+        }
+        */
     }
 
     [Flags]
@@ -466,6 +495,9 @@ namespace JohnLambe.Util.Validation
         Full = Date | TimeOfDay
     }
 
+    /// <summary>
+    /// Specifies what the time part of a datetime value holds.
+    /// </summary>
     public enum TimePartOption
     {
         Unspecified = 0,
@@ -491,6 +523,20 @@ namespace JohnLambe.Util.Validation
         /// </para>
         /// </summary>
         EndOfDay,
+    }
+
+    [Flags]
+    public enum TimeValidationOptions
+    {
+        /// <summary>
+        /// Time values in the past are allowed.
+        /// </summary>
+        AllowPast = 1,
+
+        /// <summary>
+        /// Time values in the future are allowed.
+        /// </summary>
+        AllowFuture = 2
     }
 
 }

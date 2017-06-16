@@ -110,7 +110,8 @@ namespace DiExtension.SimpleInject
         {
             return Assemblies.SelectMany(assembly => assembly.GetTypes()           // all types in all assemblies
                         .Where(type1 => !type1.IsAbstract && type1.IsDefined<HasAutoWiredEventHandlerAttribute>())
-                        .SelectMany(type2 => type2.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public).Where(method => method.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType))  // selected methods for each type
+                        .SelectMany(type2 => type2.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public).Where(method => method.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType 
+                        /* && method.GetCustomAttribute<AutoEventHandlerAttribute>()?.Key == key */))  // selected methods for each type
                 )
                 .OrderBy(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.Priority);
 /*

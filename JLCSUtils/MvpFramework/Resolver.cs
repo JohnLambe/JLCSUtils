@@ -224,17 +224,24 @@ namespace MvpFramework
         /// <summary>
         /// Returns the type of a presenter that can do a specified action on a given model.
         /// </summary>
-        /// <param name="actionInterface">The action to be performed, e.g. Display, Edit, Print.</param>
-        /// <param name="modelType">The model on which the presenter must be able to perform the action.</param>
+        /// <param name="actionInterface">
+        /// The action to be performed, e.g. Display, Edit, Print.
+        /// If this is null, null is returned.
+        /// </param>
+        /// <param name="modelType">
+        /// The model on which the presenter must be able to perform the action.
+        /// If this is null, null is returned.
+        /// </param>
         /// <returns>The resolved Presenter type (which must implement <see cref="IPresenter"/>), or null if none is found.</returns>
         /// <seealso cref="PresenterForActionAttribute"/>
-        public virtual Type ResolvePresenterTypeForAction(Type actionInterface, Type modelType)
+        [return: Nullable]
+        public virtual Type ResolvePresenterTypeForAction([Nullable] Type actionInterface, [Nullable] Type modelType)
         {
             // Initial inefficient implementation.
             //TODO: Does not currently recognise a presenter that handles a superclass (or other type that is assignable from) the target one.
             //TODO: Cache mappings.
 
-            if (Assemblies == null)
+            if (Assemblies == null || actionInterface == null || modelType == null)
                 return null;
             /*
                         var a1 = Assemblies.SelectMany(a => a.GetTypes())

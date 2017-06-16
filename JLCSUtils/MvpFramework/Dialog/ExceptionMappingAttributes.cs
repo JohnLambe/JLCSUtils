@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,15 +35,15 @@ namespace MvpFramework.Dialog
         /// The exception type being mapped.
         /// Must be <see cref="System.Exception"/> or a subclass of it.
         /// </summary>
+        [TypeValidation(TypeOrSubclassOf = typeof(Exception))]
         public virtual Type ExceptionClass
         {
             get { return _exceptionClass; }
             set
             {
-                if (_exceptionClass == typeof(Exception) || _exceptionClass.IsSubclassOf(typeof(Exception)))
-                    _exceptionClass = value;
-                else
+                if (!value.IsTypeOrSubclassOf(typeof(Exception)))
                     throw new ArgumentException(GetType().Name + "." + nameof(ExceptionClass) + " must be a subclass of Exception ");
+                _exceptionClass = value;
             }
         }
         private Type _exceptionClass;

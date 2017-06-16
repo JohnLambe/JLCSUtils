@@ -9,7 +9,7 @@ namespace DiExtension.Attributes
     /// <summary>
     /// Base class for attributes of this framework.
     /// </summary>
-    public class DiAttribute : Attribute
+    public abstract class DiAttribute : Attribute
     {
     }
 }

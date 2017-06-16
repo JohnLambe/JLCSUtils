@@ -22,7 +22,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
 
             // Arrange:
 
-            TestEventHandler.Log = "";
+            TestEventHandler.Log = "";    // the event handler modifies this
 
             //            EventAutoWirer.RegisterWith(_context.Container, _context);
             new EventAutoWirer(_context.Container).Assemblies = new Assembly[] { Assembly.GetExecutingAssembly() };
@@ -34,11 +34,12 @@ namespace JohnLambe.Tests.JLUtilsTest.Di
             // Act:
 
             var instance = _context.GetInstance<TestObjectWithEvent>(typeof(TestObjectWithEvent));
-            instance.FireEvent();
+            instance.FireEvent();    // fire the event that should have been injected
 
             // Assert:
 
             Assert.AreEqual("TestEventHandler2(1,a)\nTestEventHandler(1,a)\nStaticHandlerClass(1,a)\n", TestEventHandler.Log);
+                // Check that the event handler ran by examining this static which it modifies.
 
         }
 
