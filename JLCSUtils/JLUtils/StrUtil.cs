@@ -9,6 +9,7 @@ using System.Windows;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.Diagnostic;
 using System.Runtime.CompilerServices;
+using JohnLambe.Util.Validation;
 
 namespace JohnLambe.Util
 {
@@ -1356,5 +1357,6 @@ namespace JohnLambe.Util
         }
 
         #endregion
+
     }
 }

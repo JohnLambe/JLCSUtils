@@ -34,7 +34,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "ButtonCollectionUi";
+            this.Name = "ButtonContainer";
             this.Size = new System.Drawing.Size(152, 145);
             this.ResumeLayout(false);
 

@@ -34,8 +34,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.buttonContainer1 = new MvpFramework.WinForms.ButtonContainer();
-            this.buttonContainer2 = new MvpFramework.WinForms.ButtonContainer();
+            this.uiRightPanel = new MvpFramework.WinForms.ButtonContainer();
+            this.uiButtonContainer2 = new MvpFramework.WinForms.ButtonContainer();
             this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -99,32 +99,31 @@
             this.button2.Text = "&Update";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // buttonContainer1
+            // uiRightPanel
             // 
-            this.buttonContainer1.BackColor = System.Drawing.Color.Silver;
-            this.buttonContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.buttonContainer1.ButtonAlignment = System.Windows.Forms.HorizontalAlignment.Right;
-            this.buttonContainer1.Buttons = null;
-            this.buttonContainer1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.buttonContainer1.Filter = "RightPanel";
-            this.buttonContainer1.Location = new System.Drawing.Point(302, 0);
-            this.buttonContainer1.Name = "buttonContainer1";
-            this.buttonContainer1.Size = new System.Drawing.Size(121, 174);
-            this.buttonContainer1.TabIndex = 6;
+            this.uiRightPanel.BackColor = System.Drawing.Color.Silver;
+            this.uiRightPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.uiRightPanel.ButtonAlignment = System.Windows.Forms.HorizontalAlignment.Right;
+            this.uiRightPanel.Buttons = null;
+            this.uiRightPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.uiRightPanel.Location = new System.Drawing.Point(302, 0);
+            this.uiRightPanel.Name = "uiRightPanel";
+            this.uiRightPanel.Size = new System.Drawing.Size(121, 174);
+            this.uiRightPanel.TabIndex = 6;
             // 
-            // buttonContainer2
+            // uiButtonContainer2
             // 
-            this.buttonContainer2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.buttonContainer2.Buttons = null;
-            this.buttonContainer2.ButtonsLayout = System.Windows.Forms.TabAlignment.Left;
-            this.buttonContainer2.ButtonSpacing = 4;
-            this.buttonContainer2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonContainer2.Filter = null;
-            this.buttonContainer2.Location = new System.Drawing.Point(0, 132);
-            this.buttonContainer2.Margin = new System.Windows.Forms.Padding(10, 20, 3, 3);
-            this.buttonContainer2.Name = "buttonContainer2";
-            this.buttonContainer2.Size = new System.Drawing.Size(302, 42);
-            this.buttonContainer2.TabIndex = 7;
+            this.uiButtonContainer2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.uiButtonContainer2.Buttons = null;
+            this.uiButtonContainer2.ButtonsLayout = System.Windows.Forms.TabAlignment.Left;
+            this.uiButtonContainer2.ButtonSpacing = 4;
+            this.uiButtonContainer2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.uiButtonContainer2.Location = new System.Drawing.Point(0, 132);
+            this.uiButtonContainer2.Margin = new System.Windows.Forms.Padding(10, 20, 3, 3);
+            this.uiButtonContainer2.Name = "uiButtonContainer2";
+            this.uiButtonContainer2.Size = new System.Drawing.Size(302, 42);
+            this.uiButtonContainer2.TabIndex = 7;
+            this.uiButtonContainer2.OnGetFilter += new MvpFramework.Binding.GetStringDelegate(this.buttonContainer2_OnGetFilter);
             // 
             // button3
             // 
@@ -142,8 +141,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.buttonContainer2);
-            this.Controls.Add(this.buttonContainer1);
+            this.Controls.Add(this.uiButtonContainer2);
+            this.Controls.Add(this.uiRightPanel);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -167,8 +166,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
-        private MvpFramework.WinForms.ButtonContainer buttonContainer1;
-        private MvpFramework.WinForms.ButtonContainer buttonContainer2;
+        private MvpFramework.WinForms.ButtonContainer uiRightPanel;
+        private MvpFramework.WinForms.ButtonContainer uiButtonContainer2;
         private System.Windows.Forms.Button button3;
     }
 }

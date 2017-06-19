@@ -1,5 +1,6 @@
 ﻿using JohnLambe.Util.Documentation;
 using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// If this is not <see cref="ValidationResultType.Error"/>, then when an item fails validation,
         /// it generates a message of that type.
+        /// If it is <see cref="ValidationResultType.None"/>, the validation of this attribute is not done (it may be used for tagging an item as a certain type, etc.).
         /// </summary>
         public virtual ValidationResultType ResultType { get; set; } = ValidationResultType.Error;
 
@@ -31,8 +33,13 @@ namespace JohnLambe.Util.Validation
         //
         // Returns:
         //     An instance of the System.ComponentModel.DataAnnotations.ValidationResult class.
+
+        // Override this only to change the logic of this implementation, not to do the actual validation of the derived type.
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            if (ResultType == ValidationResultType.None)
+                return ValidationResult.Success;           // treat as always valid
+
             if (ResultType < ValidationResultType.Error                    // if this can return only warnings / messages, or modify the value
                 && !validationContext.GetSupportedFeatures().HasAnyFlag(ValidationFeatures.Warnings | ValidationFeatures.Modification)   // and that is not supported
                 )
@@ -45,13 +52,20 @@ namespace JohnLambe.Util.Validation
             return results.Result;
         }
 
-        protected virtual void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        /// <summary>
+        /// `IsValid` overload providing more context information, and the ability to change the value.
+        /// Override this instead of the other overalods.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="validationContext"></param>
+        /// <param name="results"></param>
+        protected virtual void IsValid([Nullable] ref object value, [NotNull] ValidationContext validationContext, [NotNull] ValidationResults results)
         {
         }
 
         /// <summary>
         /// A human-readable text description of this validation rule.
-        /// <para>If no description is explicitly defined on an instance, this returns <see cref="DefaultDescritpion"/>.</para.>
+        /// <para>If no description is explicitly defined on an instance (or this is set to null), this returns <see cref="DefaultDescritpion"/>.</para.>
         /// </summary>
         public virtual string Description
         {

@@ -89,6 +89,8 @@
     <Compile Include="Services\!NamespaceDoc.cs" />
     <Compile Include="Services\SessionLock.cs" />
     <Compile Include="Text\Ascii.cs" />
+    <Compile Include="Text\LetterCapitalizationOption.cs" />
+    <Compile Include="Text\StringTrimmingOption.cs" />
     <Compile Include="TimeUtilities\!NamespaceDoc.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Types\NullableBooleanExtension.cs" />

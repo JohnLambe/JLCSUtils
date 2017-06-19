@@ -11,6 +11,7 @@ using MvpFramework.Binding;
 using MvpFramework.WinForms.Util;
 using System.Diagnostics;
 using MvpFramework.Menu;
+using JohnLambe.Util;
 
 namespace MvpFramework.WinForms
 {
@@ -413,15 +414,51 @@ namespace MvpFramework.WinForms
 
         /// <summary>
         /// Filters handlers of the presenter.
+        /// <para>null for all handlers.</para>
         /// </summary>
+        /// <seealso cref="OnGetFilter"/>.
         [Category(MvpUiComponentConsts.DesignerCategory)]
-        [Description("Filters handles of the presenter.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Description("Filters handlers of the presenter. See OnGetFilter.")]
         //[DefaultValue(null)]   // with no default, Form Designer can't set to null.
-        public virtual string Filter { get; set; }
-        //| Could default to a value derived from Name.
+        public virtual string Filter
+        {
+            get
+            {
+                string filter = OnGetFilter?.Invoke(this, EventArgs.Empty);
+                if (filter == FilterAll)
+                    return null;
+                else
+                    return filter
+                        ?? Name?.RemovePrefix("ui")
+                        ?? "";
+            }
+        }
 
         /// <summary>
-        /// Default width of each button, in pixels.
+        /// Value returned from <see cref="OnGetFilter"/> to match all handlers of the presenter.
+        /// </summary>
+        public const string FilterAll = "*";
+        //TODO: Special value for None ?
+
+        /// <summary>
+        /// Returns the <see cref="Filter"/> value to filter handlers of the Presenter.
+        /// If this does not have a handler, the Filter is name of this control, with a prefix of "ui" removed (if present).
+        /// </summary>
+        /// <seealso cref="FilterAll"/>
+        /// <remarks>
+        /// Using an event handler allows returning a constant that can be referenced on the handlers (in the <see cref="MvpHandlerAttribute"/>),
+        /// thus avoiding using a string literal that would have to match.
+        /// </remarks>
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [Description("Returns the Filter value to filter handlers of the Presenter.\n"
+            + "If this does not have a handler, or it returns null, the Filter is name of this control, with a prefix of \"ui\" removed (if present)."
+            + "Using an event handler allows assigning it to a constant that can be referenced on the handlers.\n"
+            + "Return " + nameof(ButtonContainer) + "." + nameof(FilterAll) + " (\"" + FilterAll + "\") to match all handlers." )]
+        public virtual event GetStringDelegate OnGetFilter;
+
+        /// <summary>
+        /// Default and minimum width of each button, in pixels.
         /// </summary>
         [Category("Layout")]
         [DefaultValue(DefaultMinimumButtonWidth)]

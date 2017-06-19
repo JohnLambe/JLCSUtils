@@ -65,7 +65,7 @@ namespace JohnLambe.Util.Services
     }
 
 
-    public interface ISesson
+    public interface ISession
     {
         string SessionId { get; set; }
 

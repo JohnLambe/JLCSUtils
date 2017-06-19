@@ -33,7 +33,7 @@ namespace MvpFramework.WinForms.Controls
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
         //[MvpModelProperty("Text", "TextChanged")]
-        public event GetNameDelegate GetModelProperty;
+        public event GetStringDelegate GetModelProperty;
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
         public string[] Items { get; set; }
@@ -42,5 +42,4 @@ namespace MvpFramework.WinForms.Controls
         public Type TypeProperty { get; set; }
     }
 
-    public delegate string GetNameDelegate();
 }

@@ -82,6 +82,17 @@ namespace JohnLambe.Util.TimeUtilities
             return new TimeSpan(value.Ticks % TimeSpan.TicksPerDay);
         }
 
+        /// <summary>
+        /// Returns a new DateTime equal to this one with the time part changed to <paramref name="time"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static DateTime ChangeTime(this DateTime value, TimeSpan time)
+        {
+            return value.Date + time;
+        }
+
         #endregion
 
         #region IsDateOnly / IsTimeOfDay
@@ -90,6 +101,11 @@ namespace JohnLambe.Util.TimeUtilities
         //| Could add overloads for nullable types, but what should they do on null? :
         //| return true (because it is valid as a nullable date or time part) or throw an exception.
 
+        /// <summary>
+        /// True if this DateTime has no (midnight) time of day part.
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
         public static bool IsDateOnly(DateTime datetime)
         {
             return datetime.TimeOfDay == Midnight;

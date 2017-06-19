@@ -11,10 +11,11 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using JohnLambe.Util.TimeUtilities;
 
 namespace JohnLambe.Util.Validation
 {
-    //TODO: Remove "Validation" from these names, except RegexValidationAttribute ?
+    //TODO: Remove "Validation" from these names, except RegexValidationAttribute ??
 
 
     /// <summary>
@@ -50,7 +51,12 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Specifies how the string should be capitalised.
         /// </summary>
-        public virtual LetterCapitalisationOption Capitalisation { get; set; } = LetterCapitalisationOption.MixedCase;
+        public virtual LetterCapitalizationOption Capitalisation { get; set; } //= LetterCapitalizationOption.MixedCase;
+
+        /// <summary>
+        /// Whether values should have leading and/or trailing space removed.
+        /// </summary>
+        public virtual StringTrimmingOption Trimming { get; set; }
 
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
@@ -60,52 +66,18 @@ namespace JohnLambe.Util.Validation
                 if (StrUtil.ContainsOnlyCharacters(value.ToString(), AllowedCharactersSet))
                     results.Add(ErrorMessage ?? "Contains an invalid character");
             }
+
+            if(value != null && Capitalisation != LetterCapitalizationOption.MixedCase && Capitalisation != LetterCapitalizationOption.Unspecified)
+            {
+                var stringValue = value.ToString();
+                var newValue = Capitalisation.ChangeCapitalization(stringValue);
+                if (newValue != stringValue)         // only if the value is changed
+                    value = newValue;                // update it (so that the type is preserved if the capitalisation doesn't change)
+            }
+
         }
     }
 
-    /// <summary>
-    /// Options for what capitalisation is valid in a string,
-    /// or should be applied to it (capitalisation changed to match the pattern).
-    /// </summary>
-    public enum LetterCapitalisationOption
-    {
-        /// <summary>
-        /// Any combination of capital and lowercase letters is valid.
-        /// Don't change/correct capitalisation.
-        /// </summary>
-        MixedCase = 0,
-        /// <summary>
-        /// All letters are lowercase.
-        /// </summary>
-        AllLowercase,
-        /// <summary>
-        /// All letters are capital.
-        /// </summary>
-        AllCapital,
-        /// <summary>
-        /// The first letter of each word is captial.
-        /// Capital letters in other positions are also valid.
-        /// </summary>
-        TitleCase,
-        /// <summary>
-        /// The first letter of each word is captial.
-        /// All other letters must be lowercase.
-        /// </summary>
-        TitleCaseOnly,
-        /// <summary>
-        /// The first letter of the string is capital.
-        /// Capital letters in other positions are also valid.
-        /// </summary>
-        FirstLetterCapital,
-        /// <summary>
-        /// The first letter of the string is capital.
-        /// All other letters must be lowercase.
-        /// </summary>
-        FirstLetterCapitalOnly
-
-        // These options relate to human-readable text.
-        //| Code identifiers also have camelCase, PascalCase, and options relating to underscores.
-    }
 
     /// <summary>
     /// The data item holds a phone number.
@@ -115,6 +87,20 @@ namespace JohnLambe.Util.Validation
     {
         public override string DefaultDescritpion => "A phone number";
 
+        /// <summary>
+        /// If true, the number must be in international format, beginning with a "+".
+        /// </summary>
+        public virtual bool IsInternational
+        {
+            get { return (bool)_isInternational; }
+            set { _isInternational = value; } }
+        private bool _isInternational { get; set; }
+        public bool? GetIsInternational() =>  _isInternational;
+
+        // Testing for national format, or converting between national, international and local, or validating the national or local part,
+        // would require information about the local network.
+        // An international standard specifies a maximum of 15 digits after the country code.
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             if (value == null || value.ToString() == "")            // blank or null is valid
@@ -122,6 +108,19 @@ namespace JohnLambe.Util.Validation
 
             if (!ValidatePhoneNumber(value))                    // validate using PhoneAttribute
                 results.Fail();
+
+            if(GetIsInternational().HasValue)
+            {
+                string s = value.ToString();
+                bool international = s.StartsWith("+");
+                if (international != GetIsInternational())
+                {
+                    if (international)
+                        results.Add("Phone number must not be in international format");
+                    else
+                        results.Add("Phone number must be in international format");
+                }
+            }
 
             base.IsValid(ref value, validationContext, results);
         }
@@ -144,7 +143,6 @@ namespace JohnLambe.Util.Validation
     /// <summary>
     /// The data item holds a postcode.
     /// </summary>
-    /// <remarks><see cref="PhoneNumberAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
     public class PostcodeValidationAttribute : StringValidationAttribute
     {
     }
@@ -181,6 +179,31 @@ namespace JohnLambe.Util.Validation
     public class EmailValidationAttribute : StringValidationAttribute
     {
         public override string DefaultDescritpion => "An email address";
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            if (value == null || value.ToString() == "")            // blank or null is valid
+                return;   // valid
+
+            if (!ValidateEmailAddress(value))                    // validate using EmailAddressAttribute
+                results.Fail();
+
+            base.IsValid(ref value, validationContext, results);
+        }
+
+        /// <summary>
+        /// Validates an email address in the same way as <see cref="EmailAddressAttribute"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool ValidateEmailAddress(object value)
+            => _emailAddressAttribute.IsValid(value);
+
+        /// <summary>
+        /// Instance to use for validating values passed to instances of this class.
+        /// This class does not change its state.
+        /// </summary>
+        private static EmailAddressAttribute _emailAddressAttribute = new EmailAddressAttribute();
     }
 
     /// <summary>
@@ -289,7 +312,6 @@ namespace JohnLambe.Util.Validation
     /// <summary>
     /// The data item holds a URL.
     /// </summary>
-    /// <remarks><see cref="PhoneNumberAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
     public class UrlValidationAttribute : StringValidationAttribute
     {
         public override string DefaultDescritpion => "A URL";
@@ -332,7 +354,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual double MaximumValue { get; set; } = double.MaxValue;
 
-        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        protected override void IsValid([Nullable] ref object value, ValidationContext validationContext, ValidationResults results)
         {
             if (value != null)
             {
@@ -467,16 +489,27 @@ namespace JohnLambe.Util.Validation
         //   Min. and Max. difference to current time (TimeSpans).
         //   Default to current time?
 
-        /*
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
             DateTime timeValue = GeneralTypeConverter.Convert<DateTime>(value);
+
             if (timeValue < Minimum || timeValue > Maximum)
                 results.Add("Date/time is outside the allowed range");  //TODO Show range
+
+            switch (TimePartOption)
+            {
+                case TimePartOption.EndOfDay:
+                    timeValue = timeValue.EndOfDay();
+                    value = timeValue;
+                    break;
+                case TimePartOption.StartOfDay:
+                    timeValue = timeValue.Date;
+                    value = timeValue;
+                    break;
+            }
             //TODO other properties
         }
-        */
     }
 
     [Flags]

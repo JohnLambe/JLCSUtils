@@ -68,5 +68,10 @@ namespace MvpDemo
 
         [MvpEvent("Test_NoHandler")]
         public event EventHandler TestEvent2;
+
+        private string buttonContainer2_OnGetFilter(object sender, EventArgs args)
+        {
+            return ButtonContainer.FilterAll;
+        }
     }
 }
