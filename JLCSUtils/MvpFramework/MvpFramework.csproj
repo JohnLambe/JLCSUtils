@@ -60,6 +60,7 @@
     <Compile Include="Binding\ViewControlBinder.cs" />
     <Compile Include="CommonIcons.cs" />
     <Compile Include="Dialog\!NamespaceDoc.cs" />
+    <Compile Include="Dialog\Attributes.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
     <Compile Include="Dialog\ExceptionToDialogMap.cs" />
     <Compile Include="Generator\Attributes.cs" />

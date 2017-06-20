@@ -95,7 +95,7 @@ namespace JohnLambe.Util.Collections
 
         public virtual void Add(K key, V value)
         {
-            _map.Add(key, value);
+            _map[key] = value;
         }
 
         public virtual void Remove(K key)

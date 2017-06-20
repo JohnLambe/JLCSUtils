@@ -179,16 +179,4 @@ namespace MvpFramework.Dialog
         public static readonly MessageDisplayType Modal = new MessageDisplayType();
     }
 
-
-    /// <summary>
-    /// Register a message dialog type to be available for configuration.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class RegisterMessageDialogAttribute : MvpClassAttribute
-    {
-        public virtual string[] Filter { get; set; }
-
-        public virtual string Category { get; set; }
-    }
-
 }

@@ -90,9 +90,7 @@ namespace JohnLambe.Util.Text
                                                                                     /*TODO
                                                                                                     case LetterCapitalizationOption.TitleCaseOnly:
                                                                                                         break;
-                                                                                                    case LetterCapitalizationOption.TitleCaseOnly:
-                                                                                                        value =
-                                                                                                        value = value.ToLower();
+                                                                                                    case LetterCapitalizationOption.TitleCase:
                                                                                                         break;
                                                                                                         */
                 default:

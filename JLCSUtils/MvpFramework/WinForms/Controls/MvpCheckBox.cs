@@ -18,6 +18,7 @@ namespace MvpFramework.WinForms.Controls
     [MvpControlMapping(ForTypes = new [] { typeof(bool), typeof(bool?) })]
     public class MvpCheckBox : CheckBox
     {
+        /*
         /// <summary>
         /// The name of the bound property on the model.
         /// The recommended types for the bound property are <see cref="bool"/> and bool? (if the check box is tri-state).
@@ -27,6 +28,12 @@ namespace MvpFramework.WinForms.Controls
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
         public virtual string ModelProperty { get; set; }
+        */
+
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
+        [MvpModelProperty("CheckState", "CheckStateChanged")]
+        public event GetStringDelegate OnGetModelProperty;
 
         /*
         [MvpHandlerIdProperty("CheckStateChanged")]

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Binding;
+using MvpFramework.Generator;
 
 namespace MvpFramework.WinForms.Controls
 {
@@ -28,13 +29,23 @@ namespace MvpFramework.WinForms.Controls
         /// </summary>
         public virtual void Generate()
         {
-            var generator = new FormGenerator()
-            {
-                Target = this,
-                Model = ModelBinder,
-                ModelProperty = this.ModelProperty
-            };
+            var generator = CreateGenerator();
+
+            generator.Target = this;
+            generator.Model = ModelBinder;
+            generator.ModelProperty = this.ModelProperty;
+
             generator.Generate();
+        }
+
+        /// <summary>
+        /// Create the generator object.
+        /// <para>Override to use a different generator implemenation.</para>
+        /// </summary>
+        /// <returns>The generator instance to use.</returns>
+        protected virtual FormGeneratorBase<Control> CreateGenerator()
+        {
+            return new FormGenerator();
         }
 
         /// <summary>

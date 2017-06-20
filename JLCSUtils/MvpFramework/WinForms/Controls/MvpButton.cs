@@ -18,6 +18,7 @@ namespace MvpFramework.WinForms.Controls
         [MvpHandlerIdProperty("Click")]
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.HandlerIdDescription)]
-        public virtual string HandlerId { get; set; }
+        public event GetStringDelegate OnGetHandlerId;
+        //        public virtual string HandlerId { get; set; }
     }
 }

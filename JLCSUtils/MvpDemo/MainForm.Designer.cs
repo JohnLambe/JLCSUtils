@@ -105,7 +105,7 @@
             this.mvpTextBox1.Items = new string[] {
         "[Text<->Name|TextChanged=>Updated]"};
             this.mvpTextBox1.Location = new System.Drawing.Point(26, 154);
-            this.mvpTextBox1.ModelProperty = "Name;=>Updated";
+//            this.mvpTextBox1.ModelProperty = "Name;=>Updated";
             this.mvpTextBox1.Name = "mvpTextBox1";
             this.mvpTextBox1.Size = new System.Drawing.Size(114, 20);
             this.mvpTextBox1.TabIndex = 5;
@@ -116,7 +116,7 @@
             // 
             this.mvpComboBox1.FormattingEnabled = true;
             this.mvpComboBox1.Location = new System.Drawing.Point(149, 154);
-            this.mvpComboBox1.ModelProperty = null;
+//            this.mvpComboBox1.ModelProperty = null;
             this.mvpComboBox1.Name = "mvpComboBox1";
             this.mvpComboBox1.Size = new System.Drawing.Size(121, 21);
             this.mvpComboBox1.TabIndex = 3;

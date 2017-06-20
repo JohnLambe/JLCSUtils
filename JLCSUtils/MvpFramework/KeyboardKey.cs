@@ -999,7 +999,7 @@ namespace MvpFramework
     /// <summary>
     /// Extensions methods on or relating to <see cref="KeyboardKey"/>.
     /// </summary>
-    /// <seealso cref="WinForms.KeyboardKeyExt"/>
+    /// <seealso cref="WinForms.KeyboardKeyExtension"/>
     public static class KeyboardKeyExtension
     {
         /// <summary>

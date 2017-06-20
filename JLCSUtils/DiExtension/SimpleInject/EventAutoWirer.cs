@@ -26,11 +26,6 @@ namespace DiExtension.SimpleInject
     /// </summary>
     public class EventAutoWirer
     {
-        // /// <summary>
-        // /// The name of the method of the handler class that implements the event delegate.
-        // /// </summary>
-        // protected const string HandlerMethodName = "Execute";
-
         public EventAutoWirer(Container container /*, IExtendedDiContext context*/)
         {
 //            this.Context = context;
@@ -39,7 +34,7 @@ namespace DiExtension.SimpleInject
                 new Action<IHasAutoWiredEvent>(obj => AutoWireEvents(obj));
             container.RegisterInitializer<IHasAutoWiredEvent>(action);
 
-            _handlerMappings = new CachedSimpleLookup<Type, IEnumerable<MethodInfo>>( t => FindHandlersForDelegate(t) );
+            _handlerMappings = new CachedSimpleLookup<EventKey, IEnumerable<MethodInfo>>( k => FindHandlersForDelegate(k.EventType, k.Key) );
         }
 
         /// <summary>
@@ -58,24 +53,25 @@ namespace DiExtension.SimpleInject
         /// <param name="obj"></param>
         protected virtual void AutoWireEvents(IHasAutoWiredEvent obj)
         {
-            foreach (var evt in obj.GetType().GetEvents())
+            foreach (var evt in obj.GetType().GetEvents())          // for each event of the class
             {
                 var attribute = evt.GetCustomAttribute<InjectAttribute>();
-                if (attribute != null && attribute.Enabled)       // the attribute is present and its Enabled property is true (the default)
+                if (attribute != null && attribute.Enabled)         // the attribute is present and its Enabled property is true (the default)
                 {
                     Type eventType = evt.EventHandlerType;
-                    var handlers = GetHandlersForDelegate(eventType);
-                    if (attribute.Required && handlers.Count() == 0)    // if handlers are required, and there are none
+                    var handlers = GetHandlersForDelegate(eventType, attribute.Key);
+                    if (attribute.Required && !handlers.Any())       // if handlers are required, and there are none
                     {
                         throw new InjectionFailedException("Injection failed for event: " + evt.ToString()
+                            + (attribute.Key != null ? "; Key: " + attribute.Key : "")
                             + " (No handlers found)");
                     }
 
-                    foreach (MethodInfo handler in handlers)
+                    foreach (MethodInfo handler in handlers)    // for each handler
                     {
-                        Delegate handlerDelegate;   // the delegate that fires the handler
+                        Delegate handlerDelegate;               // the delegate that fires the handler
 
-                        if (handler.IsStatic)    // if the handler is a static method
+                        if (handler.IsStatic)                   // if the handler is a static method
                         {
                             handlerDelegate = Delegate.CreateDelegate(eventType, handler);  // make a delegate that calls the method
                         }
@@ -96,9 +92,23 @@ namespace DiExtension.SimpleInject
         /// </summary>
         /// <param name="eventType"></param>
         /// <returns></returns>
-        protected virtual IEnumerable<MethodInfo> GetHandlersForDelegate(Type eventType)
+        protected virtual IEnumerable<MethodInfo> GetHandlersForDelegate(Type eventType, string key)
         {
-            return _handlerMappings[eventType];
+            return _handlerMappings[MakeKey(eventType,key)];
+        }
+
+        protected virtual EventKey MakeKey(Type eventType, string key)
+        {
+            return new EventKey() { EventType = eventType, Key = key };
+        }
+
+        /// <summary>
+        /// Key of <see cref="_handlerMappings"/> - identifies a set of injectable handlers.
+        /// </summary>
+        protected struct EventKey
+        {
+            public Type EventType;
+            public string Key;
         }
 
         /// <summary>
@@ -106,29 +116,19 @@ namespace DiExtension.SimpleInject
         /// </summary>
         /// <param name="eventType">The delegate type for which to find handlers.</param>
         /// <returns></returns>
-        protected virtual IEnumerable<MethodInfo> FindHandlersForDelegate(Type eventType)
+        protected virtual IEnumerable<MethodInfo> FindHandlersForDelegate(Type eventType, string key = null)
         {
             return Assemblies.SelectMany(assembly => assembly.GetTypes()           // all types in all assemblies
                         .Where(type1 => !type1.IsAbstract && type1.IsDefined<HasAutoWiredEventHandlerAttribute>())
-                        .SelectMany(type2 => type2.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public).Where(method => method.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType 
-                        /* && method.GetCustomAttribute<AutoEventHandlerAttribute>()?.Key == key */))  // selected methods for each type
+                        .SelectMany(type2 => type2.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public)
+                            .Where(method =>
+                            {
+                                var attribute = method.GetCustomAttribute<AutoEventHandlerAttribute>();
+                                return attribute?.EventType == eventType && (key == null || attribute?.Key == key);
+                            }))  // selected methods for each type
                 )
                 .OrderBy(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.Priority);
-/*
-            IList<MethodInfo> handlersList = new List<MethodInfo>();
-            foreach (var assembly in Assemblies)
-            {
-                handlersList.AddAll(
-                    assembly.GetTypes()
-                        
-                        .SelectMany(t => t.GetMethods().Where(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.EventType == eventType))
-                );
-            }
-            return handlersList.OrderBy(m => m.GetCustomAttribute<AutoEventHandlerAttribute>()?.Priority);
-            */
         }
-
-
 
         //        protected readonly IExtendedDiContext Context;
         protected readonly Container Container;
@@ -141,6 +141,6 @@ namespace DiExtension.SimpleInject
         /// <summary>
         /// Mapping from delegate type to a collection of handlers for it.
         /// </summary>
-        protected readonly ISimpleLookup<Type, IEnumerable<MethodInfo>> _handlerMappings;
+        protected readonly ISimpleLookup<EventKey, IEnumerable<MethodInfo>> _handlerMappings;
     }
 }

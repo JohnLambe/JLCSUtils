@@ -317,7 +317,9 @@ namespace MvpFramework.Binding
     /// <summary>
     /// Base class for attributes for properties whose value defines a mapping between a view and a model or presenter.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    //[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
+    //TODO: Support event that returns the value.
     //TODO: Support on Event. The event returns the property name or handler ID.
     public abstract class MvpMappingPropertyBaseAttribute : MvpEnabledAttributeBase
     {
@@ -335,8 +337,6 @@ namespace MvpFramework.Binding
     /// The property on the model is populated from the control when the specified event is fired.
     /// </para>
     /// </summary>
-    //TODO: Support event that returns the value.
-    //    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
     public class MvpModelPropertyAttribute : MvpMappingPropertyBaseAttribute
     {
         public MvpModelPropertyAttribute(string valuePropertyName)
