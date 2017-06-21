@@ -1,5 +1,6 @@
 ﻿using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.TypeConversion;
+using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -132,9 +133,57 @@ namespace JohnLambe.Util.Reflection
             return value.GetType().IsEnumDefined(value);
         }
         */
+
+        /// <summary>
+        /// Convert a value of one enum type to the value with the same name in another enum type.
+        /// </summary>
+        /// <typeparam name="TDest">The enum type to convert to. Must be an enum or nullable enum type.</typeparam>
+        /// <param name="source">The value to convert.</param>
+        /// <param name="ignoreCase">Match the name non-case-sensitively.</param>
+        /// <returns>The converted value.
+        /// null if the type is nullable and the source value is null.
+        /// </returns>
+        /// <exception cref="ArgumentException">If the source value does not have a corresponding value on the destination type.</exception>
+        [return: Nullable]
+        public static TDest ConvertEnum<TDest>([Nullable] Enum source, bool ignoreCase = false)
+        {
+            if (source == null)
+                return (TDest)(object)null;     // try to return null (fails if TDest is not nullable)
+            Type destType = typeof(TDest).GetNonNullableType();
+            Diagnostics.Assert(destType.IsEnum);
+            //var name = Enum.GetName(source.GetType(), source);
+            return (TDest)Enum.Parse(destType, source.ToString(), ignoreCase);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDest"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="defaultValue">Value to return if the source does not have a corresponding value on the destination type.</param>
+        /// <param name="ignoreCase">Match the name non-case-sensitively.</param>
+        /// <returns>The converted value.
+        /// null if the type is nullable and the source value is null.
+        /// </returns>
+        [return: Nullable]
+        public static TDest ConvertEnum<TDest>([Nullable] Enum source, [Nullable] TDest defaultValue, bool ignoreCase = false)
+        {
+            try
+            {
+                return ConvertEnum<TDest>(source, ignoreCase);
+            }
+            catch (ArgumentException)
+            {
+                return defaultValue;
+            }
+        }
+
     }
 
 
+    /// <summary>
+    /// Base class for enum-related attributes.
+    /// </summary>
     public abstract class EnumAttribute : Attribute
     {
     }

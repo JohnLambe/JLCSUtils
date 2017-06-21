@@ -96,5 +96,14 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
         #endregion
 
+        [TestMethod]
+        public void TypeNameOrVoid()
+        {
+            Multiple(
+                () => Assert.AreEqual("System.Void", TypeUtil.TypeNameOrVoid(null)),   // typeof(void).ToString()
+                () => Assert.AreEqual(GetType().ToString(), TypeUtil.TypeNameOrVoid(GetType())),
+                () => Assert.AreEqual("System.Int32", TypeUtil.TypeNameOrVoid(typeof(int)))
+                );
+        }
     }
 }

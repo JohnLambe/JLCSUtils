@@ -17,6 +17,7 @@ namespace JohnLambe.Util.Reflection
     /// <summary>
     /// Reflection-related utilities.
     /// </summary>
+    /// <seealso cref="GenericTypeUtil"/>
     public static class ReflectionUtil
     {
 
@@ -864,6 +865,8 @@ namespace JohnLambe.Util.Reflection
             return d.Invoke(default(T));
         }
 
+
+        // For converting between nullable and non-nullable types, see GenericTypeUtil.
     }
 
     /*

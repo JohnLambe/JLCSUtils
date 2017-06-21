@@ -104,14 +104,59 @@ namespace JohnLambe.Util.Reflection
         #endregion
 
         /// <summary>
-        /// Same as <see cref="Type.ToString()"/> except that it returns "void" if passed null.
+        /// Same as <see cref="Type.ToString()"/> except that null is treated as void.
         /// </summary>
         /// <param name="t"></param>
-        /// <returns></returns>
+        /// <returns>The type name or "void".</returns>
         [return: NotNull]
         public static string TypeNameOrVoid([Nullable]Type t)
         {
             return TypeOrVoid(t).ToString();
+        }
+
+        /// <summary>
+        /// Returns the C# keyword for the given type if there is one (for primitive types),
+        /// otherwise the short name of the type.
+        /// null is treated as <see cref="void"/>.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        [return: NotNull]
+        public static string CsType([Nullable] Type t)
+        {
+            if (t == null || t == typeof(void))
+                return "void";
+
+            if(t.IsPrimitive)
+            { 
+                // Integer:
+                if(t == typeof(int))
+                    return "int";
+                if (t == typeof(uint))
+                    return "uint";
+                if (t == typeof(byte))
+                    return "byte";
+                if (t == typeof(sbyte))
+                    return "sbyte";
+                if (t == typeof(short))
+                    return "short";
+                if (t == typeof(ushort))
+                    return "ushort";
+                if (t == typeof(long))
+                    return "long";
+                if (t == typeof(ulong))
+                    return "ulong";
+
+                // Floating point:
+                if (t == typeof(float))
+                    return "float";
+                if (t == typeof(double))
+                    return "double";
+                if (t == typeof(decimal))
+                    return "decimal";
+            }
+
+            return t.Name;
         }
 
         /// <summary>

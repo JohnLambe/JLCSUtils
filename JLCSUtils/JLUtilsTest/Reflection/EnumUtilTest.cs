@@ -87,6 +87,57 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Enum x = DayOfWeek.Monday;
             int i = (int)System.Convert.ChangeType(x, typeof(int));
             Console.WriteLine(i);
+            Assert.AreEqual(1, i);
         }
+
+        #region ConvertEnum
+
+        [TestMethod]
+        public void ConvertEnum()
+        {
+            Assert.AreEqual(DayOfWeek2.Friday, EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Friday));
+            Assert.AreEqual(DayOfWeek2.Wednesday, EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Wednesday));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ConvertEnum_Fail()
+        {
+            Console.Out.WriteLine(EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Monday));  // using Monday because it has the same integer value as a defined value in the target type
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ConvertEnum_Fail_CaseSensitive()
+        {
+            Console.Out.WriteLine(EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Thursday));
+        }
+
+        [TestMethod]
+        public void ConvertEnum_IgnoreCase()
+        {
+            Assert.AreEqual(DayOfWeek2.THURSDAY, EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Thursday,true));
+        }
+
+        [TestMethod]
+        public void ConvertEnum_Default()
+        {
+            Assert.AreEqual(DayOfWeek2.A, EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Thursday, DayOfWeek2.A), "uses default");
+            Assert.AreEqual(DayOfWeek2.Friday, EnumUtil.ConvertEnum<DayOfWeek2>(DayOfWeek.Friday, DayOfWeek2.A, false), "shouldn't retun default");
+        }
+
+        // no tests for invalid types
+
+        [TestMethod]
+        public void ConvertEnum_Nullable()
+        {
+            Assert.AreEqual(null, EnumUtil.ConvertEnum<DayOfWeek2?>(null), "null");
+            Assert.AreEqual(DayOfWeek2.Friday, EnumUtil.ConvertEnum<DayOfWeek2?>(DayOfWeek.Friday, DayOfWeek2.A, false), "nullable but not null");
+        }
+
+        enum DayOfWeek2 { Wednesday = 1, Friday = 2000, THURSDAY = 6, A = 50 }
+
+        #endregion
+
     }
 }
