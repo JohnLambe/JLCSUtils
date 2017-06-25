@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace JohnLambe.Util.FilterDelegates
 {
     /// <summary>
-    /// Encapsulates a delegate that takes an argument of type <paramref name="T"/> and returns <see cref="bool"/>,
+    /// Encapsulates a delegate that takes an argument of type <typeparamref name="T"/> and returns <see cref="bool"/>,
     /// and provides operators and methods to combine these to form other <see cref="BooleanExpression{T}"/> instances.
     /// </summary>
     /// <typeparam name="T">The type of parameter to the delegate.</typeparam>
@@ -69,7 +69,7 @@ namespace JohnLambe.Util.FilterDelegates
         }
 
         /// <summary>
-        /// Returns a <see cref="BooleanExpression"/> this is true when this one is false,
+        /// Returns a <see cref="BooleanExpression{T}"/> this is true when this one is false,
         /// and vice versa.
         /// </summary>
         /// <param name="a"></param>

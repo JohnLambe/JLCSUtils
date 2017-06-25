@@ -324,7 +324,7 @@ namespace JohnLambe.Util
             => ConcatForEach(enumerable, (x) => x.ToString(), separator);
 
         /// <summary>
-        /// Total length of a string consisting of all non-null items in <see cref="parts"/>
+        /// Total length of a string consisting of all non-null items in <paramref name="parts"/>
         /// with a separator of length <paramref name="separatorLength"/>.
         /// </summary>
         /// <param name="separatorLength"></param>
@@ -366,7 +366,7 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// If s ends with <paramref name"suffix"/>, it is removed.
+        /// If s ends with <paramref name="suffix"/>, it is removed.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="suffix">The suffix to be removed. If this is null, the original string is returned.</param>
@@ -759,11 +759,11 @@ namespace JohnLambe.Util
         #region Get character
 
         /// <summary>
-        /// Returns the character at index <see cref="index"/>.
+        /// Returns the character at index <parmref name="index"/>.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="index">0-based index of a character.</param>
-        /// <param name="defaultValue">Value to return if the string is null or <see cref="index"/> is out of range.</param>
+        /// <param name="defaultValue">Value to return if the string is null or <parmref name="index"/> is out of range.</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char CharAt(this string s, int index, char defaultValue = '\0')
@@ -773,11 +773,11 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// Returns the character at index <see cref="index"/>.
+        /// Returns the character at index <parmref name="index"/>.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="index">0-based index of a character.</param>
-        /// <param name="defaultValue">Value to return if the string is null or <see cref="index"/> is out of range.</param>
+        /// <param name="defaultValue">Value to return if the string is null or <parmref name="index"/> is out of range.</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char? CharAtNullable(this string s, int index, char? defaultValue = null)
@@ -788,11 +788,11 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// Returns the character <see cref="index"/> characters from the end.
+        /// Returns the character <parmref name="index"/> characters from the end.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="index">Position from the end of the string. 0 returns the last character.</param>
-        /// <param name="defaultValue">Value to return if the string is null or <see cref="index"/> is out of range.</param>
+        /// <param name="defaultValue">Value to return if the string is null or <parmref name="index"/> is out of range.</param>
         /// <returns></returns>
         public static char CharFromEnd(this string s, int index = 0, char defaultValue = '\0')
         {
@@ -976,7 +976,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="prefix">Prefix, must be non-null.</param>
-        /// <param name="suffix">Suffix, or null if the same as <paramref name="Prefix"/>.</param>
+        /// <param name="suffix">Suffix, or null if the same as <paramref name="prefix"/>.</param>
         /// <returns>true iff this string starts with <paramref name="prefix"/> and ends with <paramref name="suffix"/>, not overlapping.</returns>
         public static bool IsEnclosedIn(this string s, string prefix, string suffix = null)
         {
@@ -1018,7 +1018,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="prefix">Prefix, must be non-null.</param>
-        /// <param name="suffix">Suffix, or null if the same as <paramref name="Prefix"/>.</param>
+        /// <param name="suffix">Suffix, or null if the same as <paramref name="prefix"/>.</param>
         /// <returns></returns>
         public static string ExtractEnclosed(this string s, string prefix, string suffix = null)
         {

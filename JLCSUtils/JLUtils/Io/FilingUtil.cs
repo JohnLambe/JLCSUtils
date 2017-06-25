@@ -24,7 +24,7 @@ namespace JohnLambe.Util.Io
         /// <param name="createDirectory">Iff true, and the directory of the file doesn't exist, it is created.</param>
         /// <returns>Stream for the opened file.</returns>
         /// <exception>Can throw the same exceptions as File.OpenWrite or File.Create.</exception>
-        /// <seealso cref="DirectoryUtil"/> - for anything which involves scanning directories.</para>
+        /// <seealso cref="DirectoryUtil"/> - for anything which involves scanning directories.
         public static FileStream OpenAppendOrCreate([FilenameValidation] string filename, bool createDirectory = false)
         {
             try

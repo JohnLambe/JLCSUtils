@@ -84,8 +84,7 @@ namespace MvpFramework.WinForms
         /// <summary>
         /// Calculate the size of this form from the size of the wrapped control.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="childSize">The size of the wrapped control.</param>
         protected virtual Size SizeFromChildSize(Size childSize)
         {
             if (childSize.IsEmpty)

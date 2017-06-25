@@ -65,7 +65,7 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// A human-readable text description of this validation rule.
-        /// <para>If no description is explicitly defined on an instance (or this is set to null), this returns <see cref="DefaultDescritpion"/>.</para.>
+        /// <para>If no description is explicitly defined on an instance (or this is set to null), this returns <see cref="DefaultDescritpion"/>.</para>
         /// </summary>
         public virtual string Description
         {

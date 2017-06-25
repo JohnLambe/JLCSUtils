@@ -32,6 +32,7 @@ namespace MvpFramework.Menu
         /// Create, with a resolver for invoking Presenters.
         /// </summary>
         /// <param name="resolver"></param>
+        /// <param name="diResolver">The <see cref="IDiResolver"/> to be used to inject presenter or other handlers created when an item is invoked.</param>
         [Inject]
         public MenuBuilder(MvpResolver resolver, IDiResolver diResolver = null)
         {
@@ -232,6 +233,7 @@ namespace MvpFramework.Menu
         /// Called when a menu item for a Presenter is invoked.
         /// </summary>
         /// <param name="item">The invoked menu item.</param>
+        /// <param name="args"></param>
         protected virtual void MenuItemPresenter_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args)
         {
             Resolver.GetPresenterByType<IPresenter>(item.HandlerType, item.Params).Show();

@@ -125,6 +125,7 @@ namespace MvpFramework.Binding
         /// Bind this control to the given model.
         /// </summary>
         /// <param name="modelBinder"></param>
+        /// <param name="presenterBinder"></param>
         public virtual void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
         {
             Presenter = presenterBinder.Presenter;

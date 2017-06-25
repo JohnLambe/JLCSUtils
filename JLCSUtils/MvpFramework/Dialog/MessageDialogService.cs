@@ -20,7 +20,7 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Show a dialog.
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="TResult">The type returned when an option is chosen in the dialog.</typeparam>
         /// <param name="messageModel"></param>
         /// <returns></returns>
         public virtual TResult ShowMessage<TResult>(IMessageDialogModel<TResult> messageModel)

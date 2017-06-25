@@ -15,10 +15,13 @@ namespace MvpFramework.WinForms.Controls
     [MvpBoundControl]
     public class MvpButton : Button
     {
+#pragma warning disable CS0067   // Suppress 'Event never used'.  This is fired by reflection.
         [MvpHandlerIdProperty("Click")]
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.HandlerIdDescription)]
         public event GetStringDelegate OnGetHandlerId;
         //        public virtual string HandlerId { get; set; }
+#pragma warning restore CS0067
+
     }
 }

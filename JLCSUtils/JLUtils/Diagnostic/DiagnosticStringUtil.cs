@@ -63,7 +63,7 @@ namespace JohnLambe.Util.Diagnostic
         }
 
         /// <summary>
-        /// Converts the member to a string, with more detail than <see cref="MemberInfo.ToString"/>.
+        /// Converts the member to a string, with more detail than <see cref="Object.ToString"/>.
         /// This always returns the same value for two instances that reference the same member, even if an instance
         /// was returned from a different type (that inherited the member).
         /// </summary>

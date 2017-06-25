@@ -155,7 +155,7 @@ namespace JohnLambe.Util.Diagnostic
         /// Equivalent to <see cref="Fail(string)"/>, but indicates that a certain value of an enum type is not recognised.
         /// Used in code that handles all known values of an enum and that might break when a new value is added.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="enumValue">The value of the enum type.</param>
         [Conditional("DEBUG")]
         [Conditional("ASSERTIONS")]
         [Conditional("ASSERTIONS_LOW")]
@@ -222,7 +222,7 @@ namespace JohnLambe.Util.Diagnostic
         /// <summary>
         /// Assertion that is less important (than other assertions) or may be slow to evaluate.
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="condition"></param>
         /// <param name="message"></param>
         [Conditional("DEBUG")]
         [Conditional("ASSERTIONS_LOW")]
@@ -234,7 +234,7 @@ namespace JohnLambe.Util.Diagnostic
         /// <summary>
         /// Assertion that is less important (than other assertions) or may be slow to evaluate.
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="condition"></param>
         /// <param name="message"></param>
         [Conditional("DEBUG")]
         [Conditional("ASSERTIONS_LOW")]

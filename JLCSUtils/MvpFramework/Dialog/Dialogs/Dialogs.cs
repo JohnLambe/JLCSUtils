@@ -117,11 +117,11 @@ namespace MvpFramework.Dialog.Dialogs
         /// </summary>
         /// <param name="validationResults"></param>
         /// <returns>Message dialog model. May be a subclass of this.</returns>
-        public static UserErrorDialog CreateDialogModelForValidationResult(ValidationResultEx validationResult)
+        public static UserErrorDialog CreateDialogModelForValidationResult(ValidationResultEx validationResults)
         {
             return new UserErrorDialog()
             {
-                Validation = new ValidationResults(validationResult)
+                Validation = new ValidationResults(validationResults)
             };
         }
 

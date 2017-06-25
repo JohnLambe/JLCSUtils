@@ -436,7 +436,7 @@ namespace MvpFramework
         /// <summary>
         /// Get the view interface (IView subinterface) for the given view class.
         /// </summary>
-        /// <param name="presenterType"></param>
+        /// <param name="viewType"></param>
         /// <returns></returns>
         public virtual Type ResolveInterfaceForViewType(Type viewType)
         {

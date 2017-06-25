@@ -17,7 +17,7 @@ namespace JohnLambe.Util.Reflection
         /// Set the value of a given property on a given object, converting the value if necessary.
         /// (Same as <see cref="PropertyInfo.SetValue(object, object, object[])"/> except for the conversion.)
         /// </summary>
-        /// <param name="propertyInfo">The property to set. This must be a property of the type of <see cref="target"/>.</param>
+        /// <param name="propertyInfo">The property to set. This must be a property of the type of <paramref name="target"/>.</param>
         /// <param name="target">The object to set the property on.</param>
         /// <param name="value">The value to set.</param>
         /// <param name="index">Optional index values for indexed properties. This value should be null for non-indexed properties.

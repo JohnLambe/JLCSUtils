@@ -213,8 +213,9 @@ namespace JohnLambe.Util.Security
         /// Convert from the string encoding (as held in <see cref="HashedPassword.EncodedValue"/>)
         /// to the three parts.
         /// </summary>
+        /// <param name="value"></param>
         /// <param name="encoding"></param>
-        /// <param name="Salt"></param>
+        /// <param name="salt"></param>
         /// <param name="hash"></param>
         public virtual void StringDecode(string value, out string encoding, out byte[] salt, out byte[] hash)
         {

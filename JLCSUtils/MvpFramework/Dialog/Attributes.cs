@@ -8,6 +8,7 @@ namespace MvpFramework.Dialog
 {
     /// <summary>
     /// Register a message dialog type to be available for configuration.
+    /// For placing on <see cref="MessageDialogModel{TResult}"/> subclasses.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class RegisterMessageDialogAttribute : MvpClassAttribute

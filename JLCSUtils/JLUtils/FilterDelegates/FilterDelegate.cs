@@ -52,8 +52,7 @@ namespace JohnLambe.Util.FilterDelegates
         /// Returns a delegate that returns true when any of the given delegate return true.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
+        /// <param name="p"></param>
         /// <returns></returns>
         public static FilterDelegate<T> Or<T>(params FilterDelegate<T>[] p)
         {

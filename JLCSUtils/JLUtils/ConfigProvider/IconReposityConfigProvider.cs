@@ -29,7 +29,7 @@ namespace DiExtension.ConfigInject.Providers
 
 
     /// <summary>
-    /// Adapts <see cref="IConfigProvider"/> to <see cref="IIconRepository{string, TImageType}"/>.
+    /// Adapts <see cref="IConfigProvider"/> to <see cref="IIconRepository{TKey, TImageType}"/>.
     /// </summary>
     /// <typeparam name="TImageType"></typeparam>
     public abstract class IconRepositoryConfigProvider<TImageType> : IconRepositoryBase<string, TImageType>, IConfigProvider

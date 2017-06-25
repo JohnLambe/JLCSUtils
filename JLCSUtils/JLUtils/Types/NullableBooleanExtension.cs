@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace JohnLambe.Util.Types
 {
     /// <summary>
-    /// Extension methods of <see cref="Nullable{bool}"/>, NOT related to <see cref="NullableBool"/>.
+    /// Extension methods of <see cref="Nullable"/>&lt;<see cref="bool"/>&gt;, NOT related to <see cref="NullableBool"/>.
     /// </summary>
     public static class NullableBooleanExtension
     {

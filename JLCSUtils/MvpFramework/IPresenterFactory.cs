@@ -17,7 +17,6 @@ namespace MvpFramework
         /// <summary>
         /// Create the Presenter.
         /// </summary>
-        /// <param name="param"></param>
         /// <returns></returns>
         TPresenter Create();
     }
@@ -93,7 +92,7 @@ namespace MvpFramework
     /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
     /// <typeparam name="TParam3">The type of the third parameter to the Create method.</typeparam>
     /// <typeparam name="TParam4">The type of the fourth parameter to the Create method.</typeparam>
-    /// <typeparam name="TParam4">The type of the fifth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam5">The type of the fifth parameter to the Create method.</typeparam>
     public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>
         where TPresenter : IPresenter
     {

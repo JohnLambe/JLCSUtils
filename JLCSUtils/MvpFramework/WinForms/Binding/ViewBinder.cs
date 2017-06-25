@@ -26,6 +26,7 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="model"></param>
         /// <param name="presenter"></param>
         /// <param name="binderFactory"></param>
+        /// <param name="view"></param>
         public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory, Control view)
         {
             View = view;
@@ -116,7 +117,7 @@ namespace MvpFramework.WinForms.Binding
         /// Fire a handler on the presenter.
         /// </summary>
         /// <param name="handlerId"></param>
-        /// <param name="param"></param>
+        /// <param name="args"></param>
         // View bases classes could have a method that delegates to this.
         public virtual void FireHandler(string handlerId, EventArgs args = null)
         {

@@ -33,6 +33,9 @@ namespace JohnLambe.Util.Collections
             get { throw new IndexOutOfRangeException(); }
         }
 
+        /// <summary>
+        /// The size of the collection - always 0.
+        /// </summary>
         public int Count => 0;
 
         /// <summary>
@@ -41,13 +44,13 @@ namespace JohnLambe.Util.Collections
         protected static readonly IEnumerator<T> _emptyEnumerator = new EmptyEnumerator<T>();
 
         /// <summary>
-        /// A singleton empty collection of <see cref="T"/>.
+        /// A singleton empty collection of <typeparamref nanme="T"/>.
         /// Any instance created will always behave the same as this.
         /// </summary>
         public static EmptyCollection<T> Instance = new EmptyCollection<T>();
 
         /// <summary>
-        /// An empty array of <see cref="T"/>.
+        /// An empty array of <typeparamref name="T"/>.
         /// </summary>
         public static readonly T[] EmptyArray = new T[] { };
     }

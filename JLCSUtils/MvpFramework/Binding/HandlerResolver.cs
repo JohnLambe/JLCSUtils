@@ -90,6 +90,7 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="target"></param>
         /// <param name="handlerId"></param>
+        /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
         /// <returns></returns>
         public virtual VoidDelegate GetHandler(object target, string handlerId, string filter = null)
         {
@@ -110,6 +111,7 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="target"></param>
         /// <param name="handlerId"></param>
+        /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
         /// <returns></returns>
         public virtual MenuItemModel.InvokedDelegate GetHandlerWithArgs(object target, string handlerId, string filter = null)
         {
@@ -125,10 +127,11 @@ namespace MvpFramework.Binding
         }
 
         /// <summary>
-        /// Return details of handlers for the given ID.
+        /// Return details of handlers for the given ID and filter.
         /// </summary>
         /// <param name="target"></param>
         /// <param name="handlerId">Handler ID, null to return all handlers.</param>
+        /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
         /// <returns></returns>
         public virtual IEnumerable<Handler> GetHandlersInfo(object target, string handlerId, string filter = null)
         {

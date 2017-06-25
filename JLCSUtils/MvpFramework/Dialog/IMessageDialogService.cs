@@ -12,7 +12,7 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Show a message (dialog etc.).
         /// </summary>
-        /// <param name="parameters">Details of the message to be shown.</param>
+        /// <param name="messageModel">Details of the message to be shown.</param>
         /// <returns>Indicates which option was chosen, when the message has multiple options (e.g. buttons).</returns>
         /// <typeparam name="TResult">The type of the result - depends on the message.</typeparam>
         TResult ShowMessage<TResult>(IMessageDialogModel<TResult> messageModel);
@@ -22,7 +22,6 @@ namespace MvpFramework.Dialog
     /// <summary>
     /// Model of a message dialog.
     /// </summary>
-    /// <typeparam name="TResult">The type returned when an option is chosen in the dialog.</typeparam>
     public interface IMessageDialogModel
     {
         string InstanceId { get; }
@@ -67,7 +66,7 @@ namespace MvpFramework.Dialog
     /// Delegate to be fired when the user responds to a message.
     /// </summary>
     /// <param name="dialog">The <see cref="IMessageDialogModel"/> to which the response relates.</param>
-    /// <param name="messageDialogResult">The chosen option - the same as the return value from <see cref="IMessageDialogService.ShowMessage{TResult}(IMessageDialogModel{TResult})"/>.</param>
+    /// <param name="args"></param>
     public delegate void MessageDialogRespondedDelegate(IMessageDialogModel dialog, MessageDialogRespondedEventArgs args);
 
     /// <summary>

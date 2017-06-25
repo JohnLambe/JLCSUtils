@@ -61,7 +61,7 @@ namespace MvpFramework.WinForms
         }
 
         /// <summary>
-        /// true while opening (in the <see cref="Show"/> method).
+        /// true while opening (in the <see cref="IPresenter.Show"/> method).
         /// </summary>
         protected virtual bool Opening { get; private set; }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace JohnLambe.Util.FilterDelegates
 {
     /// <summary>
-    /// Encapsulates a delegate that takes an argument of type <paramref name="T"/> and returns <see cref="bool?"/>,
+    /// Encapsulates a delegate that takes an argument of type <typeparamref name="T"/> and returns <see cref="Nullable"/>&lt;bool&gt;,
     /// and provides operators and methods to combine these to form other <see cref="NullableBooleanExpression{T}"/> instances.
     /// <para>Nulls are combined as in SQL: null acts as an identity with in any binary operation (doing any operation with null yields the other operand),
     /// and NOT(null) yields null.</para>
@@ -93,7 +93,7 @@ namespace JohnLambe.Util.FilterDelegates
         }
 
         /// <summary>
-        /// Returns a <see cref="NullableBooleanExpression"/> this is true when this one is false,
+        /// Returns a <see cref="NullableBooleanExpression{T}"/> this is true when this one is false,
         /// and vice versa.
         /// </summary>
         /// <param name="a"></param>

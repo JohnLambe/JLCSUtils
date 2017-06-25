@@ -16,8 +16,8 @@ namespace JohnLambe.Util.Collections
     }
 
     /// <summary>
-    /// The same as <see cref="System.Collections.Generic.List<T>"/> except that it implements
-    /// <see cref="IMutableList<T>"/>.
+    /// The same as <see cref="System.Collections.Generic.List{T}"/> except that it implements
+    /// <see cref="IMutableList{T}"/>.
     /// <para>Subclasses must not be read-only.</para>
     /// </summary>
     /// <typeparam name="T">The type of elements in the list.</typeparam>

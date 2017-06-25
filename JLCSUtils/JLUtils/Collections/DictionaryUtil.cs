@@ -101,13 +101,14 @@ namespace JohnLambe.Util.Collections
         }
 
         /// <summary>
-        /// Import an array of string in '<key> "=" <value>' format to the dictionary.
+        /// Import an array of string in '&lt;key&gt; "=" &lt;value&gt;' format to the dictionary.
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <param name="data"></param>
-        /// <param name="root"></param>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="dictionary">The dictionary to add the parsed items into.</param>
+        /// <param name="data">The input data.</param>
+        /// <param name="prefix">Only keys beginning with this value are imported.</param>
+        /// <param name="separator">The character that separates the key from the value.</param>
         /// <returns></returns>
         public static IDictionary<TKey, TValue> ImportText<TKey,TValue>(IDictionary<TKey, TValue> dictionary, string[] data, string prefix = null, char separator = '=')
         {

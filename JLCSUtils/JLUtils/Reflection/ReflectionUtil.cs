@@ -29,7 +29,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static IEnumerable<Type> GetTypeHeirarchy(Type target)
+        public static IEnumerable<Type> GetTypeHeirarchy([Nullable] Type target)
         {
             LinkedList<Type> heirarchy = new LinkedList<Type>();
             while (target != null)
@@ -108,7 +108,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static MethodInfo GetOverriddenMethod(this MethodInfo member)
+        public static MethodInfo GetOverriddenMethod([NotNull] this MethodInfo member)
         {
             if (member.IsVirtual)
             {
@@ -140,7 +140,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static PropertyInfo GetOverriddenProperty(this PropertyInfo member)
+        public static PropertyInfo GetOverriddenProperty([NotNull] this PropertyInfo member)
         {
             BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
@@ -161,7 +161,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="member"></param>
         /// <returns></returns>
         /// <remarks>This is similar to <see cref="MethodInfo.GetBaseDefinition"/> for properties.</remarks>
-        public static PropertyInfo GetBaseDefinition(this PropertyInfo member)
+        public static PropertyInfo GetBaseDefinition([NotNull] this PropertyInfo member)
         {
             // Get the base definition of either accessor, then get its class, and find the property on that class:
             return (member.GetMethod ?? member.SetMethod).GetBaseDefinition().DeclaringType.GetProperty(member.Name);
@@ -176,7 +176,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static bool IsOverride(this MemberInfo member)
+        public static bool IsOverride([NotNull] this MemberInfo member)
         {
             return (member as PropertyInfo)?.IsOverride() ??
                 (member as MethodInfo)?.IsOverride() ??
@@ -188,7 +188,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static bool IsOverride(this MethodInfo member)
+        public static bool IsOverride([NotNull] this MethodInfo member)
         {
             return member.IsVirtual                                    // if it's not virtual, it can't be an override
                 && member.DeclaringType != member.GetBaseDefinition().DeclaringType;   // if this declaration is not on the same class as the base one
@@ -199,7 +199,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static bool IsOverride(this PropertyInfo member)
+        public static bool IsOverride([NotNull] this PropertyInfo member)
         {
             // PropertyInfo doesn't have GetBaseDefinition(), so we use either of the accessor methods:
             return IsOverride(member.GetMethod ?? member.SetMethod);
@@ -331,8 +331,9 @@ namespace JohnLambe.Util.Reflection
         /// <param name="declaringType">The type on which the method is defined.</param>
         /// <param name="name">The name of the method (case-sensitive).</param>
         /// <param name="p">The parameters (types and modifiers) of the parameters. Only exact matches are returned.</param>
+        /// <param name="flags">Binding flags for matching the method.</param>
         /// <returns>The requested method. null if no matching method exists.</returns>
-        public static MethodInfo GetMethodExact(this Type declaringType, string name, ParameterInfo[] p, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
+        public static MethodInfo GetMethodExact([NotNull] this Type declaringType, [NotNull] string name, [NotNull] ParameterInfo[] p, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
         {
             return declaringType.GetMethods(flags).Where(m => m.Name.Equals(name) && m.GetParameters().SequenceEqual(p, ParameterInfoComparer.Instance)).FirstOrDefault();
         }
@@ -346,7 +347,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static bool IsVirtual(this PropertyInfo member)
+        public static bool IsVirtual([NotNull] this PropertyInfo member)
         {
             return (bool)( member.GetMethod?.IsVirtual ?? member.SetMethod?.IsVirtual );
             // fails if property has neither getter nor setter.
@@ -358,7 +359,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static bool IsPrivate(this PropertyInfo member)
+        public static bool IsPrivate([NotNull] this PropertyInfo member)
         {
             return (member.GetMethod?.IsPrivate ?? false) || (member.SetMethod?.IsPrivate ?? false);
         }
@@ -391,7 +392,7 @@ namespace JohnLambe.Util.Reflection
         /// (Exceptions are still raised for invalid property values).</param>
         [Obsolete("Use SetProperty")]
         //TODO: Consider dropping, or making conversion logic the same as SetProperty.
-        public static void AssignProperty(object target, string propertyName, object value, bool ignoreInvalid = false)
+        public static void AssignProperty([NotNull] object target, [NotNull] string propertyName, object value, bool ignoreInvalid = false)
         {
             var property = target.GetType().GetProperty(propertyName);
             if (property != null)
@@ -439,7 +440,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="arguments"></param>
         /// <typeparam name="T">The </typeparam>
         /// <returns></returns>
-        public static T Create<T>(this Type type, params object[] arguments)
+        public static T Create<T>([NotNull] this Type type, params object[] arguments)
             where T : class
         {
             /* old version:
@@ -464,7 +465,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="argumentTypes"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        public static T CreateT<T>(Type type, Type[] argumentTypes, object[] arguments)
+        public static T CreateT<T>([NotNull] Type type, [NotNull] Type[] argumentTypes, [NotNull] object[] arguments)
             where T : class
         {
             //TODO: Give correct exception when constructor does not exist.
@@ -476,10 +477,13 @@ namespace JohnLambe.Util.Reflection
         /// <summary>
         /// Returns an array in which each element is the type of the corresponding element in the given array.
         /// </summary>
-        /// <param name="values"></param>
+        /// <param name="values">
+        /// The value to determine the types.
+        /// If a null array is passed, null is returned.
+        /// </param>
         /// <returns>Array of types, or null if <paramref name="values"/> is null.
         /// Where there is a null value in the input, the corresponding type is output as null.</returns>
-        public static Type[] ArrayOfTypes(params object[] values)
+        public static Type[] ArrayOfTypes([Nullable] params object[] values)
         {
             if (values == null)
                 return null;
@@ -504,7 +508,7 @@ namespace JohnLambe.Util.Reflection
         /// <exception cref="MissingMemberException">If the method does not exist.</exception>
         /// <exception cref="AmbiguousMatchException">If there is more than one matching method.</exception>
         /// <exception cref="NullReferenceException">If <paramref name="target"/> is null.</exception>
-        public static T CallStaticMethod<T>([NotNull]Type target, string methodName, params object[] arguments)
+        public static T CallStaticMethod<T>([NotNull]Type target, [NotNull] string methodName, params object[] arguments)
         {
             //TODO: if there are overloads, find the one that matches arguments
             var method = target.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public); //, new Type[] { });
@@ -521,7 +525,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="methodName"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        public static T CallMethod<T>(object target, string methodName, params object[] arguments)
+        public static T CallMethod<T>([NotNull] object target, [NotNull] string methodName, params object[] arguments)
         {
             //TODO: if there are overloads, find the one that matches arguments
             var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public); //, ArrayOfTypes(arguments), );
@@ -540,12 +544,12 @@ namespace JohnLambe.Util.Reflection
         /// <param name="methodName">The name of the method to call (case-sensitive).</param>
         /// <param name="arguments">The arguments to pass to the method to be called.</param>
         /// <returns>The return value of the called method.</returns>
-        public static TReturn CallMethodVarArgs<TReturn>(object target, string methodName, params object[] arguments)
+        public static TReturn CallMethodVarArgs<TReturn>([NotNull] object target, [NotNull] string methodName, params object[] arguments)
         {
             return CallMethodVarArgsEx<TReturn>(target, methodName, BindingFlagsExt.Instance | BindingFlagsExt.Static | BindingFlagsExt.Public, arguments);
         }
 
-        public static TReturn CallStaticMethodVarArgs<TReturn>(Type target, string methodName, params object[] arguments)
+        public static TReturn CallStaticMethodVarArgs<TReturn>([NotNull] Type target, [NotNull] string methodName, params object[] arguments)
         {
             return CallMethodVarArgsEx<TReturn>(target, methodName, BindingFlagsExt.CallStatic | BindingFlagsExt.Static | BindingFlagsExt.Public, arguments);
         }
@@ -559,7 +563,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="flags"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        public static TReturn CallMethodVarArgsEx<TReturn>(object target, string methodName, BindingFlagsExt flags, params object[] arguments)
+        public static TReturn CallMethodVarArgsEx<TReturn>([NotNull] object target, [NotNull] string methodName, BindingFlagsExt flags, params object[] arguments)
         {
             Type targetType = flags.HasFlag(BindingFlagsExt.CallStatic) ? (Type)target      // if static, `target` is the type
                 : target.GetType();                                                         // otherwise, get the type of `target`
@@ -627,7 +631,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="type"></param>
         /// <param name="value"></param>
         /// <returns>True iff this type can be assigned the given value.</returns>
-        public static bool IsAssignableFromValue(this Type type, object value)
+        public static bool IsAssignableFromValue([NotNull] this Type type, [Nullable] object value)
         {
             if (value == null)
                 return !type.IsValueType;     // assignable to null iff not a value type
@@ -641,7 +645,9 @@ namespace JohnLambe.Util.Reflection
         /// <param name="type"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        public static bool IsTypeOrSubclassOf(this Type type, [NotNull] Type c)
+        /// <exception cref="ArgumentNullException">If <paramref name="c"/> is null.</exception>
+        /// <exception cref="NullReferenceException">If <paramref name="type"/> is null.</exception>
+        public static bool IsTypeOrSubclassOf([NotNull] this Type type, [NotNull] Type c)
             => type == c || type.IsSubclassOf(c);
 
         #region GetProperty
@@ -671,7 +677,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="propertyReferece"></param>
         /// <param name="modifier">The modifier of the property reference.</param>
         /// <returns></returns>
-        private static string ParsePropertyReference(string propertyReferece, out PropertyNullabilityModifier modifier)
+        private static string ParsePropertyReference([NotNull] string propertyReferece, out PropertyNullabilityModifier modifier)
         {
             var modifierCharacter = propertyReferece.CharAt(propertyReferece.Length - 1);  // get the last character
             switch (modifierCharacter)   //TODO: Use attribute
@@ -692,7 +698,7 @@ namespace JohnLambe.Util.Reflection
             return propertyReferece.Substring(0, propertyReferece.Length - 1);
         }
 
-        public static bool IsNullable(this PropertyNullabilityModifier modifier)
+        public static bool IsNullable([NotNull] this PropertyNullabilityModifier modifier)
             => modifier <= PropertyNullabilityModifier.ExistsNullable;
 
         /// <summary>
@@ -711,8 +717,9 @@ namespace JohnLambe.Util.Reflection
         /// <para>This is modified if and only if <paramref name="action"/> is <see cref="PropertyAction.SetValue"/>.
         /// In this case, it is set to null on failure (if a property does not exist, or nested value that this property is on, is null).
         /// </para>
+        /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
         /// <returns>The details of the innermost property. null if <paramref name="target"/> or the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
-        private static PropertyInfo GetSetProperty(ref object target, string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        private static PropertyInfo GetSetProperty(ref object target, [NotNull] string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             PropertyInfo property = null;
             string[] levels = propertyName.Split('.');
@@ -797,7 +804,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target"></param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <returns>The requested property, or null if it does not exist (if any property in the chain doesn't exist).</returns>
-        public static PropertyInfo GetProperty(ref object target, string propertyName)
+        public static PropertyInfo GetProperty(ref object target, [NotNull] string propertyName)
         {
             object dummy = null;
             return GetSetProperty(ref target, propertyName, PropertyAction.GetProperty, ref dummy);
@@ -809,9 +816,10 @@ namespace JohnLambe.Util.Reflection
         /// <typeparam name="T"></typeparam>
         /// <param name="target">The object from which to read the property.</param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
+        /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
         /// <returns>The property value.</returns>
         //| Could call this "ReadProperty".
-        public static T TryGetPropertyValue<T>(object target, string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        public static T TryGetPropertyValue<T>([NotNull] object target, [NotNull] string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object value = null;
             GetSetProperty(ref target, propertyName, PropertyAction.GetValue, ref value, defaultNullability);
@@ -827,7 +835,8 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target">The object to set the property on.</param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <param name="value">The value to set.</param>
-        public static void TrySetPropertyValue<T>(object target, string propertyName, T value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
+        public static void TrySetPropertyValue<T>([NotNull] object target, [NotNull] string propertyName, [Nullable] T value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object valueObject = value;
             GetSetProperty(ref target, propertyName, PropertyAction.SetValue, ref valueObject, defaultNullability);
@@ -843,7 +852,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="type"></param>
         /// <param name="interfaceType"></param>
         /// <returns></returns>
-        public static bool Implements(this Type type, Type interfaceType)
+        public static bool Implements([NotNull] this Type type, [NotNull] Type interfaceType)
         {
             return type.GetInterfaces().Contains(interfaceType);
         }
@@ -862,7 +871,7 @@ namespace JohnLambe.Util.Reflection
         /// <returns>The return value of the delegate <paramref name="d"/>.</returns>
         public static string InstanceInvoke<T>(Func<T, string> d)
         {
-            return d.Invoke(default(T));
+            return d?.Invoke(default(T));
         }
 
 
@@ -882,7 +891,7 @@ namespace JohnLambe.Util.Reflection
     /// <summary>
     /// An option on a property referece, specifying how null or invalid values are handled.
     /// <para>
-    /// In strings passed to <see cref="TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="GetSetProperty(ref object, string, PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
+    /// In strings passed to <see cref="ReflectionUtil.TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="ReflectionUtil.GetSetProperty(ref object, string, PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
     /// this is specified by a character (specified by <see cref="EnumMappedValueAttribute"/> here) after the property name.
     /// </para>
     /// </summary>

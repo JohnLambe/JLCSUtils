@@ -45,7 +45,7 @@ namespace JohnLambe.Util.Reflection
         /// Same as <see cref="PopulateDefaults(object, BindingFlagsExt, bool)"/>, except that this sets
         /// static properties on a type (which may or may not be static).
         /// </summary>
-        /// <param name="targetType">The type to set static properties on. If null, this does nothing.
+        /// <param name="targetType">The type to set static properties on. If null, this does nothing.</param>
         /// <param name="bindingFlags">Binding flags to filter properties to be set.
         /// The default is all static properties, including non-public, and private properties on base classes.
         /// <para>If <see cref="BindingFlagsExt.InheritedPrivate"/> is included, private properties (and properties with private setters) on base classes are recognised.</para>

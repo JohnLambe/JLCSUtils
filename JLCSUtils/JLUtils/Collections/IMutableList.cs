@@ -24,7 +24,7 @@ namespace JohnLambe.Util.Collections
 
     /// <summary>
     /// A list which can be modified.
-    /// <para>This is the same as <see cref="System.Collections.Generic.IList<T>"/> except that it must not
+    /// <para>This is the same as <see cref="System.Collections.Generic.IList{T}"/> except that it must not
     /// throw <see cref="System.NotSupportedException"/> on attempts to modify it,
     /// unless there is a reason other than it not being modifiable, e.g. trying to make
     /// the list longer than a maximum supported size.

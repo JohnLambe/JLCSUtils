@@ -8,6 +8,7 @@ using JohnLambe.Util.Collections;
 using JohnLambe.Util.Reflection;
 using System.Reflection;
 using JohnLambe.Util;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.Dialog
 {
@@ -20,6 +21,9 @@ namespace MvpFramework.Dialog
         {
             InitialiseCache();
         }
+
+        //TODO: Consider nullability of parameters.
+        // Consider all parameters non-nullable when not specified, but this may change in a later version.
 
         /// <summary>
         /// Determine a mapping (without uusing the cache).
@@ -60,7 +64,7 @@ namespace MvpFramework.Dialog
 
             if (ambiguousMatches.Any())
             {
-                throw new AmbiguousMatchException("Ambiguous match for handler for " + exceptionType.Name
+                throw new AmbiguousMatchException("Ambiguous match for handler for " + exceptionType?.Name
                     + ": " + CollectionUtil.CollectionToString(ambiguousMatches)  //TODO: format in string?
                     );
             }
@@ -125,9 +129,11 @@ namespace MvpFramework.Dialog
         /// Returns a populated <see cref="MessageDialogModel{TResult}"/> instance with the details 
         /// of the given exception.
         /// </summary>
-        /// <param name="exception"></param>
+        /// <param name="exception">The exception type to convert.
+        /// If null, null is returned.</param>
         /// <returns></returns>
-        public virtual MessageDialogModel<string> GetMessageDialogModelForException(Exception exception)
+        [return: Nullable]
+        public virtual MessageDialogModel<string> GetMessageDialogModelForException([Nullable] Exception exception)
         {
             if (exception == null)
                 return null;

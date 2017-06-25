@@ -152,7 +152,7 @@ namespace MvpFramework.Dialog
     public class MessageDisplayType
     {
         /// <summary>
-        /// To use a default based on other properties of the <see cref="MessageDialogModel"/>.
+        /// To use a default based on other properties of the <see cref="MessageDialogModel{T}"/>.
         /// </summary>
         public static readonly MessageDisplayType Default = new MessageDisplayType();
         //| Could use Nullable<MessageDisplayType> instead ?

@@ -22,7 +22,7 @@ namespace JohnLambe.Util.Io
         public const string Extension_Any = "\x01";
 
         /// <summary>
-        /// Returns the filename with the extension changed to the frist one in <paramref name="extensions"/> that matches an existing file.
+        /// Returns the filename with the extension changed to the frist one in <paramref name="allowedExtensions"/> that matches an existing file.
         /// </summary>
         /// <param name="filename">Original filename (absolute or relative to the current directory).
         /// If this has an extension, it is changed.
@@ -115,7 +115,7 @@ namespace JohnLambe.Util.Io
         /// </summary>
         /// <param name="relativeFilename">The filename to find, relative to each of of <paramref name="paths"/>.</param>
         /// <param name="paths">The list of paths/directories to search in. The search is done in the order of this array.</param>
-        /// <returns>The pathname of the first matching file found in <see cref="paths"/>. null if not found.</returns>
+        /// <returns>The pathname of the first matching file found in paramref name="paths"/>. null if not found.</returns>
         public static string FindFileOnPath(string relativeFilename, string[] paths)
         {
             foreach(var path in paths)

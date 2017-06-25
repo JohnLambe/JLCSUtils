@@ -258,7 +258,7 @@ namespace JohnLambe.Util
         /// The same as <see cref="Cast{TRequired, TReturn}(object, Func{TRequired, TReturn}, Func{TReturn})"/>
         /// except that nothing is returned by the delegates.
         /// <para>
-        /// If the given <paramref name="value"/> is of the specified type (<typeparamref name="TReturn"/>),
+        /// If the given <paramref name="value"/> is of the specified type (<typeparamref name="TRequired"/>),
         /// execute the delegate <paramref name="matchedDelegate"/> with <paramref name="value"/> as its parameter,
         /// otherwise execute <paramref name="notMatchedDelegate"/> (if it is not null).
         /// </para>

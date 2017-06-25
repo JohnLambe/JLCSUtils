@@ -41,7 +41,7 @@ namespace MvpFramework.Dialog
             get { return _exceptionClass; }
             set
             {
-                if (!value.IsTypeOrSubclassOf(typeof(Exception)))
+                if (value != null && !value.IsTypeOrSubclassOf(typeof(Exception)))
                     throw new ArgumentException(GetType().Name + "." + nameof(ExceptionClass) + " must be a subclass of Exception ");
                 _exceptionClass = value;
             }

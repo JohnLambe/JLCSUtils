@@ -85,7 +85,7 @@ namespace JohnLambe.Util.Reflection
 
         /// <summary>
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="value"></param>
         /// <returns>True if the given type is a primitive string or character type.</returns>
         public static bool IsText(object value)
             => value==null ? false : IsTextType(value.GetType());

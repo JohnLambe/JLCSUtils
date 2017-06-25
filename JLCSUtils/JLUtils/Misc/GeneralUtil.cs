@@ -47,7 +47,7 @@ namespace JohnLambe.Util.Misc
         /// </summary>
         /// <typeparam name="T">The return type.</typeparam>
         /// <param name="operation">The operation to execute.</param>
-        /// <param name="exceptionType">The types of exception to suppress. Anything exception class assignable to any of these is suppressed
+        /// <param name="exceptionTypes">The types of exception to suppress. Anything exception class assignable to any of these is suppressed
         /// (e.g. subclasses; this can be an interface and types that implement it will be suppressed).
         /// <para>Passing <code>typeof(Exception)</code> suppresses all exceptions. This is generally not recommended.</para>
         /// </param>

@@ -25,11 +25,12 @@ namespace MvpFramework.Generator
         where TControl : class
     {
         /// <summary/>
+        /// <param name="mappings">Mappings of data types to control types.</param>
         /// <param name="diContext"><see cref="DiContext"/></param>
         protected FormGeneratorBase(ControlMappings<TControl> mappings, IDiContext diContext = null)
         {
             this.DiContext = diContext;
-            _mappings = mappings/**.ArgNotNull()*/
+            _mappings = mappings
                 ?? DefaultMappings;
 //            CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type,Type>(DataTypeToControlTypeMap);
         }
@@ -377,6 +378,10 @@ namespace MvpFramework.Generator
     }
 
 
+    /// <summary>
+    /// A collection of mappings from data types to control types.
+    /// </summary>
+    /// <typeparam name="TControl"></typeparam>
     public class ControlMappings<TControl>
         where TControl: class
     {
@@ -433,7 +438,7 @@ namespace MvpFramework.Generator
         /// </summary>
         /// <param name="dataType">Data type of a property.</param>
         /// <param name="controlType">
-        /// The control to generate for properties of type <see cref="dataType"/>.
+        /// The control to generate for properties of type <paramref name="dataType"/>.
         /// This must be assignable to <typeparamref name="TControl"/>.
         /// </param>
         public virtual void AddMapping(Type dataType, Type controlType)
@@ -453,5 +458,6 @@ namespace MvpFramework.Generator
         protected readonly TypeMap DataTypeToControlTypeMap = new TypeMap();
         protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
     }
+    //TODO: Ability to map to a different control type based on an attribute of the property (or other member) that the control displays/enters.
 
 }

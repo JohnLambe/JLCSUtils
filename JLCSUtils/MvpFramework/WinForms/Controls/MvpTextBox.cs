@@ -31,10 +31,12 @@ namespace MvpFramework.WinForms.Controls
         }
         */
 
+#pragma warning disable CS0067   // Suppress 'Event never used'.  This is fired by reflection.
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
         [MvpModelProperty("Text", "TextChanged")]
         public event GetStringDelegate OnGetModelProperty;
+#pragma warning restore CS0067
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
         public string[] Items { get; set; }

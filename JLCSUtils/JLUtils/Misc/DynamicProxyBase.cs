@@ -90,6 +90,7 @@ namespace JohnLambe.Util.Misc
         /// <summary>
         /// Called when an attempt to invoke a member is resolved to a method.
         /// </summary>
+        /// <param name="binder"></param>
         /// <param name="method">The method to be invoked. Never null.</param>
         /// <param name="args">The arguments to this method.</param>
         /// <param name="result">The result of the member invocation. This will be returned by <see cref="TryInvokeMember"/>.</param>
@@ -402,6 +403,9 @@ namespace JohnLambe.Util.Misc
 
         protected const BindingFlags DefaultBindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
+        /// <summary>
+        /// The class that this one is a proxy for.
+        /// </summary>
         protected T Wrapped { get; set; }
     }
 

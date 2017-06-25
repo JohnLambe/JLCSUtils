@@ -71,7 +71,7 @@ namespace JohnLambe.Util.Validation
         /// Validate a specified property of an object (i.e. test that its current value is valid).
         /// </summary>
         /// <param name="instance"></param>
-        /// <param name="propertyName">The property to be validated.</param>
+        /// <param name="property">The property to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
         /// <returns>true iff valid.</returns>
         public virtual bool TryValidateProperty(object instance, PropertyInfo property, ValidationResults results)
@@ -112,6 +112,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Throw an exception if the given value is invalid for the specified property.
         /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
         /// <param name="value">The object on which the property is to be validated.</param>
         /// <param name="propertyName">The name of the member (usually a property) of <paramref name="value"/> to be validated.</param>
         public virtual void ValidateValue<TValue>(object instance, ref TValue value, string propertyName)
@@ -123,6 +124,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Throw an exception if the given value is invalid for the specified property.
         /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
         /// <param name="value"></param>
         /// <param name="property"></param>
         /// <returns>true if a validator modified the value.</returns>
@@ -157,6 +159,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Validate the given value as a value to be assigned to the given property.
         /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
         /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
         /// <param name="member">The member (usually a property) to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
@@ -169,6 +172,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Validate a value according to a set of attributes.
         /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
         /// <param name="value">The value to be validated.</param>
         /// <param name="attributes">The attributes providing the validation rules.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
@@ -265,7 +269,7 @@ namespace JohnLambe.Util.Validation
         /// Validate a specified property of an object (i.e. test that its current value is valid).
         /// </summary>
         /// <param name="instance"></param>
-        /// <param name="propertyName">The property to be validated.</param>
+        /// <param name="property">The property to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
         /// <returns>true iff valid.</returns>
         public override bool TryValidateProperty(object instance, PropertyInfo property, ValidationResults results)
@@ -300,7 +304,8 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Throw an exception if the given value is invalid for the specified property.
         /// </summary>
-        /// <param name="value">The object on which the property is to be validated.</param>
+        /// <param name="instance">The object on which the property is to be validated.</param>
+        /// <param name="value"></param>
         /// <param name="propertyName">The name of the member (usually a property) of <paramref name="value"/> to be validated.</param>
         public override void ValidateValue<TValue>(object instance, ref TValue value, string propertyName)
         {
@@ -310,7 +315,8 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Throw an exception if the given value is invalid for the specified property.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="instance"></param>
+        /// <param name="value">The value to be validated.</param>
         /// <param name="property"></param>
         /// <returns>true if a validator modified the value.</returns>
         public override bool ValidateValue<TValue>(object instance, ref TValue value, MemberInfo property)
@@ -338,6 +344,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Validate the given value as a value to be assigned to the given property.
         /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
         /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
         /// <param name="member">The member (usually a property) to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
@@ -349,6 +356,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Validate a value according to a set of attributes.
         /// </summary>
+        /// <param name="instance">The object to be validated. null is treated as valid.</param>
         /// <param name="value">The value to be validated.</param>
         /// <param name="attributes">The attributes providing the validation rules.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>

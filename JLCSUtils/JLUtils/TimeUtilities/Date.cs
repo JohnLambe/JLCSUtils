@@ -33,6 +33,7 @@ namespace JohnLambe.Util.TimeUtilities
         ///     for the DateTime constructor).
         /// Must be a multiple of <see cref="TimeSpan.TicksPerDay"/> - no time-of-day part.
         /// </param>
+        /// <param name="kind"><inheritdoc cref="DateTime.Kind"></inheritdoc></param>
         public Date(long ticks, DateTimeKind kind = DateTimeKind.Unspecified)
         {
             if (ticks % TimeSpan.TicksPerDay != 0)            // must not have a time part

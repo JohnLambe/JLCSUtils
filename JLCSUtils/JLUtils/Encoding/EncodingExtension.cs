@@ -14,11 +14,12 @@ namespace JohnLambe.Util.Encoding
         // Encoding/Decoding single character to/from single byte:
 
         /// <summary>
-        /// Decode a single byte.
+        /// Decode a single byte to a character.
         /// </summary>
         /// <param name="e"></param>
-        /// <param name="encoded"></param>
+        /// <param name="encoded">A single-byte character encoding.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException">If the given byte cannot be decoded to a single character.</exception>
         public static char GetChar(this global::System.Text.Encoding e, byte encoded)
         {
             _byteArray[0] = encoded;
@@ -36,11 +37,11 @@ namespace JohnLambe.Util.Encoding
         private static byte[] _byteArray = new byte[1];   // so that a new byte array is not allocated on each call.
 
         /// <summary>
-        /// Decode a single character to a single byte.
+        /// Encode a single character to a single byte.
         /// </summary>
         /// <param name="e"></param>
-        /// <param name="encoded"></param>
-        /// <returns></returns>
+        /// <param name="c">The character to be encoded.</param>
+        /// <returns>The encoded value.</returns>
         /// <exception cref="ArgumentException">If the given character cannot be encoded in one byte (but the encoder can encode it).</exception>
         public static byte GetByte(this global::System.Text.Encoding e, char c)
         {

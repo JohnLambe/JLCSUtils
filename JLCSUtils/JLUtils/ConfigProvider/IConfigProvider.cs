@@ -14,9 +14,10 @@ namespace DiExtension.ConfigInject
         /// <typeparam name="T">The returned value is cast to this.</typeparam>
         /// <param name="key"></param>
         /// <param name="requiredType">The type that the returned value should be.
-        /// This must be assignable to <see cref="T"/>.
+        /// This must be assignable to <typeparamref name="T"/>.
         /// A subtype of this may be returned.
         /// </param>
+        /// <param name="value">receives the resolved value.</param>
         /// <returns>true iff the key is found. If false, <paramref name="value"/> will be default(T).</returns>
         bool GetValue<T>(string key, Type requiredType, out T value);
     }

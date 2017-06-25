@@ -24,6 +24,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Remove something from a list or break its associated with something else.
+        /// <para>Suggested icon: 'X'.</para>
         /// </summary>
         public const string Remove = "Remove";
 
@@ -34,6 +35,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Edit an item. (May be the same button for viewing it).
+        /// <para>Common icons: Pen or pencil.</para>
         /// </summary>
         public const string Edit = "Edit";
 
@@ -44,6 +46,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Search for something.
+        /// <para>Common icons: Magnifying glass or binoculars.</para>
         /// </summary>
         public const string Search = "Search";
 
@@ -65,7 +68,7 @@ namespace MvpFramework
         /// <summary>
         /// Stop and abandon an operation.
         /// <para>
-        /// It is suggested that the icon would be in that of a traffic Stop sign (octagon).
+        /// It is suggested that the icon would be in the shape of a traffic Stop sign (octagon).
         /// </para>
         /// </summary>
         public const string Abort = "Abort";
@@ -106,7 +109,7 @@ namespace MvpFramework
         public const string Help = "Help";
 
         /// <summary>
-        /// 
+        /// Leave a page or area of the application, close a window, etc.
         /// </summary>
         public const string Exit = "Exit";
 
@@ -129,6 +132,9 @@ namespace MvpFramework
         /// </remarks>
         public const string No = "No";
 
+        /// <summary>
+        /// 'No to All'
+        /// </summary>
         public const string NoAll = "NoAll";
 
         /// <summary>
@@ -138,11 +144,13 @@ namespace MvpFramework
 
         /// <summary>
         /// Undo the last action.
+        /// <para>Common icon: Curved arrow pointing left or anticlockwise.</para>
         /// </summary>
         public const string Undo = "Undo";
 
         /// <summary>
         /// Redo an action undone with 'Undo'.
+        /// <para>Common icon: Curved arrow in a similar style to the 'Undo' icon but pointing in the opposite direction (right or clockwise).</para>
         /// </summary>
         public const string Redo = "Redo";
 
@@ -193,6 +201,22 @@ namespace MvpFramework
         #endregion
 
         public const string Home = "Home";
+
+        public const string Print = "Print";
+
+        public const string Scan = "Scan";
+
+        /// <summary>
+        /// Bring data into the system from an external source.
+        /// <para>Suggested icon: An icon to represent the system or a database, with an arrow pointing towards it.</para>
+        /// </summary>
+        public const string Import = "Import";
+
+        /// <summary>
+        /// Output data to something external to the system.
+        /// <para>Suggested icon: Similar to 'Import' but with the arrow pointing in the opoosite direction, and maybe, in a different color.</para>
+        /// </summary>
+        public const string Export = "Export";
 
         // Media actions: Playm, Stop, Rewind, etc. ?
 

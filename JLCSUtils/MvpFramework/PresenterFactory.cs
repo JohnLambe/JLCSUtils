@@ -250,7 +250,6 @@ namespace MvpFramework
     /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
-    /// <typeparam name="TParam1"></typeparam>
     public class KnownPresenterFactory<TPresenter> : PresenterFactory<TPresenter>
         where TPresenter : IPresenter
     {
@@ -290,7 +289,8 @@ namespace MvpFramework
     /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
-    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the 'Create' method.</typeparam>
+    /// <typeparam name="TParam2">The type of the 2nd parameter to the 'Create' method.</typeparam>
     public class KnownPresenterFactory<TPresenter, TParam1, TParam2> : PresenterFactory<TPresenter, TParam1, TParam2>
         where TPresenter : IPresenter
     {
@@ -307,7 +307,9 @@ namespace MvpFramework
     /// Presenter factory for use when the target class is known and supplied by the consumer of the factory.
     /// </summary>
     /// <typeparam name="TPresenter"></typeparam>
-    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the 'Create' method.</typeparam>
+    /// <typeparam name="TParam2">The type of the 2nd parameter to the 'Create' method.</typeparam>
+    /// <typeparam name="TParam3">The type of the 3rd parameter to the 'Create' method.</typeparam>
     public class KnownPresenterFactory<TPresenter, TParam1, TParam2, TParam3> : PresenterFactory<TPresenter, TParam1, TParam2, TParam3>
         where TPresenter : IPresenter
     {

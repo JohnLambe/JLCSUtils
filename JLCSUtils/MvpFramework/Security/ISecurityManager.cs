@@ -15,6 +15,7 @@ namespace MvpFramework.Security
         /// Tests whether the current user has specified rights.
         /// </summary>
         /// <param name="req">The requested right(s).</param>
+        /// <param name="result">The validation result.</param>
         void ValidateRights(SecurityRequirement req, out SecurityResult result);
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace MvpFramework.Security
         /// <summary>
         /// Returns true if the user has any of the specified rights.
         /// </summary>
+        /// <param name="m"></param>
         /// <param name="rights"></param>
         /// <returns></returns>
         public static bool ValidateRights(this ISecurityManager m, string[] rights)
@@ -63,11 +65,12 @@ namespace MvpFramework.Security
         /// <summary>
         /// Returns true if the user has the specified right.
         /// </summary>
-        /// <param name="rights"></param>
+        /// <param name="manager"></param>
+        /// <param name="right"></param>
         /// <returns></returns>
-        public static bool ValidateRights(this ISecurityManager m, string right)
+        public static bool ValidateRights(this ISecurityManager manager, string right)
         {
-            return m.ValidateRights(new string[] { right });
+            return manager.ValidateRights(new string[] { right });
         }
     }
 

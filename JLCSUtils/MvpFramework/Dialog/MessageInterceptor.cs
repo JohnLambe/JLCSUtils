@@ -12,9 +12,8 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Apply any applicable registered interceptors on the given message dialog.
         /// </summary>
-        /// <param name="messageModel"></param>
         /// <param name="args"></param>
-        public virtual void Execute(/*IMessageDialogModel messageModel,*/ MessageDialogEventArgs args)
+        public virtual void Execute(MessageDialogEventArgs args)
         {
             var interceptDetails = Repository[args.Message.InstanceId];
             if (interceptDetails != null)     // do nothing if null
@@ -69,4 +68,6 @@ namespace MvpFramework.Dialog
         /// </summary>
         public virtual bool Suppress { get; set; }
     }
+
+
 }

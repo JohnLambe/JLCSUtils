@@ -6,11 +6,14 @@ using System.Text;
 
 namespace JohnLambe.Util
 {
+    /// <summary>
+    /// Provides a default value.
+    /// </summary>
+    /// <typeparam name="T">The type of the default value. Should be a type that is assignable to the implementing type.</typeparam>
     public interface IHasDefaultValue<T>
     {
         /// <summary>
         /// A default value for this type.
-        /// <typeparamref name="T"/> should be the same as the type that implements this.
         /// </summary>
         /// <returns></returns>
         T GetDefaultValue();
@@ -31,7 +34,7 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// Returns the default value defined by the <see cref="IHasDefaultValue"/> implementation
+        /// Returns the default value defined by the <see cref="JohnLambe.Util.IHasDefaultValue{T}"/> implementation
         /// if the instance is null.
         /// If the instance is not null, it is returned, provided that is is of type T (the type of default value).
         /// </summary>
@@ -87,9 +90,10 @@ namespace JohnLambe.Util
         /// <summary>
         /// Throws an exception if this is null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of the value.</typeparam>
         /// <param name="value">The value to be checked for null.</param>
         /// <param name="message">Error message to be given if null.</param>
+        /// <param name="exceptionType">The type of exception to throw if <paramref name="value"/> is null.</param>
         /// <returns>value (the object this is called on).</returns>
         /// <exception cref="NullReferenceException">If this is not null.</exception>
         public static T NotNull<T>(this T value, string message = null, Type exceptionType = null)
@@ -103,11 +107,11 @@ namespace JohnLambe.Util
         /// Same as NotNull, except that this can be called with any type.
         /// This can be used for generic types which may or may not be nullable.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="message"></param>
-        /// <param name="exceptionType"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <param name="value">The value to be checked for null.</param>
+        /// <param name="message">Error message to be given if null.</param>
+        /// <param name="exceptionType">The type of exception to throw if <paramref name="value"/> is null.</param>
+        /// <returns>value (the object this is called on).</returns>
         public static T CheckNotNull<T>(T value, string message = null, Type exceptionType = null)
         {
             if (value == null)

@@ -33,6 +33,7 @@ namespace MvpFramework
         /// </summary>
         /// <typeparam name="TView">The type of the view.</typeparam>
         /// <param name="presenterType">The concrete type of the presenter to be created if not intercepted.</param>
+        /// <param name="param">Parameters to the 'Create' method.</param>
         /// <param name="view">The new view.
         /// This can modify or replace (assign) this. If this is assigned, the implementor is responsible for disposing the original one if it impleemnts <see cref="IDisposable"/>, unless it is keeping a reference to it.
         /// </param>
@@ -49,6 +50,7 @@ namespace MvpFramework
         /// </summary>
         /// <typeparam name="TPresenter">The type of the presenter.</typeparam>
         /// <param name="presenter">The new presenter.</param>
+        /// <param name="param">Parameters to the 'Create' method.</param>
         /// <param name="view">The View of the new presenter (which will have already been given to the presenter).</param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the p</exception>
