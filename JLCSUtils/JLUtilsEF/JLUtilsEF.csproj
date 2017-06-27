@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Db\EfDatabaseContext.cs" />
     <Compile Include="Db\EfDbRepository.cs" />
+    <Compile Include="Db\Ef\DbSetUtil.cs" />
     <Compile Include="Db\Ef\EntityEvents.cs" />
     <Compile Include="Db\Ef\EventArgs.cs" />
     <Compile Include="Db\Ef\ExtendedContext.cs" />

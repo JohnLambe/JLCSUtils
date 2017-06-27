@@ -425,7 +425,7 @@ namespace MvpFramework.WinForms
         {
             get
             {
-                string filter = OnGetFilter?.Invoke(this, EventArgs.Empty);
+                string filter = OnGetFilter?.Invoke(this, GetNameEventArgs.Empty);
                 if (filter == FilterAll)
                     return null;
                 else
@@ -455,7 +455,7 @@ namespace MvpFramework.WinForms
             + "If this does not have a handler, or it returns null, the Filter is name of this control, with a prefix of \"ui\" removed (if present)."
             + "Using an event handler allows assigning it to a constant that can be referenced on the handlers.\n"
             + "Return " + nameof(ButtonContainer) + "." + nameof(FilterAll) + " (\"" + FilterAll + "\") to match all handlers." )]
-        public virtual event GetStringDelegate OnGetFilter;
+        public virtual event GetNameDelegate OnGetFilter;
 
         /// <summary>
         /// Default and minimum width of each button, in pixels.

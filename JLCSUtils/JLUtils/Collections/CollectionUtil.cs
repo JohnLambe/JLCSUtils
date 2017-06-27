@@ -69,6 +69,7 @@ namespace JohnLambe.Util.Collections
             return result.ToString();
         }
 
+        /*
         /// <summary>
         /// Returns the only element in a sequence, or null if the sequence is empty.
         /// </summary>
@@ -93,5 +94,7 @@ namespace JohnLambe.Util.Collections
                     return first;    // this is the only element
             }
         }
+        */
+
     }
 }

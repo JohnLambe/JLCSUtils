@@ -19,7 +19,7 @@ namespace MvpFramework.WinForms.Controls
         [MvpHandlerIdProperty("Click")]
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.HandlerIdDescription)]
-        public event GetStringDelegate OnGetHandlerId;
+        public event GetNameDelegate OnGetHandlerId;
         //        public virtual string HandlerId { get; set; }
 #pragma warning restore CS0067
 

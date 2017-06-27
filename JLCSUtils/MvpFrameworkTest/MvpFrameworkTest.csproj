@@ -60,6 +60,7 @@
     <Compile Include="Dialog\ExceptionToDialogMapTest.cs" />
     <Compile Include="Generator\FormGeneratorBaseTest.cs" />
     <Compile Include="Generator\ModelQueryTest.cs" />
+    <Compile Include="KeyboardKeyTest.cs" />
     <Compile Include="Menu\MenuBuilderTest.cs" />
     <Compile Include="Menu\OptionCollectionBuilderTest.cs" />
     <Compile Include="RegistrationHelperTest.cs" />

@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.Reflection;
+﻿using JohnLambe.Util.Misc;
+using JohnLambe.Util.Reflection;
 using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
@@ -968,10 +969,13 @@ namespace MvpFramework
         //     The CLEAR key.
         OemClear = 254,
 
+
+        ModifierKeys = unchecked( (int)0xFFFF0000 ),
+
         // WinForms only:
-        //
-        // Summary:
-        //     The bitmask to extract a key code from a key value.
+        /// <summary>
+        /// The bitmask to extract a key code from a key value.
+        /// </summary>
         [EnumMask]
         [EnumHybridMember(DataType = typeof(KeyboardKey))]
         KeyCode = 65535,
@@ -1044,5 +1048,47 @@ namespace MvpFramework
         /// <returns></returns>
         public static KeyboardKey ToKeyboardKey(ConsoleKey value, ConsoleModifiers modifiers = 0)
             => (KeyboardKey)value | FromConsoleModifiers(modifiers);
+
+        /// <summary>
+        /// Combines a base key with a modifier.
+        /// </summary>
+        /// <param name="key">The key to modify.</param>
+        /// <param name="modifier">The modifier to apply to this key.
+        /// This must not include a base key.
+        /// This can be <see cref="KeyboardKey.None"/> or multiple modifiers.
+        /// </param>
+        /// <returns>The key, with the modifier applied.</returns>
+        /// <example>
+        /// For CTRL-ALT-DELETE: <code>KeyboardKey.Delete.AddModifier(KeyboardKey.Alt).AddModifier(KeyboardKey.Control)</code>
+        /// </example>
+        /// <remarks>
+        /// Using this instead of bitwise OR provides some validation (that would detect a key code (e.g. ControlKey) being used in place of a modifier.
+        /// </remarks>
+        [PureFunction]
+        public static KeyboardKey AddModifier(this KeyboardKey key, KeyboardKey modifier)
+        {
+            if ((key & KeyboardKey.KeyCode) == 0)
+                throw new ArgumentException("No base key provided");
+            if ((modifier & KeyboardKey.KeyCode) != 0)
+                throw new ArgumentException("The given modifier is invalid - it includes bits in the range for the base key.");
+            return modifier | key;
+        }
+
+        /* Options for how AddModifier could have been defined:
+         * 
+            public static readonly KeyboardKey A = KeyboardKey.Delete.AddModifier(KeyboardKey.Alt).AddModifier(KeyboardKey.Control);
+                // Called on base key, or base key with modifier. Parameter must be modifier.
+                // Chose this one.
+
+            public static readonly KeyboardKey C = KeyboardKey.Alt.Combine(KeyboardKey.Control.Combine(KeyboardKey.P));
+                // Inverse of above.
+
+            public static readonly KeyboardKey E = KeyboardKey.Delete.Combine(KeyboardKey.Alt.Combine(KeyboardKey.Control));
+                // wekaer validation: Called on base key or modifier, parameter is modifier(s).
+
+            public static readonly KeyboardKey B = KeyboardKey.Alt.Combine(KeyboardKey.Control).Combine(KeyboardKey.Delete);
+                // weaker validation: Called on modifier, but parameter can be modifier or base key.
+        */
+
     }
 }

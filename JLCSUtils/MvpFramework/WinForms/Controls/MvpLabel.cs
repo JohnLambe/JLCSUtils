@@ -31,7 +31,7 @@ namespace MvpFramework.WinForms.Controls
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
         [MvpModelProperty("Text")]
-        public event GetStringDelegate OnGetModelProperty;
+        public event GetNameDelegate OnGetModelProperty;
 #pragma warning restore CS0067
     }
 }

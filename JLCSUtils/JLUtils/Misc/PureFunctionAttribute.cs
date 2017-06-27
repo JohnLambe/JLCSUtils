@@ -12,7 +12,7 @@ namespace JohnLambe.Util.Misc
     [AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class PureFunctionAttribute : Attribute
     {
-        public PureFunctionAttribute(bool pure)
+        public PureFunctionAttribute(bool pure = true)
         {
             Pure = pure;
         }

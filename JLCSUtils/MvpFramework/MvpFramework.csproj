@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="Binding\ViewControlBinder.cs" />
     <Compile Include="CommonIcons.cs" />
+    <Compile Include="CommonKeys.cs" />
     <Compile Include="Dialog\!NamespaceDoc.cs" />
     <Compile Include="Dialog\Attributes.cs" />
     <Compile Include="Dialog\ExceptionMappingAttributes.cs" />
@@ -147,6 +148,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WinForms\Controls\MvpLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\Controls\MvpPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WinForms\Controls\MvpTextBox.cs">

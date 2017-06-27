@@ -123,7 +123,7 @@
             this.uiButtonContainer2.Name = "uiButtonContainer2";
             this.uiButtonContainer2.Size = new System.Drawing.Size(302, 42);
             this.uiButtonContainer2.TabIndex = 7;
-            this.uiButtonContainer2.OnGetFilter += new MvpFramework.Binding.GetStringDelegate(this.buttonContainer2_OnGetFilter);
+            this.uiButtonContainer2.OnGetFilter += new MvpFramework.Binding.GetNameDelegate(this.buttonContainer2_OnGetFilter);
             // 
             // button3
             // 
