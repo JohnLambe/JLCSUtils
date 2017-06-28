@@ -11,6 +11,7 @@ using DiExtension.Attributes;
 using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.Collections;
+using JohnLambe.Util.Validation;
 
 namespace MvpFramework
 {
@@ -27,43 +28,43 @@ namespace MvpFramework
         /// <summary>
         /// Conventional suffix in names of Presenter classes.
         /// </summary>
-        protected string PresenterSuffix => "Presenter";
+        protected virtual string PresenterSuffix => "Presenter";
 
         /// <summary>
         /// Conventional suffix in names of View classes.
         /// </summary>
-        protected string ViewSuffix => "View";
+        protected virtual string ViewSuffix => "View";
 
         /// <summary>
         /// Optional suffix in names of Model classes.
         /// (Domain classes usually won't use it. A Model for a certain type of dialog probably would.)
         /// </summary>
-        protected string ModelSuffix => "Model";
+        protected virtual string ModelSuffix => "Model";
 
         /// <summary>
         /// Prefix of names of interfaces.
         /// </summary>
-        protected string InterfacePrefix => "I";
+        protected virtual string InterfacePrefix => "I";
 
         /// <summary>
         /// The last part of the Presenter's namespace.
         /// </summary>
-        protected string PresenterNamespace => PresenterSuffix;
+        protected virtual string PresenterNamespace => PresenterSuffix;
 
         /// <summary>
         /// The last part of the View's namespace.
         /// </summary>
-        protected string ViewNamespace => ViewSuffix;
+        protected virtual string ViewNamespace => ViewSuffix;
 
         /// <summary>
         /// String appended to the namespace of Views and Presenters, for a namespace for interfaces.
         /// </summary>
-        protected string InterfaceSuffix => "Interface";
+        protected virtual string InterfaceSuffix => "Interface";
 
         /// <summary>
         /// Last part of the namespace for a View interface.
         /// </summary>
-        protected string ViewInterfaceNamespace => ViewSuffix + InterfaceSuffix;
+        protected virtual string ViewInterfaceNamespace => ViewSuffix + InterfaceSuffix;
 
         #endregion
 
@@ -159,9 +160,9 @@ namespace MvpFramework
         /// <typeparam name="TPresenter"></typeparam>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="presenterType"></param>
-        /// <param name="model"></param>
+        /// <param name="model">NOT CURRENTLY USED</param>
         /// <returns></returns>
-        protected virtual TPresenter CreatePresenter<TPresenter, TModel>(Type presenterType, TModel model)
+        protected virtual TPresenter CreatePresenter<TPresenter, TModel>([NotNull] Type presenterType, [Nullable] TModel model)
             where TPresenter : class, IPresenter
         {
             return GetInstance<TPresenter>(presenterType);
@@ -175,7 +176,7 @@ namespace MvpFramework
         /// Must be <see cref="IPresenter"/> or an interface derived from it.</param>
         /// <param name="modelType">The type of the Model.</param>
         /// <returns>The Presenter class.</returns>
-        public virtual Type ResolvePresenterType(Type presenterInterface, Type modelType = null)
+        public virtual Type ResolvePresenterType([NotNull] Type presenterInterface, [Nullable] Type modelType = null)
         {
             Diagnostics.PreCondition(presenterInterface != null);
 
@@ -385,18 +386,28 @@ namespace MvpFramework
             if (presenterType.IsInterface)
                 simpleName = simpleName.RemovePrefix(InterfacePrefix);   // remove leading "I" if it in an interface
 
-            // Get the View interface name by naming convention:
-            // Try the same namespace as the Presenter:
-            string viewInterfaceName = presenterType.Namespace + "."
-                + InterfacePrefix + simpleName;
-            Type viewInterfaceType = GetTypeByName(viewInterfaceName, presenterType.Assembly);      // get the interface type for this name
 
-            if (viewInterfaceType == null)       // if not found, try the conventional separate namespace
+            // Resolve the View interface:
+            Type viewInterfaceType = presenterType.GetCustomAttribute<PresenterAttribute>()?.ViewInterface;  // get the explicitly declared interface if there is one
+
+            string viewInterfaceName = null;
+            if (viewInterfaceType == null)    // if not explicitly defined
             {
-                viewInterfaceName = ChangePresenterNamespace(presenterType.Namespace, ViewInterfaceNamespace) + "."
+                // Get the View interface name by naming convention:
+                // Try the same namespace as the Presenter:
+                viewInterfaceName = presenterType.Namespace + "."
                     + InterfacePrefix + simpleName;
                 viewInterfaceType = GetTypeByName(viewInterfaceName, presenterType.Assembly);      // get the interface type for this name
+
+                if (viewInterfaceType == null)       // if not found, try the conventional separate namespace
+                {
+                    viewInterfaceName = ChangePresenterNamespace(presenterType.Namespace, ViewInterfaceNamespace) + "."
+                        + InterfacePrefix + simpleName;
+                    viewInterfaceType = GetTypeByName(viewInterfaceName, presenterType.Assembly);      // get the interface type for this name
+                }
             }
+
+            // Get the View:
 
             if (viewInterfaceType != null)
             {
@@ -438,6 +449,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="viewType"></param>
         /// <returns></returns>
+        [TypeValidation(Implements = typeof(IView))]
         public virtual Type ResolveInterfaceForViewType(Type viewType)
         {
             return ResolveInterfaceForClass<IView, ViewAttribute>(viewType);

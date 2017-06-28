@@ -52,7 +52,7 @@
     <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
-    <Compile Include="Binding\GetStringDelegate.cs" />
+    <Compile Include="Binding\GetNameDelegate.cs" />
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
     <Compile Include="Binding\MvpContext.cs" />
     <Compile Include="Binding\OptionUpdate.cs" />

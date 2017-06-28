@@ -1,4 +1,6 @@
-﻿using MvpFramework.Binding;
+﻿using JohnLambe.Util.Types;
+using JohnLambe.Util.Validation;
+using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,7 @@ namespace MvpFramework
         /// <summary>
         /// The Presenter/View Interface, that the DI container should map to the attributed class.
         /// </summary>
+        [TypeValidation(IsInterface = true), Nullable]
         public virtual Type Interface { get; set; }
     }
 
@@ -24,7 +27,12 @@ namespace MvpFramework
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class PresenterAttribute : MvpClassAttribute
     {
-//        public Type ViewInterface { get; set; }
+        /// <summary>
+        /// The interface of the View for this Presenter.
+        /// null to use the default resolution.
+        /// </summary>
+        [TypeValidation(Implements = typeof(IView)), Nullable]
+        public Type ViewInterface { get; set; }
     }
 
     /// <summary>
@@ -49,6 +57,7 @@ namespace MvpFramework
         /// <summary>
         /// The type of the model.
         /// </summary>
+        [NotNull]
         public virtual Type ForModel { get; set; }
         //| Could be called ModelType
 
@@ -62,6 +71,7 @@ namespace MvpFramework
         /// This must be an interface or base class (or the class itself) of the attributed presenter.
         /// It is recommended that this is an interface for the action (or role) without requiring knowledge of the model type.
         /// </summary>
+        [TypeValidation(IsValueType = false), NotNull]
         public virtual Type ForAction { get; set; }
         //| Could be called ActionHandled
 
