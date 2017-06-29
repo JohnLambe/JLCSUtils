@@ -16,9 +16,30 @@ namespace MvpFramework
     {
         /// <summary>
         /// The Presenter/View Interface, that the DI container should map to the attributed class.
+        /// If there are multiple interfaces, this returns the first one.
+        /// Setting this replaces everything in <see cref="Interfaces"/>.
+        /// <para>
+        /// When placing this attribute, don't assign both this and <see cref="Interfaces"/>.
+        /// </para>
         /// </summary>
         [TypeValidation(IsInterface = true), Nullable]
-        public virtual Type Interface { get; set; }
+        public virtual Type Interface
+        {
+            get
+            {
+                return Interfaces?.ElementAtOrDefault(0);
+            }
+            set
+            {
+                if (value == null)
+                    Interfaces = null;
+                else
+                    Interfaces = new[] { value };
+            }
+        }
+
+        [TypeValidation(IsInterface = true), Nullable]
+        public virtual Type[] Interfaces { get; set; }
     }
 
     /// <summary>

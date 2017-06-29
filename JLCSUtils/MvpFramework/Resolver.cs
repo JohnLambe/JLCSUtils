@@ -455,6 +455,24 @@ namespace MvpFramework
             return ResolveInterfaceForClass<IView, ViewAttribute>(viewType);
         }
 
+        public virtual IEnumerable<Type> ResolveInterfacesForViewType(Type viewType)
+        {
+            return ResolveInterfacesForClass<IView, ViewAttribute>(viewType);
+        }
+
+        protected virtual IEnumerable<Type> ResolveInterfacesForClass<TRequiredInterface, TAttribute>(Type classType)
+                where TAttribute : MvpClassAttribute
+                where TRequiredInterface : class
+        {
+            // look for attribute first:
+            IEnumerable<Type> resolvedInterfaces = classType.GetCustomAttribute<TAttribute>()?.Interfaces;
+
+            if (resolvedInterfaces != null)
+                return resolvedInterfaces;
+            else
+                return new Type[] { ResolveInterfaceForClass<TRequiredInterface, TAttribute>(classType) };
+        }
+
         /// <summary>
         /// Return the presenter/view interface type for a presenter/view class:
         /// The interface that a DI framework typically resolves to this class.

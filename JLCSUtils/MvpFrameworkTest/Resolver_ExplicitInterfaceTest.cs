@@ -6,6 +6,7 @@ using DiExtension.SimpleInject;
 using DiExtension;
 using System.Reflection;
 using MvpFramework.Binding;
+using System.Linq;
 
 namespace MvpFrameworkTest.Resolver_ExplicitView
 {
@@ -39,6 +40,15 @@ namespace MvpFrameworkTest.Resolver_ExplicitView
             Assert.IsTrue(view is ITestView1);
         }
 
+        [TestMethod]
+        public void GetViewInterfaces()
+        {
+            var interfaces = Resolver.ResolveInterfacesForViewType(typeof(ATestView)).ToArray();
+
+            Assert.AreEqual(typeof(ITestView1), interfaces[0]);
+            Assert.AreEqual(typeof(ITestView2), interfaces[1]);
+        }
+
         protected SiDiContext Context = new SiDiContext();
         protected MvpResolver Resolver { get; set; }
     }
@@ -48,7 +58,7 @@ namespace MvpFrameworkTest.Resolver_ExplicitView
     {
     }
 
-    [Presenter(ViewInterface = typeof(ITestView1))]
+    [Presenter(ViewInterface = typeof(ITestView2))]
     public class TestPresenter : ITestPresenter
     {
         public object Show()
@@ -61,9 +71,12 @@ namespace MvpFrameworkTest.Resolver_ExplicitView
     public interface ITestView1 : IView
     {
     }
+    public interface ITestView2 : IView
+    {
+    }
 
-    [View(Interface = typeof(ITestView1))]
-    public class ATestView : ITestView1  // class not resolvable by naming convention
+    [View(Interfaces = new[] { typeof(ITestView1), typeof(ITestView2) })]
+    public class ATestView : ITestView1, ITestView2  // class not resolvable by naming convention
     {
         public void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {

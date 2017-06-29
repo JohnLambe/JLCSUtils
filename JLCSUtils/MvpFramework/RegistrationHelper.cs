@@ -75,10 +75,11 @@ namespace MvpFramework
                     assembly.GetTypes().Where(t => t.IsDefined<ViewAttribute>())
                     )
                 {
-                    Type viewType = _resolver.ResolveInterfaceForViewType(view);
-                    if (viewType == null)
+                    IEnumerable<Type> viewInterfaces = _resolver.ResolveInterfacesForViewType(view);
+                    if (viewInterfaces == null)
                         throw new MvpResolutionException("No interface found for view: " + view.FullName);
-                    RegisterType(viewType, view);    // register the View class to be resolved from its interface
+                    foreach(var viewInterface in viewInterfaces)
+                        RegisterType(viewInterface, view);    // register the View class to be resolved from its interface
                     //                    RegisterType(Resolver.ResolveInterfaceForViewType(view), () => ReflectionUtils.Create<IView>(view));
                 }
 
