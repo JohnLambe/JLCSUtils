@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OptionsTest.cs" />
     <Compile Include="Resolver_ExplicitInterfaceTest.cs" />
+    <Compile Include="Resolver_Presenter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DiExtension\DiExtension.csproj">

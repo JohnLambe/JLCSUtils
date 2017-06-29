@@ -137,6 +137,31 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         /// <summary>
+        /// Tests that the values of two items are the same (regardless of type).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        public static void AssertValueEqual(object expected, object actual, string message = null)
+        {
+            if (!ValueEquals(expected,actual))
+            {
+                OutputAndThrowException(
+                    new AssertFailedException("Values do not match: Expected: " + expected + "; "
+                        + "Actual: " + actual + "; " + (message ?? ""))
+                );
+            }
+        }
+
+        public static bool ValueEquals<T>(T a, T b)
+        {
+            if (a == null && b == null)
+                return true;
+            return a.Equals(b);
+        }
+
+
+        /// <summary>
         /// Write the details of an exception to the console, and raise the exception.
         /// </summary>
         /// <param name="ex"></param>

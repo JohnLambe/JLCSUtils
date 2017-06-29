@@ -103,6 +103,8 @@ namespace MvpFramework
 
         #endregion
 
+        #region Resolving Presenter
+
         /// <summary>
         /// Get a presenter of a known concrete type.
         /// </summary>
@@ -239,22 +241,11 @@ namespace MvpFramework
         public virtual Type ResolvePresenterTypeForAction([Nullable] Type actionInterface, [Nullable] Type modelType)
         {
             // Initial inefficient implementation.
-            //TODO: Does not currently recognise a presenter that handles a superclass (or other type that is assignable from) the target one.
+            //TODO: Does not currently recognise a presenter that handles a superclass of (or other type that is assignable from) the target one.
             //TODO: Cache mappings.
 
             if (Assemblies == null || actionInterface == null || modelType == null)
                 return null;
-            /*
-                        var a1 = Assemblies.SelectMany(a => a.GetTypes())
-                            .Select(t => new AttributeAndType<PresenterForActionAttribute>() { DeclaringType = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() });
-                        var b = a1
-                            .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType);
-                        var c = b
-                            .Select(at1 => at1.DeclaringType)
-                            .FirstOrDefault()
-            //                ?.DeclaringType;
-            ;
-            */
             /* for exact type:
             return Assemblies.SelectMany(a => a.GetTypes())             // all types
                 .SelectMany(t => t.GetAttributesWithMember<PresenterForActionAttribute,Type>())   // all PresenterForActionAttribute attributes of each type
@@ -268,47 +259,11 @@ namespace MvpFramework
                 .Select(at1 => at1.DeclaringMember)
                 .FirstOrDefault()
             ;
-            /*
-            return Assemblies.SelectMany(a => a.GetTypes())             // all types
-                .Select(t => new AttributeAndMember<PresenterForActionAttribute, Type>()
-                    { DeclaringMember = t, Attribute = t.GetCustomAttribute<PresenterForActionAttribute>() })
-                .Where(at => at.Attribute != null && at.Attribute.ForAction == actionInterface && at.Attribute.ForModel == modelType)
-                .Select(at1 => at1.DeclaringMember)
-                .FirstOrDefault()
-                */
         }
 
-        /// <summary>
-        /// Assemblies to scan for resolving by Action / Model.
-        /// </summary>
-        public virtual Assembly[] Assemblies
-        {
-            get { return _assemblies; }
-            set { _assemblies = value?.Distinct().ToArray(); }
-            // Note: Distinct() currently (2017?) preserves the order of elements, but its contract does not require this.
-            // This class currently does not require the order to be preserved, but preserving the order could be more intuitive for debugging.
-        }
-        private Assembly[] _assemblies;
+        #endregion
 
-        /*
-        /// <summary>
-        /// Get the Presenter for a given action on a given model.
-        /// </summary>
-        /// <typeparam name="TPresenter">The type of the Presenter.</typeparam>
-        /// <typeparam name="TModel">The type of the Model.</typeparam>
-        /// <param name="model"></param>
-        /// <param name="action">The action to be done with the model.</param>
-        /// <returns></returns>
-        public virtual TPresenter Resolve<TPresenter, TModel>(TModel model, string action)
-            where TPresenter : class
-        {
-            var presenterType = Type.GetType(model.GetType().FullName.RemoveSuffix(ModelSuffix)
-                + action + PresenterSuffix);    // change '<Name>[Model]' to '<Name><Action>Presenter'
-            // Create Presenter:
-            return ClassUtils.Instantiate<TPresenter>(presenterType, new Type[] { typeof(TModel) }, new object[] { model });
-            //TODO: Get from DI container?
-        }
-        */
+        #region Resolving View
 
         /// <summary>
         /// Get the View for a given Presenter.
@@ -434,27 +389,49 @@ namespace MvpFramework
                 );
         }
 
+        #endregion
+
+        #region Resolving interfaces
+
         /// <summary>
-        /// Get the presenter interface (IPresenter subinterface) for the given presenter class.
+        /// Get the Presenter interface (<see cref="IPresenter"/> subinterface) for the given Presenter class.
+        /// If it has more than one interface, the first one is returned.
         /// </summary>
-        /// <param name="presenterType"></param>
-        /// <returns></returns>
+        /// <param name="presenterType">The type of the returned interface.</param>
+        /// <returns>The presenter interface.</returns>
+        [return: TypeValidation(AssignableFrom = typeof(IPresenter))]
         public virtual Type ResolveInterfaceForPresenterType(Type presenterType)
         {
             return ResolveInterfaceForClass<IPresenter, PresenterAttribute>(presenterType);
         }
 
         /// <summary>
-        /// Get the view interface (IView subinterface) for the given view class.
+        /// Get the presenter interface(s) (<see cref="IPresenter"/> subinterface) for the given presenter class.
+        /// </summary>
+        /// <param name="presenterType"></param>
+        /// <returns>The presenter interface(s).</returns>
+        public virtual IEnumerable<Type> ResolveInterfacesForPresenterType(Type presenterType)
+        {
+            return ResolveInterfacesForClass<IPresenter, PresenterAttribute>(presenterType);
+        }
+
+        /// <summary>
+        /// Get the View interface (<see cref="IView"/> subinterface) for the given View class.
+        /// If it has multiple View interfaces, the first one is returned.
         /// </summary>
         /// <param name="viewType"></param>
         /// <returns></returns>
-        [TypeValidation(Implements = typeof(IView))]
+        [return: TypeValidation(AssignableFrom = typeof(IView))]
         public virtual Type ResolveInterfaceForViewType(Type viewType)
         {
             return ResolveInterfaceForClass<IView, ViewAttribute>(viewType);
         }
 
+        /// <summary>
+        /// Get the view interface(s) (<see cref="IView"/> subinterface) for the given view class.
+        /// </summary>
+        /// <param name="viewType"></param>
+        /// <returns></returns>
         public virtual IEnumerable<Type> ResolveInterfacesForViewType(Type viewType)
         {
             return ResolveInterfacesForClass<IView, ViewAttribute>(viewType);
@@ -470,7 +447,7 @@ namespace MvpFramework
             if (resolvedInterfaces != null)
                 return resolvedInterfaces;
             else
-                return new Type[] { ResolveInterfaceForClass<TRequiredInterface, TAttribute>(classType) };
+                return new Type[] { ResolveInterfaceForClassInternal<TRequiredInterface, TAttribute>(classType) };
         }
 
         /// <summary>
@@ -481,40 +458,44 @@ namespace MvpFramework
         /// <typeparam name="TAttribute">An attribute that may be on the class, specifying the interface type.</typeparam>
         /// <param name="classType">A presenter or view class.</param>
         /// <returns>The presenter/view interface type.</returns>
+        [return: Nullable]
         protected virtual Type ResolveInterfaceForClass<TRequiredInterface, TAttribute>(Type classType)
                 where TAttribute : MvpClassAttribute
                 where TRequiredInterface : class
         {
             // look for attribute first:
-            Type resolvedInterface = classType.GetCustomAttribute<TAttribute>()?.Interface;
+            return classType.GetCustomAttribute<TAttribute>()?.Interface
+                ?? ResolveInterfaceForClassInternal<TRequiredInterface, TAttribute>(classType);
+        }
 
-            /*
-            var attribute = classType.GetCustomAttribute<TAttribute>();
-            if (attribute != null)
+        /// <summary>
+        /// Resolves the prsenter/view interfacce for a given class, NOT taking account of attributes.
+        /// </summary>
+        /// <typeparam name="TRequiredInterface"></typeparam>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="classType"></param>
+        /// <returns></returns>
+        [return: Nullable]
+        protected virtual Type ResolveInterfaceForClassInternal<TRequiredInterface, TAttribute>(Type classType)
+                where TAttribute : MvpClassAttribute
+                where TRequiredInterface : class
+        {
+            // if not resolved by the attribute
+            string simpleName = InterfacePrefix + classType.Name;
+
+            string targetNamespace = classType.Namespace;
+
+            // form the conventional name for the interface:
+            string interfaceName = targetNamespace + "." + simpleName;
+            Type resolvedInterface = GetTypeByName(interfaceName, classType.Assembly);
+
+            if (resolvedInterface == null)
             {
-                if (attribute.Interface != null)
-                    resolvedInterface = attribute.Interface;
-            }
-            */
-
-            if (resolvedInterface == null)     // if not resolved by the attribute
-            {
-                string simpleName = InterfacePrefix + classType.Name;
-
-                string targetNamespace = classType.Namespace;
+                targetNamespace = classType.Namespace + InterfaceSuffix;  // e.g. "namespace.View" => "namespace.ViewInterface"
 
                 // form the conventional name for the interface:
-                string interfaceName = targetNamespace + "." + simpleName;
+                interfaceName = targetNamespace + "." + simpleName;
                 resolvedInterface = GetTypeByName(interfaceName, classType.Assembly);
-
-                if (resolvedInterface == null)
-                {
-                    targetNamespace = classType.Namespace + InterfaceSuffix;  // e.g. "namespace.View" => "namespace.ViewInterface"
-
-                    // form the conventional name for the interface:
-                    interfaceName = targetNamespace + "." + simpleName;
-                    resolvedInterface = GetTypeByName(interfaceName, classType.Assembly);
-                }
             }
 
             if (resolvedInterface != null)
@@ -530,6 +511,8 @@ namespace MvpFramework
 
             return resolvedInterface;
         }
+
+        #endregion
 
         #region Resolving types
 
@@ -577,6 +560,18 @@ namespace MvpFramework
         {
             throw new DependencyInjectionException(message, innerException);
         }
+
+        /// <summary>
+        /// Assemblies to scan for resolving by Action / Model.
+        /// </summary>
+        public virtual Assembly[] Assemblies
+        {
+            get { return _assemblies; }
+            set { _assemblies = value?.Distinct().ToArray(); }
+            // Note: Distinct() currently (2017?) preserves the order of elements, but its contract does not require this.
+            // This class currently does not require the order to be preserved, but preserving the order could be more intuitive for debugging.
+        }
+        private Assembly[] _assemblies;
     }
 
 

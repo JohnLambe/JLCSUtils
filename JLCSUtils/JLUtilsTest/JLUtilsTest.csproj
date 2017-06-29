@@ -143,6 +143,7 @@
     <Compile Include="TestUtilTest.cs" />
     <Compile Include="Text\CaptionUtilTest.cs" />
     <Compile Include="Text\LetterCapitalizationOptionTest.cs" />
+    <Compile Include="Text\StringBuilderExtensionTest.cs" />
     <Compile Include="Text\StringCharacterSetTest.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />
     <Compile Include="MiscUtilTest.cs" />

@@ -358,6 +358,9 @@ namespace JohnLambe.Tests.JLUtilsTest
             );
         }
 
+        /// <summary>
+        /// </summary>
+        /// <seealso cref="Text.StringBuilderExtensionTest.ReplaceSubstring"/>
         [TestMethod]
         public void ReplaceSubstring()
         {
@@ -368,7 +371,7 @@ namespace JohnLambe.Tests.JLUtilsTest
 
                 () => AssertThrows<ArgumentException>(
                     () => StrUtil.ReplaceSubstring("qwertyuiop", 3, -1, "ABCD")),
-                () => AssertThrows<ArgumentException>(
+                () => AssertThrows<IndexOutOfRangeException>(
                     () => StrUtil.ReplaceSubstring("qwertyuiop", -0x1000000, 5, "ABCD"))
 
                 //TODO: null

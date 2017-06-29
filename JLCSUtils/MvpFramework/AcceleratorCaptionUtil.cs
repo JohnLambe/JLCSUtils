@@ -144,7 +144,7 @@ namespace MvpFramework
                         break;
                     case DuplicateAcceleratorAction.NoChange:
                         AddAcceleratorUsed(existing);   // add the existing character to the list
-                        /*  Should we remove it if not unique? It could be in the list because if this control itself.
+                        /*  Should we remove it if not unique? It could be in the list because of this control itself.
                             if (AddAcceleratorUsed(existing))   // add the existing character to the list
                         {
                             accelerator = null;
@@ -287,7 +287,32 @@ namespace MvpFramework
         protected virtual string ConvertAcceleratorIndicator([NotNull]string caption)
         {
             return caption.Replace("" + AcceleratorIndicator, "and");
-            //TODO: heuristic adding of space and capitalisation
+
+            /*TODO:
+            int acceleratorIndex = caption.IndexOf(AcceleratorIndicator);
+            if (acceleratorIndex >= 0)
+            {
+                StringBuilder s = new StringBuilder(caption.Length + 10);
+                s.Append(caption);
+                while (acceleratorIndex >= 0)    // until no more found
+                {
+                    string insertText = "and";
+                    if ("( ".Contains(caption.CharAt(acceleratorIndex - 1)))
+                        insertText = " " + insertText;
+                    if (") ".Contains(caption.CharAt(acceleratorIndex - 1)))
+                        insertText = insertText + " ";
+
+                    acceleratorIndex = s.ToString().IndexOf(AcceleratorIndicator);
+                    s.ReplaceSubstring(acceleratorIndex,1,insertText);
+                }
+                return s.ToString();
+                //TODO: heuristic adding of space and capitalisation
+            }
+            else   // nothing to replace
+            {
+                return caption;
+            }
+            */
         }
 
         /// <summary>

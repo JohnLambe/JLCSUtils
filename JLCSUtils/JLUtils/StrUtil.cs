@@ -1097,19 +1097,25 @@ namespace JohnLambe.Util
         /// Replace a section of a string with another string (which may be a different length).
         /// <para>Similar to SQL 'stuff' function.</para>
         /// </summary>
-        /// <param name="s">the original strng.</param>
+        /// <param name="s">the original string.</param>
         /// <param name="start">The (0-based) index of the first character of the section to be replaced.
-        /// Must not be negative. If past the end of the string </param>
-        /// <param name="length">The length of the section to be replaced.</param>
+        /// Must not be negative.
+        /// If past the end of the string, <paramref name="newValue"/> is appended.
+        /// </param>
+        /// <param name="length">The length of the section to be replaced. (If 0, the value is inserted.)</param>
         /// <param name="newValue">The value to replace with. null is treated as "".</param>
         /// <returns>the string after doing the replace.</returns>
+        /// <seealso cref="StringBuilderExtension.ReplaceSubstring(StringBuilder, int, int, string)"/>
+        /// <exception cref="IndexOutOfRangeException"/>
 //        /// <exception cref="ArgumentException"/>
         // SQL: Stuff
         public static string ReplaceSubstring(this string s, int start, int length, string newValue)
         {
-            if(!(start >= 0 && length >= 0))
-                throw new ArgumentException("StrUtils.ReplaceSubstring: Invalid (negative) " + nameof(start) + " or " + nameof(length));
-//            Contract.Requires<ArgumentException>(start >= 0 && length >= 0);
+            if(!(start >= 0))
+                throw new IndexOutOfRangeException("StrUtils.ReplaceSubstring: Invalid (negative) " + nameof(start));
+            if (!(length >= 0))
+                throw new ArgumentException("StrUtils.ReplaceSubstring: Invalid (negative) " + nameof(length));
+            //            Contract.Requires<ArgumentException>(start >= 0 && length >= 0);
             return s.Substring(0, start) + newValue.NullToBlank() + s.Substring(start + length);
         }
 
