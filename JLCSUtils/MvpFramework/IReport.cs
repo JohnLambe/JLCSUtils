@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MvpFramework
 {
+    /*
     // Desktop-based interface:
     // TODO: Interface more suitable for web.
     // 
@@ -143,4 +144,5 @@ namespace MvpFramework
         /// </summary>
         event EventHandler OnRefresh;
     }
+    */
 }

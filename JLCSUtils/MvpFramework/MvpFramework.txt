@@ -43,7 +43,7 @@ TODO:
 	Label control to show the caption for the property of the linked input control.
 	Labelled edit control that maps the caption, and includes (optionally) a validation message and/or other validaity indication (colour or icon ('!' to right)).
 	Auto generation:
-		Auto generate controls (at runtime; could alternatively/also have a source code generator, for developers to edit afterwards).
+		*Auto generate controls (at runtime; Rejected: could alternatively/also have a source code generator, for developers to edit afterwards).
 		Auto generate IQueryable.
 		Bind IQueryable to grid components, etc.
 	Review Dialog layout.
@@ -65,7 +65,7 @@ TODO:
 		View Interface?: Presenter would reference View concrete type. Not recommended.
 	Binding that doesn't require matching string literals (works with refactoring tools):
 		Event to return method name (implementations would use nameof).
-		Generate code using nameof? - CodeDOM doesn't seem to support it.
+		Rejected: Generate code using nameof? - CodeDOM doesn't seem to support it.
 			Generate in new partial class?
 	Resolving for action and model: Return presenter and view that populate automatically from the model and use base classes for the action.
 	Caching of property metadata (lazily populated).

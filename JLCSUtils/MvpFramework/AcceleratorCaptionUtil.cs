@@ -181,9 +181,10 @@ namespace MvpFramework
         /// <summary>
         /// Set the accelerator character in the given caption to an automatically generated one.
         /// </summary>
-        /// <param name="caption"></param>
+        /// <param name="caption">Original caption.</param>
         /// <param name="existingAction">What to do if there is already an accelerator character in the caption.</param>
-        /// <returns>The caption with accelerator character set.</returns>
+        /// <returns>The caption with the accelerator character. null if <paramref name="caption"/> is null.</returns>
+        [return: Nullable]
         public virtual string GenerateAccelerator([Nullable]string caption, ExistingAccelerartorAction? existingAction = null)
         {
             return SetAccelerator(caption, Auto, existingAction);
@@ -283,9 +284,12 @@ namespace MvpFramework
         /// possibly heuristically adding adding space and capitalisation.
         /// </summary>
         /// <param name="caption"></param>
-        /// <returns></returns>
-        protected virtual string ConvertAcceleratorIndicator([NotNull]string caption)
+        /// <returns>The converted caption. null if (and only if) <paramref name="caption"/> is null.</returns>
+        [return: Nullable]
+        protected virtual string ConvertAcceleratorIndicator([Nullable]string caption)
         {
+            if (caption == null)
+                return null;
             return caption.Replace("" + AcceleratorIndicator, "and");
 
             /*TODO:
@@ -547,7 +551,7 @@ namespace MvpFramework
         public virtual ExistingAccelerartorAction ExistingAction { get; set; } = ExistingAccelerartorAction.ConvertToWord;
 
         /// <summary>
-        /// What to do when trying to assign an accelerator character that is already used (in <see cref="AcceleratorsUsed"/>);
+        /// What to do when trying to assign an accelerator character that is already used (in <see cref="AcceleratorsUsed"/>).
         /// </summary>
         public virtual DuplicateAcceleratorAction DuplicateAction { get; set; } = DuplicateAcceleratorAction.Exception;
 

@@ -192,6 +192,9 @@ namespace MvpFramework.Binding
             _mvpDisplayAttribute?.IsVisible ??
             true;
 
+        /// <summary>
+        /// The user interface group (<see cref="DisplayAttribute.GroupName"/>) of this item.
+        /// </summary>
         public virtual string Group
             => _displayAttribute?.GetGroupName() ?? "";
 

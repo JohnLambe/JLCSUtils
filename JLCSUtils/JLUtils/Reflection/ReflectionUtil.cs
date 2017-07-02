@@ -891,7 +891,7 @@ namespace JohnLambe.Util.Reflection
     /// <summary>
     /// An option on a property referece, specifying how null or invalid values are handled.
     /// <para>
-    /// In strings passed to <see cref="ReflectionUtil.TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="ReflectionUtil.GetSetProperty(ref object, string, PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
+    /// In strings passed to <see cref="ReflectionUtil.TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>, <see cref="ReflectionUtil.GetSetProperty(ref object, string, ReflectionUtil.PropertyAction, ref object, PropertyNullabilityModifier)"/>, etc.,
     /// this is specified by a character (specified by <see cref="EnumMappedValueAttribute"/> here) after the property name.
     /// </para>
     /// </summary>

@@ -13,7 +13,7 @@ namespace MvpFramework.WinForms.Controls
     /// <summary>
     /// <see cref="CheckBox"/> that can be bound automatically by the MVP framework.
     /// </summary>
-    [DefaultEvent("CheckStateChanged")]  // Fired on setting the state of tri-state check boxes to Indeterminate, in addition to when CheckedChanged is fired.
+    [DefaultEvent(nameof(CheckStateChanged))]  // Fired on setting the state of tri-state check boxes to Indeterminate, in addition to when CheckedChanged is fired.
     [MvpBoundControl]
     [MvpControlMapping(ForTypes = new [] { typeof(bool), typeof(bool?) })]
     public class MvpCheckBox : CheckBox
@@ -33,7 +33,7 @@ namespace MvpFramework.WinForms.Controls
 #pragma warning disable CS0067   // Suppress 'Event never used'.  This is fired by reflection.
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
-        [MvpModelProperty("CheckState", "CheckStateChanged")]
+        [MvpModelProperty(nameof(CheckState), nameof(CheckStateChanged))]
         public event GetNameDelegate OnGetModelProperty;
 #pragma warning restore CS0067
 

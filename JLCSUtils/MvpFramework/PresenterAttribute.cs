@@ -22,6 +22,7 @@ namespace MvpFramework
         /// When placing this attribute, don't assign both this and <see cref="Interfaces"/>.
         /// </para>
         /// </summary>
+        /// <seealso cref="Interfaces">For when there are multiple interfaces.</seealso>
         [TypeValidation(IsInterface = true), Nullable]
         public virtual Type Interface
         {
@@ -38,7 +39,15 @@ namespace MvpFramework
             }
         }
 
-        [TypeValidation(IsInterface = true), Nullable]
+        /// <summary>
+        /// The Presenter/View Interfaces, that the DI container should map to the attributed class.
+        /// <para>
+        /// When placing this attribute, don't assign both this and <see cref="Interface"/>.
+        /// </para>
+        /// </summary>
+        /// <seealso cref="Interface">For when there is only one interface.</seealso>
+        [Nullable]
+        // Each element: [TypeValidation(IsInterface = true)] 
         public virtual Type[] Interfaces { get; set; }
     }
 
@@ -120,7 +129,7 @@ namespace MvpFramework
                 && /*AcceptModelSubTypes ? ForModel.IsAssignableFrom(modelType) :*/ ForModel == modelType;
         //TODO: Support AcceptModelSubTypes
 
-            /*
+        /*
         public virtual int MatchScore(Type actionInterface, Type modelType)
         {
             //if (!Enabled || ForAction != actionInterface)
@@ -136,7 +145,6 @@ namespace MvpFramework
     //| An attribute on the presenter enables specifying a preference for one implementing presenter over others
     //| (and having some presenters not be resolved automatically to handle the type).
     /*
-
     [AttributeUsage(AttributeTargets.Interface,
         AllowMultiple = true,     // could be used for multiple model types
         Inherited = false         // the attribute is defined at the level at which mappings are declared. Mappings may not be declared at lower levels in the hierarchy.

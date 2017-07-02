@@ -13,7 +13,7 @@ namespace MvpFramework.WinForms.Controls
     /// <see cref="Label"/> that can be bound automatically by the MVP framework 
     /// (the label text can be populated from the model).
     /// </summary>
-    [MvpBoundControl]
+    [MvpBoundControl(IconProperty = nameof(Image))]
     public class MvpLabel : Label
     {
         /*
@@ -30,7 +30,7 @@ namespace MvpFramework.WinForms.Controls
 #pragma warning disable CS0067   // Suppress 'Event never used'.  This is fired by reflection.
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
-        [MvpModelProperty("Text")]
+        [MvpModelProperty(nameof(Text))]
         public event GetNameDelegate OnGetModelProperty;
 #pragma warning restore CS0067
     }

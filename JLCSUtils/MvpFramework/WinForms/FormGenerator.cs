@@ -38,24 +38,28 @@ namespace MvpFramework.WinForms
 
         public override Control CreateGroup(IUiGroupModel parent, IUiGroupModel group)
         {
-            base.CreateGroup(parent, group);
+            var uiGroup = base.CreateGroup(parent, group);
+            if (group.AutoGenerate)
+            {
+                var groupBox = new GroupBox();
+                groupBox.Dock = DockStyle.Top;
+                groupBox.Text = group.DisplayName;
+                groupBox.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                groupBox.AutoSize = true;
 
-            var groupBox = new GroupBox();
-            groupBox.Dock = DockStyle.Top;
-            groupBox.Text = group.DisplayName;
-            groupBox.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            groupBox.AutoSize = true;
+                /*
+                FlowLayoutPanel panel = new FlowLayoutPanel();
+                panel.Dock = DockStyle.Fill;
+                groupBox.Controls.Add(panel);
+                */
 
-            /*
-            FlowLayoutPanel panel = new FlowLayoutPanel();
-            panel.Dock = DockStyle.Fill;
-            groupBox.Controls.Add(panel);
-            */
+                Target.Controls.Add(groupBox);
+                Target.Controls.SetChildIndex(groupBox, 0);
 
-            Target.Controls.Add(groupBox);
-            Target.Controls.SetChildIndex(groupBox, 0);
+                return groupBox;
+            }
 
-            return groupBox;
+            return uiGroup;
         }
 
         public override Control CreateControl(ControlGeneratorContext<Control> context)

@@ -9,6 +9,7 @@ using System.Reflection;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Text;
 using MvpFramework.Menu;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.Binding
 {
@@ -35,9 +36,9 @@ namespace MvpFramework.Binding
             /// </summary>
             public virtual object Target { get; set; }
 
-            public virtual VoidDelegate HandlerDelegate
-                => Target == null ? DelegateUtil.NullDelegate
-                : () => Method.Invoke(Target, Array.Empty<object>());
+            public virtual EventHandler HandlerDelegate
+                => Target == null ? (EventHandler)((sender, args) => { })
+                : (sender,args) => Method.Invoke(Target, Array.Empty<object>());
 
             /// <summary>
             /// Delegate to invoke the handler.
@@ -52,6 +53,10 @@ namespace MvpFramework.Binding
             public virtual string DisplayName
                 => Attribute?.DisplayName ?? CaptionUtil.GetDisplayName(Method);
 
+            /// <summary>
+            /// Returns a delegate to call <see cref="Method"/>, populating the methods parameters from the parameters of the delegate.
+            /// </summary>
+            /// <returns></returns>
             protected virtual MenuItemModel.InvokedDelegate CreateInvokeDelegate()
             {
                 var parameters = Method.GetParameters();
@@ -91,14 +96,19 @@ namespace MvpFramework.Binding
         /// <param name="target"></param>
         /// <param name="handlerId"></param>
         /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
+        /// <param name="allowNull">Determines what is returned if there are no handlers: Iff true, null is returned, otherwise a delegate that does nothing is returned.</param>
         /// <returns></returns>
-        public virtual VoidDelegate GetHandler(object target, string handlerId, string filter = null)
+        [return: Nullable]
+        public virtual EventHandler GetHandler(object target, string handlerId, string filter = null, bool allowNull = false)
         {
-            var handlerSorted = GetHandlersInfo(target,handlerId).Select(h => h.Method);  // get list of handlers
+            var handlersSorted = GetHandlersInfo(target,handlerId).Select(h => h.Method);  // get list of handlers
+            if (allowNull && !handlersSorted.Any())
+                return null;   // no handlers
+
             // Make a delegate to invoke them in order:
-            return () =>
+            return (sender,args) =>
             {
-                foreach (var handlerMethod in handlerSorted)
+                foreach (var handlerMethod in handlersSorted)
                 {
                     handlerMethod.Invoke(target, EmptyCollection<object>.EmptyArray);
                 }
@@ -113,7 +123,8 @@ namespace MvpFramework.Binding
         /// <param name="handlerId"></param>
         /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
         /// <returns></returns>
-        public virtual MenuItemModel.InvokedDelegate GetHandlerWithArgs(object target, string handlerId, string filter = null)
+        [Obsolete("?")]
+        public virtual MenuItemModel.InvokedDelegate GetHandlerWithArgs(object target, string handlerId, string filter = null) //TODO
         {
             var handlerSorted = GetHandlersInfo(target, handlerId).Select(h => h.Method);  // get list of handlers
             // Make a delegate to invoke them in order:

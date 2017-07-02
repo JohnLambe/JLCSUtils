@@ -12,7 +12,7 @@ namespace MvpFramework.Binding
 {
     public abstract class PresenterBinderWrapperBase
     {
-        public abstract EventHandler GetHandler(string handlerId, string filter = null);
+        public abstract EventHandler GetHandler(string handlerId, string filter = null, bool allowNull = false);
 
     }
 
@@ -40,12 +40,24 @@ namespace MvpFramework.Binding
         /// Returns a delegate for an event identified by a Handler ID.
         /// </summary>
         /// <param name="handlerId">The Handler ID (required).</param>
-        /// <param name="filter">If not null, this filters handlers.</param>
-        /// <returns></returns>
-        public override EventHandler GetHandler([NotNull] string handlerId, string filter = null)
+        /// <param name="filter">If not null, this filters handlers by their <see cref="MvpUiAttributeBase.Filter"/> value.</param>
+        /// <param name="allowNull">Determines what is returned if there are no handlers: Iff true, null is returned, otherwise a handler that does nothing is returned.</param>
+        /// <returns>An <see cref="EventHandler"/> for the requested handler.
+        /// (This typically invokes 0 or more methods on a Presenter).
+        /// </returns>
+        [return: Nullable]
+        public override EventHandler GetHandler([NotNull] string handlerId, string filter = null, bool allowNull = false)
         {
-            var handlerDelegate = _handlerResolver.GetHandler(Presenter, handlerId, filter);
-            return (sender, args) => handlerDelegate.Invoke();
+            var handlerDelegate = _handlerResolver.GetHandler(Presenter, handlerId, filter, allowNull);
+            if (handlerDelegate == null)
+                return null;
+            return (sender, args) => handlerDelegate.Invoke(sender,args);
+        }
+
+        public virtual IEnumerable<EventHandler> GetHandlers(string filter = null)
+        {
+            return _handlerResolver.GetHandlersInfo(Presenter, null, filter)
+                .Select(h => new EventHandler((sender,args) => h.HandlerDelegate.Invoke(sender,args)));
         }
 
         //TODO: Return a type more decoupled from the presenter - that provides delegates instead of methods.

@@ -344,7 +344,13 @@ namespace MvpFramework.WinForms
                     break;
             }
 
+            SetIcon(button,buttonModel.IconId);
+        }
+
+        protected virtual void SetIcon(Control button, string iconId)
+        {
             //TODO: Icon
+
         }
 
         /// <summary>

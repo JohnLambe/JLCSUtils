@@ -63,14 +63,14 @@ namespace MvpFramework.Binding
 
         public void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {
-            MvpBind(modelBinder, new PresenterBinderWrapper(presenter));
+            MvpBind(new MvpContext(modelBinder, new PresenterBinderWrapper(presenter), null));
         }
 
-        public virtual void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder)
+        public virtual void MvpBind(MvpContext context)  //ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder)
         {
-            if (BindEvents(BoundControl, presenterBinder))
+            if (BindEvents(BoundControl, context.PresenterBinder))
                 HasBindng = true;
-            if (BindProperties(BoundControl, modelBinder))
+            if (BindProperties(BoundControl, context.ModelBinder))
                 HasBindng = true;
 
             if(HasBindng)
@@ -96,8 +96,16 @@ namespace MvpFramework.Binding
                 var attribute = eventInfo.GetCustomAttribute<MvpEventAttribute>();
                 if (attribute?.Enabled ?? false)     // if present and Enabled
                 {
-                    var handler = presenterBinder.GetHandler(attribute.Id);
-                    eventInfo.AddEventHandler(target, handler);
+                    var handler = presenterBinder.GetHandler(attribute.Id ?? eventInfo.Name, null, !attribute.EmptyHandler);
+                    if (handler != null)    // if there is a handler
+                    {
+                        eventInfo.AddEventHandler(target, handler);
+                    }
+                    else
+                    {
+                        if (attribute.Required)
+                            throw new MvpResolutionException("There are no handlers for " + target.GetType().FullName + "." + eventInfo.Name + " and a handler is required");
+                    }
                     anyBinding = true;
                 }
             }

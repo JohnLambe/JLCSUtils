@@ -39,18 +39,10 @@ namespace MvpFramework.Binding
 
             if (control is IControlBinder)                      // if the control implements the interface itself
                 return control as IControlBinder;               // use it
-            else if (control.GetType().IsDefined<MvpBoundControlAttribute>())
+            else if (control.GetType().IsDefined<MvpBoundControlAttribute>())          // if it has this attribute
                 return new AttributedControlBinder(control);
             else
                 return FallbackBinder(control);
-
-            //TODO:
-            // We could return different classes based on a mapping from Control classes to IControlBinder implementations.
-            // - by a naming convention;
-            // - by type mapping in DI container (get implementation of IControlBinder<T> where T is the control type); or
-            // - by scanning for an IControlBinder implementation with an attribute referencing the control type.
-            // Do this mapping first.
-            // Cache the mappings.
         }
 
         /// <summary>
@@ -68,6 +60,14 @@ namespace MvpFramework.Binding
                 return DiResolver.GetInstance<IControlBinder>(binderClass);
             else
                 return null;
+
+            //TODO:
+            // We could return different classes based on a mapping from Control classes to IControlBinder implementations.
+            // - by a naming convention;
+            // - by type mapping in DI container (get implementation of IControlBinder<T> where T is the control type); or
+            // - by scanning for an IControlBinder implementation with an attribute referencing the control type. *DONE*
+            // Do this mapping first.
+            // Cache the mappings.
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace MvpFramework.Binding
         }
 
         /// <summary>
-        /// Populate the mappings of control types to binder types.
+        /// Populate the mappings of control types to binder types, based on attributes on types in a specified assembly.
         /// </summary>
-        /// <param name="assm"></param>
+        /// <param name="assm">The assembly to scan.</param>
         public virtual void Scan(Assembly assm)
         {
             foreach(var t in assm.GetTypes().Where(t => t.IsDefined<ControlBinderAttribute>(false)))

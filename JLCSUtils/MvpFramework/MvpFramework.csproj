@@ -60,6 +60,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Binding\ViewControlBinder.cs" />
+    <Compile Include="!Namespace.cs" />
     <Compile Include="CommonIcons.cs" />
     <Compile Include="CommonKeys.cs" />
     <Compile Include="Dialog\!NamespaceDoc.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="WinForms\AutoView.Designer.cs">
       <DependentUpon>AutoView.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForms\IconUtil.cs" />
     <Compile Include="WinForms\ResolverExtension.cs" />
     <Compile Include="WinForms\Util\WinFormsUtil.cs" />
     <Compile Include="WinForms\ViewBase.cs">

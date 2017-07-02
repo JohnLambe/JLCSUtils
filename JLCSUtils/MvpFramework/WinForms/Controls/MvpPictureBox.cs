@@ -21,17 +21,19 @@ namespace MvpFramework.WinForms.Controls
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description("Returns the name of the property on the model that contains the IconID of the image to be displayed in this control.\n"
             + "Don't use both this and " + nameof(OnGetImageProperty) + ".")]
-        [MvpModelProperty("IconId")]
+        [MvpModelProperty(nameof(IconId))]
         public event GetNameDelegate OnGetIconIdProperty;
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description("Returns the name of the property on the model that contains the Image to be displayed in this control.")]
-        [MvpModelProperty("Image")]
+        [MvpModelProperty(nameof(Image))]
         public event GetNameDelegate OnGetImageProperty;
 
         //TODO: Define what happens when both events are set.
 
 #pragma warning restore CS0067
+
+        #region Icon
 
         [Description("The IconId of the image to be displayed in this control. null of \"\" to make the icon blank.")]
         [IconId]
@@ -41,7 +43,7 @@ namespace MvpFramework.WinForms.Controls
             set
             {
                 _iconId = value;
-                GetImageByIconId(value);
+                Image = IconUtil.GetImageByIconId(Image, IconRepository, IconId);
             }
         }
         private string _iconId;
@@ -53,23 +55,12 @@ namespace MvpFramework.WinForms.Controls
             set
             {
                 _iconRepository = value;
-                GetImageByIconId(IconId);
+                Image = IconUtil.GetImageByIconId(Image, IconRepository, IconId);
             }
         }
         private IIconRepository<string, Image> _iconRepository;
 
-        protected virtual void GetImageByIconId(string iconId)
-        {
-            if (string.IsNullOrEmpty(iconId))
-            {
-                Image = null;
-            }
-            else
-            {
-                if (IconRepository != null)
-                    Image = IconRepository.GetIcon(iconId);
-            }
-        }
+        #endregion
 
     }
 }

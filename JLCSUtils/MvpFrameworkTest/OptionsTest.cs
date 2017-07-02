@@ -33,7 +33,7 @@ namespace MvpFrameworkTest
 
             // Act:
             var handler = resolver.GetHandler(target,"A");
-            handler.Invoke();
+            handler.Invoke(null,null);
             Console.WriteLine(target.Output);
 
             // Assert:
