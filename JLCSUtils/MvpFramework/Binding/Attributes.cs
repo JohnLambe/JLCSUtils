@@ -1,5 +1,7 @@
-﻿using JohnLambe.Util.Misc;
+﻿using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.Misc;
 using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Types;
 using System;
 using System.ComponentModel;
 
@@ -320,34 +322,72 @@ namespace MvpFramework.Binding
 
     /// <summary>
     /// Flags a UI control class to be bound based on attributes.
-    /// <seealso cref="AttributedControlBinder"/>
     /// </summary>
+    /// <seealso cref="BindControl"/>
+    /// <seealso cref="AttributedControlBinder"/>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class MvpBoundControlAttribute : MvpEnabledAttributeBase
     {
+        /// <summary>
+        /// Binds a given control that has this attribute.
+        /// </summary>
+        /// <param name="control">The control to be bound.</param>
+        /// <returns>The control binder for <paramref name="control"/>.</returns>
+        /// <remarks>Subclasses of this class can provide their own implementation, and their own class that implements the binder.</remarks>
+        public virtual IControlBinder BindControl(object control)
+        {
+            Diagnostics.PreCondition(control.GetType().IsDefined(GetType(),true), "INTERNAL ERROR: " + GetType().FullName + "." + nameof(BindControl)
+                + ": Control does not have this attribute");
+            return new AttributedControlBinder(control, this);
+        }
+
         /// <summary>
         /// Iff true, and the control class implements <see cref="IControlBinder"/>, it is also bound, after <see cref="AttributedControlBinder"/>.
         /// </summary>
         public virtual bool UseOwnHandler { get; set; } = true;
 
+        #region Assigning properties
+
         /// <summary>
         /// Name of the property of the bound control that holds the Icon ID (<see cref="IconIdAttribute"/>).
         /// (For use when an IconID is available, e.g. from a <see cref="MvpHandlerAttribute"/>).
+        /// <para>null if not available or not specified.</para>
         /// </summary>
         /// <seealso cref="IconProperty"/>
+        [Nullable]
         public virtual string IconIdProperty { get; set; }
 
         /// <summary>
         /// Name of the property of the bound control that holds the icon.
         /// (For use when an icon or IconID is available, e.g. from a <see cref="MvpHandlerAttribute"/>).
+        /// <para>null if not available or not specified.</para>
         /// <para>
         /// If both this and <see cref="IconIdProperty"/> are assigned, and an IconID and Icon Repository are available, both properties may be assigned, but only one would generally be required.
         /// Which property is supported depends on the bound control.
         /// </para>
         /// </summary>
+        //| This is specified this way, rather than an attribute on the property, because the property will typically be defined
+        //| on a base class of the bound class, and it may not be virtual.
+        [Nullable]
         public virtual string IconProperty { get; set; }
 
-        //| We could provide a property for the class that binds this control, but that can already be done
+        /// <summary>
+        /// Name of the property of the bound control that holds the hotkey - a keystroke to invoke the control.
+        /// <para>The property must be of type <see cref="KeyboardKey"/> or a type that it can be converted to (using ).</para>
+        /// <para>null if not available or not specified.</para>
+        /// </summary>
+        [Nullable]
+        public virtual string HotKeyProperty { get; set; }
+
+        //| More extensible alternative:
+        //| These properties could be defined in separate attributes (the two icon-related ones in the same attribute),
+        //| each with a handler class (identified by a property of the attribute class or by defining a mapping separately)
+        //| that is invoked when the attribute is present.
+
+        #endregion
+
+        //| We could provide a property for the class that binds this control (i.e. a reference from this attribute to the binder class),
+        //| but that can already be done
         //| using ControlBinderAttribute (with the mapping in the other direction), and mapping from binder
         //| to control is probably more useful (the same control could have different binders in different systems),
         //| and if a control always has the same binder, it can implement IControlBinder itself.

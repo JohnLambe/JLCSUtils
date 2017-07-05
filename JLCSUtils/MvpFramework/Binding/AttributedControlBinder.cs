@@ -22,10 +22,11 @@ namespace MvpFramework.Binding
         /// <summary>
         /// </summary>
         /// <param name="control">The control to bind.</param>
-        public AttributedControlBinder(object control)
+        /// <param name="attribute">The attribute on the control that caused this binder class to be used.</param>
+        public AttributedControlBinder(object control, MvpBoundControlAttribute attribute)
         {
             BoundControl = control;            
-            var attribute = BoundControl.GetType().GetCustomAttribute<MvpBoundControlAttribute>();   // get the attribute that probably caused this class to be used
+//            var attribute = BoundControl.GetType().GetCustomAttribute<MvpBoundControlAttribute>();   // get the attribute that probably caused this class to be used
             UseOwnHandler = attribute?.UseOwnHandler ?? false && (BoundControl is IControlBinder);   // if the control implements the interface, and the attribute is present and indicates that this should be used.
             Attribute = attribute;
         }

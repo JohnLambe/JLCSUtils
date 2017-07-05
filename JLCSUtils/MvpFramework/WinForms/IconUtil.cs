@@ -1,10 +1,15 @@
 ﻿using JohnLambe.Util.Misc;
+using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Types;
+using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MvpFramework.WinForms
 {
@@ -31,6 +36,31 @@ namespace MvpFramework.WinForms
             return image;    // unmodified
 
             //TODO: Keep original image (probably set in the WinForms designer) until either the image or both the repository and Icon ID are set ?
+        }
+
+        public static void SetIcon([NotNull] Control target, [Nullable] string iconId, IIconRepository<string,Image> repository = null)
+        {
+            var attribute = target.GetType().GetCustomAttribute<MvpBoundControlAttribute>();
+            if (attribute != null)
+            {
+                if (attribute?.IconIdProperty != null)                              // try to assign Icon ID
+                    ReflectionUtil.TrySetPropertyValue(target, attribute.IconIdProperty, iconId);
+                if (attribute?.IconProperty != null && repository != null)          // if the Icon property is known, get the icon and assign the property
+                {
+                    var icon = repository.GetIcon(iconId);
+                    if(icon != null)                                                // if we have an icon
+                        ReflectionUtil.TrySetPropertyValue(target, attribute.IconProperty, icon);
+                }
+            }
+            else if(repository != null)
+            {
+                if(target is ButtonBase)
+                {
+                    var icon = repository.GetIcon(iconId);
+                    if (icon != null)
+                        ((ButtonBase)target).Image = icon;
+                }
+            }
         }
     }
 }

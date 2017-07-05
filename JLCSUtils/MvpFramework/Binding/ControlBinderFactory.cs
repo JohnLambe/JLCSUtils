@@ -39,8 +39,9 @@ namespace MvpFramework.Binding
 
             if (control is IControlBinder)                      // if the control implements the interface itself
                 return control as IControlBinder;               // use it
-            else if (control.GetType().IsDefined<MvpBoundControlAttribute>())          // if it has this attribute
-                return new AttributedControlBinder(control);
+            var boundControlAttribute = control.GetType().GetCustomAttribute<MvpBoundControlAttribute>();
+            if (boundControlAttribute != null)                    // if it has this attribute
+                return boundControlAttribute.BindControl(control);
             else
                 return FallbackBinder(control);
         }

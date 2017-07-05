@@ -12,6 +12,7 @@ using MvpFramework.WinForms.Util;
 using System.Diagnostics;
 using MvpFramework.Menu;
 using JohnLambe.Util;
+using JohnLambe.Util.Reflection;
 
 namespace MvpFramework.WinForms
 {
@@ -349,8 +350,7 @@ namespace MvpFramework.WinForms
 
         protected virtual void SetIcon(Control button, string iconId)
         {
-            //TODO: Icon
-
+            IconUtil.SetIcon(button, iconId);
         }
 
         /// <summary>

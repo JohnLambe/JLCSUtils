@@ -60,6 +60,31 @@ namespace MvpFramework.WinForms.Controls
 
         #endregion
 
+        #region HotKey
+
+        /// <summary>
+        /// Keystroke to invoke the button.
+        /// <para>
+        /// This is in additional to any WinForms accelerator character (indicated by an '&' in the caption),
+        /// and is not limited to keystrokes using ALT.
+        /// </para>
+        /// </summary>
+        public virtual Keys HotKey { get; set; } = Keys.None;
+
+        protected override void OnKeyDown(KeyEventArgs kevent)
+        {
+            if (HotKey != Keys.None && kevent.KeyCode == HotKey)   // if there is a HotKey and this is it
+            {
+                PerformClick();
+                kevent.Handled = true;
+            }
+            else
+            {
+                base.OnKeyDown(kevent);
+            }
+        }
+
+        #endregion
     }
 
 }
