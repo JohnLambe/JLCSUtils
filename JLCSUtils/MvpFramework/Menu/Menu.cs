@@ -210,6 +210,9 @@ namespace MvpFramework.Menu
             }
         }
 
+        /// <summary>
+        /// The type of the model for handler of this menu item.
+        /// </summary>
         [Nullable]
         public virtual Type ModelType { get; set; }
 

@@ -78,14 +78,18 @@ namespace DiExtension.SimpleInject
             }
             catch (Exception ex) when(ex is ActivationException | ex is DependencyInjectionException)
             {
-                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.ServiceType)).First();
-//                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.Registration.ImplementationType)).First();
+                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.ServiceType)).FirstOrDefault();
+                //                producer = Container.GetCurrentRegistrations().Where(r => typeof(T).IsAssignableFrom(r.Registration.ImplementationType)).First();
+                if (producer == null)
+                    throw new DependencyInjectionException("Can't run property injection on " + target);
             }
 
             Registration registration = producer.Registration;
             registration.InitializeInstance(target);
 
             return target;
+
+            //TODO?: trap exceptions and rethrow with added information.
         }
 
         /// <summary>
@@ -221,7 +225,7 @@ namespace DiExtension.SimpleInject
             var type = (member as PropertyInfo)?.PropertyType;   // only Properties are currnetly supported
             if (type == null)
             {
-                throw new DependencyInjectionException("Injection failed for member " + member.ToString()
+                throw new DependencyInjectionException("Injection failed for member " + member.DeclaringType?.FullName + "." + member.ToString()
                     + ": Member type not supported (only properties are supported)");
             }
             return type;

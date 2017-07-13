@@ -141,7 +141,7 @@ namespace DiExtension.SimpleInject
                     {   // return an Expression to lookup the key each time it is required:
                         expression =  Expression.Convert(         // convert to the required type
                             Expression.Call(
-                                Expression.Constant(this), GetType().GetMethod("GetValue", new Type[] { typeof(string), typeof(Type) }),  // GetValue method of this instance
+                                Expression.Constant(this), GetType().GetMethod(nameof(GetValue), new Type[] { typeof(string), typeof(Type) }),  // GetValue method of this instance
                                 Expression.Constant(key), Expression.Constant(requiredType)
                             ),
                             requiredType);
@@ -285,9 +285,9 @@ namespace DiExtension.SimpleInject
             }
 
             throw new DependencyInjectionException(
-                (existingBehaviorException != null ? "Exception on resolving for " + consumer.Target.Name
+                (existingBehaviorException != null ? "Exception on resolving for " + TargetToShortString(consumer.Target)
                 + ": " + (existingBehaviorException.Message ?? "")
-                : "Resolving failed for " + consumer.Target.Name
+                : "Resolving failed for " + TargetToShortString(consumer.Target)
                 ) 
                 + StrUtil.NullPropagate(" (", consumer.Target?.Member?.DeclaringType?.FullName, " ", consumer.Target.Member?.ToString()
                     + (consumer.Target.Parameter != null ? " - Parameter#" + consumer.Target.Parameter.Position.ToString() : ""),
@@ -300,6 +300,14 @@ namespace DiExtension.SimpleInject
                 + (existingBehaviorException != null ? " (Tried by Type)" : ""),
                 existingBehaviorException
                 );
+        }
+
+        protected static string TargetToShortString(InjectionTargetInfo target)
+        {
+            return target == null ? "<null>" :
+                (target.Property != null ? "property " + target.Member?.DeclaringType?.Name + "." + target.Property?.Name
+                : target.Parameter != null ? "parameter " + /*(on " + target.Member?.DeclaringType?.Name + ") " + */ target.Parameter?.Name
+                : target.ToString() );
         }
 
         /// <summary>

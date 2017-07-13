@@ -13,6 +13,7 @@ using System.Diagnostics;
 using MvpFramework.Menu;
 using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
+using MvpFramework.WinForms.Controls;
 
 namespace MvpFramework.WinForms
 {
@@ -285,7 +286,7 @@ namespace MvpFramework.WinForms
         /// <returns></returns>
         protected virtual Control CreateButtonControl(MenuItemModel handlerInfo)
         {
-            return new Button();
+            return new MvpButton();
         }
 
         /// <summary>

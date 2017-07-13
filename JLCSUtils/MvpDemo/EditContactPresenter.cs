@@ -43,13 +43,13 @@ namespace MvpDemo
             View.RefreshView();
         }
 
-        [MvpHandler(Filter = new [] { "RightPanel" })]
+        [MvpHandler(Filter = new [] { "RightPanel" }, HotKey = KeyboardKey.F2)]
         public void Command1()
         {
             UiController.ShowMessage("Command1", "Dialog Title");
         }
 
-        [MvpHandler(SingleFilter = "RightPanel")]
+        [MvpHandler(SingleFilter = "RightPanel", HotKey = KeyboardKey.Q | KeyboardKey.Control)]
         // same as  Filter = new string[] { "RightPanel" }
         public void Command2()
         {

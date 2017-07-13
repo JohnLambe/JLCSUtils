@@ -100,7 +100,7 @@ namespace MvpFramework
 
                 // Populate the view:
                 IView view = null;
-                if (constructorParameters.Count() > 0)            // if the Presenter constructor has at least one parameter
+                if (constructorParameters.Any())            // if the Presenter constructor has at least one parameter
                 {
                     if (SuppliedView != null)     // if a View is supplied
                     {

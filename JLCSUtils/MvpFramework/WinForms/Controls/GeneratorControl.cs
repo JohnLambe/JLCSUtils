@@ -35,7 +35,16 @@ namespace MvpFramework.WinForms.Controls
             generator.Model = ModelBinder;
             generator.ModelProperty = this.ModelProperty;
 
+            Clear();
             generator.Generate();
+        }
+
+        /// <summary>
+        /// Remove all generated controls.
+        /// </summary>
+        public virtual void Clear()
+        {
+            Controls.Clear();
         }
 
         /// <summary>
@@ -53,7 +62,22 @@ namespace MvpFramework.WinForms.Controls
         /// </summary>
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description("The object for which controls are generated.")]
-        public virtual ModelBinderWrapper ModelBinder { get; set; }
+        public virtual ModelBinderWrapper ModelBinder
+        {
+            get { return _modelBinder; }
+            set
+            {
+                _modelBinder = value;
+                if (AutoGenerate)
+                    Generate();
+            }
+        }
+        private ModelBinderWrapper _modelBinder;
+
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [Description("True to re-generate the controls on assigning the model, and on initial binding.")]
+        [DefaultValue(true)]
+        public virtual bool AutoGenerate { get; set; } = true;
 
         /// <summary>
         /// Set the model for this control (for use when the caller does not already have a <see cref="ModelBinderWrapper"/>).
@@ -73,7 +97,8 @@ namespace MvpFramework.WinForms.Controls
         public virtual void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter)
         {
             this.ModelBinder = modelBinder;
-            Generate();
+            if(AutoGenerate)
+                Generate();
         }
 
         /// <summary>

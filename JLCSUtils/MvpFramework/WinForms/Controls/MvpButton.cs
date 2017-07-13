@@ -17,6 +17,35 @@ namespace MvpFramework.WinForms.Controls
     [MvpBoundControl(IconProperty = nameof(Image), IconIdProperty = nameof(IconId))]
     public class MvpButton : Button
     {
+        protected void SetUpForm()
+        {
+            var form = FindForm();
+            if (form != null)
+            {
+                form.PreviewKeyDown += MvpButton_PreviewKeyDown;
+                form.KeyPreview = true;
+            }
+        }
+
+        /*
+        protected override bool ProcessKeyPreview(ref Message m)
+        {
+            return base.ProcessKeyPreview(ref m);
+
+        }
+        */
+
+        protected override void OnParentChanged(EventArgs evt)
+        {
+            SetUpForm();
+        }
+        private Control _oldParent;
+
+        private void MvpButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            OnPreviewKeyDown(e);
+        }
+
 #pragma warning disable CS0067   // Suppress 'Event never used'.  This is fired by reflection.
         [MvpHandlerIdProperty(nameof(Click))]
         [Category(MvpUiComponentConsts.DesignerCategory)]
@@ -69,18 +98,22 @@ namespace MvpFramework.WinForms.Controls
         /// and is not limited to keystrokes using ALT.
         /// </para>
         /// </summary>
-        public virtual Keys HotKey { get; set; } = Keys.None;
+        public virtual Keys HotKey { get;
+            set; } = Keys.None;
 
-        protected override void OnKeyDown(KeyEventArgs kevent)
+
+//        protected override void OnKeyDown(KeyEventArgs kevent)
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs kevent)
         {
             if (HotKey != Keys.None && kevent.KeyCode == HotKey)   // if there is a HotKey and this is it
             {
                 PerformClick();
-                kevent.Handled = true;
+//                kevent.Handled = true;
             }
             else
             {
-                base.OnKeyDown(kevent);
+                base.OnPreviewKeyDown(kevent);
+//                base.OnKeyDown(kevent);
             }
         }
 
