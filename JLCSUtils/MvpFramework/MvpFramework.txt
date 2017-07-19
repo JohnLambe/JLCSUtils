@@ -64,13 +64,14 @@ TODO:
 			Less clear separation of concerns between presenters. Would typically require the View interface and model type to be public (visible to presenter consumer) since they are typcially generic parameters.
 		View Interface?: Presenter would reference View concrete type. Not recommended.
 	Binding that doesn't require matching string literals (works with refactoring tools):
-		Event to return method name (implementations would use nameof).
+		*Event to return method name (implementations would use nameof).
 		Rejected: Generate code using nameof? - CodeDOM doesn't seem to support it.
 			Generate in new partial class?
 	Resolving for action and model: Return presenter and view that populate automatically from the model and use base classes for the action.
 	Caching of property metadata (lazily populated).
 	FormGenerator: Alignment of boxes - controls inside group box don't align with those not in one.
 	Drop-down button bound to handlers using Filter.
+	Button control that displays HotKey, maybe only on holding down a certain key (CTRL or ALT).
 
 
 Possible additions:

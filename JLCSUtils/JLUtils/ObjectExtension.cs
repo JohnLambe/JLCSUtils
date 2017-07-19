@@ -103,6 +103,13 @@ namespace JohnLambe.Util
             return CheckNotNull(value, message, exceptionType);
         }
 
+        public static T NotNull<T>(this T value, Func<string> message, Type exceptionType = null)
+            where T : class
+            // Restricted to reference types. See comment (in this position) on ArgNotNull regarding generic types.
+        {
+            return CheckNotNull(value, message.Invoke(), exceptionType);
+        }
+
         /// <summary>
         /// Same as NotNull, except that this can be called with any type.
         /// This can be used for generic types which may or may not be nullable.

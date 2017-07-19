@@ -220,7 +220,7 @@ namespace MvpFramework.Generator
             }
             Diagnostics.Assert(context.NewControl != null, "FormGeneratorBase.OnCreateControl: NewControl==null");
 
-            DiContext?.BuildUp(context.NewControl);                       // run dependincy injection if we have a DI container
+            DiContext?.BuildUp(context.NewControl);                       // run dependency injection if we have a DI container
 
             (context.NewControl as IGeneratableControl<TControl>)?.ControlGeneratation(context);  // call if it implements the interface
                     //| Should we do this before DI?

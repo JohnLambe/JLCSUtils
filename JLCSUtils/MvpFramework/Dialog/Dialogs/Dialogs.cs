@@ -10,6 +10,8 @@ using JohnLambe.Util.Validation;
 
 namespace MvpFramework.Dialog.Dialogs
 {
+    // Model classes for dialogs:
+
     /// <summary>
     /// Dialog model for <see cref="InformationalDialogType"/>
     /// </summary>

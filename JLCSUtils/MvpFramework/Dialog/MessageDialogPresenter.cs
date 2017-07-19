@@ -49,5 +49,9 @@ namespace MvpFramework.Dialog
         /// Window title (for the current dialog).
         /// </summary>
         public virtual string Title => Dialog?.Title;
+
+        public virtual string DetailMessage =>
+            Dialog?.Message + "\n\n"
+            + (Dialog?.Exception?.ToString());
     }
 }

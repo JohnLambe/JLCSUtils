@@ -59,7 +59,7 @@
             this.uiMessageText.Padding = new System.Windows.Forms.Padding(5, 5, 5, 0);
             this.uiMessageText.Size = new System.Drawing.Size(334, 108);
             this.uiMessageText.TabIndex = 4;
-            this.uiMessageText.Tag = "[Dialog.Message]";
+            this.uiMessageText.Tag = "[DetailMessage]";
             this.uiMessageText.Text = "Message text";
             // 
             // uiIcon2
@@ -97,7 +97,6 @@
             this.uiButtons.Buttons = null;
             this.uiButtons.ButtonsLayout = System.Windows.Forms.TabAlignment.Right;
             this.uiButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-//            this.uiButtons.Filter = "DialogOptions";
             this.uiButtons.Location = new System.Drawing.Point(0, 108);
             this.uiButtons.Name = "uiButtons";
             this.uiButtons.Size = new System.Drawing.Size(474, 48);

@@ -465,11 +465,13 @@ namespace JohnLambe.Util.Reflection
         /// <param name="argumentTypes"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
+        /// <exception>If the type does not have a constructor with the given argument types.</exception>
         public static T CreateT<T>([NotNull] Type type, [NotNull] Type[] argumentTypes, [NotNull] object[] arguments)
             where T : class
         {
             //TODO: Give correct exception when constructor does not exist.
-            return (T)type.GetConstructor(argumentTypes).Invoke(arguments);
+            return (T)type.GetConstructor(argumentTypes).NotNull(() => "Constructor not found: " + typeof(T).FullName + " (" + Collections.CollectionUtil.CollectionToString(argumentTypes) + ")", typeof(MemberAccessException))  //TODO: exception type
+                .Invoke(arguments);
         }
 
         #endregion
