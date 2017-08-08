@@ -104,5 +104,39 @@ namespace JohnLambe.Util.Reflection
         }
 
         #endregion
+
+        /// <summary>
+        /// Removes any generic arguments from the given type name.
+        /// </summary>
+        /// <param name="typeName">The type name. If this is null, null is returned.</param>
+        /// <returns></returns>
+        [return: Nullable]
+        public static string GetNonGenericName([Nullable] string typeName)
+        {
+            if (typeName == null)
+                return null;
+            int index = typeName.IndexOf(GenericIndicator);
+            if (index > -1)
+                return typeName.Substring(0,index);
+            else
+                return typeName;
+        }
+
+        /// <summary>
+        /// Returns the type arguments part of the given type name.
+        /// </summary>
+        /// <param name="typeName">The type name. If this is null, null is returned.</param>
+        /// <returns>The type arguments string, inclding <see cref="GenericIndicator"/>. "" if there are no type arguments.</returns>
+        [return: Nullable]
+        public static string GetGenericPart([Nullable] string typeName)
+        {
+            if (typeName == null)
+                return null;
+            int index = typeName.IndexOf(GenericIndicator);
+            if (index > -1)
+                return typeName.Substring(index);
+            else
+                return "";  // no type arguments
+        }
     }
 }

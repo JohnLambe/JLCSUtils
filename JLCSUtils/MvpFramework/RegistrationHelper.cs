@@ -90,43 +90,46 @@ namespace MvpFramework
                 {
                     // Get the type (usually an interface) returned by the presenter factory:
                     var presenterInterface = _resolver.ResolveInterfaceForPresenterType(presenter);
-                    RegisterType(presenterInterface, presenter);             // register the Presenter class to be resolved from its interface
+                    if (presenterInterface != null)       // if the interface can be resolved
+                    {                                     // (nothing is registered otherwise).  //TODO?: Register the concrete type
+                        RegisterType(presenterInterface, presenter);             // register the Presenter class to be resolved from its interface
 
-                    var factoryInterfaceType = typeof(IPresenterFactory<>).MakeGenericType(presenterInterface);
+                        var factoryInterfaceType = typeof(IPresenterFactory<>).MakeGenericType(presenterInterface);
 
-//                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
-/*TODO*/
-                    // Get the Presenter constructor to be invoked by the Presenter Factory:
-                    var constructor = GetConstructor(presenter);
+                        //                    factoryInterfaceType = typeof(IPresenterFactory<>)...MakeGenericType(typeof(object),typeof(int));
+                        /*TODO*/
+                        // Get the Presenter constructor to be invoked by the Presenter Factory:
+                        var constructor = GetConstructor(presenter);
 
-                    // Get the type parameters of the generic factory interface:
-                    IList<Type> argTypes = new List<Type>();
-                    argTypes.Add(presenterInterface);                   // first argument is always the returned presenter type
-                    foreach(var arg in constructor.GetParameters())
-                    {
-//                        if(!arg.IsDefined<InjectAttribute>())   // if not injected by DI
-                        if(arg.IsDefined<MvpParamAttribute>())
+                        // Get the type parameters of the generic factory interface:
+                        IList<Type> argTypes = new List<Type>();
+                        argTypes.Add(presenterInterface);                   // first argument is always the returned presenter type
+                        foreach (var arg in constructor.GetParameters())
                         {
-                            argTypes.Add(arg.ParameterType);
+                            //                        if(!arg.IsDefined<InjectAttribute>())   // if not injected by DI
+                            if (arg.IsDefined<MvpParamAttribute>())
+                            {
+                                argTypes.Add(arg.ParameterType);
+                            }
                         }
+
+                        var argTypesArray = argTypes.ToArray();
+                        // Make the closed generic type of the factory interface:
+                        factoryInterfaceType = GenericTypeUtil.ChangeGenericParameters(typeof(IPresenterFactory<>), argTypesArray);
+                        // Register a mapping from this generic factory interface to the concrete generic factory class:
+                        RegisterType(factoryInterfaceType, GenericTypeUtil.ChangeGenericParameters(typeof(PresenterFactory<>), argTypesArray));
+
+                        /*
+                        //TODO: Determine Model or Parameters:
+                                            Console.WriteLine(presenter.BaseType);
+                                            Type modelType = presenter.BaseType.GenericTypeArguments[1];
+
+                                            RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, typeof(object)));
+
+                                            factoryInterfaceType = typeof(IPresenterFactory<,>).MakeGenericType(presenterInterface, modelType);
+                                            RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, modelType));
+                        */
                     }
-
-                    var argTypesArray = argTypes.ToArray();
-                    // Make the closed generic type of the factory interface:
-                    factoryInterfaceType = GenericTypeUtil.ChangeGenericParameters(typeof(IPresenterFactory<>), argTypesArray);
-                    // Register a mapping from this generic factory interface to the concrete generic factory class:
-                    RegisterType(factoryInterfaceType, GenericTypeUtil.ChangeGenericParameters(typeof(PresenterFactory<>), argTypesArray));
-
-                    /*
-                    //TODO: Determine Model or Parameters:
-                                        Console.WriteLine(presenter.BaseType);
-                                        Type modelType = presenter.BaseType.GenericTypeArguments[1];
-
-                                        RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, typeof(object)));
-
-                                        factoryInterfaceType = typeof(IPresenterFactory<,>).MakeGenericType(presenterInterface, modelType);
-                                        RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, modelType));
-                    */
                 }
             }
         }

@@ -1,8 +1,11 @@
 ﻿using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.Text;
 using JohnLambe.Util.TypeConversion;
 using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -101,6 +104,20 @@ namespace JohnLambe.Util.Reflection
             var enumType = value.GetType();          // the type of the Enum that the given value is in
             return enumType.GetField(Enum.GetName(enumType, value));    // look up the field by name
             // (There's probably a more efficient way than this string lookup).
+        }
+
+        /// <summary>
+        /// Return the display name of a given enum value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetDisplayName(this Enum value)
+        {
+            var field = GetField(value);
+            return field?.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName
+                ?? field?.GetCustomAttribute<DisplayAttribute>()?.Name
+                ?? CaptionUtil.PascalCaseToCaption(field?.Name)
+                ?? value.ToString();
         }
 
         /*

@@ -335,7 +335,9 @@ namespace MvpFramework
             }
 
             // form the conventional simple name:
-            string simpleName = presenterType.Name.RemoveSuffix(PresenterSuffix) + ViewSuffix;
+            string nonGenericPresenterName = GenericTypeUtil.GetNonGenericName(presenterType.Name);
+            string simpleName = nonGenericPresenterName.RemoveSuffix(PresenterSuffix) + ViewSuffix;
+            //TODO?: Add generic parameter back?
             // {namespace}.["I"]{Name}["Presenter"] -> ["I"]{Name}"View"
             // e.g. "namespace.IEditContactPresenter"  -> "IEditContactView"
             if (presenterType.IsInterface)
@@ -586,7 +588,6 @@ namespace MvpFramework
         protected const string CreateMethodName = "Create";
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="diContext">Interface to the dependency injection container for resolving.</param>
         public DiMvpResolver(IDiResolver diContext)

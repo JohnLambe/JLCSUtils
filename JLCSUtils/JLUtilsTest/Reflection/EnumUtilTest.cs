@@ -8,6 +8,8 @@ using JohnLambe.Util.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace JohnLambe.Tests.JLUtilsTest.Reflection
 {
@@ -90,6 +92,22 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Assert.AreEqual(1, i);
         }
 
+        [TestMethod]
+        public void GetDisplayName()
+        {
+            Multiple(
+                () => Assert.AreEqual("Monday", DayOfWeek.Monday.GetDisplayName()),
+
+                () =>
+                {
+                    Enum x1 = AttributeTargets.ReturnValue;
+                    Assert.AreEqual("Return Value", x1.GetDisplayName());
+                },
+
+                () => Assert.AreEqual("display name from attribute", TestEnumType.T1.GetDisplayName())
+            );
+        }
+
         #region ConvertEnum
 
         [TestMethod]
@@ -138,6 +156,14 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         enum DayOfWeek2 { Wednesday = 1, Friday = 2000, THURSDAY = 6, A = 50 }
 
         #endregion
+
+        public enum TestEnumType
+        {
+            [Display(Name = "display name from attribute")]
+            T1,
+            T2,
+            T3
+        }
 
     }
 }

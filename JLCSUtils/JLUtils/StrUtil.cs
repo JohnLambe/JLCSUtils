@@ -366,7 +366,7 @@ namespace JohnLambe.Util
         }
 
         /// <summary>
-        /// If s ends with <paramref name="suffix"/>, it is removed.
+        /// If <paramref name="s"/> ends with <paramref name="suffix"/>, it is removed.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="suffix">The suffix to be removed. If this is null, the original string is returned.</param>

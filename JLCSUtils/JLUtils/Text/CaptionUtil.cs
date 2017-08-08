@@ -98,6 +98,8 @@ namespace JohnLambe.Util.Text
         {
             if (instance == null)
                 return null;
+            if (instance is Enum)
+                return EnumUtil.GetDisplayName((Enum)instance);
             return ReflectionUtil.TryGetPropertyValue<string>(instance, "Name")
                 ?? ReflectionUtil.TryGetPropertyValue<string>(instance, "Description")
                 ?? instance.ToString();

@@ -23,6 +23,10 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class StringValidationAttribute : ValidationAttributeBase
     {
+        public override string GeneralDescription
+            => (!string.IsNullOrEmpty(AllowedCharacters) ? "Allowed characters: " + AllowedCharacters + "; " : "")
+                + (Capitalisation != LetterCapitalizationOption.Unspecified ? "Capitalisation: " + EnumUtil.GetDisplayName(Capitalisation) : "");
+
         /// <summary>
         /// All characters allowed in the string. null for all.
         /// </summary>
@@ -85,7 +89,7 @@ namespace JohnLambe.Util.Validation
     /// <remarks><see cref="PhoneAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
     public class PhoneNumberValidationAttribute : StringValidationAttribute
     {
-        public override string DefaultDescritpion => "A phone number";
+        public override string GeneralDescription => "A phone number";
 
         /// <summary>
         /// If true, the number must be in international format, beginning with a "+".
@@ -171,6 +175,8 @@ namespace JohnLambe.Util.Validation
                 results.Add("The value " + InvalidValue + " is invalid");
             }
         }
+
+        public override string DefaultDescritpion => "Not \"" + InvalidValue + "\"";
     }
 
     /// <summary>
@@ -178,7 +184,7 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class EmailValidationAttribute : StringValidationAttribute
     {
-        public override string DefaultDescritpion => "An email address";
+        public override string GeneralDescription => "An email address";
 
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
@@ -212,6 +218,7 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class PasswordAttribute : StringValidationAttribute
     {
+        public override string GeneralDescription => "A password";
     }
 
     /// <summary>
@@ -264,7 +271,7 @@ namespace JohnLambe.Util.Validation
 
         public virtual string[] Extensions { get; set; }
 
-        public override string DefaultDescritpion => "A file or directory name";
+        public override string GeneralDescription => "A file or directory name";
     }
 
     [Flags]
@@ -314,7 +321,7 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class UrlValidationAttribute : StringValidationAttribute
     {
-        public override string DefaultDescritpion => "A URL";
+        public override string GeneralDescription => "A URL";
     }
 
 
@@ -412,6 +419,7 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class PercentageValidationAttribute : NumberValidationAttribute
     {
+        public override string GeneralDescription => "A percentage value";
     }
 
     /// <summary>
@@ -419,7 +427,7 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class CurrencyValidationAttribute : NumberValidationAttribute
     {
-        public override string DefaultDescritpion => "A monetary amount";
+        public override string GeneralDescription => "A monetary amount";
     }
 
 
@@ -455,6 +463,8 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class DateTimeAttribute : ValidationAttributeBase
     {
+        public override string GeneralDescription => "A date and/or time.";
+
         /// <summary>
         /// The components of the date/time that are present.
         /// </summary>

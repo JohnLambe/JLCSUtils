@@ -20,6 +20,6 @@ namespace JohnLambe.Util.Documentation
         /// <summary>
         /// Describes the validation rule(s).
         /// </summary>
-        string ValidationDescription { get; }
+        string GeneralDescription { get; }
     }
 }

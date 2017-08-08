@@ -44,13 +44,13 @@ namespace JohnLambe.Util.Collections
 
         public virtual bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            return IsSupersetOf(other) && other.Count() > 0;
+            return IsSupersetOf(other) && other.Any();
             // sub-optimal if Count is expensive
         }
 
         public virtual bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            return IsSupersetOf(other) && other.Count() > 0;
+            return IsSupersetOf(other) && other.Any();
             // sub-optimal if Count is expensive
         }
 

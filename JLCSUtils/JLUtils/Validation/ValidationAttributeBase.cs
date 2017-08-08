@@ -69,7 +69,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual string Description
         {
-            get { return _description ?? DefaultDescritpion; }
+            get { return _description ?? DefaultDescritpion ?? GeneralDescription; }
             set { _description = value; }
         }
         protected string _description;
@@ -77,15 +77,16 @@ namespace JohnLambe.Util.Validation
         #region IProvidesDescription
 
         /// <summary>
-        /// Default description for this type of rule, when a specific description is not given (in the <see cref="Description"/> property).
+        /// Default description for this type of rule, for when a specific description is not given (in the <see cref="Description"/> property).
         /// This may take account of the properties of the instance.
         /// </summary>
-        public virtual string DefaultDescritpion => null;
+        public virtual string DefaultDescritpion => GeneralDescription;
 
         /// <summary>
-        /// Describes the validation rule(s).
+        /// Describes the type of validation rule(s).
+        /// This does NOT take account of an properties of the instance.
         /// </summary>
-        public virtual string ValidationDescription => null;
+        public virtual string GeneralDescription => null;
 
         #endregion
     }
