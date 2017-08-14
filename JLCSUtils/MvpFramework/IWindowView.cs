@@ -41,6 +41,8 @@ namespace MvpFramework
         event EventHandler<WindowViewOpenedEventArgs> Opened;
         event EventHandler Closed;
         */
+
+//        void OnShown();
     }
 
     /*

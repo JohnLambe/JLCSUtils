@@ -190,6 +190,11 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual char AcceleratorChar { get; set; }
         */
+
+        /// <summary>
+        /// The plural of the display name.
+        /// </summary>
+        public virtual string PluralName { get; set; }
     }
 
     /// <summary>

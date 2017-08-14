@@ -66,6 +66,10 @@ namespace MvpFramework.WinForms
 
                 //TODO: Detail message
 
+                uiMessageText.Text = Model.DetailMessage
+                    + "\n\n"
+                    + Model.Dialog.Exception?.ToString();   //TODO: Replace with expandable panel.
+
             }
         }
 

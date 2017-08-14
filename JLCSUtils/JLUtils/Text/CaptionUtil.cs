@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Text
 {
@@ -26,7 +27,8 @@ namespace JohnLambe.Util.Text
         /// If null, null is returned.
         /// </param>
         /// <returns>The human-readable name.</returns>
-        public static string PascalCaseToCaption(string s)
+        [return: Nullable]
+        public static string PascalCaseToCaption([Nullable] string s)
         {
             if (s == null)
                 return null;
@@ -80,7 +82,8 @@ namespace JohnLambe.Util.Text
         /// <param name="prefix">Prefix of the member name which should not be part of the display name (it is removed, if present) (case-sensitive).</param>
         /// <param name="suffix">Suffix of the member name which should not be part of the display name (it is removed, if present) (case-sensitive).</param>
         /// <returns>The caption for the property. null if <paramref name="member"/> is null.</returns>
-        public static string GetDisplayName(MemberInfo member, string prefix = null, string suffix = null)
+        [return: Nullable]
+        public static string GetDisplayName([Nullable] MemberInfo member, string prefix = null, string suffix = null)
         {
             if (member == null)
                 return null;
@@ -90,11 +93,45 @@ namespace JohnLambe.Util.Text
         }
 
         /// <summary>
+        /// Returns a display name for the type of <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="prefix"></param>
+        /// <param name="suffix"></param>
+        /// <returns></returns>
+        [return: Nullable]
+        public static string GetTypeDisplayName([Nullable] object instance, string prefix = null, string suffix = null)
+        {
+            return GetDisplayName(instance?.GetType());
+        }
+
+        /// <summary>
+        /// Returns the plural of the display name for <paramref name="member"/>.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="prefix"></param>
+        /// <param name="suffix"></param>
+        /// <returns></returns>
+        // Doesn't support languages with multiple plurals?
+        [return: Nullable]
+        public static string GetPluralDisplayName([Nullable] MemberInfo member, string prefix = null, string suffix = null)
+        {
+            if (member == null)
+                return null;
+            else
+                return /*TODO: member?.GetCustomAttribute<DisplayNameAnyAttribute>()?.PluralDisplayName
+                    ?? */
+                    GetDisplayNameFromAttribute(member)
+                    ?? PascalCaseToCaption(member.Name.RemovePrefix(prefix).RemoveSuffix(suffix));
+        }
+
+        /// <summary>
         /// Returns a human-readable name to describe the given object.
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public static string GetDisplayNameForObject(object instance)
+        [return: Nullable]
+        public static string GetDisplayNameForObject([Nullable] object instance)
         {
             if (instance == null)
                 return null;
@@ -117,10 +154,11 @@ namespace JohnLambe.Util.Text
         /// </summary>
         /// <param name="provider">The item to get a name for.</param>
         /// <returns>The display name, or null if no supported attribute is present.</returns>
-        public static string GetDisplayNameFromAttribute(ICustomAttributeProvider provider)
+        [return: Nullable]
+        public static string GetDisplayNameFromAttribute([Nullable] ICustomAttributeProvider provider)
         {
-            return provider.GetCustomAttribute<DisplayAttribute>()?.Name     // Try DataAnnotations first
-                ?? provider.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;   // ComponentModel
+            return provider?.GetCustomAttribute<DisplayAttribute>()?.Name     // Try DataAnnotations first
+                ?? provider?.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;   // ComponentModel
             // we don't fall back on DescriptionAttribute since it is for longer descriptions.
         }
 
@@ -130,10 +168,11 @@ namespace JohnLambe.Util.Text
         /// </summary>
         /// <param name="provider">The item to get a description for.</param>
         /// <returns>The description name, or null if no supported attribute is present.</returns>
-        public static string GetDescriptionFromAttribute(ICustomAttributeProvider provider)
+        [return: Nullable]
+        public static string GetDescriptionFromAttribute([Nullable] ICustomAttributeProvider provider)
         {
-            return provider.GetCustomAttribute<DisplayAttribute>()?.Description        // Try DataAnnotations first
-                ?? provider.GetCustomAttribute<DescriptionAttribute>()?.Description;   // ComponentModel
+            return provider?.GetCustomAttribute<DisplayAttribute>()?.Description        // Try DataAnnotations first
+                ?? provider?.GetCustomAttribute<DescriptionAttribute>()?.Description;   // ComponentModel
         }
     }
 }

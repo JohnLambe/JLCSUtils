@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Util.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -78,6 +79,19 @@ namespace JohnLambe.Util.Services
         //     A double-precision floating point number that is greater than or equal to 0.0,
         //     and less than 1.0.
         double NextDouble();
+
+        /// <summary>
+        /// Returns a random positive 64-bit signed value, with a uniform distribution from 0 to 2^63-1 inclusive.
+        /// </summary>
+        /// <returns>The random <see cref="long"/> value.</returns>
+        long NextLong();
+
+        /// <summary>
+        /// Generates a new GUID.
+        /// The implementation can return any type of GUID. It is not necessarily a random one.
+        /// </summary>
+        /// <returns>The new GUID value.</returns>
+        Guid NewGuid();
     }
 
 
@@ -85,7 +99,9 @@ namespace JohnLambe.Util.Services
     /// Standard implementation of <see cref="IRandomService"/>.
     /// <para>For unit testing, this can be used with a constant seed.</para>
     /// </summary>
-    public class RandomService : Random, IRandomService
+    public class RandomService : RandomUtil, IRandomService
     {
+        /// <inheritdoc cref="IRandomService.NewGuid()"/>
+        public virtual Guid NewGuid() => Guid.NewGuid();
     }
 }

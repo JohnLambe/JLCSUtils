@@ -7,6 +7,8 @@ using System.Reflection;
 using DiExtension;
 using DiExtension.Attributes;
 using JohnLambe.Util;
+using JohnLambe.Util.Text;
+using JohnLambe.Util.Reflection;
 
 namespace MvpFramework
 {
@@ -92,7 +94,12 @@ namespace MvpFramework
             {
                 Init();
 
-                var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, createArguments);
+                var resolverContext = new ResolverExtensionContext(createArguments)
+                {
+                    Nested = ContainingView != null
+                };
+
+                var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
                 if (existingPresenter != null)
                     return existingPresenter;
 
@@ -108,24 +115,38 @@ namespace MvpFramework
                     }
                     else
                     {
-                        // Determine the view to be injected (if there are no parameters, the View is not injected):
-                        try
+                        object viewParent = null;
+                        if (ContainingView != null)
                         {
-                            // Try resolving for the concrete type first.
-                            // This is important for KnownPresenterFactory, where TPresenter may be a base interface (even IPresenter),
-                            // but still relevant for other cases (for exmaple, a particular Presenter implementation may have its own View that overrides
-                            // the usual one for the presenter's interface - Views are often specific to Presenter implementations).
-                            view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                            view = GetNestedView(ContainingView, NestedViewId, out viewParent);
                         }
-                        catch (Exception)   //TODO: Restrict exception type
-                        {   // if resolving the view for the concrete presenter type fails, try for the declared type (usually an interface; possibly a base class) of presenter being created:
-                            view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+
+                        if (view == null)
+                        {
+                            // Determine the view to be injected (if there are no parameters, the View is not injected):
+                            try
+                            {
+                                // Try resolving for the concrete type first.
+                                // This is important for KnownPresenterFactory, where TPresenter may be a base interface (even IPresenter),
+                                // but still relevant for other cases (for exmaple, a particular Presenter implementation may have its own View that overrides
+                                // the usual one for the presenter's interface - Views are often specific to Presenter implementations).
+                                view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                            }
+                            catch (Exception)   //TODO: Restrict exception type
+                            {   // if resolving the view for the concrete presenter type fails, try for the declared type (usually an interface; possibly a base class) of presenter being created:
+                                view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                            }
+
+                            if(viewParent != null && view is INestableView)
+                            {
+                                ((INestableView)view).Parent = viewParent;
+                            }   //TODO: Exception if viewParent != null && !(view is INestableView) ?
                         }
                     }
                     //| Could provide parameters for context-based injection of View.
                     try
                     {
-                        UiManager.AfterCreateView(TargetClass, createArguments, ref view);
+                        UiManager.AfterCreateView(TargetClass, resolverContext, ref view);
                     }
                     catch (Exception)
                     {
@@ -144,11 +165,15 @@ namespace MvpFramework
                 {
                     if (paramIndex > 0)    // ignore the first parameter - the View
                     {
-                        if (constructorParameters[paramIndex].IsDefined(typeof(MvpNestedAttribute)))    // if flagged as nested
+                        var attribute = constructorParameters[paramIndex].GetCustomAttribute<MvpNestedAttribute>();
+                        if (attribute != null)    // if flagged as nested
                         {
                             if (arg is INestedPresenterFactory)                        // and the argument supports this
                             {
-                                ((INestedPresenterFactory)arg).View = view;            // provide the View of the Presenter being created
+                                ((INestedPresenterFactory)arg).ContainingView = view;            // provide the View of the Presenter being created
+                                ((INestedPresenterFactory)arg).NestedViewId = attribute.NestedViewId ?? ReflectionUtil.CamelCaseToPascalCase(constructorParameters[paramIndex].Name);     // provide the View of the Presenter being created
+
+//                                ((INestedPresenterFactory)arg).View = view;            // provide the View of the Presenter being created
                             }
                             else
                             {
@@ -169,7 +194,7 @@ namespace MvpFramework
 
                 try
                 {
-                    UiManager.AfterCreatePresenter<TPresenter>(ref presenter, createArguments, view);
+                    UiManager.AfterCreatePresenter<TPresenter>(ref presenter, resolverContext, view);
                 }
                 catch (Exception)
                 {
@@ -189,6 +214,25 @@ namespace MvpFramework
                     + ex.Message
                     , ex);
                 //TODO: Include more information in error message
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="containingView"></param>
+        /// <param name="nestedViewId"></param>
+        /// <returns></returns>
+        protected virtual IView GetNestedView(IView containingView, string nestedViewId, out object viewParent)
+        {
+            if (containingView is IContainerView)
+            {
+                return ((IContainerView)containingView).GetNestedView(nestedViewId, out viewParent);
+            }
+            else
+            {
+                viewParent = null;
+                return null;
             }
         }
 
@@ -223,6 +267,16 @@ namespace MvpFramework
         /// Must be null if <see cref="TargetClass"/> is null.
         /// </summary>
         protected virtual ConstructorInfo TargetConstructor { get; set; }
+
+        #region INestedPresenterFactory
+
+        /// <inheritdoc cref="INestedPresenterFactory.ContainingView"/>
+        public virtual IView ContainingView { get; set; }
+
+        /// <inheritdoc cref="INestedPresenterFactory.NestedViewId"/>
+        public virtual string NestedViewId { get; set; }
+
+        #endregion
 
         /// <summary>
         /// Interface to the dependency injection container.

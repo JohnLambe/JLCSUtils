@@ -113,6 +113,16 @@ namespace MvpFramework
         /// null to have a View created on each Create call.
         /// </summary>
         IView View { get; set; }
+
+        /// <summary>
+        /// The view in which the view of the created presenter is to be created.
+        /// </summary>
+        IView ContainingView { get; set; }
+
+        /// <summary>
+        /// ID of the nested view within the containing one.
+        /// </summary>
+        string NestedViewId { get; set; }
     }
 
 }

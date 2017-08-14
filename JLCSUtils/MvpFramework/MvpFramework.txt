@@ -72,6 +72,9 @@ TODO:
 	FormGenerator: Alignment of boxes - controls inside group box don't align with those not in one.
 	Drop-down button bound to handlers using Filter.
 	Button control that displays HotKey, maybe only on holding down a certain key (CTRL or ALT).
+	Integration with expression evaluator, allowing expressions for 'ModelProperty' values.
+		Evaluator interface takes a string expression and a map of named items that can be referenced in an expression.
+		Implementation to wrap Razor for use as an expression evaluator.
 
 
 Possible additions:

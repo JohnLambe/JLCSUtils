@@ -371,7 +371,7 @@ namespace JohnLambe.Util
         /// <param name="s"></param>
         /// <param name="suffix">The suffix to be removed. If this is null, the original string is returned.</param>
         /// <param name="comparison"></param>
-        /// <returns></returns>
+        /// <returns>the given string, with the suffix removed, if present.</returns>
         public static string RemoveSuffix(this string s, string suffix, StringComparison comparison = StringComparison.InvariantCulture)
         {
             if (s == null)
@@ -389,7 +389,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="prefix"></param>
-        /// <returns></returns>
+        /// <returns>true iff <paramref name="s"/> starts with <paramref name="prefix"/>.</returns>
         /// <exception cref="NullReferenceException">If <paramref name="s"/> is null.</exception>
         public static bool StartsWith(this string s, char prefix)
         {

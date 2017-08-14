@@ -876,6 +876,23 @@ namespace JohnLambe.Util.Reflection
             return d?.Invoke(default(T));
         }
 
+        /// <summary>
+        /// Convert a string with camel casing (first letter of each word except the first is capital) to Pascal casing (first letter of each word, including the first, is capital).
+        /// </summary>
+        /// <param name="camelCase"></param>
+        /// <returns></returns>
+        [return: Nullable]
+        public static string CamelCaseToPascalCase([Nullable] string camelCase)
+        {
+            if (camelCase == null)
+                return null;
+            else if(camelCase == "")
+                return "";
+
+            // camelCase must have at least one character (because of previous checks)
+            return Char.ToUpperInvariant(camelCase[0]) + camelCase.Substring(1);
+        }
+
 
         // For converting between nullable and non-nullable types, see GenericTypeUtil.
     }

@@ -27,7 +27,7 @@ namespace MvpFramework.Binding
         {
             BoundControl = control;            
 //            var attribute = BoundControl.GetType().GetCustomAttribute<MvpBoundControlAttribute>();   // get the attribute that probably caused this class to be used
-            UseOwnHandler = attribute?.UseOwnHandler ?? false && (BoundControl is IControlBinder);   // if the control implements the interface, and the attribute is present and indicates that this should be used.
+            UseOwnHandler = (attribute?.UseOwnHandler ?? false) && (BoundControl is IControlBinder);   // if the control implements the interface, and the attribute is present and indicates that this should be used.
             Attribute = attribute;
         }
 

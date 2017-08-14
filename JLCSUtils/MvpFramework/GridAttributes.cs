@@ -18,7 +18,7 @@ namespace MvpFramework
         /// <summary>
         /// Set to false to effectively remove the attribute for the specified Filter values.
         /// </summary>
-        public virtual bool Enabled { get; set; }
+        public virtual bool Enabled { get; set; } = true;
 
         /// <summary>
         /// Specifies which views/grids etc. these settings apply to.
@@ -27,7 +27,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Sorting order.
-        /// e.g. Columns of a grid are sorting (left to right) in ascending order of this value.
+        /// e.g. Columns of a grid are sorted (in the text reading direction (left to right for English)) in ascending order of this value.
         /// </summary>
         public virtual int Order { get; set; }
     }
@@ -47,15 +47,19 @@ namespace MvpFramework
         /// <summary>
         /// The width of the column etc. for the attributed item.
         /// </summary>
-        public virtual int DisplayWidth { get; set; }
+        public virtual int DisplayWidth { get; set; } = -1;
+
+        public virtual int DisplayMinimumWidth { get; set; } = -1;
+        public virtual int DisplayMaximumWidth { get; set; } = -1;
+
 
         [PercentageValidation]
-        public virtual int DisplayWidthPercentage { get; set; }
+        public virtual int DisplayWidthPercentage { get; set; } = -1;
 
         /// <summary>
         /// True iff this item should be shown in the grid.
         /// </summary>
-        public virtual bool Visible { get; set; }
+        public virtual bool Visible { get; set; } = true;
 
         #region UI capabilities
 

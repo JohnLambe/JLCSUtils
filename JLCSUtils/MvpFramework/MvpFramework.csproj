@@ -151,6 +151,9 @@
     <Compile Include="WinForms\Controls\MvpLabel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WinForms\Controls\MvpNestedViewPlaceholder.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForms\Controls\MvpPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>

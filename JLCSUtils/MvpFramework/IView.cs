@@ -35,17 +35,42 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// View which can be embedded in another View.
+    /// Control which either is a view nested within another one, or is a parent control into which a nested view can be inserted 
+    /// (by assigning <see cref="INestableView.Parent"/> to this).
     /// </summary>
-    public interface IEmbeddedView : IView
+    public interface INestedView
     {
         /// <summary>
-        /// ID of embedded View.
-        /// null or "" to not treat this as an embedded view (handled as an ordinary control).
+        /// ID of nested/embedded View.
+        /// null or "" to not treat this as a nested/embedded view (handled as an ordinary control).
         /// <para>Mapped to Presenter and Model.</para>
         /// </summary>
         //TODO?: For later version: "/" to map this view to the main Presenter and Model.
         // String beginning with "/": "/" is removed and the rest of the string is mapped as if it was specified in a view embedded in the outer one (for views nested in nested ones).
         string ViewId { get; }
+    }
+
+    /// <summary>
+    /// View which can be embedded in another View.
+    /// </summary>
+    public interface IEmbeddedView : INestedView, IView
+    {
+    }
+
+    /// <summary>
+    /// A View that be placed in another View.
+    /// </summary>
+    /// <seealso cref="INestedView"/>
+    public interface INestableView : IView
+    {
+        object Parent { get; set; }
+    }
+    
+    /// <summary>
+    /// View which can contain nested Views.
+    /// </summary>
+    public interface IContainerView : IView
+    {
+        IView GetNestedView(string nestedViewId, out object viewParent);
     }
 }

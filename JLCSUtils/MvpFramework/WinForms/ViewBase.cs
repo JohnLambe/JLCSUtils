@@ -14,7 +14,7 @@ namespace MvpFramework.WinForms
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
-    public class ViewBase : UserControl, IView, IOptionUpdate
+    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView
     {
         public ViewBase()
         {
@@ -80,6 +80,39 @@ namespace MvpFramework.WinForms
             this.ResumeLayout(false);
         }
 
+        /// <summary>
+        /// Find a nested view or a parent control to receive a nessted view, within this View.
+        /// </summary>
+        /// <param name="nestedViewId"></param>
+        /// <param name="viewParent"></param>
+        /// <returns></returns>
+        /// <seealso cref="INestedView"/>
+        public virtual IView GetNestedView(string nestedViewId, out object viewParent)
+        {
+            foreach(var control in Controls)
+            {
+                if(control is INestedView)
+                {
+                    if(((INestedView)control).ViewId == nestedViewId)
+                    {
+                        if (control is IEmbeddedView)
+                        {
+                            viewParent = null;
+                            return (IView)control;
+                        }
+                        else
+                        {
+                            viewParent = control;
+                            return null;
+                        }
+                    }
+                }
+            }
+
+            // not found:
+            viewParent = null;
+            return null;
+        }
     }
 
 }

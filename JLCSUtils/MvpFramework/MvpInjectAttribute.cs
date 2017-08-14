@@ -28,7 +28,19 @@ namespace MvpFramework
     /// Currently supported only on constructor injection.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public class MvpNestedAttribute : MvpClassAttribute
+    public class MvpNestedAttribute : MvpInjectAttribute
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="nestedViewId"><see cref="NestedViewId"/></param>
+        public MvpNestedAttribute(string nestedViewId = null)
+        {
+            this.NestedViewId = nestedViewId;
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="INestedPresenterFactory.NestedViewId"/>
+        /// </summary>
+        public string NestedViewId { get; set; }
     }
 }

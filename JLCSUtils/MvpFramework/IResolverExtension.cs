@@ -39,7 +39,10 @@ namespace MvpFramework
         /// </param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the presenter/view, and the presenter is not created.</exception>
+        [Obsolete]
         ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, object[] param, ref TView view)
+            where TView : IView;
+        ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, ResolverExtensionContext param, ref TView view)
             where TView : IView;
 
         /// <summary>
@@ -54,10 +57,34 @@ namespace MvpFramework
         /// <param name="view">The View of the new presenter (which will have already been given to the presenter).</param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the p</exception>
+        [Obsolete]
         ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, object[] param, IView view)
+            where TPresenter : IPresenter;
+        ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext param, IView view)
             where TPresenter : IPresenter;
 
         //TODO: Change `param` to an object which contains this (to enable future extension).
+    }
+
+
+    /// <summary>
+    /// Parameters / context passed to methods of <see cref="IResolverExtension"/>.
+    /// </summary>
+    public class ResolverExtensionContext
+    {
+        public ResolverExtensionContext(object[] createParameters)
+        {
+            this.CreateParameters = createParameters;
+        }
+
+        /// <summary>Parameters to the 'Create' method.</summary>
+        public virtual object[] CreateParameters { get; set; }
+
+        /// <summary>
+        /// True iff the view is nested in another one.
+        /// See <see cref="INestedPresenterFactory"/>.
+        /// </summary>
+        public virtual bool Nested { get; set; }
     }
 
 
@@ -83,14 +110,26 @@ namespace MvpFramework
             return default(TPresenter);
         }
 
+        [Obsolete]  // replaced by other overload
         public virtual ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, object[] param, ref TView view)
             where TView : IView
+        {
+            return AfterCreateView(presenterType, new ResolverExtensionContext(param), ref view);
+        }
+
+        public virtual ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, ResolverExtensionContext context, ref TView view) where TView : IView
         {
             return ResolverExtensionStatus.Default;
         }
 
+        [Obsolete]  // replaced by other overload
         public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, object[] param, IView view)
             where TPresenter : IPresenter
+        {
+            return AfterCreatePresenter<TPresenter>(ref presenter, new ResolverExtensionContext(param), view);
+        }
+
+        public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext context, IView view) where TPresenter : IPresenter
         {
             return ResolverExtensionStatus.Default;
         }
@@ -100,6 +139,7 @@ namespace MvpFramework
     /// <summary>
     /// null object implementation of <see cref="IResolverExtension"/>.
     /// </summary>
+    //| This is 'sealed' because extending it would be a Liskov Substitution Principle violation.
     public sealed class NullResolverExtension : ResolverExtensionBase
     {
     }

@@ -23,12 +23,25 @@ namespace MvpFramework.Generator
         {
             if (modelType == null)
                 modelType = typeof(TModel);
-            MethodInfo method = modelType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(m => m.IsDefined(typeof(ListGeneratorAttribute),false)).FirstOrDefault();
+            MethodInfo method = modelType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Where(m => m.IsDefined(typeof(ListGeneratorAttribute), false)).FirstOrDefault();
 
             if (method == null)
                 throw new KeyNotFoundException("List generator not found on " + modelType.FullName + " (" + (id ?? "") + ")");
 
             return (IQueryable) method.Invoke(null, new object[] { all });
+        }
+
+        /// <summary>
+        /// Same as <see cref="ApplyQuery{TModel}(IQueryable{TModel}, Type, string)"/> except that this returns <see cref="IQueryable{T}"/>.
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="all"></param>
+        /// <param name="modelType"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static IQueryable<TModel> ApplyQueryT<TModel>(IQueryable<TModel> all, Type modelType = null, string id = null)
+        {
+            return (IQueryable<TModel>) ApplyQuery(all,modelType,id);
         }
 
         //TODO: Inject additional parameters from DI container.

@@ -70,13 +70,16 @@ namespace JohnLambe.Util.Math
         }
     }
 
+    /// <summary>
+    /// Extends <see cref="Random"/> with methods for more data types.
+    /// </summary>
     public class RandomUtil : Random
     {
         /*        public void Reseed(int seed)
                 {
                     Seed(Next() ^ seed);
                 }
-                */
+        */
 
         /// <summary>
         /// Returns a random capital letter character (from the set of letters supported in ASCII).
@@ -115,5 +118,17 @@ namespace JohnLambe.Util.Math
         {
             return Next(2) == 0;
         }
+
+        /// <summary>
+        /// Returns a random positive 64-bit signed value, with a uniform distribution from 0 to 2^63-1 inclusive.
+        /// </summary>
+        /// <returns>The random <see cref="long"/> value.</returns>
+        public virtual long NextLong() => Next() ^ (Next() << 31) ^ (Next() << 32);
+
+        /// <summary>
+        /// Returns a random GUID.
+        /// </summary>
+        /// <returns></returns>
+        public virtual Guid RandomGuid() => Guid.NewGuid();  //TODO: Make Random
     }
 }
