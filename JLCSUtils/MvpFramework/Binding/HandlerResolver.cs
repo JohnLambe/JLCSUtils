@@ -93,13 +93,13 @@ namespace MvpFramework.Binding
         /// Returns a delegate to invoke a handler on a given object.
         /// It may fire more than one handler method.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="handlerId"></param>
+        /// <param name="target">the object on which the handlers are defined.</param>
+        /// <param name="handlerId">Handler ID, null for all handlers.</param>
         /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
         /// <param name="allowNull">Determines what is returned if there are no handlers: Iff true, null is returned, otherwise a delegate that does nothing is returned.</param>
         /// <returns></returns>
         [return: Nullable]
-        public virtual EventHandler GetHandler(object target, string handlerId, string filter = null, bool allowNull = false)
+        public virtual EventHandler GetHandler([NotNull] object target, [Nullable] string handlerId, [Nullable] string filter = null, bool allowNull = false)
         {
             var handlersSorted = GetHandlersInfo(target,handlerId).Select(h => h.Method);  // get list of handlers
             if (allowNull && !handlersSorted.Any())
@@ -140,14 +140,14 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Return details of handlers for the given ID and filter.
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="target">the object on which the handlers are defined.</param>
         /// <param name="handlerId">Handler ID, null to return all handlers.</param>
         /// <param name="filter">Filter to match <see cref="MvpUiAttributeBase.Filter"/>. null to not filter by this.</param>
         /// <returns></returns>
-        public virtual IEnumerable<Handler> GetHandlersInfo(object target, string handlerId, string filter = null)
+        public virtual IEnumerable<Handler> GetHandlersInfo([NotNull] object target, [Nullable] string handlerId = null, [Nullable] string filter = null)
         {
             var handlers = new List<Handler>();                                // to hold a list of all handlers for the handlerId
-            foreach (var method in target?.GetType().GetMethods())             // all methods
+            foreach (var method in target.ArgNotNull().GetType().GetMethods())             // all methods
             {
                 foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()      // all attributes of each method
                     .Where(a => a.Enabled && (handlerId == null || (a.Id?.Equals(handlerId) ?? false))    // attributes for the specified handler on this method
@@ -171,7 +171,7 @@ namespace MvpFramework.Binding
         /// <param name="searchFilter">The filter value to search for. null (no filter) matches anything - always returns true.</param>
         /// <param name="targetFilters">The list of filters for an item. <paramref name="searchFilter"/> can match any of these.</param>
         /// <returns>True iff the filter matches.</returns>
-        public virtual bool FilterMatches(string searchFilter, string[] targetFilters)
+        public virtual bool FilterMatches([Nullable] string searchFilter, string[] targetFilters)
         {
             if (searchFilter == null)
                 return true;

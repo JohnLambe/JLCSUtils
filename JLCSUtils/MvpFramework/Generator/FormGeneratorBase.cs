@@ -72,7 +72,7 @@ namespace MvpFramework.Generator
         /// Delegate to filter propertis within each group, to generate controls for.
         /// null for all.
         /// </param>
-        public virtual void Generate(FilterDelegate<IUiGroupModel> groupFilter = null, FilterDelegate<ModelPropertyBinder> propertyFilter = null)
+        public virtual void Generate([Nullable] FilterDelegate<IUiGroupModel> groupFilter = null, [Nullable] FilterDelegate<ModelPropertyBinder> propertyFilter = null)
         {
             if (Target != null && Model != null)
             {
@@ -94,7 +94,7 @@ namespace MvpFramework.Generator
         /// </summary>
         /// <param name="group"></param>
         /// <param name="propertyFilter"></param>
-        public virtual void GenerateGroup(IUiGroupModel group, FilterDelegate<ModelPropertyBinder> propertyFilter)
+        public virtual void GenerateGroup([NotNull] IUiGroupModel group, [Nullable] FilterDelegate<ModelPropertyBinder> propertyFilter = null)
         {
             TControl parentControl = null;
             if (group.Id != "")
@@ -103,9 +103,7 @@ namespace MvpFramework.Generator
                 parentControl = Target;      // if no group, then controls are being added directly to the target control
 
             int index = 0;
-            foreach (var property in Model.GetPropertiesByGroup(group.Id)
-                .Where(p => (propertyFilter == null || propertyFilter(p)) && p.AutoGenerate)
-                )
+            foreach (var property in GetPropertiesByGroup(group, propertyFilter))
             {
                 var context = new ControlGeneratorContext<TControl>()
                 {
@@ -136,6 +134,18 @@ namespace MvpFramework.Generator
 
         }
 
+
+        /// <summary>
+        /// Returns properties to generate controls for, for a given group.
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="propertyFilter"></param>
+        /// <returns></returns>
+        protected virtual IEnumerable<ModelPropertyBinder> GetPropertiesByGroup([NotNull] IUiGroupModel group, [Nullable] FilterDelegate<ModelPropertyBinder> propertyFilter)
+        {
+            return Model.GetPropertiesByGroup(group.Id)
+                            .Where(p => (propertyFilter == null || propertyFilter(p)) && p.AutoGenerate);
+        }
 
         /// <summary>
         /// Called once before generating a collection of controls.

@@ -83,7 +83,7 @@ namespace JohnLambe.Util.Text
         /// <param name="suffix">Suffix of the member name which should not be part of the display name (it is removed, if present) (case-sensitive).</param>
         /// <returns>The caption for the property. null if <paramref name="member"/> is null.</returns>
         [return: Nullable]
-        public static string GetDisplayName([Nullable] MemberInfo member, string prefix = null, string suffix = null)
+        public static string GetDisplayName([Nullable] MemberInfo member, [Nullable] string prefix = null, [Nullable] string suffix = null)
         {
             if (member == null)
                 return null;
@@ -100,7 +100,7 @@ namespace JohnLambe.Util.Text
         /// <param name="suffix"></param>
         /// <returns></returns>
         [return: Nullable]
-        public static string GetTypeDisplayName([Nullable] object instance, string prefix = null, string suffix = null)
+        public static string GetTypeDisplayName([Nullable] object instance, [Nullable] string prefix = null, [Nullable] string suffix = null)
         {
             return GetDisplayName(instance?.GetType());
         }
@@ -114,7 +114,7 @@ namespace JohnLambe.Util.Text
         /// <returns></returns>
         // Doesn't support languages with multiple plurals?
         [return: Nullable]
-        public static string GetPluralDisplayName([Nullable] MemberInfo member, string prefix = null, string suffix = null)
+        public static string GetPluralDisplayName([Nullable] MemberInfo member, [Nullable] string prefix = null, [Nullable] string suffix = null)
         {
             if (member == null)
                 return null;
@@ -137,9 +137,24 @@ namespace JohnLambe.Util.Text
                 return null;
             if (instance is Enum)
                 return EnumUtil.GetDisplayName((Enum)instance);
-            return ReflectionUtil.TryGetPropertyValue<string>(instance, "Name")
-                ?? ReflectionUtil.TryGetPropertyValue<string>(instance, "Description")
+            return GetDisplayNameForObjectWithoutToString(instance)
                 ?? instance.ToString();
+        }
+
+        /// <summary>
+        /// Same as <see cref="GetDisplayNameForObject"/> except that this does not use <see cref="Object.ToString"/>.
+        /// This may be useful in a <see cref="Object.ToString"/> method.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public static string GetDisplayNameForObjectWithoutToString([Nullable] object instance)
+        {
+            if (instance == null)
+                return null;
+            if (instance is Enum)
+                return EnumUtil.GetDisplayName((Enum)instance);
+            return ReflectionUtil.TryGetPropertyValue<string>(instance, "Name")
+                ?? ReflectionUtil.TryGetPropertyValue<string>(instance, "Description");
         }
 
         [Obsolete("Use GetDisplayName")]

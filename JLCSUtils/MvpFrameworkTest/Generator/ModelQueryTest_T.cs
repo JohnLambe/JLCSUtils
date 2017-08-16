@@ -31,12 +31,19 @@ namespace MvpFrameworkTest.Generator
         }
 
         [TestMethod]
+        public void ApplyQuery_NotFound_Ignore()
+        {
+            var all = new object[] { "a" }.AsQueryable<object>();
+            Assert.AreEqual(all, ModelQuery.ApplyQuery(all,null,null,true));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(KeyNotFoundException), AllowDerivedTypes = true)]
         public void ApplyQuery_NotFound()
         {
-            var result = ModelQuery.ApplyQuery(new object[] { "a" }.AsQueryable<object>());
+            var all = new object[] { "a" }.AsQueryable<object>();
+            Assert.AreEqual(all, ModelQuery.ApplyQuery(all));
         }
-
 
         public class TestModel1
         {

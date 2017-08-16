@@ -107,6 +107,9 @@ namespace MvpFramework.Binding
                 .Select(p => new ModelPropertyBinder(Model, p))
                 .Where(p => groupId == null || (p.Group ?? "") == groupId)
                 .OrderBy(p => p.Order);     // same order as Properties
+        //TODO: Could exclude properties based on a naming convention, e.g. ending with "Id",
+        //  or exclude properties referenced by an Entity Framework ForeignKeyAttribute
+        //  (unless overridden in an attribute).
 
         /// <summary>
         /// All bindable properties of the model.
