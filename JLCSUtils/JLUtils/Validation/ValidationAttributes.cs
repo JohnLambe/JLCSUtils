@@ -420,6 +420,18 @@ namespace JohnLambe.Util.Validation
     public class PercentageValidationAttribute : NumberValidationAttribute
     {
         public override string GeneralDescription => "A percentage value";
+
+        public override void PreProcessForDisplay(bool toDisplay, [Nullable] ref object value, [Nullable] ValidationContext validationContext)
+        {
+            if(toDisplay)
+            {
+                value = GeneralTypeConverter.Convert<decimal>(value) * 100;
+            }
+            else
+            {
+                value = GeneralTypeConverter.Convert<decimal>(value) / 100m;
+            }
+        }
     }
 
     /// <summary>

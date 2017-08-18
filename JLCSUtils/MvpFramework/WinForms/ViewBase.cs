@@ -8,13 +8,14 @@ using MvpFramework.Binding;
 using static System.Windows.Forms.Control;
 using JohnLambe.Util.Reflection;
 using MvpFramework.WinForms.Binding;
+using JohnLambe.Util;
 
 namespace MvpFramework.WinForms
 {
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
-    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView
+    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView, INotifyOnDispose
     {
         public ViewBase()
         {
@@ -113,6 +114,7 @@ namespace MvpFramework.WinForms
             viewParent = null;
             return null;
         }
+
     }
 
 }

@@ -120,4 +120,6 @@ namespace MvpFramework.WinForms.Controls
         #endregion
     }
 
+    //TODO: Show HotKey.
+
 }

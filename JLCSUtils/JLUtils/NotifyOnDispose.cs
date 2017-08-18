@@ -11,6 +11,7 @@ namespace JohnLambe.Util
     /// Interface for a class that fires an event when it is disposed.
     /// </summary>
     /// <typeparam name="T">The type which implements the interface or a type that it is assignable to (it could be an interface or superclass of that type).</typeparam>
+    [Obsolete]
     public interface INotifyOnDispose<T> : IDisposable
     {
         /// <summary>
@@ -37,6 +38,7 @@ namespace JohnLambe.Util
     /// Class that raises an event on disposing.
     /// </summary>
     /// <typeparam name="T">The type provided on the event. This must be a type that this class (or the subclass of it being used) is assignable to.</typeparam>
+    [Obsolete]
     public class NotifyOnDispose<T> : INotifyOnDispose<T>
         where T : class
         //| if T should be this, the constraint `T: NotifyOnDispose<T>` could be used (and would be checked at compile time), but that would not allow using an interface implemented by a subclass.
@@ -54,6 +56,22 @@ namespace JohnLambe.Util
         public virtual void Dispose()
         {
             OnDispose?.Invoke(this as T);
+        }
+    }
+
+    /// <summary>
+    /// Class that raises an event on disposing.
+    /// </summary>
+    public class NotifyOnDispose : INotifyOnDispose
+    {
+        /// <summary>
+        /// Fired by the <see cref="Dispose"/> method.
+        /// </summary>
+        public event EventHandler Disposed;
+
+        public virtual void Dispose()
+        {
+            Disposed?.Invoke(this, EventArgs.Empty);
         }
     }
 

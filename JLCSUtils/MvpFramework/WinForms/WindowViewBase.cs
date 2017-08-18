@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace MvpFramework.WinForms
 {
+    /// <summary>
+    /// Base class for views that can open as a window.
+    /// </summary>
     public partial class WindowViewBase : ViewBase, IWindowView
     {
         public WindowViewBase()

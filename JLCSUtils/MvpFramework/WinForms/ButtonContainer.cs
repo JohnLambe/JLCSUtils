@@ -14,9 +14,12 @@ using MvpFramework.Menu;
 using JohnLambe.Util;
 using JohnLambe.Util.Reflection;
 using MvpFramework.WinForms.Controls;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.WinForms
 {
+    //TODO: Pop-up menu for associated control, and commands that don't fit as buttons.
+
     /// <summary>
     /// A control that holds a set of buttons, provided as an <see cref="IOptionCollection"/>,
     /// or generated based on a Presenter.
@@ -233,7 +236,7 @@ namespace MvpFramework.WinForms
         public virtual void ResumeUpdate()
         {
             UpdatesSuspendedCount--;
-            if(UpdatesSuspendedCount == 0)
+            if (UpdatesSuspendedCount == 0)
             {
                 RefreshIfUpdated();
             }
@@ -273,7 +276,7 @@ namespace MvpFramework.WinForms
         {
             var buttonClickedEventArgs = (ButtonClickedEventArgs)args;
             ButtonClicked?.Invoke(this, buttonClickedEventArgs);
-            if(!buttonClickedEventArgs.Intercept)
+            if (!buttonClickedEventArgs.Intercept)
                 buttonClickedEventArgs.Button.Invoke();
         }
 
@@ -346,7 +349,7 @@ namespace MvpFramework.WinForms
                     break;
             }
 
-            SetIcon(button,buttonModel.IconId);
+            SetIcon(button, buttonModel.IconId);
         }
 
         protected virtual void SetIcon(Control button, string iconId)
@@ -461,7 +464,7 @@ namespace MvpFramework.WinForms
         [Description("Returns the Filter value to filter handlers of the Presenter.\n"
             + "If this does not have a handler, or it returns null, the Filter is name of this control, with a prefix of \"ui\" removed (if present)."
             + "Using an event handler allows assigning it to a constant that can be referenced on the handlers.\n"
-            + "Return " + nameof(ButtonContainer) + "." + nameof(FilterAll) + " (\"" + FilterAll + "\") to match all handlers." )]
+            + "Return " + nameof(ButtonContainer) + "." + nameof(FilterAll) + " (\"" + FilterAll + "\") to match all handlers.")]
         public virtual event GetNameDelegate OnGetFilter;
 
         /// <summary>
@@ -539,6 +542,11 @@ namespace MvpFramework.WinForms
         [Category("Action")]
         [Description("Fired when any of the buttons is clicked.")]
         public virtual event ButtonClickedDelegate ButtonClicked;
+
+        [Nullable]
+        [Description("Control that shares any popup menu with this panel, and keystrokes in this control may invoke commands in this panel.")]
+        public virtual Control AssociatedControl { get; set; }  //TODO: Implement this.
+        //TODO: Rename?
 
         #endregion
 

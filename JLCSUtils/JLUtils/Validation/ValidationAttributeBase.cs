@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace JohnLambe.Util.Validation
 {
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)] //TODO: Review
-    public abstract class ValidationAttributeBase : System.ComponentModel.DataAnnotations.ValidationAttribute, IProvidesDescription
+    public abstract class ValidationAttributeBase : System.ComponentModel.DataAnnotations.ValidationAttribute, IProvidesDescription //, IValidator
     {
         /// <summary>
         /// If this is not <see cref="ValidationResultType.Error"/>, then when an item fails validation,
@@ -54,7 +54,7 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// `IsValid` overload providing more context information, and the ability to change the value.
-        /// Override this instead of the other overalods.
+        /// Override this instead of the other overloads.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="validationContext"></param>
@@ -74,6 +74,16 @@ namespace JohnLambe.Util.Validation
         }
         protected string _description;
 
+        /// <summary>
+        /// Convert between the stored and displayed value.
+        /// </summary>
+        /// <param name="toDisplay"></param>
+        /// <param name="value"></param>
+        /// <param name="validationContext"></param>
+        public virtual void PreProcessForDisplay(bool toDisplay, [Nullable] ref object value, [Nullable] ValidationContext validationContext)
+        {
+        }
+
         #region IProvidesDescription
 
         /// <summary>
@@ -90,4 +100,14 @@ namespace JohnLambe.Util.Validation
 
         #endregion
     }
+
+
+    /*
+    public interface IValidator
+    {
+//        void IsValid([Nullable] ref object value, [NotNull] ValidationContext validationContext, [NotNull] ValidationResults results);
+        string Description { get; }
+        void PreProcessForDisplay(bool toDisplay, [Nullable] ref object value, [Nullable] ValidationContext validationContext);
+    }
+    */
 }
