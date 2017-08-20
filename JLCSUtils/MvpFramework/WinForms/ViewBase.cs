@@ -9,13 +9,14 @@ using static System.Windows.Forms.Control;
 using JohnLambe.Util.Reflection;
 using MvpFramework.WinForms.Binding;
 using JohnLambe.Util;
+using System.ComponentModel;
 
 namespace MvpFramework.WinForms
 {
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
-    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView, INotifyOnDispose
+    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView, INotifyOnDispose, INestableView
     {
         public ViewBase()
         {
@@ -58,6 +59,20 @@ namespace MvpFramework.WinForms
         /// Binds this View to the Model and Presenter.
         /// </summary>
         protected virtual ViewBinder ViewBinder { get; private set; }
+
+        #region INestableView
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        // This is used only at runtime.
+        // It must not appear in the WinForms generated code because it would conflict with the Parent property.
+        // In Visual Studio 2015, it would cause the designer to crash.
+        public virtual object ViewParent
+        {
+            get { return Parent; }
+            set { Parent = (Control)value; }
+        }
+
+        #endregion
 
         #region IOptionUpdate
 

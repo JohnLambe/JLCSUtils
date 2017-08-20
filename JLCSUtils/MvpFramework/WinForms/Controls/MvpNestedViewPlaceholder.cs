@@ -19,6 +19,7 @@ namespace MvpFramework.WinForms.Controls
     {
         /// <inheritdoc cref="INestedView.ViewId"/>
         [Description("The ID of the view to be placed in this control.")]
+        [Category(MvpUiComponentConsts.DesignerCategory)]
         public virtual string ViewId { get; set; }
 
         #region IControlBinder

@@ -12,45 +12,97 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JohnLambe.Util.TimeUtilities;
+using System.IO;
+using JohnLambe.Util;
+using JohnLambe.Util.Io;
+using System.Diagnostics;
+using JohnLambe.Util.Diagnostic;
 
 namespace JohnLambe.Util.Validation
 {
-    //TODO: Remove "Validation" from these names, except RegexValidationAttribute ??
-
-
     /// <summary>
     /// For validation of string values.
     /// </summary>
+    /// <seealso cref="StringLengthAttribute"/>
     public class StringValidationAttribute : ValidationAttributeBase
     {
         public override string GeneralDescription
-            => (!string.IsNullOrEmpty(AllowedCharacters) ? "Allowed characters: " + AllowedCharacters + "; " : "")
-                + (Capitalisation != LetterCapitalizationOption.Unspecified ? "Capitalisation: " + EnumUtil.GetDisplayName(Capitalisation) : "");
+            => "A text value";
+
+        public override string DefaultDescription
+            => (!string.IsNullOrEmpty(AllowedCharactersString) ? "Allowed characters: " + AllowedCharactersString + "; " : "")
+                + (!string.IsNullOrEmpty(AllowedCharactersString) ? "Invalid characters: " + DisallowedCharactersString + "; " : "")
+                + (Capitalisation != LetterCapitalizationOption.Unspecified ? "Capitalisation: " + EnumUtil.GetDisplayName(Capitalisation) + "; " : "")
+                + (MinimumLength > 0 ? "Minimum length: " + MinimumLength + "; " : "")
+                + (MaximumLength >= 0 ? "Maximum length: " + MaximumLength + "; " : "")
+            ;
 
         /// <summary>
         /// All characters allowed in the string. null for all.
         /// </summary>
-        public virtual string AllowedCharacters
+        /// <seealso cref="AllowedCharactersSet"/>
+        /// <seealso cref="AllowedCharacters"/>
+        /// <seealso cref="DisallowedCharactersString"/>
+        public virtual string AllowedCharactersString
         {
-            get { return _allowedValues?.StringValue; }
+            get { return _allowedCharacters?.StringValue; }
             set
             {
                 if (value == null)
-                    _allowedValues = null;
+                    _allowedCharacters = null;
                 else
-                    _allowedValues = new StringCharacterSet(value);
+                    _allowedCharacters = new StringCharacterSet(value);
             }
         }
 
+        public virtual char[] AllowedCharacters
+        {
+            get { return _allowedCharacters.ToArray(); }
+            set { _allowedCharacters = new StringCharacterSet(StrUtil.Concat(value)); }
+        }
+
         /// <summary>
-        /// The set of characters in <see cref="AllowedCharacters"/>.
-        /// null if all characters are allowed.
+        /// The set of characters in <see cref="AllowedCharactersString"/>.
+        /// null if all characters (except those in <see cref="DisallowedCharactersSet"/>) are allowed.
         /// </summary>
+        /// <seealso cref="AllowedCharacters"/>
+        /// <seealso cref="AllowedCharactersString"/>
         public virtual ISet<char> AllowedCharactersSet
         {
-            get { return _allowedValues; }
+            get { return _allowedCharacters; }
         }
-        protected StringCharacterSet _allowedValues;
+        protected StringCharacterSet _allowedCharacters;
+
+
+        public virtual string DisallowedCharactersString
+        {
+            get { return _disallowedCharacters?.StringValue; }
+            set
+            {
+                if (value == null)
+                    _disallowedCharacters = null;
+                else
+                    _disallowedCharacters = new StringCharacterSet(value);
+            }
+        }
+        protected StringCharacterSet _disallowedCharacters;
+
+        /// <summary>
+        /// Characters not allowed in the value.
+        /// If any character appears in both this and <see cref="AllowedCharactersSet"/>, it is disallowed.
+        /// </summary>
+        /// <seealso cref="DisallowedCharacters"/>
+        /// <seealso cref="DisallowedCharactersString"/>
+        public virtual ISet<char> DisallowedCharactersSet
+        {
+            get { return _disallowedCharacters; }
+        }
+
+        public virtual char[] DisallowedCharacters
+        {
+            get { return _allowedCharacters.ToArray(); }
+            set { _allowedCharacters = new StringCharacterSet(StrUtil.Concat(value)); }
+        }
 
         /// <summary>
         /// Specifies how the string should be capitalised.
@@ -62,23 +114,86 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual StringTrimmingOption Trimming { get; set; }
 
+        /// <summary>
+        /// The minimum length of the string if it is not blank.
+        /// </summary>
+        public virtual int MinimumLength { get; set; }
+
+        /// <summary>
+        /// The maximum length of the string (after any trimming).
+        /// -1 for no maximum.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="MaxLengthAttribute"/> can also define a maximum length, but it may have other effects with other frameworks,
+        /// for example Entity Framework (with Code First) uses it to set the maximum length of a mapped field.
+        /// This can be used when such behaviour is not desirable. Otherwise, <see cref="MaxLengthAttribute"/> is recommended.
+        /// </remarks>
+        public virtual int MaximumLength { get; set; } = -1;
+
+        /// <summary>
+        /// Iff true, when the value is longer than <see cref="MaximumLength"/>, it is silently truncated to it.
+        /// Otherwise, a validation error is given and the value is unchanged.
+        /// </summary>
+        public virtual bool Truncate { get; set; } = false;
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
-            if (value != null && AllowedCharacters != null)
-            {
-                if (StrUtil.ContainsOnlyCharacters(value.ToString(), AllowedCharactersSet))
-                    results.Add(ErrorMessage ?? "Contains an invalid character");
-            }
-
-            if(value != null && Capitalisation != LetterCapitalizationOption.MixedCase && Capitalisation != LetterCapitalizationOption.Unspecified)
+            if (value != null)
             {
                 var stringValue = value.ToString();
-                var newValue = Capitalisation.ChangeCapitalization(stringValue);
-                if (newValue != stringValue)         // only if the value is changed
-                    value = newValue;                // update it (so that the type is preserved if the capitalisation doesn't change)
-            }
 
+                if (validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification))
+                {
+                    // Do trimming first (other operations apply to the trimmed value):
+                    switch (Trimming)
+                    {
+                        case StringTrimmingOption.TrimStart:
+                            stringValue = stringValue.TrimStart();
+                            break;
+                        case StringTrimmingOption.TrimEnd:
+                            stringValue = stringValue.TrimEnd();
+                            break;
+                        case StringTrimmingOption.TrimStartAndEnd:
+                            stringValue = stringValue.Trim();
+                            break;
+                        case StringTrimmingOption.None:
+                            break;
+                        default:
+                            Diagnostics.UnhandledEnum(Trimming);
+                            break;
+                    }
+
+                    // Next, truncate (more efficient to do it earlier, and some operations (e.g. validating length) cannot be done before it):
+                    if (Truncate && MaximumLength >= 0)
+                        stringValue = stringValue.Truncate(MaximumLength);
+
+                    if (Capitalisation != LetterCapitalizationOption.MixedCase && Capitalisation != LetterCapitalizationOption.Unspecified)
+                    {
+                        stringValue = Capitalisation.ChangeCapitalization(stringValue);
+                        //                    if (newValue != stringValue)         // only if the value is changed
+                        //                        value = newValue;                // update it (so that the type is preserved if the capitalisation doesn't change)
+                    }
+                }
+
+                if (AllowedCharactersString != null)
+                {
+                    if (!StrUtil.ContainsOnlyCharacters(stringValue.ToString(), AllowedCharactersSet))
+                        results.Add(ErrorMessage ?? "Contains an invalid character");
+                }
+                if (DisallowedCharactersString != null)
+                {
+                    if (StrUtil.ContainsAnyCharacters(stringValue.ToString(), DisallowedCharactersSet))
+                        results.Add(ErrorMessage ?? "Contains an invalid character");
+                }
+
+                if (stringValue.ToString().Length < MinimumLength)
+                    results.Add(ErrorMessage ?? "Too short");
+                if (MaximumLength >= 0 && stringValue.ToString().Length > MaximumLength)
+                    results.Add(ErrorMessage ?? "Too long");
+
+                value = stringValue;
+            }
         }
     }
 
@@ -86,19 +201,38 @@ namespace JohnLambe.Util.Validation
     /// <summary>
     /// The data item holds a phone number.
     /// </summary>
-    /// <remarks><see cref="PhoneAttribute"/> is similar but does not accept a blank value, and is sealed.</remarks>
+    /// <remarks>
+    /// <para><see cref="PhoneAttribute"/> is similar but does not accept a blank value, and is sealed.</para>
+    /// <para>
+    /// Maximum length: This attribute does not have a default maximum length.
+    /// The ITU specifies the maximum length of a phone number (not including the country code) as 15 digits,
+    /// but a phone number field can contain separators or formatting characters (e.g. space and brackets),
+    /// and possibly an extension number.
+    /// It is recommended to specify a maximum length with a <seealso cref="MaxLengthAttribute"/>. (See the remarks on <see cref="StringValidationAttribute.MaximumLength"/>).
+    /// </para>
+    /// </remarks>
     public class PhoneNumberValidationAttribute : StringValidationAttribute
     {
         public override string GeneralDescription => "A phone number";
 
         /// <summary>
         /// If true, the number must be in international format, beginning with a "+".
+        /// <para>This property sets the value read by <see cref="GetIsInternational"/>.</para>
         /// </summary>
         public virtual bool IsInternational
-        {
+        {   // This bool (not bool?) because attributes cannot set nullable primitive types.
             get { return (bool)_isInternational; }
-            set { _isInternational = value; } }
-        private bool _isInternational { get; set; }
+            set { _isInternational = value; }
+        }   
+        private bool? _isInternational { get; set; }
+
+        /// <summary>
+        /// If true, the number must be in international format, beginning with a "+".
+        /// If false, it must not be.
+        /// If null, either is allowed.
+        /// </summary>
+        /// <returns></returns>
+        /// <seealso cref="IsInternational"/>
         public bool? GetIsInternational() =>  _isInternational;
 
         // Testing for national format, or converting between national, international and local, or validating the national or local part,
@@ -116,7 +250,7 @@ namespace JohnLambe.Util.Validation
             if(GetIsInternational().HasValue)
             {
                 string s = value.ToString();
-                bool international = s.StartsWith("+");
+                bool international = PhoneNumberIsInternational(s);
                 if (international != GetIsInternational())
                 {
                     if (international)
@@ -142,6 +276,16 @@ namespace JohnLambe.Util.Validation
         /// This class does not change its state.
         /// </summary>
         private static PhoneAttribute _phoneAttribute = new PhoneAttribute();
+
+        /// <summary>
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns>true iff the given phone number is in international format.</returns>
+        public static bool PhoneNumberIsInternational(string phoneNumber)
+        {
+            return phoneNumber.Trim().StartsWith("+");
+        }
+
     }
 
     /// <summary>
@@ -149,6 +293,63 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class PostcodeValidationAttribute : StringValidationAttribute
     {
+    }
+
+    /// <summary>
+    /// The data item holds an eircode (Irish postcode).
+    /// <para>The format of an eircode is (ANBF):<br/>
+    /// Alphanumeric = ( %x41-5A / DIGIT ) <br/>
+    /// Eircode = 3 Alphanumeric SP 4 Alphanumeric
+    /// </para>
+    /// </summary>
+    public class EircodeValidationAttribute : PostcodeValidationAttribute
+    {
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+            if (value != null)
+            {
+                string stringValue = value.ToString();
+                if (!ValidateEircode(ref stringValue))
+                {
+                    results.Fail();
+                }
+                else
+                {
+                    if (!stringValue.Equals(value))   // if modified
+                    {
+                        if (validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification))  // if modification is supported
+                            value = stringValue;
+                        else
+                            results.Fail();    // modification was required but not supported
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Validate an eircode (Irish postcode).
+        /// </summary>
+        /// <param name="value">Eircode to be validated.
+        /// May be modified to correct formatting: Leading and trailing space is removed, and a space is added after the third character if there isn't one already. Letters are capitalised.
+        /// </param>
+        /// <returns>true iff valid (including if modification was required).</returns>
+        public static bool ValidateEircode(ref string value)
+        {
+            string newValue = value.Trim().ToUpper();
+            if (newValue.ToString().Length == 7)
+            {
+                newValue = newValue.Substring(0, 3) + ' ' + newValue.Substring(3);
+            }
+            bool valid = newValue.Length == 8
+                && newValue[3] == ' '
+                && (newValue.Substring(0, 3) + newValue.Substring(4)).ContainsOnlyCharacters(CharacterUtil.AsciiAlphanumericCharacters);
+            if (valid)
+                value = newValue;
+            return valid;
+        }
+
+        public override string DefaultDescription => "An Eircode (Irish postcode)";
     }
 
     /// <summary>
@@ -176,7 +377,7 @@ namespace JohnLambe.Util.Validation
             }
         }
 
-        public override string DefaultDescritpion => "Not \"" + InvalidValue + "\"";
+        public override string DefaultDescription => "Not \"" + InvalidValue + "\"";
     }
 
     /// <summary>
@@ -263,13 +464,111 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class FilenameValidationAttribute : StringValidationAttribute
     {
-        public virtual FilePathCompleteness PathType { get; set; } = FilePathCompleteness.Any;
-        public virtual FileExistsState Exists { get; set; } = FileExistsState.Any;
-        public virtual NullableBool HasExtension { get; set; } = NullableBool.Null;
-        public virtual NullableBool IsDirectory { get; set; } = NullableBool.Null;
-        public virtual bool AllowWildcard { get; set; } = true;
+        public FilenameValidationAttribute()
+        {
+            DisallowedCharacters = Path.GetInvalidPathChars();
+        }
 
+        public virtual FilePathCompleteness PathType { get; set; } = FilePathCompleteness.Any;
+        /// <summary>
+        /// Whether the file or directory must exist.
+        /// </summary>
+        public virtual FileExistsState Exists { get; set; } = FileExistsState.Any;
+        /// <summary>
+        /// Whether the pathname can or must have an extension.
+        /// Null to allow it with or without an extension.
+        /// </summary>
+        public virtual NullableBool HasExtension { get; set; } = NullableBool.Null;
+        /// <summary>
+        /// Whether the pathname must be a directory or must be a file.
+        /// Null to allow either.
+        /// </summary>
+        public virtual NullableBool IsDirectory { get; set; } = NullableBool.Null;
+        /// <summary>
+        /// Whether wildcards are allowed.
+        /// True: There must be a wildcard.
+        /// False: Wildcards are not allowed.
+        /// Null: Wildcards are allowed but not required.
+        /// </summary>
+        public virtual NullableBool Wildcard { get; set; } = NullableBool.Null;
+
+        /// <summary>
+        /// If not null, the filename must have one of the given extensions.
+        /// <see cref="DefaultExtension"/> (if not null) is also allowed even if it is not included in this.
+        /// </summary>
+        public virtual string[] AllowedExtensions { get; set; }
+
+        /// <summary>
+        /// The extensions to be shown in a dialog for choosing the file.
+        /// If null, <see cref="AllowedExtensions"/> is used.
+        /// </summary>
+        /// <seealso cref="ExtensionsToShow"/>
         public virtual string[] Extensions { get; set; }
+
+        /// <summary>
+        /// The extensions to be shown in a dialog for choosing the file.
+        /// </summary>
+        /// <seealso cref="Extensions"/>
+        public virtual string[] ExtensionsToShow => Extensions ?? AllowedExtensions;
+
+        /// <summary>
+        /// Extension to be added if none is given.
+        /// </summary>
+        /// <seealso cref="AllowedExtensions"/>
+        public virtual string DefaultExtension { get; set; }
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+            if(value != null)
+            {
+                string stringValue = value.ToString();
+                string extension = Path.GetExtension(stringValue);
+
+                if (string.IsNullOrEmpty(extension) && !string.IsNullOrEmpty(DefaultExtension))
+                {
+                    extension = DefaultExtension;
+                    value = Path.ChangeExtension(stringValue, DefaultExtension);
+                }
+
+                if (!HasExtension.NullableCompare(!string.IsNullOrEmpty(extension)))
+                {
+                    if (HasExtension == NullableBool.True)
+                    {
+                        results.Add("A file extension is required");
+                    }
+                    else
+                        results.Add("The filename must not have an extension");
+                }
+
+                if (!string.IsNullOrEmpty(extension) && AllowedExtensions != null)
+                {
+                    if (!AllowedExtensions.Contains(extension) && !extension.Equals(DefaultExtension,StringComparison.InvariantCultureIgnoreCase))
+                    {       //TODO: Case sensitivity
+                        results.Add("The extension (" + extension + ") is not allowed");
+                    }
+                }
+
+                if (!Wildcard.NullableCompare(PathUtil.HasWildcard(stringValue)))
+                {
+                    if (Wildcard == NullableBool.True)
+                        results.Add("A wildcard is required");
+                    else
+                        results.Add("Wildcards are not allowed");
+                }
+
+                if(validationContext.GetState().HasFlag(ValidationState.LiveInput))
+                {
+                    if(Exists != FileExistsState.Any)
+                    {
+                        //TODO
+                    }
+                }
+
+                //TODO
+
+            }
+        }
 
         public override string GeneralDescription => "A file or directory name";
     }
@@ -304,11 +603,12 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         LeafName = 1,
         /// <summary>
-        /// A relative path: A path that does not start from a root.
+        /// A relative path: A path that includes a directory but does not start from a root.
         /// </summary>
         RelativePath = 2,
         /// <summary>
         /// A full (absolute) pathname, including a root.
+        /// <para><see cref="Path.IsPathRooted(string)"/> is true in this case.</para>
         /// </summary>
         FullPath = 4,
 
@@ -326,7 +626,7 @@ namespace JohnLambe.Util.Validation
 
 
     /// <summary>
-    /// Metadata or validation information for numberic values.
+    /// Metadata or validation and display information for numeric values.
     /// </summary>
     public class NumberValidationAttribute : ValidationAttributeBase
     {
@@ -361,6 +661,11 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual double MaximumValue { get; set; } = double.MaxValue;
 
+        /// <summary>
+        /// Iff true, out of range values are replaced with the closest in-range value.
+        /// </summary>
+        public virtual bool AdjustToRange { get; set; } = false;
+
         protected override void IsValid([Nullable] ref object value, ValidationContext validationContext, ValidationResults results)
         {
             if (value != null)
@@ -371,9 +676,19 @@ namespace JohnLambe.Util.Validation
                 }
                 double numericValue = GeneralTypeConverter.Convert<double>(value);
                 if (numericValue < MinimumValue)
-                    results.Add("Value too low");
+                {
+                    if (AdjustToRange)
+                        value = MinimumValue;
+                    else
+                        results.Add("Value too low");
+                }
                 else if (numericValue > MaximumValue)
-                    results.Add("Value too high");
+                {
+                    if (AdjustToRange)
+                        value = MaximumValue;
+                    else
+                        results.Add("Value too high");
+                }
             }
         }
     }
@@ -530,6 +845,20 @@ namespace JohnLambe.Util.Validation
                     value = timeValue;
                     break;
             }
+
+            if(validationContext.GetState().HasFlag(ValidationState.LiveInput) && Options != TimeValidationOptions.Any)
+            {
+                var now = DateTime.Now;  //TODO use ITimeService
+                if (timeValue < now && !(Options.HasFlag(TimeValidationOptions.AllowPast)))   
+                {
+                    results.Add("Must not be in the past");
+                }
+                else if(timeValue > now && !(Options.HasFlag(TimeValidationOptions.AllowFuture)))
+                {
+                    results.Add("Must not be in the future");
+                }
+            }
+
             //TODO other properties
         }
     }
@@ -591,7 +920,9 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// Time values in the future are allowed.
         /// </summary>
-        AllowFuture = 2
+        AllowFuture = 2,
+
+        Any = AllowPast | AllowFuture
     }
 
 }

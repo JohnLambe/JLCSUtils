@@ -62,7 +62,33 @@ namespace JohnLambe.Util.Types
                     return NullableBool.Null;
             }
         }
-    }
 
+        /// <summary>
+        /// Compare nullable boolean values, treating null as 'don't care':
+        /// Returns true if either is null, otherwise true if they match.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool NullableCompare(bool? a, bool? b)
+        {
+            if (a == null || b == null)
+                return true;
+            else
+                return a == b;
+        }
+
+        /// <inheritdoc cref="NullableCompare(bool?, bool?)"/>
+        public static bool NullableCompare(this NullableBool value, bool? other)
+        {
+            return NullableCompare(value.ToBool(), other);
+        }
+
+        /// <inheritdoc cref="NullableCompare(bool?, bool?)"/>
+        public static bool NullableCompare(this NullableBool value, NullableBool other)
+        {
+            return NullableCompare(value.ToBool(), other.ToBool());
+        }
+    }
 
 }

@@ -18,7 +18,7 @@ namespace MvpFramework
     /// Flags a parameter to be injected by the MVP framework.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public class MvpParamAttribute : MvpClassAttribute
+    public class MvpParamAttribute : MvpInjectAttribute
     {
     }
 

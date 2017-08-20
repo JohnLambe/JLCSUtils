@@ -70,6 +70,13 @@
     <Compile Include="Heirarchical\TestHView.Designer.cs">
       <DependentUpon>TestHView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Heirarchical\TestLayoutPresenter.cs" />
+    <Compile Include="Heirarchical\TestLayoutView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Heirarchical\TestLayoutView.Designer.cs">
+      <DependentUpon>TestLayoutView.cs</DependentUpon>
+    </Compile>
     <Compile Include="IEditContactView.cs" />
     <Compile Include="Heirarchical\TestHPresenter.cs" />
     <Compile Include="MainForm.cs">
@@ -82,6 +89,12 @@
     <Compile Include="Model\TestHViewModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControl1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl1.Designer.cs">
+      <DependentUpon>UserControl1.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="EditContactView.resx">
       <DependentUpon>EditContactView.cs</DependentUpon>
     </EmbeddedResource>
@@ -90,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Heirarchical\TestHView.resx">
       <DependentUpon>TestHView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Heirarchical\TestLayoutView.resx">
+      <DependentUpon>TestLayoutView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -103,6 +119,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UserControl1.resx">
+      <DependentUpon>UserControl1.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\DataSources\MvpDemo.Model.Contact.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

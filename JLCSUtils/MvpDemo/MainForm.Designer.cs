@@ -34,12 +34,13 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.contactBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.button2 = new System.Windows.Forms.Button();
             this.mvpTextBox1 = new MvpFramework.WinForms.Controls.MvpTextBox();
             this.mvpComboBox1 = new MvpFramework.WinForms.Controls.MvpComboBox();
             this.button3 = new System.Windows.Forms.Button();
             this.uiAutoView = new System.Windows.Forms.Button();
-            this.contactBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.uiNested = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.contactBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -78,9 +79,9 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 240);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 237);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(284, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(287, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -88,6 +89,10 @@
             // 
             this.bindingSource1.DataSource = this.contactBindingSource;
             this.bindingSource1.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
+            // 
+            // contactBindingSource
+            // 
+            this.contactBindingSource.DataSource = typeof(MvpDemo.Model.Contact);
             // 
             // button2
             // 
@@ -105,7 +110,6 @@
             this.mvpTextBox1.Items = new string[] {
         "[Text<->Name|TextChanged=>Updated]"};
             this.mvpTextBox1.Location = new System.Drawing.Point(26, 154);
-//            this.mvpTextBox1.ModelProperty = "Name;=>Updated";
             this.mvpTextBox1.Name = "mvpTextBox1";
             this.mvpTextBox1.Size = new System.Drawing.Size(114, 20);
             this.mvpTextBox1.TabIndex = 5;
@@ -116,14 +120,13 @@
             // 
             this.mvpComboBox1.FormattingEnabled = true;
             this.mvpComboBox1.Location = new System.Drawing.Point(149, 154);
-//            this.mvpComboBox1.ModelProperty = null;
             this.mvpComboBox1.Name = "mvpComboBox1";
             this.mvpComboBox1.Size = new System.Drawing.Size(121, 21);
             this.mvpComboBox1.TabIndex = 3;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(26, 93);
+            this.button3.Location = new System.Drawing.Point(156, 89);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(114, 23);
             this.button3.TabIndex = 8;
@@ -133,7 +136,7 @@
             // 
             // uiAutoView
             // 
-            this.uiAutoView.Location = new System.Drawing.Point(156, 93);
+            this.uiAutoView.Location = new System.Drawing.Point(156, 118);
             this.uiAutoView.Name = "uiAutoView";
             this.uiAutoView.Size = new System.Drawing.Size(114, 23);
             this.uiAutoView.TabIndex = 9;
@@ -141,15 +144,22 @@
             this.uiAutoView.UseVisualStyleBackColor = true;
             this.uiAutoView.Click += new System.EventHandler(this.uiAutoView_Click);
             // 
-            // contactBindingSource
+            // uiNested
             // 
-            this.contactBindingSource.DataSource = typeof(MvpDemo.Model.Contact);
+            this.uiNested.Location = new System.Drawing.Point(26, 89);
+            this.uiNested.Name = "uiNested";
+            this.uiNested.Size = new System.Drawing.Size(114, 23);
+            this.uiNested.TabIndex = 10;
+            this.uiNested.Text = "Launch Nested";
+            this.uiNested.UseVisualStyleBackColor = true;
+            this.uiNested.Click += new System.EventHandler(this.uiNested_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(287, 259);
+            this.Controls.Add(this.uiNested);
             this.Controls.Add(this.uiAutoView);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -181,5 +191,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button uiAutoView;
+        private System.Windows.Forms.Button uiNested;
     }
 }

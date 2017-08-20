@@ -663,7 +663,7 @@ namespace MvpFramework
                 var attribute = parameter.GetCustomAttribute<InjectAttribute>();
                 if (attribute != null && attribute.Enabled)      // not null or disabled
                 {
-                    fromCreateParam = attribute is MvpInjectAttribute;    // attributed as a 'Create' parameter
+                    fromCreateParam = attribute is MvpParamAttribute;    // attributed as a 'Create' parameter
                                                                             // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
                 }
                 // still null if there was no InjectAttribute.

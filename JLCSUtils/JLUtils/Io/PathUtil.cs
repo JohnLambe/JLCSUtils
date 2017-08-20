@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.IO;
+using JohnLambe.Util.Types;
+using JohnLambe.Util.Validation;
 
 namespace JohnLambe.Util.Io
 {
@@ -18,7 +20,7 @@ namespace JohnLambe.Util.Io
         /// <summary>
         /// The character that separates the extension from the rest of the filename.
         /// </summary>
-        public const char ExtensionSeparatorChar = '.';
+        public const char ExtensionSeparatorChar = '.';  // platform-specific (but same for most)
 
         /// <summary>
         /// Appends a string before the extension of a pathname.
@@ -64,5 +66,34 @@ namespace JohnLambe.Util.Io
         {
             return Path.Combine(newDirectory, Path.GetFileName(path));
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="path">The pathname to test. If null, false is returned.</param>
+        /// <returns>True if the pathname contains any wildcard character(s).</returns>
+        public static bool HasWildcard([Nullable] string path)
+        {
+            return path?.ContainsAnyCharacters(Wildcards) ?? false;
+        }
+
+        public static FilePathCompleteness PathCompleteness(string path)
+        {
+            if (Path.IsPathRooted(path))
+            {
+                return FilePathCompleteness.FullPath;
+            }
+            else if (path.Contains(Path.DirectorySeparatorChar) || path.Contains(Path.AltDirectorySeparatorChar)
+                || path.Contains(Path.VolumeSeparatorChar))
+            {
+                return FilePathCompleteness.RelativePath;
+            }
+            else
+            {
+                return FilePathCompleteness.LeafName;
+            }
+        }
+
+        private static readonly ISet<char> _wildcards = new HashSet<char>(new [] { '*', '#' });  //TODO: Windows-specific
+        public static ISet<char> Wildcards => _wildcards;
     }
 }

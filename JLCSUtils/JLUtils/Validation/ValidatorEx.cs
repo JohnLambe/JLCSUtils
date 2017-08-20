@@ -21,6 +21,7 @@ namespace JohnLambe.Util.Validation
         }
 
         #region Validate Object
+        // Validate a whole object (all properties against their attributes).
 
         /// <summary>
         /// Validate the given object (all properties).
@@ -53,6 +54,7 @@ namespace JohnLambe.Util.Validation
         #endregion
 
         #region Validate Property
+        // Validate a specified property on a given object (its value against its attributes).
 
         /// <summary>
         /// Validate a specified property of an object (i.e. test that its current value is valid).
@@ -97,9 +99,15 @@ namespace JohnLambe.Util.Validation
         #endregion
 
         #region Validate Value
+        // Validate a given value against a property or attributes, with or without an instance.
+
+        #region Validate Value by Property
+        // Validate a given value against a property, with or without an instance.
+
+        #region Validate Value by Property Without Instance
 
         /// <summary>
-        /// Throw an exception if the given value is invalid for the specified property (i.e. if it would not be valid to assign it to that property).
+        /// Throw an exception if the given value is invalid for the specified property (i.e. if it would not be valid to assign it to that property) of <typeparamref name="T"/>.
         /// </summary>
         /// <param name="value">The value to be validated.</param>
         /// <param name="propertyName">The name of the property (of type <typeparamref name="T"/>).</param>
@@ -108,6 +116,15 @@ namespace JohnLambe.Util.Validation
         {
             ValidateValue(null, ref value, typeof(T).GetProperty(propertyName));
         }
+
+        public virtual bool ValidateValue<TValue>(ref TValue value, MemberInfo property)
+        {
+            return ValidateValue<TValue>(null, ref value, property);
+        }
+
+        #endregion
+
+        #region Validate Value for Property of an Instance
 
         /// <summary>
         /// Throw an exception if the given value is invalid for the specified property.
@@ -137,6 +154,77 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
+        /// Validate the given value as a value to be assigned to the given property.
+        /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
+        /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
+        /// <param name="member">The member (usually a property) to be validated.</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
+        public virtual bool TryValidateValue<TValue>(object instance, TValue value, MemberInfo member, ValidationResults results)
+        {
+            return TryValidateValue(instance, value, member.GetCustomAttributes<ValidationAttribute>(true), results, member.Name, CaptionUtil.GetDisplayName(member));
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Validate Value by Attribute
+        // Validate a given value against attribute(s), with or without an instance.
+
+        /// <summary>
+        /// Validate a value according to a set of attributes.
+        /// </summary>
+        /// <param name="instance">The object on which the value is being validated.</param>
+        /// <param name="value">The value to be validated.</param>
+        /// <param name="attributes">The attributes providing the validation rules.</param>
+        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <param name="memberName">The name of the member being validated.</param>
+        /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
+        /// <returns>true iff valid.</returns>
+        public virtual bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
+        {
+            results = results ?? new ValidationResults();
+            return Validator.TryValidateValue(value, GetContext(instance, memberName, displayName), results.Results, attributes);
+        }
+        public bool TryValidateValue(object instance, object value, ValidationAttribute attribute, ValidationResults results = null, string memberName = null, string displayName = null)
+        {
+            return TryValidateValue(instance, value, new[] { attribute }, results, memberName, displayName);
+        }
+
+        // Passing value by reference:
+        public virtual bool TryValidateValue<TValue>(object instance, ref TValue value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
+        {
+            var result = TryValidateValue(instance, value, attributes, results, memberName, displayName);
+            if (results.Modified)
+                value = (TValue)results.NewValue;
+            return result;
+        }
+
+        // overloads with no instance. Non-virtual since they only call the methods above.
+        public bool TryValidateValue<TValue>(ref TValue value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
+        {
+            results = results ?? new ValidationResults();
+            var isValid = TryValidateValue(null, value, attributes, results, memberName, displayName);
+            if (results.Modified)
+                value = (TValue)results.NewValue;
+            return isValid;
+        }
+        public bool TryValidateValue<TValue>(ref TValue value, ValidationAttribute attribute, ValidationResults results = null, string memberName = null, string displayName = null)
+        {
+            results = results ?? new ValidationResults();
+            var isValid = TryValidateValue(null, value, new[] { attribute }, results, memberName, displayName);
+            if (results.Modified)
+                value = (TValue)results.NewValue;
+            return isValid;
+        }
+
+        #endregion
+
+        #endregion
+
+        /// <summary>
         /// Set a referenced item (<paramref name="targetValue"/>) to the given <paramref name="value"/>,
         /// if it is valid. (If it is not valid, an exception is thrown and <paramref name="targetValue"/> is not set.
         /// <para>This is useful when setting a field in a property setter.</para>
@@ -155,36 +243,6 @@ namespace JohnLambe.Util.Validation
             // If no exception was thrown, assign it:
             targetValue = value;
         }
-
-        /// <summary>
-        /// Validate the given value as a value to be assigned to the given property.
-        /// </summary>
-        /// <param name="instance">The object on which the value is being validated.</param>
-        /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
-        /// <param name="member">The member (usually a property) to be validated.</param>
-        /// <param name="results">This is populated with validation errors and warnings.</param>
-        /// <returns>true iff valid.</returns>
-        public virtual bool TryValidateValue(object instance, object value, MemberInfo member, ValidationResults results)
-        {
-            return TryValidateValue(instance, value, member.GetCustomAttributes<ValidationAttribute>(true), results, member.Name, CaptionUtil.GetDisplayName(member));
-        }
-
-        /// <summary>
-        /// Validate a value according to a set of attributes.
-        /// </summary>
-        /// <param name="instance">The object on which the value is being validated.</param>
-        /// <param name="value">The value to be validated.</param>
-        /// <param name="attributes">The attributes providing the validation rules.</param>
-        /// <param name="results">This is populated with validation errors and warnings.</param>
-        /// <param name="memberName">The name of the member being validated.</param>
-        /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
-        /// <returns>true iff valid.</returns>
-        public virtual bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results, string memberName = null, string displayName = null)
-        {
-            return Validator.TryValidateValue(value, GetContext(instance, memberName, displayName), results.Results, attributes);
-        }
-
-        #endregion
 
         /// <summary>
         /// Creates a <see cref="ValidationContext"/>.
@@ -348,7 +406,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
         /// <param name="member">The member (usually a property) to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
-        public override bool TryValidateValue(object instance, object value, MemberInfo member, ValidationResults results)
+        public override bool TryValidateValue<TValue>(object instance, TValue value, MemberInfo member, ValidationResults results)
         {
             return true;
         }
@@ -362,10 +420,15 @@ namespace JohnLambe.Util.Validation
         /// <param name="results">This is populated with validation errors and warnings.</param>
         /// <param name="memberName">The name of the member being validated.</param>
         /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
-        public override bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results, string memberName = null, string displayName = null)
+        public override bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
         {
             return true;
         }
+        public override bool TryValidateValue<TValue>(object instance, ref TValue value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
+        {
+            return true;
+        }
+
 
         #endregion
 

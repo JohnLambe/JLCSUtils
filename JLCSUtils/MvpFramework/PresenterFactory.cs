@@ -137,10 +137,22 @@ namespace MvpFramework
                                 view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
                             }
 
-                            if(viewParent != null && view is INestableView)
+                            if (viewParent != null)      // if the view has to be placed in a specifc parent
                             {
-                                ((INestableView)view).Parent = viewParent;
-                            }   //TODO: Exception if viewParent != null && !(view is INestableView) ?
+                                if (view is INestableView)    // if it has the ability to have its parent assigned
+                                {
+                                    ((INestableView)view).ViewParent = viewParent;
+                                }
+                                else   // Exception if viewParent != null && !(view is INestableView)
+                                {
+                                    throw new MvpResolutionException("Attempt to nest non-nestable View: "
+                                        + view + " in " + viewParent
+                                        + "\n(View must implement " + nameof(INestableView) + ")");
+                                    //| Alternativelty, if view is of the control class for its UI framework and it has a Parent property, we could use it.
+                                    //| This would require a UI-framework-specific handler to provide the way of assigning controls to parents in the UI framework.
+                                    //| But implementing ViewParent on a base class basically provides the similar functionality for this purpose, and is simpler.
+                                }
+                            }
                         }
                     }
                     //| Could provide parameters for context-based injection of View.
@@ -167,13 +179,11 @@ namespace MvpFramework
                     {
                         var attribute = constructorParameters[paramIndex].GetCustomAttribute<MvpNestedAttribute>();
                         if (attribute != null)    // if flagged as nested
-                        {
+                        {                         // nested presenter factories are created as regular presenter factories above (by DiResolver.PopulateArgs), but have additional properties configured here.
                             if (arg is INestedPresenterFactory)                        // and the argument supports this
                             {
                                 ((INestedPresenterFactory)arg).ContainingView = view;            // provide the View of the Presenter being created
                                 ((INestedPresenterFactory)arg).NestedViewId = attribute.NestedViewId ?? ReflectionUtil.CamelCaseToPascalCase(constructorParameters[paramIndex].Name);     // provide the View of the Presenter being created
-
-//                                ((INestedPresenterFactory)arg).View = view;            // provide the View of the Presenter being created
                             }
                             else
                             {

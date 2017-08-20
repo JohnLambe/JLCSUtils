@@ -36,7 +36,7 @@ namespace MvpFramework
 
     /// <summary>
     /// Control which either is a view nested within another one, or is a parent control into which a nested view can be inserted 
-    /// (by assigning <see cref="INestableView.Parent"/> to this).
+    /// (by assigning <see cref="INestableView.ViewParent"/> to this).
     /// </summary>
     public interface INestedView
     {
@@ -63,7 +63,7 @@ namespace MvpFramework
     /// <seealso cref="INestedView"/>
     public interface INestableView : IView
     {
-        object Parent { get; set; }
+        object ViewParent { get; set; }
     }
     
     /// <summary>

@@ -44,6 +44,16 @@ namespace JohnLambe.Util.Text
         public const string AsciiLowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
 
         /// <summary>
+        /// ASCII lower case letter characters.
+        /// </summary>
+        public const string AsciiLetters = AsciiCapitalLetters + AsciiLowercaseLetters;
+
+        /// <summary>
+        /// ASCII letters and digits.
+        /// </summary>
+        public const string AsciiAlphanumericCharacters = AsciiLetters + Digits;
+
+        /// <summary>
         /// Characters allowed in identifiers such as those used in code.
         /// </summary>
         public const string IdentifierCharacters = AsciiCapitalLetters + AsciiLowercaseLetters + Digits + "_";

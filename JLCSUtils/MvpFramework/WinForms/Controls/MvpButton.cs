@@ -98,8 +98,7 @@ namespace MvpFramework.WinForms.Controls
         /// and is not limited to keystrokes using ALT.
         /// </para>
         /// </summary>
-        public virtual Keys HotKey { get;
-            set; } = Keys.None;
+        public virtual Keys HotKey { get; set; } = Keys.None;
 
 
 //        protected override void OnKeyDown(KeyEventArgs kevent)
@@ -120,6 +119,6 @@ namespace MvpFramework.WinForms.Controls
         #endregion
     }
 
-    //TODO: Show HotKey.
+    //TODO: Show HotKey in UI.
 
 }

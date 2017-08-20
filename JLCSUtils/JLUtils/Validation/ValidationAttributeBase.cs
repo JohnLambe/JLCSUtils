@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Validation
 {
+    /// <summary>
+    /// Base class for attributes that validate an attributed item, with some additional features (added to <see cref="ValidationAttribute"/>).
+    /// <para>
+    /// Use <see cref="ValidatorEx"/> to invoke validation of a value or property.
+    /// </para>
+    /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)] //TODO: Review
     public abstract class ValidationAttributeBase : System.ComponentModel.DataAnnotations.ValidationAttribute, IProvidesDescription //, IValidator
     {
@@ -48,7 +54,19 @@ namespace JohnLambe.Util.Validation
             }
 
             var results = new ValidationResults(validationContext.GetSupportedFeatures(), ResultType);
+            var initialValue = value;
             IsValid(ref value, validationContext, results);
+            if(initialValue != value)
+            {
+                if (validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification))  // if modification is supported
+                {
+                    results.NewValue = value;
+                }
+                else
+                {
+                    results.Fail();      // modification was required but not supported
+                }
+            }
             return results.Result;
         }
 
@@ -65,11 +83,11 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// A human-readable text description of this validation rule.
-        /// <para>If no description is explicitly defined on an instance (or this is set to null), this returns <see cref="DefaultDescritpion"/>.</para>
+        /// <para>If no description is explicitly defined on an instance (or this is set to null), this returns <see cref="DefaultDescription"/>.</para>
         /// </summary>
         public virtual string Description
         {
-            get { return _description ?? DefaultDescritpion ?? GeneralDescription; }
+            get { return _description ?? DefaultDescription ?? GeneralDescription; }
             set { _description = value; }
         }
         protected string _description;
@@ -90,11 +108,11 @@ namespace JohnLambe.Util.Validation
         /// Default description for this type of rule, for when a specific description is not given (in the <see cref="Description"/> property).
         /// This may take account of the properties of the instance.
         /// </summary>
-        public virtual string DefaultDescritpion => GeneralDescription;
+        public virtual string DefaultDescription => GeneralDescription;
 
         /// <summary>
         /// Describes the type of validation rule(s).
-        /// This does NOT take account of an properties of the instance.
+        /// This does NOT take account of any properties of the instance.
         /// </summary>
         public virtual string GeneralDescription => null;
 

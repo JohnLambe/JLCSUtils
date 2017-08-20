@@ -18,12 +18,14 @@ namespace MvpDemo
     {
         public MainForm(IPresenterFactory<IEditContactPresenter,Contact> editContactFactory,
             IPresenterFactory<Heirarchical.ITestHPresenter,TestHViewModel> hpresenterFactory,
+            IPresenterFactory<Heirarchical.ITestLayoutPresenter, TestHViewModel> testLayoutPresenterFactory,
             IPresenterFactory<IAutoPresenter,object> autoPresenterFactory
             )
         {
             this.EditContactFactory = editContactFactory;
             this.HPresenterFactory = hpresenterFactory;
             this.AutoPresenterFactory = autoPresenterFactory;
+            this.TestLayoutPresenterFactory = testLayoutPresenterFactory;
 
             InitializeComponent();
         }
@@ -40,9 +42,12 @@ namespace MvpDemo
         }
 
         protected readonly IPresenterFactory<IEditContactPresenter,Contact> EditContactFactory;
+
         protected readonly IPresenterFactory<Heirarchical.ITestHPresenter, TestHViewModel> HPresenterFactory;
+        protected readonly IPresenterFactory<Heirarchical.ITestLayoutPresenter, TestHViewModel> TestLayoutPresenterFactory;
+
         protected readonly IPresenterFactory<IAutoPresenter, object> AutoPresenterFactory;
-        
+
 
         private void btnEmbedded_Click(object sender, EventArgs e)
         {
@@ -100,6 +105,23 @@ namespace MvpDemo
             };
             AutoPresenterFactory.Create(model).Show();
 
+        }
+
+        private void uiNested_Click(object sender, EventArgs e)
+        {
+            var model = new TestHViewModel()
+            {
+                Contact = new Contact()
+                {
+                    Name = "Name 2",
+                    Address = "Address 2"
+                },
+                Property1 = "Property 1 Value"
+            };
+
+            //TestLayoutPresenterFactory.Create(model).Show();
+            var presenter = TestLayoutPresenterFactory.Create(model);
+            presenter.Show();
         }
     }
 }

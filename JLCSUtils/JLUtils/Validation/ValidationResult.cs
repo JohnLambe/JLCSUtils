@@ -111,7 +111,7 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// Return a <see cref="ValidationResult"/> as a summary of all 
+        /// Return a <see cref="ValidationResult"/> as a summary of all errors/warnings in a collection of <see cref="ValidationResult"/>.
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
@@ -173,7 +173,16 @@ namespace JohnLambe.Util.Validation
             return result.ToString();
         }
 
-        public virtual object NewValue { get; protected set; } //TODO: Not populated yet
+        public virtual object NewValue
+        {
+            get { return _newValue; }
+            set
+            {
+                _newValue = value;
+                Modified = true;
+            }
+        }
+        private object _newValue;
 
         public virtual bool Modified { get; protected set; } = false;  //TODO: Not populated yet
 

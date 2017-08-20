@@ -294,7 +294,7 @@ namespace JohnLambe.Util
         /// <param name="del">Delegate to be executed on each item in <paramref name="enumerable"/>.</param>
         /// <param name="separator">Separator added between non-null items.</param>
         /// <returns></returns>
-        public static string ConcatForEach<TItem, TReturn>(IEnumerable<TItem> enumerable, Func<TItem, TReturn> del, string separator = null)
+        public static string ConcatForEach<TItem, TReturn>(IEnumerable<TItem> enumerable, [NotNull] Func<TItem, TReturn> del, [Nullable] string separator = null)
         {
             StringBuilder sb = new StringBuilder();
             bool first = true;
@@ -1173,7 +1173,7 @@ namespace JohnLambe.Util
         /// <param name="length"></param>
         /// <returns></returns>
         [return: NotNull]
-        public static string Truncate([Nullable]string s, int length)
+        public static string Truncate([Nullable] this string s, int length)
         {
             if (s == null)
                 return "";

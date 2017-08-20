@@ -17,6 +17,7 @@ namespace JohnLambe.Util.Validation
         /// the <see cref="GetSupportedFeatures(ValidationContext)"/> value.
         /// </summary>
         private const string Key_SupportedFeatures = "SupportedFeatures";
+        private const string Key_State = "State";
 
         /// <summary>
         /// Gets a value indicating which features are supported by the system.
@@ -42,6 +43,26 @@ namespace JohnLambe.Util.Validation
         public static void SetSupportedFeatures(ValidationContext context, ValidationFeatures features)
         {
             context.ArgNotNull(nameof(context)).Items[Key_SupportedFeatures] = features;
+        }
+
+        public static ValidationState GetState(this ValidationContext context)
+        {
+            if (context == null)
+                return ValidationState.Default;
+            return (ValidationState)context.Items[Key_State];
+        }
+
+        /// <summary>
+        /// Set the validation state.
+        /// <seealso cref="GetSupportedFeatures(ValidationContext)"/>
+        /// </summary>
+        /// <param name="context">The validation context. Must not be null.</param>
+        /// <param name="state"></param>
+        //| This is not an extension method, since most consumers of ValidationContext should not use it.
+        //| It is set by the framework (and potentially by third party extensions of this framework, which is why it is public) only.
+        public static void SetState(ValidationContext context, ValidationState state)
+        {
+            context.ArgNotNull(nameof(context)).Items[Key_State] = state;
         }
 
         /// <summary>
@@ -79,6 +100,17 @@ namespace JohnLambe.Util.Validation
         /// <seealso cref="ValidationContextExtension.NoObject"/>
         /// </summary>
         ValidateWithoutObject
+    }
+
+    [Flags]
+    public enum ValidationState
+    {
+        Default = 0,
+        /// <summary>
+        /// Validation is being done immediately after a user has entered or modified the data.
+        /// Some validation rules may be applied only at the time on entering the information: e.g. a date may be required to be in the future at the time it is entered.
+        /// </summary>
+        LiveInput = 1
     }
 
 }
