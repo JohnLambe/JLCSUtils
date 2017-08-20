@@ -13,7 +13,16 @@ namespace MvpFramework.WinForms.Controls
 {
     /// <summary>
     /// Control into which a nested View can be inserted.
+    /// <para>
+    /// Hierarchical MVP:
+    /// A layout view would have instances of this for each nested view.
+    /// When the presenter for each nested view are being created, its view is placed within this control.
+    /// </para>
     /// </summary>
+    /// <example>
+    /// See <see cref="MvpNestedAttribute"/>.
+    /// </example>
+    /// <seealso cref="MvpNestedAttribute"/>
     /// <seealso cref="INestedView"/>
     public class MvpNestedViewPlaceholder : Panel, INestedView, IControlBinder
     {

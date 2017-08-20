@@ -131,10 +131,41 @@ namespace JohnLambe.Util.Validation
         public virtual int MaximumLength { get; set; } = -1;
 
         /// <summary>
+        /// When setting, this sets <see cref="MinimumLength"/> and <see cref="MaximumLength"/> to the same value.
+        /// When getting, this returns the value of those if they are the same, otherwise it throws <see cref="InvalidOperationException"/>.
+        /// <para>In attributes, don't set this if also setting <see cref="MinimumLength"/> or <see cref="MaximumLength"/>.</para>
+        /// </summary>
+        /// <exception cref="InvalidOperationException"/>
+        public virtual int FixedLength
+        {
+            get
+            {
+                if (MinimumLength == MaximumLength)
+                    return MinimumLength;
+                else
+                    throw new InvalidOperationException("String length if not fixed");
+            }
+            set
+            {
+                MinimumLength = value;
+                MaximumLength = value;
+            }
+        }
+
+        /// <summary>
         /// Iff true, when the value is longer than <see cref="MaximumLength"/>, it is silently truncated to it.
         /// Otherwise, a validation error is given and the value is unchanged.
         /// </summary>
         public virtual bool Truncate { get; set; } = false;
+
+        /// <summary>
+        /// If not <see cref="PaddingType.None"/>, the string is padded if it is less than the <see cref="MinimumLength"/>.
+        /// </summary>
+        public virtual PaddingType Padding { get; set; } = PaddingType.None;
+        /// <summary>
+        /// The character to use for padding if enabled by <see cref="Padding"/>.
+        /// </summary>
+        public virtual char PaddingCharacter { get; set; }
 
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
@@ -164,9 +195,28 @@ namespace JohnLambe.Util.Validation
                             break;
                     }
 
-                    // Next, truncate (more efficient to do it earlier, and some operations (e.g. validating length) cannot be done before it):
-                    if (Truncate && MaximumLength >= 0)
+                    // Next, truncate (more efficient to truncate early) or pad (some operations (e.g. validating length) cannot be done before these):
+                    if (stringValue.Length < MinimumLength)
+                    {
+                        switch (Padding)
+                        {
+                            case PaddingType.Leading:
+                                stringValue.PadLeft(MinimumLength, PaddingCharacter);
+                                break;
+                            case PaddingType.Trailing:
+                                stringValue.PadRight(MinimumLength, PaddingCharacter);
+                                break;
+                            case PaddingType.None:
+                                break;
+                            default:
+                                Diagnostics.UnhandledEnum(Padding);
+                                break;
+                        }
+                    }
+                    else if (Truncate && MaximumLength >= 0)
+                    {
                         stringValue = stringValue.Truncate(MaximumLength);
+                    }
 
                     if (Capitalisation != LetterCapitalizationOption.MixedCase && Capitalisation != LetterCapitalizationOption.Unspecified)
                     {
@@ -195,6 +245,14 @@ namespace JohnLambe.Util.Validation
                 value = stringValue;
             }
         }
+    }
+
+
+    public enum PaddingType
+    {
+        None = 0,
+        Leading = 1,
+        Trailing = 2
     }
 
 

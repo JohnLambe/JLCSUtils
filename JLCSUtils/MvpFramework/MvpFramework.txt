@@ -75,6 +75,10 @@ TODO:
 	Integration with expression evaluator, allowing expressions for 'ModelProperty' values.
 		Evaluator interface takes a string expression and a map of named items that can be referenced in an expression.
 		Implementation to wrap Razor for use as an expression evaluator.
+	Validation attributes:
+		Configure controls based on attributes (e.g. maximum length, allowed characters).
+		Help generated from validation attributes.
+	Error dialog: Show user error message, with control/button to expand to show technical details (underlying error message, inner exception, stack trace; with configuration setting for what is shown - some consumers might want to hide details for security reasons).
 
 
 Possible additions:

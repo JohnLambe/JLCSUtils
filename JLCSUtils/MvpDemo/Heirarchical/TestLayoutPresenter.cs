@@ -37,11 +37,10 @@ namespace MvpDemo.Heirarchical
 
         protected readonly IUiController UiController;
 
-        public IEditContactPresenter Contact
-        {
-            get;
-            protected set;
-        }
+        /// <summary>
+        /// Nested presenter.
+        /// </summary>
+        public IEditContactPresenter Contact { get; protected set; }
     }
 
 }
