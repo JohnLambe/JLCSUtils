@@ -167,6 +167,20 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual char PaddingCharacter { get; set; }
 
+        /// <summary>
+        /// True if the string may have multiple lines of text.
+        /// </summary>
+        public virtual NullableBool MultiLine { get; set; }
+
+        //TODO: Conversion between null and "":
+        // NullToBlank
+        // BlankToNull
+
+        /// <summary>
+        /// If not null, line separators in value are changed to this.
+        /// </summary>
+        public virtual string LineSeparator { get; set; }
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
@@ -224,17 +238,20 @@ namespace JohnLambe.Util.Validation
                         //                    if (newValue != stringValue)         // only if the value is changed
                         //                        value = newValue;                // update it (so that the type is preserved if the capitalisation doesn't change)
                     }
+
+                    if (LineSeparator != null)
+                        stringValue = stringValue.ReplaceLineSeparator(LineSeparator);
                 }
 
                 if (AllowedCharactersString != null)
                 {
                     if (!StrUtil.ContainsOnlyCharacters(stringValue.ToString(), AllowedCharactersSet))
-                        results.Add(ErrorMessage ?? "Contains an invalid character");
+                        results.Add(ErrorMessage ?? "Contains an invalid character: Only the following characters are allowed: " + AllowedCharactersString);
                 }
                 if (DisallowedCharactersString != null)
                 {
                     if (StrUtil.ContainsAnyCharacters(stringValue.ToString(), DisallowedCharactersSet))
-                        results.Add(ErrorMessage ?? "Contains an invalid character");
+                        results.Add(ErrorMessage ?? "Contains an invalid character: The following characters are invalid: " + DisallowedCharactersString);
                 }
 
                 if (stringValue.ToString().Length < MinimumLength)
@@ -242,7 +259,8 @@ namespace JohnLambe.Util.Validation
                 if (MaximumLength >= 0 && stringValue.ToString().Length > MaximumLength)
                     results.Add(ErrorMessage ?? "Too long");
 
-                value = stringValue;
+                if (!value.Equals(stringValue))         // only if the value is changed
+                    value = stringValue;                // update it (so that the type is preserved if the value doesn't have to change)
             }
         }
     }

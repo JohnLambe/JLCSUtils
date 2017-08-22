@@ -31,7 +31,7 @@ namespace MvpFramework.WinForms.Controls
         {
             var generator = CreateGenerator();
 
-            generator.Target = this;
+            generator.Target = generator.Target ?? this;   // default to this if not set in CreateGenerator()
             generator.Model = ModelBinder;
             generator.ModelProperty = this.ModelProperty;
 

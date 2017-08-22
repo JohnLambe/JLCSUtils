@@ -1364,5 +1364,34 @@ namespace JohnLambe.Util
 
         #endregion
 
+        #region Line Separator
+
+        /// <summary>
+        /// Replace all line separators (CR, LF or CRLF) in the string with the given one.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="newLineSeparator"></param>
+        /// <returns></returns>
+        public static string ReplaceLineSeparator(this string s, string newLineSeparator)
+        {
+            return s
+                .Replace(CRLF, newLineSeparator)   // this must be done first (otherwise it would become two line separators)
+                .Replace("\r", newLineSeparator)
+                .Replace("\n", newLineSeparator);
+        }
+
+        /// <summary>
+        /// Split a string into an of the lines of text in the string (recognising CR, LF and CRLF as line separators).
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string[] SplitLines(this string s)
+        {
+            return s.Replace(CRLF,"\n").Split(new char[] { '\r', '\n' });
+        }
+
+        public const string CRLF = "\r\n";
+
+        #endregion
     }
 }
