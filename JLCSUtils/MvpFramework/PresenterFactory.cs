@@ -115,7 +115,7 @@ namespace MvpFramework
                     }
                     else
                     {
-                        object viewParent = null;
+                        INestedViewPlaceholder viewParent = null;
                         if (ContainingView != null)
                         {
                             view = GetNestedView(ContainingView, NestedViewId, out viewParent);
@@ -141,7 +141,8 @@ namespace MvpFramework
                             {
                                 if (view is INestableView)    // if it has the ability to have its parent assigned
                                 {
-                                    ((INestableView)view).ViewParent = viewParent;
+                                    viewParent.SetNestedView((INestableView)view);
+                                    //((INestableView)view).ViewParent = viewParent;
                                 }
                                 else   // Exception if viewParent != null && !(view is INestableView)
                                 {
@@ -233,7 +234,7 @@ namespace MvpFramework
         /// <param name="containingView"></param>
         /// <param name="nestedViewId"></param>
         /// <returns></returns>
-        protected virtual IView GetNestedView(IView containingView, string nestedViewId, out object viewParent)
+        protected virtual IView GetNestedView(IView containingView, string nestedViewId, out INestedViewPlaceholder viewParent)
         {
             if (containingView is IContainerView)
             {

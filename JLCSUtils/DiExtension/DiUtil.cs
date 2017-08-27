@@ -7,6 +7,7 @@ using JohnLambe.Util.Collections;
 using JohnLambe.Util.Types;
 using System.Reflection;
 using JohnLambe.Util.FilterDelegates;
+using System.Diagnostics;
 
 namespace DiExtension
 {
@@ -35,9 +36,11 @@ namespace DiExtension
         /// Returns values to use for supplying to each of a list of parameters, using DI, and optionally another list of values (<paramref name="contextArgs"/>).
         /// (The latter can be used for injecting some parameters based on the context).
         /// </summary>
-        /// <param name="diResolver"></param>
+        /// <param name="diResolver">DI container to resolve some parameters for injection.</param>
         /// <param name="parameters">The parameters to be populated.</param>
-        /// <param name="contextArgs">Optional list of arguments to be populated for the first parameters indicated for it. (See <paramref name="selector"/>).</param>
+        /// <param name="contextArgs">Optional list of arguments to be populated for the first parameters indicated for it. (See <paramref name="selector"/>).
+        /// null is treated the same as an empty array.
+        /// </param>
         /// <param name="selector">Delegate to choose between populating each parameter from DI (if it returns false) or <paramref name="contextArgs"/> (if it returns true).
         /// When using <paramref name="contextArgs"/>, the next unused item is taken from this (parameters are populated in ascending order of their index).
         /// If it returns null, the next unused parameter from <paramref name="contextArgs"/> is used if there are any remaining, otherwise DI is used.
@@ -48,12 +51,16 @@ namespace DiExtension
         /// An array the same length as <paramref name="parameters"/>, with the requested range of values populated.
         /// Elements outside the requested range (<paramref name="startIndex"/> to <paramref name="endIndex"/>) are null.
         /// </returns>
-        public static object[] PopulateArgs(this IDiResolver diResolver, ParameterInfo[] parameters, object[] contextArgs = null, SourceSelectorDelegate selector = null, int startIndex = 0, int endIndex = -1)
+        public static object[] PopulateArgs(this IDiResolver diResolver,
+            [NotNull] ParameterInfo[] parameters, [Nullable] object[] contextArgs = null, [Nullable] SourceSelectorDelegate selector = null,
+            int startIndex = 0, int endIndex = -1)
         {
             if (contextArgs == null)
                 contextArgs = EmptyCollection<object>.EmptyArray;
 
             object[] args = new object[parameters.Count()];       // populated arguments (to be returned)
+
+            SourceSelectionDetails s = new SourceSelectionDetails();
 
             int parameterIndex = 0;                               // index of the parameter
             int contextArgsIndex = 0;                             // index of next unused element in contextArgs
@@ -61,24 +68,53 @@ namespace DiExtension
             {
                 if (parameterIndex >= startIndex && (parameterIndex <= endIndex || endIndex == -1))
                 {
-                    bool? contextParam = null;                             // true iff the current parameter is to be populated from the context arguments
-                    if (selector != null)
-                        contextParam = selector.Invoke(parameter);
-                    if (contextParam == null)
-                        contextParam = contextArgsIndex < contextArgs.Length;  // not specified as a context parameter, and all context parameters have been used
+                    bool useDefault = false;  // true if the parameters default value is to be used
 
-                    if (contextParam.Value)
+                    s.Clear();
+                    if (selector != null)
+                        selector.Invoke(s, parameter);
+                    else
+                        s.Required = !parameter.HasDefaultValue;
+                    if (s.FromParams == null)
+                        s.FromParams = contextArgsIndex < contextArgs.Length;  // not specified as a context parameter, and all context parameters have been used
+
+                    if (s.FromParams.Value)
                     {   // Context parameter:
                         if (contextArgsIndex >= contextArgs.Length)
-                            throw new InjectionFailedException("Too many parameters for injection from context", null, parameter.Name, null);
-                        args[parameterIndex] = contextArgs[contextArgsIndex];
-                        contextArgsIndex++;   // next parameter
+                        {
+                            if (s.Required)
+                                throw new InjectionFailedException("Too many parameters for injection from context parameters", null, parameter.Name, null);
+                            else
+                                useDefault = true;
+                        }
+                        else
+                        {
+                            args[parameterIndex] = contextArgs[contextArgsIndex];
+                            contextArgsIndex++;   // next parameter
+                        }
                     }
                     else
                     {   // other parameters are injected from the DI container
-                        args[parameterIndex] = diResolver.GetInstanceFor<object>(parameter);
-                        //TODO: trap exception and throw more specific one
+                        try
+                        {
+                            args[parameterIndex] = diResolver.GetInstanceFor<object>(parameter);
+                        }
+                        catch(DependencyInjectionException ex)
+                        {
+                            if (s.Required)
+                            {
+                                //TODO: trap exception and throw more specific one
+                                throw;
+                            }
+                            else
+                            {
+                                useDefault = true;
+                            }
+                        }
                     }
+
+                    if (useDefault)
+                        args[parameterIndex] = parameter.DefaultValue;
                 }
                 parameterIndex++;
             }
@@ -86,19 +122,55 @@ namespace DiExtension
             return args;
         }
 
-        public delegate bool? SourceSelectorDelegate(ParameterInfo parameter);
+        /// <summary>
+        /// Delegate to provide information on how a parameter should be injected.
+        /// </summary>
+        /// <param name="s">
+        /// The delegate populates this with the result.
+        /// On entry, this is passed in its initial state (as after a call to <see cref="SourceSelectionDetails.Clear"/>).
+        /// </param>
+        /// <param name="parameter"></param>
+        //| `s` is passed this way rather than returned, for efficiency reasons.
+        public delegate void SourceSelectorDelegate([NotNull] SourceSelectionDetails s, [NotNull] ParameterInfo parameter);
+
+        /// <summary>
+        /// Details of how an item is to be injected.
+        /// Parameter to <see cref="SourceSelectorDelegate"/>.
+        /// </summary>
+        public sealed class SourceSelectionDetails
+        {
+            public SourceSelectionDetails()
+            {
+                Clear();
+            }
+
+            /// <summary>
+            /// Reset all properties to their initial values.
+            /// </summary>
+            public void Clear()
+            {
+                FromParams = null;
+                Required = true;
+            }
+
+            /// <summary>
+            /// true iff the current parameter is to be populated from the context arguments.
+            /// </summary>
+            public bool? FromParams { get; set; }
+            public bool Required { get; set; }
+        }
 
         public static SourceSelectorDelegate AttributeSourceSelector =
-            parameter =>
+            (s,parameter) =>
             {
-                bool? fromContextParam = null;
+                Debug.Assert(s.FromParams == null);
                 var attribute = parameter.GetCustomAttribute<InjectAttribute>();
                 if (attribute != null)
                 {
-                    fromContextParam = !attribute.Enabled;    // attributed as a context parameter
+                    s.FromParams = !attribute.Enabled;    // attributed as a context parameter
+                    s.Required = attribute.Required;
                 }
-                // still null if there was no InjectAttribute.
-                return fromContextParam;
+                // s.FromParams is still null if there was no InjectAttribute.
             };
 
         /// <summary>
@@ -106,7 +178,8 @@ namespace DiExtension
         /// </summary>
         /// <param name="diContext"></param>
         /// <param name="source">The object whose properties to register.</param>
-        public static void RegisterProperties([NotNull]this IDiInstanceRegistrar diContext, object source, FilterDelegate<PropertyInfo> propertyFilter = null)
+        public static void RegisterProperties([NotNull] this IDiInstanceRegistrar diContext, [Nullable] object source,
+            [Nullable] FilterDelegate<PropertyInfo> propertyFilter = null)
         {
             if (source != null)
             {
@@ -124,14 +197,15 @@ namespace DiExtension
         /// <summary>
         /// Registers the values of properties of a given object, including nested properties.
         /// </summary>
-        /// <param name="diContext"></param>
-        /// <param name="source">The object whose properties to register.</param>
+        /// <param name="diContext">The context to register with.</param>
+        /// <param name="source">The object whose properties are to be to registered.</param>
         /// <param name="propertyFilter">Called on all properties. Returns true for the properties to be registered.</param>
         /// <param name="recurseFilter">Called on all properties. Returns true on those to be scanned for nested properties.</param>
         /// <param name="levels">Number of levels to recurse. 0 for top level only (no recursion).</param>
-        public static void RegisterPropertiesNested([NotNull]this IDiInstanceRegistrar diContext, object source, 
-            FilterDelegate<PropertyInfo> propertyFilter = null,
-            FilterDelegate<PropertyInfo> recurseFilter = null,
+        public static void RegisterPropertiesNested([NotNull]this IDiInstanceRegistrar diContext,
+            [Nullable] object source,
+            [Nullable] FilterDelegate<PropertyInfo> propertyFilter = null,
+            [Nullable] FilterDelegate<PropertyInfo> recurseFilter = null,
             int levels = 1)
         {
             if (source != null)
@@ -153,7 +227,18 @@ namespace DiExtension
             }
         }
 
-        public static void RegisterPropertiesNamed([NotNull]this IDiExtInstanceRegistrar diContext, object source, string namePrefix = null, FilterDelegate<PropertyInfo> propertyFilter = null)
+        /// <summary>
+        /// Registers the values of properties of a given object,
+        /// with names derived from the property names.
+        /// </summary>
+        /// <param name="diContext">The context to register with.</param>
+        /// <param name="source">The object whose properties are to be to registered.</param>
+        /// <param name="namePrefix"></param>
+        /// <param name="propertyFilter">Called on all properties. Returns true for the properties to be registered.</param>
+        public static void RegisterPropertiesNamed([NotNull]this IDiExtInstanceRegistrar diContext,
+            [Nullable] object source,
+            [Nullable] string namePrefix = null,
+            [Nullable] FilterDelegate<PropertyInfo> propertyFilter = null)
         {
             if (source != null)
             {

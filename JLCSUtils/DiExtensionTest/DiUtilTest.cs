@@ -70,6 +70,25 @@ namespace Test.DiExtensionTest
             return x + parameter2;
         }
 
+
+        [TestMethod]
+        public void CallMethod_UseDefaultValue()
+        {
+            // Arrange:
+            context.RegisterInstance("Parameter2", "<b>");
+
+            // Act:
+            var result = DiUtil.CallMethod<string>(context, GetType().GetMethod(nameof(TestMethod2)), this);
+
+            // Assert:
+            Assert.AreEqual("1000<b>", result);
+        }
+
+        public virtual string TestMethod2([Inject("A", Required = false)] int x = 1000, [InjectByName] string parameter2 = "defaultString")
+        {
+            return x + parameter2;
+        }
+
         protected SiExtendedDiContext context = new SiExtendedDiContext();
     }
 }

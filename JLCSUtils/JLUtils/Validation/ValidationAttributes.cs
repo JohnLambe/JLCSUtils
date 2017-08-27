@@ -268,8 +268,11 @@ namespace JohnLambe.Util.Validation
 
     public enum PaddingType
     {
+        /// <summary> No padding. </summary>
         None = 0,
+        /// <summary> Padding at the start of the value. </summary>
         Leading = 1,
+        /// <summary> Padding at the end of the value. </summary>
         Trailing = 2
     }
 
@@ -309,7 +312,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <returns></returns>
         /// <seealso cref="IsInternational"/>
-        public bool? GetIsInternational() =>  _isInternational;
+        public virtual bool? GetIsInternational() =>  _isInternational;
 
         // Testing for national format, or converting between national, international and local, or validating the national or local part,
         // would require information about the local network.

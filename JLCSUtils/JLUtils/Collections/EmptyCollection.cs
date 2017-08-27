@@ -30,7 +30,7 @@ namespace JohnLambe.Util.Collections
 
         public T this[int index]
         {
-            get { throw new IndexOutOfRangeException(); }
+            get { throw new IndexOutOfRangeException(); }    // it's always out of range since the collection is empty
         }
 
         /// <summary>

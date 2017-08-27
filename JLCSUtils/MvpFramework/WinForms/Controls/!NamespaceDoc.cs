@@ -1,7 +1,7 @@
 ﻿namespace MvpFramework.WinForms.Controls
 {
     /// <summary>
-    /// WinForms controls for use with the MVP framework
+    /// WinForms controls for use with the MVP framework <br/>
     /// - Controls related to MVP binding or that bind themselves.
     /// </summary>
     static class NamespaceDoc

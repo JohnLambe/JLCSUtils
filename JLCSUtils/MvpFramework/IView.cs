@@ -50,6 +50,15 @@ namespace MvpFramework
         string ViewId { get; }
     }
 
+    public interface INestedViewPlaceholder : INestedView
+    {
+        /// <summary>
+        /// Set the nested view to be contained in this control.
+        /// </summary>
+        /// <param name="nestedView">The nested view.</param>
+        void SetNestedView(INestableView nestedView);
+    }
+
     /// <summary>
     /// View which can be embedded in another View.
     /// </summary>
@@ -71,6 +80,6 @@ namespace MvpFramework
     /// </summary>
     public interface IContainerView : IView
     {
-        IView GetNestedView(string nestedViewId, out object viewParent);
+        IView GetNestedView(string nestedViewId, out INestedViewPlaceholder viewParent);
     }
 }

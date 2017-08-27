@@ -48,6 +48,8 @@ namespace MvpFramework.Dialog
 
         MessageDialogInterceptFlags InterceptFlags { get; }
 
+        //TODO: Type InputType { get; set; }   // Type to be input in the dialog
+
         event MessageDialogRespondedDelegate Responded;
 
         void FireResponded(object messageDialogResult);

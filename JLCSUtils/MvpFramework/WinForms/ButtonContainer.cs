@@ -550,6 +550,26 @@ namespace MvpFramework.WinForms
 
         #endregion
 
+        public virtual void SetupLinkedControl()
+        {
+            AssociatedControl.KeyPress += AssociatedControl_KeyPress;
+        }
+
+        protected virtual void AssociatedControl_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r')
+                InvokeDefault();
+            //TODO: Process other keys
+        }
+
+        /// <summary>
+        /// Invoke the default action.
+        /// </summary>
+        public virtual void InvokeDefault()
+        {
+            Buttons?.Default?.Invoke();
+        }
+
         /// <summary>
         /// The collection of buttons.
         /// </summary>

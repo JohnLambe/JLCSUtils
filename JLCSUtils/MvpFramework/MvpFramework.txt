@@ -57,6 +57,7 @@ TODO:
 		Utility to output a report of all handler IDs supported by each presenter, and referenced by each view.
 		Throw exception when a presenter handler cannot be bound.
 		Throw exception when a view control references a property that cannot be bound.
+		Check for duplicate Nested View IDs?
 	// Role-based presenter interfaces: For consumer of presenter, and View ??  View shouldn't reference presenter. Should provide events instead.
 	Resolving PresenterForActionAttribute for derived types of specified types.
 	Remove requirement to have interfaces for registration:
@@ -79,6 +80,9 @@ TODO:
 		Configure controls based on attributes (e.g. maximum length, allowed characters).
 		Help generated from validation attributes.
 	Error dialog: Show user error message, with control/button to expand to show technical details (underlying error message, inner exception, stack trace; with configuration setting for what is shown - some consumers might want to hide details for security reasons).
+	Grid for linking with ButtonContainer:
+		Double-click on calls InvokeDefault().
+		Enable/Disable controls based on whether there is a selected record.
 
 
 Possible additions:

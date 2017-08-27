@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ConfigInject\Providers\CompositeProviderTest.cs" />
     <Compile Include="DiUtilTest.cs" />
+    <Compile Include="DiUtil_PopulateArgsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest2.cs" />
   </ItemGroup>

@@ -12,6 +12,7 @@ using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Validation;
+using System.Diagnostics;
 
 namespace MvpFramework
 {
@@ -657,17 +658,17 @@ namespace MvpFramework
         ///   and null if there is neither.
         /// </summary>
         public static DiUtil.SourceSelectorDelegate AttributeSourceSelector { get; } =
-            parameter =>
+            (s,parameter) =>
             {
-                bool? fromCreateParam = null;
+                Debug.Assert(s.FromParams == null);
                 var attribute = parameter.GetCustomAttribute<InjectAttribute>();
                 if (attribute != null && attribute.Enabled)      // not null or disabled
                 {
-                    fromCreateParam = attribute is MvpParamAttribute;    // attributed as a 'Create' parameter
-                                                                            // will be false if there was an InjectAttribute but not MvpInjectAttribute. 
+                    s.FromParams = attribute is MvpParamAttribute;       // attributed as a 'Create' parameter
+                                                                         // will be false if there was an InjectAttribute but not MvpInjectAttribute.
+                    s.Required = attribute.Required;
                 }
-                // still null if there was no InjectAttribute.
-                return fromCreateParam;
+                // s.FromParams is still null if there was no InjectAttribute.
             };
 
         /*

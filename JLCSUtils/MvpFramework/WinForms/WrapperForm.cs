@@ -123,6 +123,17 @@ namespace MvpFramework.WinForms
             Visible = Child.Visible;
         }
 
+        /*
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            if(Child is IView)
+            {
+                ((IView)Child).
+            }
+        }
+        */
+
         protected Control Child { get; private set; }
     }
 }

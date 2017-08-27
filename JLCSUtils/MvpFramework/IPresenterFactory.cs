@@ -106,6 +106,7 @@ namespace MvpFramework
     /// For Presenter Factories nested in another Presenter with a corresponding nested view (nested in the outer Presenter's view).
     /// This interface allows providing the nested view to the presenter being creating the nested Presenter.
     /// </summary>
+    /// <seealso cref="MvpNestedAttribute"/>
     public interface INestedPresenterFactory
     {
         /// <summary>

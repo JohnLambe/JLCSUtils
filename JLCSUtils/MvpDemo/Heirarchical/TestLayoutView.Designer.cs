@@ -57,7 +57,7 @@
             this.mvpNestedViewPlaceholder2.Name = "mvpNestedViewPlaceholder2";
             this.mvpNestedViewPlaceholder2.Size = new System.Drawing.Size(119, 78);
             this.mvpNestedViewPlaceholder2.TabIndex = 1;
-            this.mvpNestedViewPlaceholder2.ViewId = "";
+            this.mvpNestedViewPlaceholder2.ViewId = "OtherView";
             // 
             // label1
             // 

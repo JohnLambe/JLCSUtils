@@ -10,6 +10,8 @@ using JohnLambe.Util.Reflection;
 using MvpFramework.WinForms.Binding;
 using JohnLambe.Util;
 using System.ComponentModel;
+using System.Reflection;
+using System.IO;
 
 namespace MvpFramework.WinForms
 {
@@ -99,29 +101,30 @@ namespace MvpFramework.WinForms
         /// <summary>
         /// Find a nested view or a parent control to receive a nessted view, within this View.
         /// </summary>
-        /// <param name="nestedViewId"></param>
-        /// <param name="viewParent"></param>
-        /// <returns></returns>
+        /// <param name="nestedViewId">ID of the view to locate.</param>
+        /// <param name="viewParent">The control into which the specifed view should be placed, or null (if not found).</param>
+        /// <returns>The nested (embedded) view, or null (if not found or not an embedded view).</returns>
         /// <seealso cref="INestedView"/>
-        public virtual IView GetNestedView(string nestedViewId, out object viewParent)
+        /// <exception cref="AmbiguousMatchException">If there is more than one view/placeholder with the given ID.</exception> //TODO: Exception type
+        public virtual IView GetNestedView(string nestedViewId, out INestedViewPlaceholder viewParent)
         {
-            foreach(var control in Controls)
-            {
-                if(control is INestedView)
+            var control = Controls.OfType<INestedView>().FirstOrDefault(x => x.ViewId == nestedViewId);
+            if(control != null)
+            { 
+                if (control is IEmbeddedView)
                 {
-                    if(((INestedView)control).ViewId == nestedViewId)
-                    {
-                        if (control is IEmbeddedView)
-                        {
-                            viewParent = null;
-                            return (IView)control;
-                        }
-                        else
-                        {
-                            viewParent = control;
-                            return null;
-                        }
-                    }
+                    viewParent = null;
+                    return (IView)control;
+                }
+                else if (control is INestedViewPlaceholder)
+                {
+                    viewParent = control as INestedViewPlaceholder;
+                    return null;
+                }
+                else
+                {
+                    // anything else implementing INestedView but not one of the above cannot be used in this context.
+                    throw new MvpResolutionException("Nested view type not supported");  //TODO Define more specific exception
                 }
             }
 
@@ -129,6 +132,45 @@ namespace MvpFramework.WinForms
             viewParent = null;
             return null;
         }
+
+
+        #region ParentForm
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public virtual void OnShown(EventArgs e)
+        {
+            Shown?.Invoke(this,e);
+        }
+
+        private void ParentForm_Shown(object sender, EventArgs e)
+        {
+            OnShown(e);
+        }
+
+        //
+        // Summary:
+        //     Occurs whenever the form is first displayed.
+        //[SRCategoryAttribute("CatBehavior")]
+        //[IODescriptionAttribute("FormOnShownDescr")]
+        public event EventHandler Shown;
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        protected override void OnParentChanged(EventArgs e)
+        {
+            if(_shownEventForm != null)
+            {
+                _shownEventForm.Shown -= ParentForm_Shown;
+                _shownEventForm = null;
+            }
+            if (ParentForm != null)
+            {
+                _shownEventForm = ParentForm;
+                _shownEventForm.Shown += ParentForm_Shown;
+            }
+        }
+        private Form _shownEventForm;
+
+        #endregion
 
     }
 
