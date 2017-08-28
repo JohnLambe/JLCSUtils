@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Practices.Unity;
 
 using DiExtension.AutoFactory;
-using DiExtension.AutoFactory.Unity;
+//using DiExtension.AutoFactory.Unity;
 
 namespace JohnLambe.Tests.JLUtilsTest.AutoFactory
 {

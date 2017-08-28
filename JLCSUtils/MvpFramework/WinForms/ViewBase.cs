@@ -108,23 +108,40 @@ namespace MvpFramework.WinForms
         /// <exception cref="AmbiguousMatchException">If there is more than one view/placeholder with the given ID.</exception> //TODO: Exception type
         public virtual IView GetNestedView(string nestedViewId, out INestedViewPlaceholder viewParent)
         {
-            var control = Controls.OfType<INestedView>().FirstOrDefault(x => x.ViewId == nestedViewId);
-            if(control != null)
-            { 
-                if (control is IEmbeddedView)
+            return GetNestedView(this, nestedViewId, out viewParent);
+        }
+
+        protected virtual IView GetNestedView(Control rootControl, string nestedViewId, out INestedViewPlaceholder viewParent)
+        {
+            foreach (var control in rootControl.Controls)
+            {
+                if (control is INestedView)
                 {
-                    viewParent = null;
-                    return (IView)control;
+                    if (nestedViewId.Equals(((INestedView)control).ViewId))
+                    {
+                        if (control is IEmbeddedView)
+                        {
+                            viewParent = null;
+                            return (IView)control;
+                        }
+                        else if (control is INestedViewPlaceholder)
+                        {
+                            viewParent = control as INestedViewPlaceholder;
+                            return null;
+                        }
+                        else
+                        {
+                            // anything else implementing INestedView but not one of the above cannot be used in this context.
+                            throw new MvpResolutionException("Nested view type not supported");  //TODO Define more specific exception
+                        }
+                    }
+                    // (if it doesn't match,) we don't search within INestedView
                 }
-                else if (control is INestedViewPlaceholder)
-                {
-                    viewParent = control as INestedViewPlaceholder;
-                    return null;
-                }
-                else
-                {
-                    // anything else implementing INestedView but not one of the above cannot be used in this context.
-                    throw new MvpResolutionException("Nested view type not supported");  //TODO Define more specific exception
+                else if (!(control is IControlBinder) && ((Control)control).HasChildren)   // don't search within IControlBinder
+                {   
+                    var result = GetNestedView(nestedViewId, out viewParent);   // recurse
+                    if (result != null || viewParent != null)                   // if found
+                        return result;
                 }
             }
 

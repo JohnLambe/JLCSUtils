@@ -11,6 +11,7 @@ using DiExtension.ConfigInject.Providers;
 
 namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection.ConfigInject
 {
+    /*
     [TestClass]
     public class ConfigInjectTest
     {
@@ -74,4 +75,5 @@ namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection.ConfigInject
 
         protected ExtendedDiContext Container = new ExtendedDiContext(new Microsoft.Practices.Unity.UnityContainer());
     }
+    */
 }

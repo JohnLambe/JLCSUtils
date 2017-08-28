@@ -80,6 +80,22 @@ namespace MvpFramework
     /// </summary>
     public interface IContainerView : IView
     {
+        /// <summary>
+        /// Find a nested view in this one.
+        /// <para>
+        /// If this view is an <see cref="IEmbeddedView"/>, it is returned.
+        /// </para>
+        /// <para>
+        /// If this view contains a placeholder (<see cref="INestedViewPlaceholder"/>) for this view, null is returned,
+        /// and <paramref name="viewParent"/> is the control into which the view should be placed.
+        /// </para>
+        /// <para>
+        /// If no nested view with the given ID is defined, both the return value and <paramref name="viewParent"/> are null.
+        /// </para>
+        /// </summary>
+        /// <param name="nestedViewId">The ID of the view to locate within this one.</param>
+        /// <param name="viewParent">The control which contains or can contain the specified view.</param>
+        /// <returns>The requested view.</returns>
         IView GetNestedView(string nestedViewId, out INestedViewPlaceholder viewParent);
     }
 }

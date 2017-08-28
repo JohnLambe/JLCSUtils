@@ -8,7 +8,7 @@ using DiExtension.ConfigInject;
 using DiExtension.ConfigInject.Providers;
 using System.Reflection;
 
-using Microsoft.Practices.Unity;
+//using Microsoft.Practices.Unity;
 using JohnLambe.Util.FilterDelegates;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.TypeConversion;

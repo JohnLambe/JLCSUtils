@@ -8,7 +8,7 @@ using DiExtension.AutoFactory;
 
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Text;
-using DiExtension.Unity;
+//using DiExtension.Unity;
 
 using SimpleInjector;
 using System.Diagnostics;

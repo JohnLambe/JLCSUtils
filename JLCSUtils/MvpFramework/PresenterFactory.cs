@@ -229,10 +229,11 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// 
+        /// <inheritdoc cref="IContainerView.GetNestedView(string, out INestedViewPlaceholder)"/>
         /// </summary>
-        /// <param name="containingView"></param>
-        /// <param name="nestedViewId"></param>
+        /// <param name="containingView">The view in which to find the nested view.</param>
+        /// <param name="nestedViewId">The ID of the nested view to find.</param>
+        /// <param name="viewParent"></param>
         /// <returns></returns>
         protected virtual IView GetNestedView(IView containingView, string nestedViewId, out INestedViewPlaceholder viewParent)
         {
