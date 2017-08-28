@@ -139,7 +139,7 @@ namespace MvpFramework.WinForms
                 }
                 else if (!(control is IControlBinder) && ((Control)control).HasChildren)   // don't search within IControlBinder
                 {   
-                    var result = GetNestedView(nestedViewId, out viewParent);   // recurse
+                    var result = GetNestedView((Control)control, nestedViewId, out viewParent);   // recurse
                     if (result != null || viewParent != null)                   // if found
                         return result;
                 }
