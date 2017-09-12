@@ -39,7 +39,6 @@ namespace MvpFramework.WinForms.Controls
         {
             SetUpForm();
         }
-        private Control _oldParent;
 
         private void MvpButton_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -94,7 +93,7 @@ namespace MvpFramework.WinForms.Controls
         /// <summary>
         /// Keystroke to invoke the button.
         /// <para>
-        /// This is in additional to any WinForms accelerator character (indicated by an '&' in the caption),
+        /// This is in additional to any WinForms accelerator character (indicated by an '&amp;' in the caption),
         /// and is not limited to keystrokes using ALT.
         /// </para>
         /// </summary>

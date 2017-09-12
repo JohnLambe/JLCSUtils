@@ -73,7 +73,9 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             public virtual int Property1 { get; set; }
             private int PrivateProperty { get; }
 
+#pragma warning disable CS0169   // Suppress 'Field never used'.  This is read by reflection.
             private string PrivateField;
+#pragma warning restore CS0067
 
             protected DateTime HiddenField;
         }

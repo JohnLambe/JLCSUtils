@@ -70,6 +70,7 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Character that can be typed to choose this item while in the parent menu.
         /// </summary>
+        /// <seealso cref="MvpFramework.Binding.MvpDisplayAttributeBase.AcceleratorChar"/>
         public virtual char AcceleratorChar { get; set; }
 
         /// <summary>
@@ -80,7 +81,14 @@ namespace MvpFramework.Menu
         /// <summary>
         /// A key that can be pressed to invoke this item even when the menu is not open.
         /// </summary>
+        /// <seealso cref="MvpFramework.Binding.MvpUiAttributeBase.HotKey"/>
         public virtual KeyboardKey HotKey { get; set; }
+
+        /// <summary>
+        /// Keystroke to invoke this item while the UI representation of a menu or related item is focussed.
+        /// </summary>
+        /// <seealso cref="MvpFramework.Binding.MvpUiAttributeBase.ContextKey"/>
+        public virtual KeyboardKey ContextKey { get; set; }
 
         /// <summary>
         /// <see cref="MenuAttributeBase.ParentId"/>

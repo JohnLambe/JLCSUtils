@@ -98,6 +98,11 @@ namespace MvpFramework.Binding
         public virtual KeyboardKey HotKey { get; set; }
 
         /// <summary>
+        /// Keystroke to invoke this item while the UI representation of a menu or related item is focussed.
+        /// </summary>
+        public virtual KeyboardKey ContextKey { get; set; }
+
+        /// <summary>
         /// The icon to be displayed in the UI for this item.
         /// </summary>
         [IconId]

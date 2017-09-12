@@ -99,7 +99,7 @@ namespace DiExtension
                         {
                             args[parameterIndex] = diResolver.GetInstanceFor<object>(parameter);
                         }
-                        catch(DependencyInjectionException ex)
+                        catch(DependencyInjectionException /*ex*/)
                         {
                             if (s.Required)
                             {

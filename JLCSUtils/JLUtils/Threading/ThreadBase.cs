@@ -10,7 +10,7 @@ namespace JohnLambe.Util.Threading
     /// <summary>
     /// Base class for threads, which encapsulates the method which runs in the thread.
     /// </summary>
-    public class ThreadBase : NotifyOnDispose<ThreadBase>
+    public class ThreadBase : NotifyOnDispose //<ThreadBase>
     {
         protected enum ThreadControlState
         {

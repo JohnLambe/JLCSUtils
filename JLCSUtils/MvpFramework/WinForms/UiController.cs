@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace MvpFramework.WinForms
 {
     /// <summary>
-    /// Basic IUiController implementation for WinForms.
+    /// Basic <see cref="IUiController"/> implementation for WinForms.
     /// </summary>
     public class UiController : IUiController
     {
@@ -18,6 +18,7 @@ namespace MvpFramework.WinForms
             MessageDialogService = messageDialogService ?? new BasicMessageDialogService();
         }
 
+        /// <inheritdoc cref="IUiController.MainFormState" />
         public virtual MvpWindowState MainFormState
         {
             get
@@ -30,15 +31,16 @@ namespace MvpFramework.WinForms
             }
         }
 
+        /// <inheritdoc cref="IUiController.BringToFront" />
         public virtual bool BringToFront()
         {
             MainForm?.BringToFront();
             return true;
         }
 
+        /// <inheritdoc cref="IUiController.ShowMessage" />
         public virtual void ShowMessage(string message, string title = "")
         {
-//            MessageBox.Show(message, title);
             ShowMessage<object>(new MessageDialogModel<object>()
             {
                 Message = message,

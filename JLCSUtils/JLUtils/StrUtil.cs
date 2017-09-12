@@ -992,7 +992,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="s"></param>
         /// <param name="encloser"></param>
-        /// <returns>true iff this string starts with <paramref name="encloser"/>, not overlapping.</returns>
+        /// <returns>true iff this string starts and ends with <paramref name="encloser"/>, not overlapping.</returns>
         public static bool IsEnclosedIn(this string s, char encloser)
         {
             return IsEnclosedIn(s, encloser, encloser);

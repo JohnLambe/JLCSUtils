@@ -62,6 +62,7 @@
     <Compile Include="ConfigProvider\FileImageLoaderConfigProvider.cs" />
     <Compile Include="Encoding\EncodingExtension.cs" />
     <Compile Include="Exceptions\AssertionFailedException.cs" />
+    <Compile Include="Exceptions\ExceptionUtil.cs" />
     <Compile Include="Exceptions\IUserError.cs" />
     <Compile Include="Exceptions\UserErrorException.cs" />
     <Compile Include="FilterDelegates\NullableBooleanExpression.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Interfaces\CommonInterfaces.cs" />
     <Compile Include="Io\!NamespaceDoc.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
+    <Compile Include="Misc\ChangesStateAttribute.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />

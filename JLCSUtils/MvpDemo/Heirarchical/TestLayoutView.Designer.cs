@@ -32,6 +32,8 @@
             this.mvpNestedViewPlaceholder2 = new MvpFramework.WinForms.Controls.MvpNestedViewPlaceholder();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // mvpNestedViewPlaceholder1
@@ -41,9 +43,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mvpNestedViewPlaceholder1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.mvpNestedViewPlaceholder1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.mvpNestedViewPlaceholder1.Location = new System.Drawing.Point(14, 87);
+            this.mvpNestedViewPlaceholder1.Location = new System.Drawing.Point(12, 13);
             this.mvpNestedViewPlaceholder1.Name = "mvpNestedViewPlaceholder1";
-            this.mvpNestedViewPlaceholder1.Size = new System.Drawing.Size(504, 171);
+            this.mvpNestedViewPlaceholder1.Size = new System.Drawing.Size(486, 150);
             this.mvpNestedViewPlaceholder1.TabIndex = 0;
             this.mvpNestedViewPlaceholder1.ViewId = "Contact";
             // 
@@ -53,9 +55,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mvpNestedViewPlaceholder2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.mvpNestedViewPlaceholder2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.mvpNestedViewPlaceholder2.Location = new System.Drawing.Point(399, 3);
+            this.mvpNestedViewPlaceholder2.Location = new System.Drawing.Point(396, 3);
             this.mvpNestedViewPlaceholder2.Name = "mvpNestedViewPlaceholder2";
-            this.mvpNestedViewPlaceholder2.Size = new System.Drawing.Size(119, 78);
+            this.mvpNestedViewPlaceholder2.Size = new System.Drawing.Size(126, 78);
             this.mvpNestedViewPlaceholder2.TabIndex = 1;
             this.mvpNestedViewPlaceholder2.ViewId = "OtherView";
             // 
@@ -76,16 +78,29 @@
             this.textBox1.TabIndex = 2;
             this.textBox1.Tag = "[Property1]";
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.mvpNestedViewPlaceholder1);
+            this.panel1.Location = new System.Drawing.Point(3, 87);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(519, 184);
+            this.panel1.TabIndex = 4;
+            // 
             // TestLayoutView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.mvpNestedViewPlaceholder2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.mvpNestedViewPlaceholder2);
-            this.Controls.Add(this.mvpNestedViewPlaceholder1);
             this.Name = "TestLayoutView";
-            this.Size = new System.Drawing.Size(536, 271);
+            this.Size = new System.Drawing.Size(543, 271);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -97,5 +112,6 @@
         private MvpFramework.WinForms.Controls.MvpNestedViewPlaceholder mvpNestedViewPlaceholder2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Panel panel1;
     }
 }

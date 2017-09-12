@@ -132,7 +132,9 @@ namespace MvpFrameworkTest
     [View]
     public class Test1View : ITest1View
     {
+#pragma warning disable CS0067   // Suppress 'Event never used'
         public event ViewVisibilityChangedDelegate ViewVisibilityChanged;
+#pragma warning disable CS0067
 
         public void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {

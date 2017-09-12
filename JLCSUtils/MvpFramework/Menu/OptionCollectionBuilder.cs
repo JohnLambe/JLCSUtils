@@ -37,6 +37,7 @@ namespace MvpFramework.Menu
                             CaptionUtil.GetDisplayName(handlerInfo.Method, HandlerNamePrefix, HandlerNameSuffix),
                         //| Alternatively, we could use the ID.
                         HotKey = handlerInfo.Attribute.HotKey,
+                        ContextKey = handlerInfo.Attribute.ContextKey,
                         IconId = handlerInfo.Attribute.IconId,
                         IsDefault = handlerInfo.Attribute.IsDefault,
                         Order = handlerInfo.Attribute.Order,

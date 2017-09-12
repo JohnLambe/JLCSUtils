@@ -23,7 +23,9 @@ namespace MvpFramework
         /// <param name="param">The parameters to the IPresenterFactory.Create method.</param>
         /// <returns>The presenter to be used, or <code>default(TPresenter)</code> to cause it to be created in the normal way.</returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the presenter/view, and the presenter and view are not created.</exception>
-        TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, params object[] param)
+//        TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, params object[] param)
+//            where TPresenter : IPresenter;
+        TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, ResolverExtensionContext param)
             where TPresenter : IPresenter;
 
         /// <summary>
@@ -39,9 +41,6 @@ namespace MvpFramework
         /// </param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the presenter/view, and the presenter is not created.</exception>
-        [Obsolete]
-        ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, object[] param, ref TView view)
-            where TView : IView;
         ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, ResolverExtensionContext param, ref TView view)
             where TView : IView;
 
@@ -57,13 +56,9 @@ namespace MvpFramework
         /// <param name="view">The View of the new presenter (which will have already been given to the presenter).</param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the p</exception>
-        [Obsolete]
-        ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, object[] param, IView view)
-            where TPresenter : IPresenter;
         ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext param, IView view)
             where TPresenter : IPresenter;
 
-        //TODO: Change `param` to an object which contains this (to enable future extension).
     }
 
 
@@ -104,29 +99,21 @@ namespace MvpFramework
     /// </summary>
     public abstract class ResolverExtensionBase : IResolverExtension
     {
+        /*
         public TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, params object[] param)
             where TPresenter : IPresenter
         {
-            return default(TPresenter);
+            return BeforeCreatePresenter(presenterType, new ResolverExtensionContext(param));
         }
-
-        [Obsolete]  // replaced by other overload
-        public virtual ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, object[] param, ref TView view)
-            where TView : IView
+        */
+        public TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, ResolverExtensionContext param) where TPresenter : IPresenter
         {
-            return AfterCreateView(presenterType, new ResolverExtensionContext(param), ref view);
+            return default(TPresenter);
         }
 
         public virtual ResolverExtensionStatus AfterCreateView<TView>(Type presenterType, ResolverExtensionContext context, ref TView view) where TView : IView
         {
             return ResolverExtensionStatus.Default;
-        }
-
-        [Obsolete]  // replaced by other overload
-        public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, object[] param, IView view)
-            where TPresenter : IPresenter
-        {
-            return AfterCreatePresenter<TPresenter>(ref presenter, new ResolverExtensionContext(param), view);
         }
 
         public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext context, IView view) where TPresenter : IPresenter
@@ -144,8 +131,4 @@ namespace MvpFramework
     {
     }
 
-    [Obsolete("Use NullResolverExtension")]  // renamed
-    public sealed class NullUiManager : ResolverExtensionBase
-    {
-    }
 }

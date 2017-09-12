@@ -138,4 +138,5 @@ namespace JohnLambe.Util.Misc
         /// </summary>
         public bool ChangesState { get; set; }
     }
+
 }

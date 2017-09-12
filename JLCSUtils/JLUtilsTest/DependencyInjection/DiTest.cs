@@ -8,6 +8,7 @@ using System.Reflection;
 
 namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection
 {
+    /*
     [TestClass]
     public class DiTest
     {
@@ -45,4 +46,5 @@ namespace JohnLambe.Tests.JLUtilsTest.DependencyInjection
 
         protected ExtendedDiContext Container = new ExtendedDiContext(new Microsoft.Practices.Unity.UnityContainer());
     }
+    */
 }

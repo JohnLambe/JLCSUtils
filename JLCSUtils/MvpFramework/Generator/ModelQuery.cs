@@ -45,7 +45,7 @@ namespace MvpFramework.Generator
         }
 
         /// <summary>
-        /// Same as <see cref="ApplyQuery{TModel}(IQueryable{TModel}, Type, string)"/> except that this returns <see cref="IQueryable{T}"/>.
+        /// Same as <see cref="ApplyQuery"/> except that this returns <see cref="IQueryable{T}"/>.
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="all"></param>
