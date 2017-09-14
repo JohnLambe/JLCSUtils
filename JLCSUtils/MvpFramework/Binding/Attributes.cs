@@ -174,6 +174,9 @@ namespace MvpFramework.Binding
         public DisplayNameAnyAttribute()
         {
         }
+        /// <summary>
+        /// </summary>
+        /// <param name="displayName"><see cref="DisplayNameAttribute.DisplayName"/></param>
         public DisplayNameAnyAttribute(string displayName) : base(displayName)
         {
         }
@@ -194,6 +197,11 @@ namespace MvpFramework.Binding
         /// Accelerator character for this item in a user interface.
         /// </summary>
         public virtual char AcceleratorChar { get; set; }
+
+        /// <summary>
+        /// Value to display when the value is null.
+        /// </summary>
+        public virtual string NullText { get; set; }  // or object NullDisplay ?
         */
 
         /// <summary>

@@ -69,7 +69,7 @@ namespace MvpFramework.Generator
         /// null for all.
         /// </param>
         /// <param name="propertyFilter">
-        /// Delegate to filter propertis within each group, to generate controls for.
+        /// Delegate to filter properties within each group, to generate controls for.
         /// null for all.
         /// </param>
         public virtual void Generate([Nullable] FilterDelegate<IUiGroupModel> groupFilter = null, [Nullable] FilterDelegate<ModelPropertyBinder> propertyFilter = null)
@@ -113,30 +113,12 @@ namespace MvpFramework.Generator
                     Index = ++index
                 };
                 CreateControl(context);
-
-                /*
-                var attribute = property.GetCustomAttribute<UiAttribute>();
-
-                var mapping = new PropertyMapping();
-                mapping.Property = property;
-                mapping.Caption = property.Name;
-                mapping.DataType = property.PropertyType;
-
-                mapping.Priority = attribute?.Priority ?? 0;  //TODO: auto-generate priority when not explicitly given
-
-                //TODO: Populate validation and other settings,
-                // including from Data Annotations.
-
-                _mappings.Add(mapping);
-                //TODO: Sort _mappings by Priority
-                */
             }
-
         }
 
 
         /// <summary>
-        /// Returns properties to generate controls for, for a given group.
+        /// Returns properties for which to generate controls, for a given group.
         /// </summary>
         /// <param name="group"></param>
         /// <param name="propertyFilter"></param>
@@ -148,14 +130,14 @@ namespace MvpFramework.Generator
         }
 
         /// <summary>
-        /// Called once before generating a collection of controls.
+        /// Called once, before generating a collection of controls.
         /// </summary>
         public virtual void StartGenerate()
         {
         }
 
         /// <summary>
-        /// Called after generaating a collection of controls.
+        /// Called after generating a collection of controls.
         /// </summary>
         public virtual void EndGenerate()
         {
@@ -179,7 +161,7 @@ namespace MvpFramework.Generator
         /// Creates a control and adds it to the target container.
         /// </summary>
         /// <param name="context"></param>
-        public virtual TControl CreateControl([NotNull]ControlGeneratorContext<TControl> context)
+        public virtual TControl CreateControl([NotNull] ControlGeneratorContext<TControl> context)
         {
             BeforeCreateControl(context);
 
@@ -198,7 +180,7 @@ namespace MvpFramework.Generator
         /// </summary>
         /// <param name="context">Details of the control being created.<br/>
         /// <see cref="ControlGeneratorContext{TControl}.NewControl"/> is null on entry.</param>
-        protected virtual void BeforeCreateControl([NotNull]ControlGeneratorContext<TControl> context)
+        protected virtual void BeforeCreateControl([NotNull] ControlGeneratorContext<TControl> context)
         {
         }
 

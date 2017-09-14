@@ -37,7 +37,18 @@ namespace MvpFramework.WinForms.Controls
 
             Clear();
             generator.Generate();
+
+            OnGenerationFinished(generator);
         }
+
+        /// <summary>
+        /// Called after generating all controls.
+        /// </summary>
+        /// <param name="generator">The generator used.</param>
+        protected virtual void OnGenerationFinished(FormGeneratorBase<Control> generator)
+        {
+        }
+
 
         /// <summary>
         /// Remove all generated controls.

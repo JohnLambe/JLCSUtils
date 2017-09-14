@@ -181,6 +181,17 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual string LineSeparator { get; set; }
 
+        /// <summary>
+        /// Value that the string must begin with (case-sensitive).
+        /// </summary>
+        public virtual string Prefix { get; set; }
+
+        /// <summary>
+        /// Value that the string must end with (case-sensitive).
+        /// </summary>
+        public virtual string Suffix { get; set; }
+        //TODO: Case-sensitivity.
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
@@ -259,6 +270,11 @@ namespace JohnLambe.Util.Validation
                 if (MaximumLength >= 0 && stringValue.ToString().Length > MaximumLength)
                     results.Add(ErrorMessage ?? "Too long");
 
+                if (!string.IsNullOrEmpty(Prefix) && !stringValue.StartsWith(Prefix))
+                    results.Add(ErrorMessage ?? "Must begin with " + Prefix);
+                if (!string.IsNullOrEmpty(Prefix) && !stringValue.EndsWith(Suffix))
+                    results.Add(ErrorMessage ?? "Must end with " + Suffix);
+
                 if (!value.Equals(stringValue))         // only if the value is changed
                     value = stringValue;                // update it (so that the type is preserved if the value doesn't have to change)
             }
@@ -302,7 +318,7 @@ namespace JohnLambe.Util.Validation
         {   // This bool (not bool?) because attributes cannot set nullable primitive types.
             get { return (bool)_isInternational; }
             set { _isInternational = value; }
-        }   
+        }
         private bool? _isInternational { get; set; }
 
         /// <summary>
@@ -312,7 +328,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <returns></returns>
         /// <seealso cref="IsInternational"/>
-        public virtual bool? GetIsInternational() =>  _isInternational;
+        public virtual bool? GetIsInternational() => _isInternational;
 
         // Testing for national format, or converting between national, international and local, or validating the national or local part,
         // would require information about the local network.
@@ -326,7 +342,7 @@ namespace JohnLambe.Util.Validation
             if (!ValidatePhoneNumber(value))                    // validate using PhoneAttribute
                 results.Fail();
 
-            if(GetIsInternational().HasValue)
+            if (GetIsInternational().HasValue)
             {
                 string s = value.ToString();
                 bool international = PhoneNumberIsInternational(s);
@@ -436,6 +452,8 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class InvalidValueAttribute : ValidationAttributeBase
     {
+        /// <summary/>
+        /// <param name="invalidValue"><see cref="InvalidValue"/></param>
         public InvalidValueAttribute(object invalidValue)
         {
             this.InvalidValue = invalidValue;
@@ -443,13 +461,16 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// Value that is not allowed.
+        /// <para>This is compared using <see cref="object.Equals(object)"/> (so if it is a string, it is case-sensitive).</para>
         /// </summary>
         public virtual object InvalidValue { get; set; }
+        //| We could accept an array (list of invalid values), but multiple value can be defined with multiple attributes.
+        //| Could provide a StringComparison to use when the value is a string, or when present, to compare the string representations of InvalidValue and the value being validated.
 
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
-            if((value == null && InvalidValue == null)
+            if ((value == null && InvalidValue == null)
                 || (value != null && value.Equals(InvalidValue)))
             {
                 results.Add("The value " + InvalidValue + " is invalid");
@@ -599,7 +620,7 @@ namespace JohnLambe.Util.Validation
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
-            if(value != null)
+            if (value != null)
             {
                 string stringValue = value.ToString();
                 string extension = Path.GetExtension(stringValue);
@@ -622,7 +643,7 @@ namespace JohnLambe.Util.Validation
 
                 if (!string.IsNullOrEmpty(extension) && AllowedExtensions != null)
                 {
-                    if (!AllowedExtensions.Contains(extension) && !extension.Equals(DefaultExtension,StringComparison.InvariantCultureIgnoreCase))
+                    if (!AllowedExtensions.Contains(extension) && !extension.Equals(DefaultExtension, StringComparison.InvariantCultureIgnoreCase))
                     {       //TODO: Case sensitivity
                         results.Add("The extension (" + extension + ") is not allowed");
                     }
@@ -636,9 +657,9 @@ namespace JohnLambe.Util.Validation
                         results.Add("Wildcards are not allowed");
                 }
 
-                if(validationContext.GetState().HasFlag(ValidationState.LiveInput))
+                if (validationContext.GetState().HasFlag(ValidationState.LiveInput))
                 {
-                    if(Exists != FileExistsState.Any)
+                    if (Exists != FileExistsState.Any)
                     {
                         //TODO
                     }
@@ -664,7 +685,7 @@ namespace JohnLambe.Util.Validation
         /// The filename/pathname matches exactly one file or directory.
         /// </summary>
         MatchOne = 2,
-        
+
         /// <summary>
         /// The (wildcarded) filename/pathname matches multiple files or directories.
         /// </summary>
@@ -751,7 +772,7 @@ namespace JohnLambe.Util.Validation
             {
                 if (RoundTo != NoRounding)
                 {
-                    value = MathUtil.Round(value,RoundTo);
+                    value = MathUtil.Round(value, RoundTo);
                 }
                 double numericValue = GeneralTypeConverter.Convert<double>(value);
                 if (numericValue < MinimumValue)
@@ -817,7 +838,7 @@ namespace JohnLambe.Util.Validation
 
         public override void PreProcessForDisplay(bool toDisplay, [Nullable] ref object value, [Nullable] ValidationContext validationContext)
         {
-            if(toDisplay)
+            if (toDisplay)
             {
                 value = GeneralTypeConverter.Convert<decimal>(value) * 100;
             }
@@ -874,7 +895,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// The components of the date/time that are present.
         /// </summary>
-        public virtual TimePrecision TimeParts { get; set;}
+        public virtual TimePrecision TimeParts { get; set; }
 
         /// <summary>
         /// Number of decimal places in seconds (for display and entry).
@@ -925,14 +946,14 @@ namespace JohnLambe.Util.Validation
                     break;
             }
 
-            if(validationContext.GetState().HasFlag(ValidationState.LiveInput) && Options != TimeValidationOptions.Any)
+            if (validationContext.GetState().HasFlag(ValidationState.LiveInput) && Options != TimeValidationOptions.Any)
             {
                 var now = DateTime.Now;  //TODO use ITimeService
-                if (timeValue < now && !(Options.HasFlag(TimeValidationOptions.AllowPast)))   
+                if (timeValue < now && !(Options.HasFlag(TimeValidationOptions.AllowPast)))
                 {
                     results.Add("Must not be in the past");
                 }
-                else if(timeValue > now && !(Options.HasFlag(TimeValidationOptions.AllowFuture)))
+                else if (timeValue > now && !(Options.HasFlag(TimeValidationOptions.AllowFuture)))
                 {
                     results.Add("Must not be in the future");
                 }
@@ -969,7 +990,7 @@ namespace JohnLambe.Util.Validation
         /// The value represents a date and time.
         /// </summary>
         Normal = 1,
-        
+
         /// <summary>
         /// The value represents a date only.
         /// The time part should be midnight (00:00:00).
@@ -1004,4 +1025,58 @@ namespace JohnLambe.Util.Validation
         Any = AllowPast | AllowFuture
     }
 
+
+    /// <summary>
+    /// Validates that a value is in a given range, or less than or greater than a given value.
+    /// Similar to <see cref="RangeAttribute"/>, but it supports any <see cref="IComparable"/> value.
+    /// </summary>
+    public class RangeValidation : ValidationAttributeBase
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="minimum"><see cref="Minimum"/></param>
+        /// <param name="maximum"><see cref="Maximum"/></param>
+        public RangeValidation(object minimum = null, object maximum = null)
+        {
+            this.Minimum = minimum;
+            this.Maximum = maximum;
+        }
+
+        /// <summary>
+        /// Value which the value being validated must not be less than.
+        /// Must implement <see cref="IComparable"/>.
+        /// null for no minimum.
+        /// </summary>
+        public virtual object Minimum
+        {
+            get { return _minimum; }
+            set { _minimum = (IComparable)value; }
+        }
+        protected IComparable _minimum;
+
+        /// <summary>
+        /// Value which the value being validated must not be higher than.
+        /// Must implement <see cref="IComparable"/>.
+        /// null for no maximum.
+        /// </summary>
+        public virtual object Maximum
+        {
+            get { return _maximum; }
+            set { _maximum = (IComparable)value; }
+        }
+        protected IComparable _maximum;
+
+        //TODO: Specify whether each property is inclusive ?
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+
+            if (Minimum != null && _minimum.CompareTo(value) < 0)
+                results.Add("must be higher than or equal to " + _minimum);
+            if (Minimum != null && _maximum.CompareTo(value) > 0)
+                results.Add("must be less than or equal to " + _maximum);
+        }
+
+    }
 }

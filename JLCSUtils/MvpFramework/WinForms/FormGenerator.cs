@@ -120,5 +120,4 @@ namespace MvpFramework.WinForms
         protected const int HSpacing = 4;
     }
 
-
 }

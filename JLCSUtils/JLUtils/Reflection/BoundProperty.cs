@@ -30,8 +30,7 @@ namespace JohnLambe.Util.Reflection
     /// <typeparam name="TProperty">The type of the property.</typeparam>
     public class BoundProperty<TTarget, TProperty> : ICustomAttributeProvider
     {
-        /// <summary>
-        /// </summary>
+        /// <summary/>
         /// <param name="target">The object on which the property is defined.
         /// </param>
         /// <param name="propertyName">The name of the property. This may be a nested property name (with ".").</param>
@@ -45,9 +44,7 @@ namespace JohnLambe.Util.Reflection
             this.Target = (TTarget)targetObject;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary/>
         /// <param name="target">The object on which the property is defined.</param>
         /// <param name="property">The property itself.</param>
         public BoundProperty(TTarget target, PropertyInfo property)

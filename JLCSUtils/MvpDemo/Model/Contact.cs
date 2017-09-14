@@ -19,7 +19,9 @@ namespace MvpDemo.Model
         [Required]        // Not handled yet
         public string Name { get; set; }
 
+        [StringValidation(Capitalisation = JohnLambe.Util.Text.LetterCapitalizationOption.TitleCase)]
         [InvalidValue("X")]
+        [InvalidValue("*")]
         [Display(Order = 2000)]
         public string Address
         {
