@@ -197,7 +197,8 @@ namespace MvpFramework.Binding
             {
                 var value = _controlProperty.GetValue(_boundControl);
                 var results = new ValidationResults();
-                if( !Model.GetProperty(_modelPropertyName).TryValidateValue(value, results) )
+                Model.GetProperty(_modelPropertyName).TryValidateValue(value, results);
+                if ( !results.IsValid )
                 {
                     e.Cancel = true;   // validation fails. This usually means that the control stays focussed.
 

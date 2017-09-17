@@ -9,6 +9,7 @@ using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.Validation;
 using System.ComponentModel.DataAnnotations;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -32,11 +33,11 @@ namespace JohnLambe.Util.Reflection
     {
         /// <summary/>
         /// <param name="target">The object on which the property is defined.
+        /// If null, and the property is not static, the created instance represents a property can neither be read nor written.
         /// </param>
         /// <param name="propertyName">The name of the property. This may be a nested property name (with ".").</param>
 //        /// <exception cref="ArgumentException">If the property, <paramref name="propertyName"/>, is not found.</exception>
-        //TODO: Throw exception if target==null and property is not static ?
-        public BoundProperty(TTarget target, string propertyName)
+        public BoundProperty([Nullable] TTarget target, string propertyName)
         {
             object targetObject = target;
             Property = ReflectionUtil.GetProperty(ref targetObject, propertyName);
@@ -125,7 +126,7 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="value"></param>
         /// <param name="results"></param>
-        /// <returns></returns>
+        /// <returns>true iff valid.</returns>
         public virtual bool TryValidateValue(TProperty value, ValidationResults results)
         {
             return Validator?.TryValidateValue(Target, value, Property, results)

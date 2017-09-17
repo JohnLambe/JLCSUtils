@@ -34,7 +34,7 @@ namespace JohnLambe.Util.Validation
             if (instance == null)
                 return true;
             else
-                return Validator.TryValidateObject(instance, GetContext(instance), results.Results);
+                return Validator.TryValidateObject(instance, GetContext(instance), results);
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace JohnLambe.Util.Validation
         public virtual bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
         {
             results = results ?? new ValidationResults();
-            return Validator.TryValidateValue(value, GetContext(instance, memberName, displayName), results.Results, attributes);
+            return Validator.TryValidateValue(value, GetContext(instance, memberName, displayName), results, attributes);
         }
         public bool TryValidateValue(object instance, object value, ValidationAttribute attribute, ValidationResults results = null, string memberName = null, string displayName = null)
         {

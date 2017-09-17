@@ -70,7 +70,16 @@ namespace DiExtension.Attributes
         //| The same could be said of allowing overriding at all.
         public virtual bool Enabled { get; set; } = true;
 
+        /// <summary>
+        /// The type to be injected (to be looked up in the DI container). The injected instance will be a type assignable to this.
+        /// <para>Note: This is not the type injected when <see cref="Property"/> is used.</para>
+        /// </summary>
         public virtual Type ServiceType { get; }
+
+        /// <summary>
+        /// If not null, the value injected is the property with this name on the instance (of <see cref="ServiceType"/>)
+        /// that would otherwise be injected.
+        /// </summary>
         public virtual string Property { get; protected set; }
 
         /// <summary>
@@ -140,6 +149,13 @@ namespace DiExtension.Attributes
         /// </summary>
         public virtual bool Clone { get; set; } = false;
         */
+
+        /// <summary>
+        /// Iff true, when creating the instance to be injected, any DI calls made are resolved against a new DI context,
+        /// which is a child of the one that would otherwise be used.
+        /// </summary>
+        [Obsolete("NOT IMPLEMENTED YET")]
+        public virtual bool NewContext { get; set; } = false;
 
         public override string ToString()
         {

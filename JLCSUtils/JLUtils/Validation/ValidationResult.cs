@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace JohnLambe.Util.Validation
 {
@@ -27,7 +28,7 @@ namespace JohnLambe.Util.Validation
             ValidationResultType type = ValidationResultType.Error,
             ValidationAttribute attribute = null,
             object newValue = null)
-            : base(errorMessage, memberNames)
+            : base(errorMessage ?? " ", memberNames)
         {
             this.Type = type;
             this.NewValue = newValue;
@@ -61,7 +62,8 @@ namespace JohnLambe.Util.Validation
     //| This does not inherit from ValidationResult (or ValidationResultEx) because
     //| - it's Message property is non-virtual (we would have to recalculate and assign it on every modification)
     //| - Success is indicated by a specific instance reference (ValidationResult.Success).
-    public class ValidationResults
+    //| It implements ICollection<ValidationResult>, which is used in some methods of System.ComponentModel.DataAnnotations.Validator.
+    public class ValidationResults : ICollection<ValidationResult>
     {
         public ValidationResults(ValidationFeatures supportedFeatures = ValidationFeatures.All, ValidationResultType resultType = ValidationResultType.Error)
         {
@@ -77,6 +79,12 @@ namespace JohnLambe.Util.Validation
 
         public virtual void Add(ValidationResult result)
         {
+            var resultEx = result as ValidationResultEx;
+            if (resultEx != null)
+            {
+                if (resultEx.Type == ValidationResultType.Updated)
+                    NewValue = resultEx.NewValue;
+            }
             _results.Add(result);
         }
 
@@ -190,7 +198,7 @@ namespace JohnLambe.Util.Validation
         /// True iff there are no errors in these results. (There may be warnings.)
         /// </summary>
         public virtual bool IsValid
-            => !Results.Any(r => r is ValidationResultEx ? ((ValidationResultEx)r).IsValid : true);
+            => !Results.Any(r => !r.IsValid());  // none invalid
 
         /// <summary>
         /// Throws an exception if there is a validation *error* (not on just warnings).
@@ -205,6 +213,38 @@ namespace JohnLambe.Util.Validation
                                                             //                throw new UserErrorException(ToString());  //TODO
             }
         }
+
+        #region ICollection<ValidationResult>
+
+        public virtual void Clear()
+        {
+            _results.Clear();
+        }
+
+        public virtual bool Contains(ValidationResult item)
+        {
+            return _results.Contains(item);
+        }
+
+        public void CopyTo(ValidationResult[] array, int arrayIndex)
+        {
+            _results.CopyTo(array,arrayIndex);
+        }
+
+        public virtual bool Remove(ValidationResult item)
+        {
+            return _results.Remove(item);
+        }
+
+        public IEnumerator<ValidationResult> GetEnumerator() => _results.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _results.GetEnumerator();
+
+        public virtual int Count => _results.Count;
+
+        public virtual bool IsReadOnly => false;
+
+        #endregion
 
         /// <summary>
         /// The collection of results. Never null, but may be empty.

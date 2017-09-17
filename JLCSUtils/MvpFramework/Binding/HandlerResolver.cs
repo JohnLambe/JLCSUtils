@@ -54,7 +54,7 @@ namespace MvpFramework.Binding
                 => Attribute?.DisplayName ?? CaptionUtil.GetDisplayName(Method);
 
             /// <summary>
-            /// Returns a delegate to call <see cref="Method"/>, populating the methods parameters from the parameters of the delegate.
+            /// Returns a delegate to call <see cref="Method"/>, populating the method's parameters from the parameters of the delegate.
             /// </summary>
             /// <returns></returns>
             protected virtual MenuItemModel.InvokedDelegate CreateInvokeDelegate()

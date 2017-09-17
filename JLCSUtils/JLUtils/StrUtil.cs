@@ -1339,6 +1339,14 @@ namespace JohnLambe.Util
 
         #region SafeSubstring
 
+        /// <summary>
+        /// Like <see cref="string.Substring(int)"/>, except that "" is returned if the index is out of range,
+        /// and null is returned if the string is null.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         [return: Nullable]
         public static string SafeSubstring([Nullable]this string s, int start, int length)
         {
@@ -1352,6 +1360,13 @@ namespace JohnLambe.Util
             //TOOD: start < 0 ?
         }
 
+        /// <summary>
+        /// Like <see cref="string.Substring(int)"/>, except that "" is returned if the index is out of range,
+        /// and null is returned if the string is null.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="start"></param>
+        /// <returns></returns>
         [return: Nullable]
         public static string SafeSubstring([Nullable]this string s, int start)
         {

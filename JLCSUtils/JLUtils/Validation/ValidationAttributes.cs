@@ -24,8 +24,15 @@ namespace JohnLambe.Util.Validation
     /// For validation of string values.
     /// </summary>
     /// <seealso cref="StringLengthAttribute"/>
+    /// <seealso cref="MaxLengthAttribute"/>
     public class StringValidationAttribute : ValidationAttributeBase
     {
+        /// <summary>
+        /// Value of certain properties (currently just <see cref="MaximumLength"/>), to indicate that no value is defined.
+        /// (Must be negative.)
+        /// </summary>
+        public const int Na = -1;
+
         public override string GeneralDescription
             => "A text value";
 
@@ -117,7 +124,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// The minimum length of the string if it is not blank.
         /// </summary>
-        public virtual int MinimumLength { get; set; }
+        public virtual int MinimumLength { get; set; } = 0;
 
         /// <summary>
         /// The maximum length of the string (after any trimming).
@@ -128,7 +135,7 @@ namespace JohnLambe.Util.Validation
         /// for example Entity Framework (with Code First) uses it to set the maximum length of a mapped field.
         /// This can be used when such behaviour is not desirable. Otherwise, <see cref="MaxLengthAttribute"/> is recommended.
         /// </remarks>
-        public virtual int MaximumLength { get; set; } = -1;
+        public virtual int MaximumLength { get; set; } = Na;
 
         /// <summary>
         /// When setting, this sets <see cref="MinimumLength"/> and <see cref="MaximumLength"/> to the same value.
@@ -143,7 +150,7 @@ namespace JohnLambe.Util.Validation
                 if (MinimumLength == MaximumLength)
                     return MinimumLength;
                 else
-                    throw new InvalidOperationException("String length if not fixed");
+                    throw new InvalidOperationException("String length is not fixed");
             }
             set
             {
@@ -243,6 +250,8 @@ namespace JohnLambe.Util.Validation
                         stringValue = stringValue.Truncate(MaximumLength);
                     }
 
+                    // Capitalisation:
+
                     if (Capitalisation != LetterCapitalizationOption.MixedCase && Capitalisation != LetterCapitalizationOption.Unspecified)
                     {
                         stringValue = Capitalisation.ChangeCapitalization(stringValue);
@@ -250,9 +259,13 @@ namespace JohnLambe.Util.Validation
                         //                        value = newValue;                // update it (so that the type is preserved if the capitalisation doesn't change)
                     }
 
+                    // Line separator:
+
                     if (LineSeparator != null)
                         stringValue = stringValue.ReplaceLineSeparator(LineSeparator);
                 }
+
+                // Validate character set:
 
                 if (AllowedCharactersString != null)
                 {
@@ -264,6 +277,8 @@ namespace JohnLambe.Util.Validation
                     if (StrUtil.ContainsAnyCharacters(stringValue.ToString(), DisallowedCharactersSet))
                         results.Add(ErrorMessage ?? "Contains an invalid character: The following characters are invalid: " + DisallowedCharactersString);
                 }
+
+                // Validate length:
 
                 if (stringValue.ToString().Length < MinimumLength)
                     results.Add(ErrorMessage ?? "Too short");
@@ -634,17 +649,15 @@ namespace JohnLambe.Util.Validation
                 if (!HasExtension.NullableCompare(!string.IsNullOrEmpty(extension)))
                 {
                     if (HasExtension == NullableBool.True)
-                    {
                         results.Add("A file extension is required");
-                    }
                     else
                         results.Add("The filename must not have an extension");
                 }
 
                 if (!string.IsNullOrEmpty(extension) && AllowedExtensions != null)
                 {
-                    if (!AllowedExtensions.Contains(extension) && !extension.Equals(DefaultExtension, StringComparison.InvariantCultureIgnoreCase))
-                    {       //TODO: Case sensitivity
+                    if (!AllowedExtensions.Contains(extension, StringComparer.InvariantCultureIgnoreCase) && !extension.Equals(DefaultExtension, StringComparison.InvariantCultureIgnoreCase))
+                    {
                         results.Add("The extension (" + extension + ") is not allowed");
                     }
                 }
@@ -885,13 +898,8 @@ namespace JohnLambe.Util.Validation
     }
 
 
-    /// <summary>
-    /// Specifies that a property is date/time value, and provides metadata relating to it.
-    /// </summary>
-    public class DateTimeAttribute : ValidationAttributeBase
+    public abstract class TimeOrTimeSpanValidationAttribute : ValidationAttributeBase
     {
-        public override string GeneralDescription => "A date and/or time.";
-
         /// <summary>
         /// The components of the date/time that are present.
         /// </summary>
@@ -901,6 +909,16 @@ namespace JohnLambe.Util.Validation
         /// Number of decimal places in seconds (for display and entry).
         /// </summary>
         public virtual int SecondsDecimalPlaces { get; set; }
+
+    }
+
+    /// <summary>
+    /// Specifies that a property is a date and/or time value, and provides metadata relating to it.
+    /// It may be a time of day, but not a time interval.
+    /// </summary>
+    public class DateTimeValidationAttribute : ValidationAttributeBase
+    {
+        public override string GeneralDescription => "A date and/or time.";
 
         /// <summary>
         /// What the time part should be populated with when the value represents only a date.
@@ -961,6 +979,37 @@ namespace JohnLambe.Util.Validation
 
             //TODO other properties
         }
+    }
+
+    [Obsolete("Use DateTimeValidationAttribute")]
+    public class DateTimeAttribute : DateTimeValidationAttribute
+    {
+    }
+
+    /// <summary>
+    /// Indicates that the data item is a time interval (duration).
+    /// <para>
+    /// This can be used on <see cref="TimeSpan"/> and numeric types.
+    /// </para>
+    /// </summary>
+    public class TimeSpanValidationAttribute : ValidationAttributeBase
+    {
+        public override string GeneralDescription => "A time interval.";
+
+        public virtual TimeSpan Multiplier { get; set; }
+
+        /// <summary>
+        /// Minimum allowed value.
+        /// </summary>
+        public virtual TimeSpan Minimum { get; set; } = TimeSpan.MinValue;
+
+        /// <summary>
+        /// Maximum allowed value.
+        /// </summary>
+        public virtual TimeSpan Maximum { get; set; } = TimeSpan.MaxValue;
+
+        //TODO
+
     }
 
     [Flags]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,13 +70,18 @@ namespace JohnLambe.Util.Text
         /// <summary>
         /// Apply this option to the given string.
         /// </summary>
-        /// <param name="capitalisation"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ChangeCapitalization(this LetterCapitalizationOption capitalisation, string value)
+        /// <param name="capitalisation">The capitalisation option to apply.</param>
+        /// <param name="value">The value to have its capitalisation changed.</param>
+        /// <param name="culture">Culture to use for letter case conversion.</param>
+        /// <returns><paramref name="value"/> with its capitalisation changed, if required.</returns>
+        public static string ChangeCapitalization(this LetterCapitalizationOption capitalisation, string value,
+            CultureInfo culture = null)
         {
             if (string.IsNullOrEmpty(value))     // in this case, capitalization changes can't change it. Code below may assume that `value` has at least one character.
                 return value;
+
+            if (culture == null)
+                culture = CultureInfo.InvariantCulture;
 
             switch (capitalisation)
             {
@@ -84,15 +90,27 @@ namespace JohnLambe.Util.Text
                 case LetterCapitalizationOption.AllLowercase:
                     return value.ToLower();
                 case LetterCapitalizationOption.FirstLetterCapital:
-                    return char.ToUpper(value[0]) + value.Substring(1);   // we checked that it has at least character above
+                    return char.ToUpper(value[0],culture) + value.SafeSubstring(1);
                 case LetterCapitalizationOption.FirstLetterCapitalOnly:
-                    return char.ToUpper(value[0]) + value.Substring(1).ToLower();   // we checked that it has at least character above
-                                                                                    /*TODO
-                                                                                                    case LetterCapitalizationOption.TitleCaseOnly:
-                                                                                                        break;
-                                                                                                    case LetterCapitalizationOption.TitleCase:
-                                                                                                        break;
-                                                                                                        */
+                    return char.ToUpper(value[0],culture) + value.SafeSubstring(1).ToLower(culture);
+                case LetterCapitalizationOption.TitleCaseOnly:
+                case LetterCapitalizationOption.TitleCase:
+                    StringBuilder newValue = new StringBuilder(value.Length);
+                    bool wordStart = true;   // the first character is the start of a word
+                    for(int index = 0; index < value.Length; index++)
+                    {
+                        char current = value[index];
+
+                        if (wordStart)
+                            current = char.ToUpper(current,culture);
+                        else if(capitalisation == LetterCapitalizationOption.TitleCaseOnly)
+                            current = char.ToLower(current,culture);
+
+                        wordStart = char.IsWhiteSpace(current);  // if this is whitespace, the next character is the start of a word (unless it is also whitespace)
+
+                        newValue.Append(current);
+                    }
+                    return newValue.ToString();
                 default:
                     return value;
             }

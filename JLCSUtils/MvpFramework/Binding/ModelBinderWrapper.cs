@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.Reflection;
 using System.ComponentModel.DataAnnotations;
+using JohnLambe.Util.Validation;
 
 namespace MvpFramework.Binding
 {
@@ -65,11 +66,13 @@ namespace MvpFramework.Binding
             return CaptionUtil.GetDisplayName(GetPropertyInternal(propertyName));
         }
 
+        /*
         [Obsolete("Use GetProperty")]
         public ModelPropertyBinder GetProp(string propertName)
         {
             return GetProperty(propertName);
         }
+        */
 
         /*
                /// <summary>
@@ -194,6 +197,32 @@ namespace MvpFramework.Binding
             => _displayAttribute?.GetAutoGenerateField() ??
             _mvpDisplayAttribute?.IsVisible ??
             true;
+
+        /// <summary>
+        /// Maximum string length in characters.
+        /// <see cref="StringValidationAttribute.Na"/> if unknown or unlimitied.
+        /// This can be used to configure the maximum length of a user interface control.
+        /// <para>
+        /// This uses the first of <see cref="StringValidationAttribute"/>, <see cref="MaxLengthAttribute"/> and <see cref="StringLengthAttribute"/>
+        /// that provides a value.
+        /// </para>
+        /// </summary>
+        /// <remarks>
+        /// To set a maximum length for Entity Framework (and probably other ORM frameworks), use <see cref="MaxLengthAttribute"/>, and to have the same length applied in user interfaces,
+        /// don't specify one in <see cref="StringValidationAttribute"/>.
+        /// To use a different length in user interfaces to Entity Framework, use <see cref="MaxLengthAttribute"/> for Entity Framework, and <see cref="StringValidationAttribute"/> for user interfaces.
+        /// </remarks>
+        public virtual int MaxLength
+        {
+            get
+            {
+                int length = Property.GetCustomAttribute<StringValidationAttribute>()?.MaximumLength ?? StringValidationAttribute.Na;
+                if(length == StringValidationAttribute.Na)
+                    length = Property.GetCustomAttribute<MaxLengthAttribute>()?.Length
+                        ?? Property.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength ?? StringValidationAttribute.Na;
+                return length;
+            }
+        }
 
         /// <summary>
         /// The user interface group (<see cref="DisplayAttribute.GroupName"/>) of this item.

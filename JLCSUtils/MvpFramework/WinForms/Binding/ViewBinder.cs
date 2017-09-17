@@ -16,7 +16,8 @@ using MvpFramework.Menu;
 namespace MvpFramework.WinForms.Binding
 {
     /// <summary>
-    /// Binds a View to a Model and Presenter.
+    /// Binds a WinForms View to a Model and Presenter.
+    /// <para>(<see cref="ViewBinderBase{TControl}"/> subclass for WinForms.)</para>
     /// </summary>
     public class ViewBinder : ViewBinderBase<Control>
     {
@@ -58,40 +59,48 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="presenter"></param>
         protected virtual void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
         {
-            bool bindChildren = true;     // children are bound by default (so that controls on panels, etc. are scanned)
-            var binder = binderFactory.Create(control);
-            if (binder != null)
+            try
             {
-                Binders.Add(binder);
-                /*
-                if (binder is IEmbeddedView)
+                bool bindChildren = true;     // children are bound by default (so that controls on panels, etc. are scanned)
+                var binder = binderFactory.Create(control);
+                if (binder != null)
                 {
-                    var viewId = ((IEmbeddedView)binder).ViewId;
-                    var subModel = ReflectionUtils.TryGetPropertyValue<object>(binder,viewId);
-                    IPresenter subPresenter = ReflectionUtils.TryGetPropertyValue<IPresenter>(presenter, viewId);
-                    ((IEmbeddedView)binder).Bind(subModel, subPresenter, binderFactory);
-                    //TODO
-                }
-                else */
-                {
-                    binder.BindModel(ModelBinder, presenter);
-                }
+                    Binders.Add(binder);
+                    /*
+                    if (binder is IEmbeddedView)
+                    {
+                        var viewId = ((IEmbeddedView)binder).ViewId;
+                        var subModel = ReflectionUtils.TryGetPropertyValue<object>(binder,viewId);
+                        IPresenter subPresenter = ReflectionUtils.TryGetPropertyValue<IPresenter>(presenter, viewId);
+                        ((IEmbeddedView)binder).Bind(subModel, subPresenter, binderFactory);
+                        //TODO
+                    }
+                    else */
+                    {
+                        binder.BindModel(ModelBinder, presenter);
+                    }
 
-                bindChildren = control.GetType().GetCustomAttribute<MvpBindChildrenAttribute>()?.Enabled ?? false;
+                    bindChildren = control.GetType().GetCustomAttribute<MvpBindChildrenAttribute>()?.Enabled ?? false;
                     // By default, controls that implement IControlBinder do not have their children bound (because the children are probably used by the control and bound by it if necessary),
                     // but this can be overridden with the attribute.
-            }
-
-            // if this control implements the interface, add its handler to the event:
-            if (control is IOptionUpdate && control != View)
-                OptionUpdate += args => ((IOptionUpdate)control).UpdateOption(args);
-
-            if (bindChildren)
-            {   // bind the children of this control:
-                foreach (Control childControl in control.Controls)
-                {
-                    BindControl(childControl, binderFactory, presenter);
                 }
+
+                // if this control implements the interface, add its handler to the event:
+                if (control is IOptionUpdate && control != View)
+                    OptionUpdate += args => ((IOptionUpdate)control).UpdateOption(args);
+
+                if (bindChildren)
+                {   // bind the children of this control:
+                    foreach (Control childControl in control.Controls)
+                    {
+                        BindControl(childControl, binderFactory, presenter);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new MvpBindingException("Binding Control failed: " + control.Name,
+                    ex);
             }
         }
 

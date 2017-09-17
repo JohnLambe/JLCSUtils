@@ -715,12 +715,13 @@ namespace JohnLambe.Util.Reflection
         /// <param name="action">What to do - see <see cref="PropertyAction"/>.</param>
         /// <param name="value">The value to set; or a reference to receive the value (on Get).
         /// Ignored for <see cref="PropertyAction.GetProperty"/>.
-        /// </param>
-        /// <para>This is modified if and only if <paramref name="action"/> is <see cref="PropertyAction.SetValue"/>.
+        /// <para>This is modified if and only if <paramref name="action"/> is <see cref="PropertyAction.GetValue"/>.
         /// In this case, it is set to null on failure (if a property does not exist, or nested value that this property is on, is null).
         /// </para>
+        /// </param>
         /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
         /// <returns>The details of the innermost property. null if <paramref name="target"/> or the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
+        //TODO: If there is a null in part of the property name string ("X.Y" where X evaluates to null), try to get the metadata from the compile-time type of X. And update BoundProperty to use this.
         private static PropertyInfo GetSetProperty(ref object target, [NotNull] string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             PropertyInfo property = null;

@@ -61,6 +61,7 @@ namespace JohnLambe.Util.Validation
                 if (validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification))  // if modification is supported
                 {
                     results.NewValue = value;
+                    results.Add(new ValidationResultEx(null, null, ValidationResultType.Updated, null, value));
                 }
                 else
                 {
@@ -71,7 +72,7 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// `IsValid` overload providing more context information, and the ability to change the value.
+        /// <see cref="IsValid(object,ValidationContext)"/> overload providing more context information, and the ability to change the value.
         /// Override this instead of the other overloads.
         /// </summary>
         /// <param name="value"></param>
