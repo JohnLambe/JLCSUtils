@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.Reflection;
+﻿using JohnLambe.Util.Exceptions;
+using JohnLambe.Util.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,30 @@ namespace JohnLambe.Util.Diagnostic
 {
     public static class DiagnosticStringUtil
     {
+        /// <summary>
+        /// Returns a string description of the given instance for diagnostic purposes -
+        /// a descritpion intended for developers.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public static string ObjectToString<T>(T instance)
         {
             if (instance == null)
             {
-                return ((typeof(T) != typeof(object)) ? typeof(T).FullName : "")
-                    + "(null)";
+                if (typeof(T).IsNullableValueType())
+                    return Nullable.GetUnderlyingType(typeof(T)).Name + "?(null)";
+                else
+                    return ((typeof(T) != typeof(object)) ? typeof(T).FullName : "")
+                        + "(null)";
             }
             else
             {
                 if (instance.GetType().IsPrimitive || instance is string)
                 {
-                    return instance.GetType().Name + "(" + instance + ")";
+                    return instance.GetType().Name + "("
+                        + ExceptionUtil.TryEvaluate(() => instance.ToString(), ex => "<" + ex.Message + ">")
+                        + ")";
                 }
                 else
                 {
@@ -34,7 +47,9 @@ namespace JohnLambe.Util.Diagnostic
                             s.Append(' ');
                         else
                             first = false;
-                        s.Append(property.Name + "=" + property.GetValue(instance));
+                        s.Append(property.Name + "=" 
+                            + ExceptionUtil.TryEvaluate(() => property.GetValue(instance), ex => "<" + ex.Message + ">")
+                            );
                     }
                     s.Append(')');
                     return s.ToString();

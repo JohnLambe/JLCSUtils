@@ -69,19 +69,19 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
             );
         }
 
-        [TestCategory("NotImplemented")]
         [TestMethod]
         public void TitleCase()
         {
             Multiple(
                 () => Assert.AreEqual("Óne Two ThreÉ", LetterCapitalizationOption.TitleCase.ChangeCapitalization("óne two ThreÉ")),
                 () => Assert.AreEqual(" Óne  Two ThreÉ", LetterCapitalizationOption.TitleCase.ChangeCapitalization(" óne  two ThreÉ")),
+                () => Assert.AreEqual(" Ó+n-e  Two ThreÉ", LetterCapitalizationOption.TitleCase.ChangeCapitalization(" ó+n-e  two ThreÉ")),
+                () => Assert.AreEqual(" #óne  Two ThreÉ", LetterCapitalizationOption.TitleCase.ChangeCapitalization(" #óne  two ThreÉ")),
                 () => Assert.AreEqual("", LetterCapitalizationOption.TitleCase.ChangeCapitalization("")),
                 () => Assert.AreEqual(null, LetterCapitalizationOption.TitleCase.ChangeCapitalization(null))
             );
         }
 
-        [TestCategory("NotImplemented")]
         [TestMethod]
         public void TitleCaseOnly()
         {

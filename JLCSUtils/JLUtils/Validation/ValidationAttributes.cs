@@ -199,6 +199,11 @@ namespace JohnLambe.Util.Validation
         public virtual string Suffix { get; set; }
         //TODO: Case-sensitivity.
 
+        /// <summary>
+        /// Iff true, the validator modifies the value to make it match the rule where possible.
+        /// </summary>
+        public virtual bool Correction { get; set; } = true;
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
@@ -206,7 +211,7 @@ namespace JohnLambe.Util.Validation
             {
                 var stringValue = value.ToString();
 
-                if (validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification))
+                if (validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification) && Correction)
                 {
                     // Do trimming first (other operations apply to the trimmed value):
                     switch (Trimming)
@@ -264,6 +269,15 @@ namespace JohnLambe.Util.Validation
                     if (LineSeparator != null)
                         stringValue = stringValue.ReplaceLineSeparator(LineSeparator);
                 }
+
+                if (!(validationContext.GetSupportedFeatures().HasFlag(ValidationFeatures.Modification) && Correction))
+                {
+                    if (Capitalisation != LetterCapitalizationOption.MixedCase && Capitalisation != LetterCapitalizationOption.Unspecified)
+                    {
+
+                    }
+                }
+
 
                 // Validate character set:
 

@@ -78,5 +78,23 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
                 }
             );
         }
+
+        [TestMethod]
+        public void IsValid_Capitalisation()
+        {
+            var attrib = new StringValidationAttribute()
+            {
+                Capitalisation = Util.Text.LetterCapitalizationOption.AllCapital,
+                Correction = false
+            };
+
+            Multiple(
+                () => Assert.IsTrue(attrib.IsValid(""),"Blank"),
+                () => Assert.IsTrue(attrib.IsValid("ALL CAPS + Á")),
+                () => Assert.IsFalse(attrib.IsValid("all lowercase é")),
+                () => Assert.IsFalse(attrib.IsValid("MiXED CASE")),
+                () => Assert.IsTrue(attrib.IsValid(" "))
+            );
+        }
     }
 }

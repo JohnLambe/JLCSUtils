@@ -50,6 +50,39 @@ namespace JohnLambe.Tests.JLUtilsTest.Diagnostic
             Assert.AreEqual("(Property1=50 Property2=string)", DiagnosticStringUtil.ObjectToString(x));
         }
 
+        /// <summary>
+        /// The getter of a property of the given instance throws an exception.
+        /// </summary>
+        [TestMethod]
+        public void ObjectToString_Exception()
+        {
+            object p = new TestClass() { X = 12345 };
+
+            Assert.AreEqual("JohnLambe.Tests.JLUtilsTest.Diagnostic.DiagnosticStringUtilTest+TestClass(X=12345 Y=<"
+                + new ArgumentException().Message + ">)",
+                DiagnosticStringUtil.ObjectToString(p));
+        }
+
+        /// <summary>
+        /// null nullable primitive type.
+        /// </summary>
+        [TestMethod]
+        public void ObjectToString_NullablePrimitive()
+        {
+            float? p = null;
+
+            Assert.AreEqual("Single?(null)", DiagnosticStringUtil.ObjectToString(p));
+        }
+
+        public class TestClass
+        {
+            public int X { get; set; }
+            public int Y
+            {
+                get { throw new ArgumentException(); }
+            }
+        }
+
         #endregion
     }
 }
