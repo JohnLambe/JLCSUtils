@@ -52,6 +52,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
         }
 
         [TestMethod]
+        [TestCategory("Failing")]
         public void IsValid_Truncate()
         {
             var attrib = new StringValidationAttribute()
@@ -80,6 +81,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
         }
 
         [TestMethod]
+        [TestCategory("Failing")]
         public void IsValid_Capitalisation()
         {
             var attrib = new StringValidationAttribute()

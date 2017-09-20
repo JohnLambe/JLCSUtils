@@ -40,6 +40,15 @@ namespace DiExtension.SimpleInject
             return new ChainableContext(this);
         }
 
+        public override bool GetValue<T>(string key, Type type, out T value)
+        {
+            if (base.GetValue<T>(key, type, out value))
+                return true;
+            else
+                return _parentContext.GetValue<T>(key, type, out value);
+        }
+
+
         protected readonly SiExtendedDiContext _parentContext;
     }
 }

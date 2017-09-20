@@ -34,7 +34,7 @@ namespace MvpFramework.WinForms
         public override void Refresh()
         {
             if (_nextButtonCoords.IsEmpty && DesignMode)
-                SetupDesignMode();
+                SetUpDesignMode();
         }
 
         public virtual void MvpRefresh()
@@ -42,7 +42,7 @@ namespace MvpFramework.WinForms
             Refresh();
         }
 
-        protected virtual void SetupDesignMode()
+        protected virtual void SetUpDesignMode()
         {
             ClearButtons();
 
@@ -126,6 +126,7 @@ namespace MvpFramework.WinForms
                 switch (Orientation)
                 {
                     //TODO: ButtonAlignment; Expand width if size setting is 0.
+                    //| Could support MvpUiAttribute.Alignment.
                     case Orientation.Horizontal:
                         _nextButtonCoords.Y = insideRectangle.Top;
                         //CalcAlignedPosition(ButtonAlignment,insideRectangle.Height,EffectiveButtonHeight);

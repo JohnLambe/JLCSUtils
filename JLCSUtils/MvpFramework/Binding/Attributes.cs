@@ -1,4 +1,5 @@
 ﻿using JohnLambe.Util.Diagnostic;
+using JohnLambe.Util.GraphicUtil;
 using JohnLambe.Util.Misc;
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Types;
@@ -115,6 +116,13 @@ namespace MvpFramework.Binding
         public virtual string Group { get; set; }
 
         /// <summary>
+        /// How the UI element corresponding to the attributed item is aligned, if supported by the UI.
+        /// <para>UI implementations may ignore this, and what each value of this means is UI-specific.</para>
+        /// </summary>
+        public virtual Alignment Alignment { get; set; }
+        //| We could use an alignment that supports horizontal and vertical alignment (e.g. System.Drawing.ContentAlignment), but that is likely to be UI-specific.
+
+        /// <summary>
         /// Rights or roles required to access this item.
         /// To access this, the user must have one of the rights specified by an element of the array.
         /// The format of the string depends on the consuming system. It may specify a combination of rights/roles
@@ -146,7 +154,7 @@ namespace MvpFramework.Binding
         {
             get { return Id; }
             set { Id = value; }
-        }        
+        }
 
         /// <summary>
         /// true iff this is the default button or default item in a list, etc.

@@ -314,6 +314,10 @@ namespace DiExtension.SimpleInject
 
         /// <summary>
         /// Resolve a ConfigInject value.
+        /// <para>
+        /// Implements <see cref="IConfigProvider.GetValue{T}(string, Type, out T)"/>,
+        /// and is used by the SimpleInjector extension.
+        /// </para>
         /// </summary>
         /// <typeparam name="T">Type to cast the resolved value to.</typeparam>
         /// <param name="key"></param>

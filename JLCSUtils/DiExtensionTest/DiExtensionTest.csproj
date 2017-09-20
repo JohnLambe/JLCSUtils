@@ -52,6 +52,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ChainableContextTest.cs" />
+    <Compile Include="ChainableContextTest_Named.cs" />
     <Compile Include="ConfigInject\Providers\CompositeProviderTest.cs" />
     <Compile Include="DiUtilTest.cs" />
     <Compile Include="DiUtil_PopulateArgsTest.cs" />

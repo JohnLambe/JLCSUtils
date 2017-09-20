@@ -9,6 +9,7 @@ namespace JohnLambe.Util.GraphicUtil
 {
     /// <summary>
     /// Alignment of an item in one dimension.
+    /// <para>User interface implementations may reverse the order of the options (e.g. <see cref="Start"/> could mean 'right' in some UIs).</para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -26,10 +27,16 @@ namespace JohnLambe.Util.GraphicUtil
     public enum Alignment
     {
         /// <summary>
-        /// Left or top.
+        /// Generally, left or top.
         /// </summary>
         Start = 1,
+        /// <summary>
+        /// Centred.
+        /// </summary>
         Middle,
+        /// <summary>
+        /// Generally, right or bottom.
+        /// </summary>
         End
     }
 
