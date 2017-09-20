@@ -125,6 +125,7 @@
     </Compile>
     <Compile Include="ReferenceCountedObjectTest.cs" />
     <Compile Include="Reflection\AttributeUtilTest.cs" />
+    <Compile Include="Reflection\BoundPropertyTest.cs" />
     <Compile Include="Reflection\PropertyDefaultUtilTest.cs" />
     <Compile Include="Reflection\EnumAttributeUtilTest.cs" />
     <Compile Include="Reflection\EnumUtilTest.cs" />

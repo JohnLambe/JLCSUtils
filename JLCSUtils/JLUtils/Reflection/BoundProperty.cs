@@ -10,6 +10,7 @@ using JohnLambe.Util.Text;
 using JohnLambe.Util.Validation;
 using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util.Types;
+using JohnLambe.Util.TypeConversion;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -33,7 +34,7 @@ namespace JohnLambe.Util.Reflection
     {
         /// <summary/>
         /// <param name="target">The object on which the property is defined.
-        /// If null, and the property is not static, the created instance represents a property can neither be read nor written.
+        /// If null, and the property is not static, the created instance represents a property that can be neither read nor written.
         /// </param>
         /// <param name="propertyName">The name of the property. This may be a nested property name (with ".").</param>
 //        /// <exception cref="ArgumentException">If the property, <paramref name="propertyName"/>, is not found.</exception>
@@ -48,7 +49,7 @@ namespace JohnLambe.Util.Reflection
         /// <summary/>
         /// <param name="target">The object on which the property is defined.</param>
         /// <param name="property">The property itself.</param>
-        public BoundProperty(TTarget target, PropertyInfo property)
+        public BoundProperty([Nullable] TTarget target, PropertyInfo property)
         {
             ObjectExtension.CheckArgNotNull(target, nameof(target));
             property.ArgNotNull(nameof(property));
@@ -90,10 +91,31 @@ namespace JohnLambe.Util.Reflection
         }
 
         /// <summary>
+        /// The value of this property on the bound object.
+        /// Setting this tries to convert the value to the value of the underlying property.
+        /// </summary>
+        public virtual object ValueConverted
+        {
+            get
+            {
+                return Property?.GetValue(Target);
+            }
+            set
+            {
+                if (Property != null)
+                {
+                    Validator?.ValidateValue(Target, ref value, Property);
+
+                    Property?.SetValue(Target, GeneralTypeConverter.Convert<TProperty>(value));
+                }
+            }
+        }
+
+        /// <summary>
         /// The name of the property (as used in code).
         /// </summary>
         public virtual string Name
-            => Property.Name;
+            => Property?.Name;
 
         /// <summary>
         /// A caption or name of the property for display to a user.
