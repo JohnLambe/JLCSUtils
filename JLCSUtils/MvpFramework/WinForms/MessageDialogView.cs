@@ -15,6 +15,7 @@ namespace MvpFramework.WinForms
 {
     /// <summary>
     /// View for a message dialog.
+    /// <para>A presenter for this is <see cref="MvpFramework.Dialog.MessageDialogPresenter"/>.</para>
     /// </summary>
     [View(Interface = typeof(IMessageDialogView))]   // References its interface explicitly, so that it is validated at compile time.
     public partial class MessageDialogView : WindowViewBase, IMessageDialogView
@@ -23,9 +24,16 @@ namespace MvpFramework.WinForms
         {
             InitializeComponent();
 
+            ExpandedHeight = Height;
+            NormalHeight = ExpandedHeight - uiFullDetails.Height;
+            Height = NormalHeight;
+
             _iconRepository = iconRepository ?? new NullIconRepository<string, object>();
             DefaultButtonsBackColor = uiButtons.BackColor;           // the default color is that specified in the form designer
         }
+
+        protected int ExpandedHeight { get; }
+        protected int NormalHeight { get; }
 
         public override void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {
@@ -64,11 +72,13 @@ namespace MvpFramework.WinForms
                 uiIcon2.BackgroundImage = _iconRepository.GetIcon(Model.Dialog.MessageImage) as Image;
                 uiIcon2.Visible = uiIcon2.BackgroundImage != null;         // hide the control if there is no image in it
 
-                //TODO: Detail message
+                uiMessageText.Text = Model.Dialog.Message;
 
-                uiMessageText.Text = Model.DetailMessage
+                uiFullDetails.Text = (Model.DetailMessage ?? "")
                     + "\n\n"
-                    + Model.Dialog.Exception?.ToString();   //TODO: Replace with expandable panel.
+                    + Model.Dialog?.Exception?.ToString();
+
+                uiDetails.Visible = Model.DetailMessage != null;
 
             }
         }
@@ -91,6 +101,24 @@ namespace MvpFramework.WinForms
 
         [MvpBind(MvpBindAttribute.Model)]
         public virtual MessageDialogViewModel Model { get; set; }
+
+        private void uiDetails_Click(object sender, EventArgs e)
+        {
+            bool expanded = !uiFullDetails.Visible;
+            int expandHeight = uiFullDetails.Height;
+
+            uiFullDetails.Visible = expanded;
+            if (expanded)
+                Height += expandHeight;
+            else
+                Height -= expandHeight;
+//            Height = expanded ? ExpandedHeight : NormalHeight;
+        }
+
+        private void MessageDialogView_Resize(object sender, EventArgs e)
+        {
+            uiDetails.Top = uiButtons.Top + 12;
+        }
     }
 
     // Instead of (or as well as a color), we could have an icon to the right, or a small icon in the Button Container 

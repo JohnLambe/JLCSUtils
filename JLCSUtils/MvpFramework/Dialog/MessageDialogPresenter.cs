@@ -5,9 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using DiExtension.Attributes;
 using MvpFramework.Binding;
+using JohnLambe.Util.Exceptions;
 
 namespace MvpFramework.Dialog
 {
+    /// <summary>
+    /// Presenter for a message dialog.
+    /// <para>This is independent of the UI framework.
+    /// A UI-framework-specific view is required.
+    /// The conventional name for it is "MessageDialogView" in the namespace for classes specific to that UI framework (e.g. "MvpFramework.WinForms").
+    /// </para>
+    /// </summary>
     [Presenter(Interface = typeof(IMessageDialogPresenter))]
     public class MessageDialogPresenter : WindowPresenterBase<IMessageDialogView, MessageDialogViewModel>, IMessageDialogPresenter
     {
@@ -51,7 +59,9 @@ namespace MvpFramework.Dialog
         public virtual string Title => Dialog?.Title;
 
         public virtual string DetailMessage =>
-            Dialog?.Message + "\n\n"
-            + (Dialog?.Exception?.ToString());
+            Dialog?.Exception == null ? null
+            : Dialog?.Message + "\r\n\r\n"
+            //+ (Dialog?.Exception?.ToString());
+            + (ExceptionUtil.ExtractException(Dialog?.Exception)?.Message);
     }
 }
