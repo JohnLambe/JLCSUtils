@@ -118,7 +118,7 @@ namespace MvpFramework.Menu
                 Attribute = attribute,
                 //| Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
             };
-            if(attribute is GenerateMenuItemAttribute)
+            if(attribute is Generator.GenerateMenuItemAttribute)
             {
                 item.HandlerType = null;
                 item.ModelType = handlerType;

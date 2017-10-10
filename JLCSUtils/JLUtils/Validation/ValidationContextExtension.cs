@@ -17,6 +17,10 @@ namespace JohnLambe.Util.Validation
         /// the <see cref="GetSupportedFeatures(ValidationContext)"/> value.
         /// </summary>
         private const string Key_SupportedFeatures = "SupportedFeatures";
+        /// <summary>
+        /// Key for the item in <see cref="ValidationContext.Items"/> that holds
+        /// the <see cref="GetState(ValidationContext)"/> value.
+        /// </summary>
         private const string Key_State = "State";
 
         /// <summary>
@@ -45,6 +49,11 @@ namespace JohnLambe.Util.Validation
             context.ArgNotNull(nameof(context)).Items[Key_SupportedFeatures] = features;
         }
 
+        /// <summary>
+        /// Set the state (<see cref="ValidationState"/> value.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static ValidationState GetState(this ValidationContext context)
         {
             if (context == null)
@@ -102,6 +111,9 @@ namespace JohnLambe.Util.Validation
         ValidateWithoutObject
     }
 
+    /// <summary>
+    /// State or mode settings of the validation engine.
+    /// </summary>
     [Flags]
     public enum ValidationState
     {

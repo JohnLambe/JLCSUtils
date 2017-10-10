@@ -116,16 +116,15 @@ namespace MvpFramework.Menu
     /// <summary>
     /// Placed on a model class to specify that an menu item should be generated for it.
     /// </summary>
-    public class GenerateMenuItemAttribute : MenuItemAttributeBase
+    [Obsolete("Use MvpFramework.Generator.GenerateMenuItemAttribute")]
+    public class GenerateMenuItemAttribute : Generator.GenerateMenuItemAttribute
     {
         /// <summary>
         /// </summary>
         /// <param name="parentId">Value of <see cref="MenuAttributeBase.ParentId"/>.</param>
         /// <param name="displayName">Value of <see cref="MenuAttributeBase.DisplayName"/>.</param>
-        public GenerateMenuItemAttribute(string parentId, string displayName = null)
+        public GenerateMenuItemAttribute(string parentId, string displayName = null) : base(parentId, displayName)
         {
-            ParentId = parentId;
-            DisplayName = displayName;
         }
     }
 

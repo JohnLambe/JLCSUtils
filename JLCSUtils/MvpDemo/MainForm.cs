@@ -123,5 +123,10 @@ namespace MvpDemo
             var presenter = TestLayoutPresenterFactory.Create(model);
             presenter.Show();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            new TestForm().Show();
+        }
     }
 }

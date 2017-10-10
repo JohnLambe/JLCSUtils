@@ -18,6 +18,18 @@ namespace MvpFramework.WinForms.Util
                 return controls.OrderByDescending(c => GetControlFullTabOrder(c));
         }
 
+        /// <summary>
+        /// Returns a value such that sorting all controls on a form by this value
+        /// will give the order the order in which focus moves when pressing TAB in WinForms
+        /// (based on the <see cref="Control.TabIndex"/> of this and all of its ancestors).
+        /// <para>
+        /// The retuned string for comparison/sorting with <see cref="StringComparison.InvariantCulture"/>.
+        /// The format or values returned cannot be depended on - later versions may return different values for the same inputs.
+        /// So the returned values are not suitable for storing persistently nor transmission to another application/process instance.
+        /// </para>
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns>String for sorting to give the tab order. If <paramref name="control"/> is null, "" is returned.</returns>
         [return: NotNull]
         public static string GetControlFullTabOrder([Nullable] Control control)
         {

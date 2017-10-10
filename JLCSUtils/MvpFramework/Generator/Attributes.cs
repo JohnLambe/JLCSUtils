@@ -1,4 +1,5 @@
 ﻿using MvpFramework.Binding;
+using MvpFramework.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,4 +114,38 @@ namespace MvpFramework.Generator
 
     #endregion
 
+    #region For Menu
+
+    /// <summary>
+    /// Placed on a model class to specify that an menu item should be generated for it.
+    /// </summary>
+    public class GenerateMenuItemAttribute : MenuItemAttributeBase
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="parentId">Value of <see cref="MenuAttributeBase.ParentId"/>.</param>
+        /// <param name="displayName">Value of <see cref="MenuAttributeBase.DisplayName"/>.</param>
+        public GenerateMenuItemAttribute(string parentId, string displayName = null)
+        {
+            ParentId = parentId;
+            DisplayName = displayName;
+        }
+
+        /// <summary>
+        /// Specifies which Views/Presenters to create.
+        /// </summary>
+        public GeneratedForms GeneratedForms { get; set; } = GeneratedForms.All;
+    }
+
+    #endregion
+
+    [Flags]
+    public enum GeneratedForms
+    {
+        None = 0,
+        Search = 1,
+        Edit = 2,
+
+        All = Search | Edit
+    }
 }
