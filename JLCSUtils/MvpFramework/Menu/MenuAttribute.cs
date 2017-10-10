@@ -113,6 +113,7 @@ namespace MvpFramework.Menu
         }
     }
 
+    /*
     /// <summary>
     /// Placed on a model class to specify that an menu item should be generated for it.
     /// </summary>
@@ -127,6 +128,7 @@ namespace MvpFramework.Menu
         {
         }
     }
+    */
 
     /// <summary>
     /// Type or style of a menu or sub-menu.

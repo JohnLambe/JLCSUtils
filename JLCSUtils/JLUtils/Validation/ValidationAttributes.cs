@@ -780,13 +780,25 @@ namespace JohnLambe.Util.Validation
         public virtual DigitGroupingOption DigitGrouping { get; set; } = DigitGroupingOption.Default;
 
         /// <summary>
-        /// The lowest valid value.
+        /// The lowest valid value (inclusive).
         /// </summary>
         public virtual double MinimumValue { get; set; } = double.MinValue;
         /// <summary>
-        /// The highest valid value.
+        /// The highest valid value (inclusive).
         /// </summary>
         public virtual double MaximumValue { get; set; } = double.MaxValue;
+
+        /// <summary>
+        /// The value must be higher than this.
+        /// If both this and <see cref="MinimumValue"/> are specified, both are applied (so the higher one is redundant).
+        /// </summary>
+        public virtual double GreaterThan { get; set; } = double.MinValue;
+        /// <summary>
+        /// The value must be lower than this.
+        /// If both this and <see cref="MaximumValue"/> are specified, both are applied (so the lower one is redundant).
+        /// </summary>
+        public virtual double LessThan { get; set; } = double.MaxValue;
+
 
         /// <summary>
         /// Iff true, out of range values are replaced with the closest in-range value.
@@ -802,14 +814,14 @@ namespace JohnLambe.Util.Validation
                     value = MathUtil.Round(value, RoundTo);
                 }
                 double numericValue = GeneralTypeConverter.Convert<double>(value);
-                if (numericValue < MinimumValue)
+                if (numericValue < MinimumValue || numericValue <= GreaterThan)
                 {
                     if (AdjustToRange)
                         value = MinimumValue;
                     else
                         results.Add("Value too low");
                 }
-                else if (numericValue > MaximumValue)
+                else if (numericValue > MaximumValue || numericValue >= LessThan)
                 {
                     if (AdjustToRange)
                         value = MaximumValue;
@@ -923,14 +935,13 @@ namespace JohnLambe.Util.Validation
         /// Number of decimal places in seconds (for display and entry).
         /// </summary>
         public virtual int SecondsDecimalPlaces { get; set; }
-
     }
 
     /// <summary>
     /// Specifies that a property is a date and/or time value, and provides metadata relating to it.
     /// It may be a time of day, but not a time interval.
     /// </summary>
-    public class DateTimeValidationAttribute : ValidationAttributeBase
+    public class DateTimeValidationAttribute : TimeOrTimeSpanValidationAttribute
     {
         public override string GeneralDescription => "A date and/or time.";
 
@@ -1006,7 +1017,7 @@ namespace JohnLambe.Util.Validation
     /// This can be used on <see cref="TimeSpan"/> and numeric types.
     /// </para>
     /// </summary>
-    public class TimeSpanValidationAttribute : ValidationAttributeBase
+    public class TimeSpanValidationAttribute : TimeOrTimeSpanValidationAttribute
     {
         public override string GeneralDescription => "A time interval.";
 
