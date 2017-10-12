@@ -55,6 +55,8 @@ namespace MvpDemo
             uiAddress.Modified = false;
             MessageBox.Show(ItemType + "\n" + Model1.ToString());
             TestEvent?.Invoke(this, EventArgs.Empty);
+
+            Test2Event?.Invoke(this, e);
         }
 
         [MvpBind("EntityDescription")]
@@ -65,6 +67,9 @@ namespace MvpDemo
 
         [MvpEvent("Test")]
         public event EventHandler TestEvent;
+
+        [MvpEvent]
+        public event EventHandler Test2Event;
 
         [MvpEvent("Test_NoHandler")]
         public event EventHandler TestEvent2;

@@ -510,6 +510,33 @@ namespace JohnLambe.Util.Validation
     }
 
     /// <summary>
+    /// Specifies that the default value for the type is not valid.
+    /// </summary>
+    public class NonBlankValidationAttribute : ValidationAttributeBase
+    {
+        /*
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+            bool valid = true;
+            if (value == null)
+                valid = false;
+            else
+                valid = value == TypeUtil.GetDefaultValue(value.GetType());
+
+            if(!valid)
+            {
+                results.Add("Blank/default value not allowed");
+            }
+        }
+        */
+
+        public override bool IsDefaultAttribute() => true;
+
+        public override string DefaultDescription => "Not blank";
+    }
+
+    /// <summary>
     /// The data item holds an email address.
     /// </summary>
     public class EmailValidationAttribute : StringValidationAttribute

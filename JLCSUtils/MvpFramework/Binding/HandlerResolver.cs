@@ -13,7 +13,7 @@ using JohnLambe.Util.Types;
 
 namespace MvpFramework.Binding
 {
-    
+
     public class HandlerResolver
     {
         /// <summary>
@@ -38,14 +38,14 @@ namespace MvpFramework.Binding
 
             public virtual EventHandler HandlerDelegate
                 => Target == null ? (EventHandler)((sender, args) => { })
-                : (sender,args) => Method.Invoke(Target, Array.Empty<object>());
+                : (sender, args) => Method.Invoke(Target, Array.Empty<object>());
 
             /// <summary>
             /// Delegate to invoke the handler.
             /// </summary>
             public virtual MenuItemModel.InvokedDelegate HandlerWithArgsDelegate
                 => Target == null ? (sender, args) => { }
-                : CreateInvokeDelegate();
+            : CreateInvokeDelegate();
 
             /// <summary>
             /// Name corresponding to this handler, for displaying in a user interface.
@@ -89,6 +89,40 @@ namespace MvpFramework.Binding
             }
         }
 
+        //TODO: Merge this with Handler.CreateInvokeDelegate
+        protected static EventHandler CreateEventHandlerDelegateForMethod(MethodInfo method, object target)
+        {
+            var parameters = method.GetParameters();
+            if (parameters.Length == 0)
+            {                                                      // the handler method has no parameters
+                return (sender, args) => method.Invoke(target, Array.Empty<object>());
+            }
+            else if (parameters.Length == 1)
+            {   // 1 parameter, check its type:
+                if (parameters[0].ParameterType.IsAssignableFrom(typeof(MenuItemModel)))    // if the parameter is MenuItemModel
+                    return (sender, args) => method.Invoke(target, new object[] { sender });
+                else if (parameters[0].ParameterType.IsAssignableFrom(typeof(MenuItemModel.InvokedEventArgs)))
+                    return (sender, args) => method.Invoke(target, new object[] { args });
+            }
+            else if (parameters.Length == 2)
+            {   // 2 parameters: pass sender and args (like a WinForms event handler):
+                if (parameters[0].ParameterType.IsAssignableFrom(typeof(MenuItemModel))             // validate the parameter types
+                    && parameters[1].ParameterType.IsAssignableFrom(typeof(MenuItemModel.InvokedEventArgs)))
+                {
+                    return (sender, args) => method.Invoke(target, new object[] { sender, args });
+                }
+            }
+
+            throw new MvpResolutionException("Handler method has invalid parameters: " + method.ToString()
+                + "\nSupported parameters are " + typeof(MenuItemModel).ToString()
+                + " and/or " + typeof(MenuItemModel.InvokedDelegate).ToString());
+
+            //TODO?: Could dynamically populate method arguments according to attributes that map them to event event parameters
+            //  or other information available (Model, View or Presenter properties), or inject by DI.
+            // Could support any event handler delegate.
+        }
+
+
         /// <summary>
         /// Returns a delegate to invoke a handler on a given object.
         /// It may fire more than one handler method.
@@ -101,16 +135,17 @@ namespace MvpFramework.Binding
         [return: Nullable]
         public virtual EventHandler GetHandler([NotNull] object target, [Nullable] string handlerId, [Nullable] string filter = null, bool allowNull = false)
         {
-            var handlersSorted = GetHandlersInfo(target,handlerId).Select(h => h.Method);  // get list of handlers
+            var handlersSorted = GetHandlersInfo(target, handlerId).Select(h => h.Method);  // get list of handlers
             if (allowNull && !handlersSorted.Any())
                 return null;   // no handlers
 
             // Make a delegate to invoke them in order:
-            return (sender,args) =>
+            return (sender, args) =>
             {
                 foreach (var handlerMethod in handlersSorted)
                 {
-                    handlerMethod.Invoke(target, EmptyCollection<object>.EmptyArray);
+                    CreateEventHandlerDelegateForMethod(handlerMethod, target).Invoke(sender,args);
+//                    handlerMethod.Invoke(target, EmptyCollection<object>.EmptyArray);
                 }
             };
         }
@@ -151,8 +186,8 @@ namespace MvpFramework.Binding
             {
                 foreach (var attrib in method.GetCustomAttributes<MvpHandlerAttribute>()      // all attributes of each method
                     .Where(a => a.Enabled && (handlerId == null || (a.Id?.Equals(handlerId) ?? false))    // attributes for the specified handler on this method
-                    && FilterMatches(filter,a.Filter))                // apply the filter
-                    )              
+                    && FilterMatches(filter, a.Filter))                // apply the filter
+                    )
                 {
                     handlers.Add(new Handler()
                     {

@@ -90,6 +90,17 @@ namespace MvpDemo
             });
         }
 
+        [MvpHandler("Test2Event")]
+        public void Test2EventHandler(object sender, EventArgs e)
+        {
+            UiController.ShowMessage(
+            new ConfirmationDialog()
+            {
+                Title = "Test2EventHandler",
+                Message = e.ToString()
+            });
+        }
+
         protected readonly IUiController UiController;
     }
 

@@ -68,7 +68,10 @@ namespace JohnLambe.Util.Validation
 //TODO: test:                    results.Fail();      // modification was required but not supported
                 }
             }
-            return results.Result;
+            if (results.IsValid)
+                return ValidationResult.Success;
+            else
+                return results.Result;
         }
 
         /// <summary>

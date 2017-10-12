@@ -46,6 +46,61 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
         }
 
         [TestMethod]
+        public void IsValid_LessThan()
+        {
+            var attrib = new NumberValidationAttribute()
+            {
+                LessThan = -1000
+            };
+
+            Multiple(
+                () => Assert.IsFalse(attrib.IsValid(-1000)),
+                () => Assert.IsTrue(attrib.IsValid(-1000.1)),
+                () => Assert.IsFalse(attrib.IsValid(2000))
+            );
+        }
+
+        [TestMethod]
+        public void IsValid_GreaterThan()
+        {
+            var attrib = new NumberValidationAttribute()
+            {
+                GreaterThan = 8.5
+            };
+
+            Multiple(
+                () => Assert.IsFalse(attrib.IsValid(8.5)),
+                () => Assert.IsTrue(attrib.IsValid(8.500001)),
+                () => Assert.IsFalse(attrib.IsValid(8.499999))
+            );
+        }
+
+        [TestCategory("Failing")]
+        [TestMethod]
+        public void IsValid_RoundTo()
+        {
+            var attrib = new NumberValidationAttribute()
+            {
+                RoundTo = 3
+            };
+
+            Multiple(
+                () =>
+                {
+                    var value = 5.1234567;
+                    Assert.IsTrue(ValidatorEx.Instance.TryValidateValue(ref value, attrib));
+                    Assert.AreEqual(5.123, value);
+                },
+                () =>
+                {
+                    var value = -32.787878;
+                    Assert.IsTrue(ValidatorEx.Instance.TryValidateValue(ref value, attrib));
+                    Assert.AreEqual(-32.788, value, "Should round away from 0");
+                }
+            );
+        }
+
+        [TestMethod]
         public void IsValid()
         {
             var attrib = new NumberValidationAttribute()
