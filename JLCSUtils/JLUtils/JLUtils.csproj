@@ -102,6 +102,7 @@
     <Compile Include="Validation\!NamespaceDoc.cs" />
     <Compile Include="Validation\Attributes.cs" />
     <Compile Include="Validation\CollectionValidationAttribute.cs" />
+    <Compile Include="Validation\TimeDependantAttribute.cs" />
     <Compile Include="Validation\TypeValidationAttribute.cs" />
     <Compile Include="Validation\ValidationAttributeBase.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />

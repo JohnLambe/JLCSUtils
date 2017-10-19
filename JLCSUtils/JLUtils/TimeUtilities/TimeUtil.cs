@@ -49,7 +49,7 @@ namespace JohnLambe.Util.TimeUtilities
         public const string MetricFormat = "yyyy-MM-dd hh:mm:ss";
 
         /// <summary>
-        /// ISO-8601 Basic date/time format.
+        /// ISO-8601 Basic date/time format, including the full time (with seconds).
         /// </summary>
         public const string Iso8601Format = "yyyyMMdd'T'hhmmss";
 
@@ -171,7 +171,7 @@ namespace JohnLambe.Util.TimeUtilities
 
         #endregion
 
-        #region End of Day/Month
+        #region Start/End of Day/Month
 
         /// <summary>
         /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
@@ -217,7 +217,7 @@ namespace JohnLambe.Util.TimeUtilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime? EndOfMonth(DateTime? datetime)
             => datetime == null ? (DateTime?)null
-                : EndOfMonth(datetime);
+                : EndOfMonth(datetime.Value);
 
         /// <summary>
         /// Returns the end of the last day of month of the given date.
@@ -225,7 +225,7 @@ namespace JohnLambe.Util.TimeUtilities
         /// <param name="datetime"></param>
         /// <returns></returns>
         public static DateTime EndOfMonth(DateTime datetime)
-            => datetime.Date + EndOfDayTime;
+            => new DateTime(datetime.Day,datetime.Month,1).AddMonths(1).AddDays(-1) + EndOfDayTime;
 
         /// <summary>
         /// A time just less than one day (currently one millisecond less than a day).
@@ -234,6 +234,55 @@ namespace JohnLambe.Util.TimeUtilities
 
         #endregion
 
+        #region SQL Server End Of Day/Month
+
+        /// <summary>
+        /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns>The end of the day of the date represented by the given value, or null if passed null.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime? SqlEndOfDay(this DateTime? time)
+            => time == null ? (DateTime?)null
+                : SqlEndOfDay(time);
+
+        /// <summary>
+        /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
+        /// </summary>
+        /// <param name="time">The end of the day of the date represented by the given value.</param>
+        /// <returns></returns>
+        public static DateTime SqlEndOfDay(this DateTime time)
+            => time.Date + SqlEndOfDayTime;
+
+        /// <summary>
+        /// Returns the end of the last day of month of the given date (or null if passed null).
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime? SqlEndOfMonth(DateTime? datetime)
+            => datetime == null ? (DateTime?)null
+                : SqlEndOfMonth(datetime.Value);
+
+        /// <summary>
+        /// Returns the end of the last day of month of the given date.
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static DateTime SqlEndOfMonth(DateTime datetime)
+            => new DateTime(datetime.Day, datetime.Month, 1).AddMonths(1).AddDays(-1) + SqlEndOfDayTime;
+
+        /// <summary>
+        /// A time just less than one day: The highest value less than a day that can be represented in a Microsoft SQL Server datetime type.
+        /// </summary>
+        public static readonly TimeSpan SqlEndOfDayTime = new TimeSpan(0, 23, 59, 59, 997);
+
+        #endregion
+
+        /// <summary>
+        /// The current time in ISO 8601 Basic format.
+        /// </summary>
+        /// <returns></returns>
         public static string NowIso8601()
             => DateTime.Now.ToString(Iso8601Format);
     }
