@@ -88,7 +88,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="value"></param>
         /// <returns>True if the given type is a primitive string or character type.</returns>
         public static bool IsText(object value)
-            => value==null ? false : IsTextType(value.GetType());
+            => value == null ? false : IsTextType(value.GetType());
 
         /// <summary>
         /// </summary>
@@ -127,10 +127,10 @@ namespace JohnLambe.Util.Reflection
             if (t == null || t == typeof(void))
                 return "void";
 
-            if(t.IsPrimitive)
-            { 
+            if (t.IsPrimitive)
+            {
                 // Integer:
-                if(t == typeof(int))
+                if (t == typeof(int))
                     return "int";
                 if (t == typeof(uint))
                     return "uint";
@@ -210,6 +210,29 @@ namespace JohnLambe.Util.Reflection
                 return 1;
             else
                 return 0;
+        }
+
+        /// <summary>
+        /// Returns the default value of the given type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">If <paramref name="type"/> is typeof(void) (since it cannot have a value).</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="type"/> is null.</exception>
+        //| There's no generic version: public static T GetTypeDefaultValue<T>()
+        //|  because it would just return default(T).
+        [return: Nullable]
+        public static object GetTypeDefaultValue(this Type type)
+        {
+            // Validate:
+            type.ArgNotNull(nameof(type));
+            if (type == typeof(void))
+                throw new ArgumentException();
+
+            if (type.IsValueType)
+                return Activator.CreateInstance(type);    // this returns null for nullable value types
+            else
+                return null;   // null is the default for all reference types
         }
     }
 }

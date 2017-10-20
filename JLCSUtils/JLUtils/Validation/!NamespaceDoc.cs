@@ -1,6 +1,7 @@
 ﻿namespace JohnLambe.Util.Validation
 {
     /// <summary>
+    /// Validation:
     /// <see cref="System.ComponentModel.DataAnnotations.ValidationAttribute"/> subclasses and related types.
     /// </summary>
     static class NamespaceDoc

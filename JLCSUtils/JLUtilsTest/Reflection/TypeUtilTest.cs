@@ -105,5 +105,16 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
                 () => Assert.AreEqual("System.Int32", TypeUtil.TypeNameOrVoid(typeof(int)))
                 );
         }
+
+        [TestMethod]
+        public void GetTypeDefaultValue()
+        {
+            Multiple(
+                () => Assert.AreEqual(0, TypeUtil.GetTypeDefaultValue(typeof(int))),
+                () => Assert.AreEqual(null, TypeUtil.GetTypeDefaultValue(typeof(decimal?))),
+                () => Assert.AreEqual(null, TypeUtil.GetTypeDefaultValue(typeof(object))),
+                () => Assert.AreEqual(null, TypeUtil.GetTypeDefaultValue(typeof(System.Action)))
+            );
+        }
     }
 }
