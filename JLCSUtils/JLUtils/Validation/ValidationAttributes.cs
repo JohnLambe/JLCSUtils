@@ -828,6 +828,12 @@ namespace JohnLambe.Util.Validation
 
 
         /// <summary>
+        /// The unit in which thee value is measured: What a value of 1 represents.
+        /// </summary>
+        public virtual object Unit { get; set; }
+
+
+        /// <summary>
         /// Iff true, out of range values are replaced with the closest in-range value.
         /// </summary>
         public virtual bool AdjustToRange { get; set; } = false;
@@ -859,6 +865,9 @@ namespace JohnLambe.Util.Validation
         }
     }
 
+    /// <summary>
+    /// Specifies how digits in a number are grouped (for groups separated by commas or spaces, etc.).
+    /// </summary>
     public enum DigitGroupingOption  // refactor to objects ?
     {
         /// <summary>
@@ -951,6 +960,9 @@ namespace JohnLambe.Util.Validation
     }
 
 
+    /// <summary>
+    /// Validates a date/time or timespan value.
+    /// </summary>
     public abstract class TimeOrTimeSpanValidationAttribute : ValidationAttributeBase
     {
         /// <summary>
@@ -960,8 +972,15 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// Number of decimal places in seconds (for display and entry).
+        /// (This is ignored if <see cref="TimeParts"/> does not include <see cref="TimePrecision.SecondFraction"/>.)
         /// </summary>
         public virtual int SecondsDecimalPlaces { get; set; }
+
+        /// <summary>
+        /// True to round values (on validation) to the precision specified by <see cref="TimeParts"/>
+        /// and <see cref="SecondsDecimalPlaces"/>.
+        /// </summary>
+        public virtual bool Round { get; set; }
     }
 
     /// <summary>
@@ -1048,6 +1067,10 @@ namespace JohnLambe.Util.Validation
     {
         public override string GeneralDescription => "A time interval.";
 
+        /// <summary>
+        /// Where the attributed item is of a numeric type (not a TimeSpan or DateTime),
+        /// it is multiplied by this value to convert it to a <seealso cref="TimeSpan"/>.
+        /// </summary>
         public virtual TimeSpan Multiplier { get; set; }
 
         /// <summary>
@@ -1060,10 +1083,24 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual TimeSpan Maximum { get; set; } = TimeSpan.MaxValue;
 
-        //TODO
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+            //TODO: Multiplier
+            TimeSpan timeValue = GeneralTypeConverter.Convert<TimeSpan>(value);
+
+            if (timeValue < Minimum || timeValue > Maximum)
+                results.Add("Time is outside the allowed range");  //TODO Show range
+
+            //TODO other properties
+        }
 
     }
 
+    /// <summary>
+    /// Specifies which parts of a date/time or timespan value are present or relevant.
+    /// </summary>
+    /// <seealso cref="TimePartOption"/>
     [Flags]
     public enum TimePrecision
     {
@@ -1073,10 +1110,12 @@ namespace JohnLambe.Util.Validation
         Hour = 0x10,
         Minute = 0x08,
         Second = 0x04,
-        SecondsFraction = 0x02,
+        SecondFraction = 0x02,
+        [Obsolete]
+        SecondsFraction = SecondFraction,
 
         Date = Year | Month | Day,
-        TimeOfDay = Hour | Minute | Second | SecondsFraction,
+        TimeOfDay = Hour | Minute | Second | SecondFraction,
         Full = Date | TimeOfDay
     }
 
@@ -1145,7 +1184,7 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// Value which the value being validated must not be less than.
-        /// Must implement <see cref="IComparable"/>.
+        /// Must implement <see cref="IComparable"/> and support comparison to the value being validated.
         /// null for no minimum.
         /// </summary>
         public virtual object Minimum
@@ -1157,7 +1196,7 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// Value which the value being validated must not be higher than.
-        /// Must implement <see cref="IComparable"/>.
+        /// Must implement <see cref="IComparable"/> and support comparison to the value being validated.
         /// null for no maximum.
         /// </summary>
         public virtual object Maximum
@@ -1168,6 +1207,7 @@ namespace JohnLambe.Util.Validation
         protected IComparable _maximum;
 
         //TODO: Specify whether each property is inclusive ?
+        //TODO: Specify comparer ?
 
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
@@ -1179,5 +1219,24 @@ namespace JohnLambe.Util.Validation
                 results.Add("must be less than or equal to " + _maximum);
         }
 
+    }
+
+
+    public class DeviceNameValidationAttribute : ValidationAttributeBase
+    {
+    }
+
+    /// <summary>
+    /// Specifies that the attributed item identifies a printer (or equivalent image output device, e.g. fax machine).
+    /// </summary>
+    public class PrinterValidationAttribute : DeviceNameValidationAttribute
+    {
+    }
+
+    /// <summary>
+    /// Specifies that the attributed item identifies an image acquisition device (document scanner or equivalent).
+    /// </summary>
+    public class ScannerValidationAttribute : DeviceNameValidationAttribute
+    {
     }
 }
