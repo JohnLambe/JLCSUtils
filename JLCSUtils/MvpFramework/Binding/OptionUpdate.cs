@@ -1,4 +1,5 @@
-﻿using MvpFramework.Menu;
+﻿using JohnLambe.Util;
+using MvpFramework.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,18 @@ namespace MvpFramework.Binding
         public static void SetVisible(this IOptionUpdate optionUpdate, string id, string filter, bool value)
         {
             optionUpdate.UpdateOption(new OptionUpdateArgs() { Filter = filter, Id = id, OnUpdate = args => args.Option.Visible = value });
+        }
+
+        /// <summary>
+        /// Update options using a delegate.
+        /// </summary>
+        /// <param name="optionUpdate">The interface to use to the update.</param>
+        /// <param name="id">Id to match <see cref="MenuItemModel.Id"/>. null to not use this.</param>
+        /// <param name="filter">Filter value to match against <see cref="MenuItemModel.Filter"/>. null to not filter on this.</param>
+        /// <param name="d">Delegate to run on each option.</param>
+        public static void UpdateOptionByDelegate(this IOptionUpdate optionUpdate, string filter, string id, VoidDelegate<MenuItemModel> d)
+        {
+            optionUpdate.UpdateOption(new OptionUpdateArgs() { Filter = filter, Id = id, OnUpdate = args => d(args.Option) });
         }
     }
 
