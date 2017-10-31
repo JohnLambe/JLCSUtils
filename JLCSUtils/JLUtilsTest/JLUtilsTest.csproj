@@ -139,6 +139,7 @@
     <Compile Include="Reflection\ReflectionUtilTest_Hiding.cs" />
     <Compile Include="Reflection\TypeUtilTest.cs" />
     <Compile Include="Security\HashedPasswordTest.cs" />
+    <Compile Include="Security\RemoteHashedPasswordTest.cs" />
     <Compile Include="StrUtilTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TestUtilTest.cs" />

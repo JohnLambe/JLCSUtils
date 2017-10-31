@@ -39,7 +39,12 @@ namespace JohnLambe.Util.Types
         /// Indicates whether the value of this instance is the default value for this class.
         /// </summary>
         /// <returns>Always true since there are no added properties.</returns>
-        public override bool IsDefaultAttribute() => true;
+        public override bool IsDefaultAttribute() => Documentation == null;
+
+        /// <summary>
+        /// Text documenting when the item can be null, or what it means when it is null.
+        /// </summary>
+        public virtual string Documentation { get; set; }
     }
 
     /// <summary>
@@ -52,6 +57,13 @@ namespace JohnLambe.Util.Types
     //| This could be validated automatically on parameters by LooselyCoupledEvent.
     public class NotNullAttribute : NullabilityAttribute
     {
+        /// <summary/>
+        /// <param name="documentation"><inheritdoc cref="Documentation"/></param>
+        public NotNullAttribute(string documentation = null)
+        {
+            this.Documentation = documentation;
+        }
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (value != null)
@@ -73,6 +85,13 @@ namespace JohnLambe.Util.Types
     /// </summary>
     public class NullableAttribute : NullabilityAttribute
     {
+        /// <summary/>
+        /// <param name="documentation"><inheritdoc cref="Documentation"/></param>
+        public NullableAttribute(string documentation = null)
+        {
+            this.Documentation = documentation;
+        }
+
         /// <inheritdoc cref="NullabilityAttribute.IsNullable"/>
         public override bool IsNullable => true;
 

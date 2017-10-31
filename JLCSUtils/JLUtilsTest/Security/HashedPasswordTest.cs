@@ -22,7 +22,10 @@ namespace JohnLambe.Tests.JLUtilsTest.Security
 
             // Assert:
             Assert.AreEqual(true, pass.TestPassword(password));
-            Assert.AreEqual(false, pass.TestPassword("asdfgH"));
+            Assert.AreEqual(false, pass.TestPassword("asdfgH"));  // one character different by letter case
+
+            Assert.IsFalse(pass.TestPassword(null));
+            Assert.IsFalse(pass.TestPassword(""));
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Security
             pass.Value = password;
 
             // Act:
-            pass.ChangePassword(password, newPassword);
+            Assert.IsTrue(pass.ChangePassword(password, newPassword));
 
             // Assert:
             Assert.IsTrue(pass.TestPassword(newPassword));
@@ -96,11 +99,43 @@ namespace JohnLambe.Tests.JLUtilsTest.Security
             pass.Value = password;
 
             // Act:
-            pass.ChangePassword(" " + password, newPassword);
+            Assert.IsFalse(pass.ChangePassword(" " + password, newPassword));   // fails to set password
 
             // Assert:
             Assert.IsFalse(pass.TestPassword(newPassword));
-            Assert.IsTrue(pass.TestPassword(password));
+            Assert.IsTrue(pass.TestPassword(password));            // still has the old password
         }
+
+        /// <summary>
+        /// Test that it is initialised to a blank password, and setting <see cref="HashedPassword.EncodedValue"/> to null sets a blank password.
+        /// </summary>
+        [TestMethod]
+        public void EncodedValue_Null()
+        {
+            var pass = new HashedPassword();
+
+            Assert.IsTrue(pass.TestPassword(null));
+            Assert.IsTrue(pass.TestPassword(""));
+
+            pass.EncodedValue = null;
+            Assert.IsTrue(pass.TestPassword(null));
+            Assert.IsTrue(pass.TestPassword(""));
+        }
+
+        /// <summary>
+        /// Test that setting <see cref="HashedPassword.Value"/> to null sets a blank password.
+        /// </summary>
+        [TestMethod]
+        public void Value_Null()
+        {
+            // Arrange:
+            var pass = new HashedPassword();
+            pass.Value = null;
+
+            // Act/Assert:
+            Assert.IsTrue(pass.TestPassword(null));
+            Assert.IsTrue(pass.TestPassword(""));
+        }
+
     }
 }
