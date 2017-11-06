@@ -65,9 +65,37 @@ namespace JohnLambe.Util
             }
         }
 
+        /// <summary>
+        /// If <paramref name="thisValue"/> is the default value for its type, return null, otherwise return the value unmodified.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static T DefaultToNull<T>(T thisValue) where T : class
+        { 
+            if (thisValue == default(T))
+                return null;
+            else
+                return thisValue;
+        }
+
+        /// <summary>
+        /// If <paramref name="thisValue"/> is the default value for its type or the default provided by <see cref="IHasDefaultValue{T}"/>,
+        /// return null, otherwise return the value unmodified.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static T DefaultToNull<T>(IHasDefaultValue<T> thisValue) where T : class
+        {
+            if (thisValue == default(T) || thisValue == thisValue.DefaultValue())
+                return null;
+            else
+                return (T)thisValue;
+        }
+
         // See MiscUtil.FirstNonNull
-        // Use ?? in C# 4.0 or later
-        [Obsolete]
+        [Obsolete("Use ?? in C# 4.0 or later")]
         public static T Coalesce<T>(this T thisValue, params T[] values) where T: class
         {
             if (thisValue != null)
