@@ -15,24 +15,30 @@ namespace JohnLambe.Tests.JLUtilsTest.TimeUtilities
         [TestMethod]
         public void ConstructorTest()
         {
-            Assert.AreEqual(new TimeSpan(0, 1, 2, 3), new Time(1, 2, 3));
-            Assert.AreEqual(new TimeSpan(50000), new Time(50000));
+            TestUtil.Multiple(
+                () => Assert.AreEqual(new TimeSpan(0, 1, 2, 3), new Time(1, 2, 3)),
+                () => Assert.AreEqual(new TimeSpan(50000), new Time(50000))
+                );
         }
 
         [TestMethod]
         public void LessThan()
         {
-            Assert.IsTrue(new Time(20, 10, 20) < new Time(20, 10, 21));
-            Assert.IsFalse(new Time(20, 1, 5) < new Time(20, 1, 5), "Equal");
-            Assert.IsFalse(new Time(20, 10, 5) < new Time(20, 9, 15), "Higher");
+            TestUtil.Multiple(
+                () => Assert.IsTrue(new Time(20, 10, 20) < new Time(20, 10, 21)),
+                () => Assert.IsFalse(new Time(20, 1, 5) < new Time(20, 1, 5), "Equal"),
+                () => Assert.IsFalse(new Time(20, 10, 5) < new Time(20, 9, 15), "Higher")
+            );
         }
 
         [TestMethod]
         public void GreaterThan()
         {
-            Assert.IsFalse(new Time(20, 9, 29) > new Time(20, 10, 21));
-            Assert.IsFalse(new Time(20, 1, 5) > new Time(20, 1, 5), "Equal");
-            Assert.IsTrue(new Time(20, 10, 5) > new Time(20, 9, 15), "Higher");
+            TestUtil.Multiple(
+                () => Assert.IsFalse(new Time(20, 9, 29) > new Time(20, 10, 21)),
+                () => Assert.IsFalse(new Time(20, 1, 5) > new Time(20, 1, 5), "Equal"),
+                () => Assert.IsTrue(new Time(20, 10, 5) > new Time(20, 9, 15), "Higher")
+                );
         }
 
         [TestMethod]

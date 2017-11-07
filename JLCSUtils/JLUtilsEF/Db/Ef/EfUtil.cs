@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Db.Ef
 {
+    /// <summary>
+    /// Entity Framework -related utilities.
+    /// </summary>
     public static class EfUtil
     {
         /// <summary>

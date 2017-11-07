@@ -159,7 +159,7 @@ namespace JohnLambe.Util.Services
             Now = value;
         }
 
-        public virtual DateTime Now { get; set; } = DateTime.Now;
+        public virtual DateTime Now { get; set; }
 
         public virtual DateTime UtcNow => Now.ToUniversalTime();
 

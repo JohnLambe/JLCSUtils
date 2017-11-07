@@ -181,7 +181,7 @@ namespace JohnLambe.Util.TimeUtilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime? EndOfDay(this DateTime? time)
             => time == null ? (DateTime?)null
-                : EndOfDay(time);
+                : EndOfDay(time.Value);
 
         /// <summary>
         /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
@@ -244,7 +244,7 @@ namespace JohnLambe.Util.TimeUtilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime? SqlEndOfDay(this DateTime? time)
             => time == null ? (DateTime?)null
-                : SqlEndOfDay(time);
+                : SqlEndOfDay(time.Value);
 
         /// <summary>
         /// Returns a DateTime with the time part set to the end of the day (last millisecond of the day).
@@ -270,7 +270,7 @@ namespace JohnLambe.Util.TimeUtilities
         /// <param name="datetime"></param>
         /// <returns></returns>
         public static DateTime SqlEndOfMonth(DateTime datetime)
-            => new DateTime(datetime.Day, datetime.Month, 1).AddMonths(1).AddDays(-1) + SqlEndOfDayTime;
+            => new DateTime(datetime.Year, datetime.Month, 1).AddMonths(1).AddDays(-1) + SqlEndOfDayTime;
 
         /// <summary>
         /// A time just less than one day: The highest value less than a day that can be represented in a Microsoft SQL Server datetime type.
