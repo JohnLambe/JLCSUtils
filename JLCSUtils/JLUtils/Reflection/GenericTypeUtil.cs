@@ -64,7 +64,7 @@ namespace JohnLambe.Util.Reflection
             {
                 return typeToTest != null && typeToTest.IsGenericType && typeToTest.GetGenericTypeDefinition() == openGenericType;
             }
-            catch(InvalidOperationException)
+            catch(InvalidOperationException)  //TODO: Remove (probably never happens due to check above)
             {
                 return false;
             }

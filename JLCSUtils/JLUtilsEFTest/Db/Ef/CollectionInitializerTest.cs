@@ -16,7 +16,21 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public virtual int Id { get; set; }
 
         [InverseProperty(nameof(EbCollectionItemEntity.Parent))]
-        public virtual ICollection<EbCollectionItemEntity> Children { get; set; }
+        public virtual ICollection<EbCollectionItemEntity> Children { get; set; }  // should be initialized
+
+        public virtual IAsyncResult Dummy1 { get; set; }         // not a collection
+        public virtual ICollection<EbCollectionItemEntity> Dummy2 { get; }  // can't be assigned
+        public virtual List<EbCollectionItemEntity> Dummy3 { get; }  // not supported
+
+        [InitializeCollection(false)]
+        [InverseProperty(nameof(EbCollectionItemEntity.Parent))]
+        public virtual ICollection<EbCollectionItemEntity> Dummy4 { get; set; }  // should NOT be initialized
+
+        [InitializeCollection]
+        public virtual ICollection<int> NonEntities { get; set; }  // should be initialized
+
+        [InitializeCollection]
+        protected virtual ICollection<EbCollectionItemEntity> ProtectedCollection { get; set; }  // should be initialized
     }
 
     public class EbCollectionItemEntity : EntityBase
@@ -29,11 +43,83 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public virtual int? ParentId { get; set; }
     }
 
+    public class EbCollectionEntitySubclass : EbCollectionEntity
+    {
+        [InitializeCollection(true)]
+        public ICollection<EbCollectionItemEntity> WriteOnly
+        {
+            set { GetterForWriteOnly = value; }
+        }
+        public ICollection<EbCollectionItemEntity> GetterForWriteOnly { get; protected set; }
+
+        public object GetterForProtected => ProtectedCollection;
+    }
+
 
     [TestClass]
     public class CollectionInitializerTest
     {
         TestDbContext _dbContext = new TestDbContext();
+
+        /// <summary>
+        /// The collection is not initialized on adding and saving (it remains null, NOT an empty collection).
+        /// </summary>
+        [TestMethod]
+        public void InitializeCollections()
+        {
+            // Act:
+            var e1 = new EbCollectionEntity();
+
+            // Assert:
+            Assert.AreNotEqual(null, e1.Children);
+            Assert.AreNotEqual(null, e1.NonEntities);
+
+            Assert.AreEqual(null, e1.Dummy1);
+            Assert.AreEqual(null, e1.Dummy2);
+            Assert.AreEqual(null, e1.Dummy3);
+            Assert.AreEqual(null, e1.Dummy4);
+        }
+
+        [TestMethod]
+        public void InitializeCollections_Subclass()
+        {
+            // Act:
+            var e1 = new EbCollectionEntitySubclass();
+
+            // Assert:
+            Assert.AreNotEqual(null, e1.GetterForWriteOnly);
+
+            Assert.AreNotEqual(null, e1.Children);
+            Assert.AreNotEqual(null, e1.NonEntities);
+
+            Assert.AreEqual(null, e1.Dummy1);
+            Assert.AreEqual(null, e1.Dummy2);
+            Assert.AreEqual(null, e1.Dummy3);
+            Assert.AreEqual(null, e1.Dummy4);
+        }
+
+        [TestMethod]
+        public void InitializeCollections_Protected()
+        {
+            // Arrange:
+            var e1 = new EbCollectionEntitySubclass();
+
+            // Act:
+            CollectionInitializer.InitializeInstance(e1, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+            // Assert:
+            Assert.AreNotEqual(null, e1.GetterForProtected);
+
+            Assert.AreNotEqual(null, e1.GetterForWriteOnly);
+
+            Assert.AreNotEqual(null, e1.Children);
+            Assert.AreNotEqual(null, e1.NonEntities);
+
+            Assert.AreEqual(null, e1.Dummy1);
+            Assert.AreEqual(null, e1.Dummy2);
+            Assert.AreEqual(null, e1.Dummy3);
+            Assert.AreEqual(null, e1.Dummy4);
+        }
 
         /// <summary>
         /// The collection is not initialized on adding and saving (it remains null, NOT an empty collection).

@@ -43,9 +43,9 @@ namespace JohnLambe.Util.Db.Ef
         /// </para>
         /// </summary>
         /// <param name="instance"></param>
-        public static void InitializeInstance([NotNull] object instance)
+        public static void InitializeInstance([NotNull] object instance, BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance)
         {
-            foreach(var prop in instance.GetType().GetProperties().Where(p => IsAutoInitializeProperty(p)))
+            foreach(var prop in instance.GetType().GetProperties(bindingFlags).Where(p => IsAutoInitializeProperty(p)))
             {
                 InitializeProperty(prop, instance);
             }
@@ -64,9 +64,9 @@ namespace JohnLambe.Util.Db.Ef
         /// <returns>true iff <paramref name="property"/> is initialized by <see cref="InitializeInstance"/>.</returns>
         public static bool IsAutoInitializeProperty([NotNull] PropertyInfo property)
         {
-            return property.PropertyType.IsInterface
-                && property.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>) 
-                && (property.PropertyType.GetCustomAttribute<InitializeCollectionAttribute>()?.Enabled ?? property.IsDefined<InversePropertyAttribute>());
+            return GenericTypeUtil.Compare(property.PropertyType, typeof(ICollection<>))
+                && property.CanWrite
+                && (property.GetCustomAttribute<InitializeCollectionAttribute>()?.Enabled ?? property.IsDefined<InversePropertyAttribute>());
             // if there is no InitializeCollectionAttribute, initialize if there is an InversePropertyAttribute.
         }
 
