@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Reflection
 {
+    /// <summary>
+    /// Utility methods related to generic types.
+    /// </summary>
     public static class GenericTypeUtil
     {
         /// <summary>
@@ -23,7 +26,7 @@ namespace JohnLambe.Util.Reflection
         /// If 0, a non-generic type is returned.</param>
         /// <returns>an open generic type (unless <paramref name="genericParameterCount"/> is 0, in which case it returns a non-generic type) with the requested number of type parameters.</returns>
         /// <exception cref="System.TypeLoadException">If no such type exists.</exception>
-        public static Type ChangeGenericParameterCount(Type baseType, int genericParameterCount)
+        public static Type ChangeGenericParameterCount([NotNull] Type baseType, int genericParameterCount)
         {
             string typeName = baseType.FullName.SplitBefore(GenericIndicator)
                 + (genericParameterCount > 0 ? 
@@ -39,13 +42,32 @@ namespace JohnLambe.Util.Reflection
         /// <param name="baseType"></param>
         /// <param name="genericParameters">The new generic parameters. If an empty list is given, a non-generic type is returned.</param>
         /// <returns></returns>
-        public static Type ChangeGenericParameters(Type baseType, params Type[] genericParameters)
+        public static Type ChangeGenericParameters([NotNull] Type baseType, params Type[] genericParameters)
         {
             var openGenericType = ChangeGenericParameterCount(baseType, genericParameters.Length);
             if (genericParameters.Length == 0)
                 return openGenericType;            // in this case, it is non-generic
             else
                 return openGenericType.MakeGenericType(genericParameters);
+        }
+
+        /// <summary>
+        /// Tests whether a given type (<paramref name="typeToTest"/>) is a generic type (closed or open) matching the given open generic type.
+        /// Returns false if <paramref name="typeToTest"/> is null or not generic (including if it is a primitive type).
+        /// </summary>
+        /// <param name="typeToTest"></param>
+        /// <param name="openGenericType"></param>
+        /// <returns></returns>
+        public static bool Compare([Nullable] Type typeToTest, [NotNull] Type openGenericType)
+        {
+            try
+            {
+                return typeToTest != null && typeToTest.IsGenericType && typeToTest.GetGenericTypeDefinition() == openGenericType;
+            }
+            catch(InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         #region Nullable
@@ -105,6 +127,8 @@ namespace JohnLambe.Util.Reflection
 
         #endregion
 
+        #region Generic type name manipulation
+
         /// <summary>
         /// Removes any generic arguments from the given type name.
         /// </summary>
@@ -138,5 +162,7 @@ namespace JohnLambe.Util.Reflection
             else
                 return "";  // no type arguments
         }
+
+        #endregion
     }
 }

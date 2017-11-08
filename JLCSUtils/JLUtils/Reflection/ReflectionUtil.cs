@@ -438,8 +438,8 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="type"></param>
         /// <param name="arguments"></param>
-        /// <typeparam name="T">The </typeparam>
-        /// <returns></returns>
+        /// <typeparam name="T">The type to be created or a type that it is assignable to.</typeparam>
+        /// <returns>The new instance.</returns>
         public static T Create<T>([NotNull] this Type type, params object[] arguments)
             where T : class
         {
@@ -464,7 +464,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="type"></param>
         /// <param name="argumentTypes"></param>
         /// <param name="arguments"></param>
-        /// <returns></returns>
+        /// <returns>The new instance.</returns>
         /// <exception>If the type does not have a constructor with the given argument types.</exception>
         public static T CreateT<T>([NotNull] Type type, [NotNull] Type[] argumentTypes, [NotNull] object[] arguments)
             where T : class

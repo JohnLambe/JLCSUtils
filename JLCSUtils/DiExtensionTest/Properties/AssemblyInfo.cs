@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DiExtensionTest")]
-[assembly: AssemblyCopyright("Copyright © 2017-2018 John Bernard Lambe; MIT Licence")]
+[assembly: AssemblyCopyright("Copyright © 2017 John Bernard Lambe; MIT Licence")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

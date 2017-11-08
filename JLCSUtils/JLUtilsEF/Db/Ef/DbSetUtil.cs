@@ -15,7 +15,7 @@ namespace JohnLambe.Util.Db.Ef
         /// <typeparam name="T"></typeparam>
         /// <param name="set"></param>
         /// <param name="key">Delegate to extract a key from each entity.
-        /// Each item is added if no entity exists with its value returned by this matching the new one.
+        /// Each item is added if no entity exists with its key (returned by this) matching the new one.
         /// </param>
         /// <param name="items">The items to be added.</param>
         /// <returns>The same DbSet passed in.</returns>

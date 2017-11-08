@@ -1,4 +1,5 @@
 ﻿using JLUtilsEFTest.Db.Ef;
+using JLUtilsEFTest.Db.Ef.CollectionInitializerTst;
 using JLUtilsEFTest.Db.Ef.Collections;
 using JLUtilsEFTest.Db.Ef.CollectionsInitialized;
 using JohnLambe.Util.Db.Ef;
@@ -24,7 +25,9 @@ namespace JLUtilsEFTest
         public virtual DbSet<TestEntity> TestEntities { get; set; }
         public virtual DbSet<Entity1> Entity1s { get; set; }
         public virtual DbSet<CollectionEntity> CollectionEntities { get; set; }
-        public virtual DbSet<CollectionEntityInit> CollectionEntityInit { get; set; }
+        public virtual DbSet<CollectionEntityInit> CollectionEntityInits { get; set; }
+        public virtual DbSet<EbCollectionEntity> EbCollectionEntitys { get; set; }
+        public virtual DbSet<ProtectedPropertyEntity> ProtectedPropertyEntitys { get; set; }
         
     }
 
