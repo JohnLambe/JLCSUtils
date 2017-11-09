@@ -52,14 +52,14 @@
   <ItemGroup>
     <Compile Include="Db\EfDatabaseContext.cs" />
     <Compile Include="Db\EfDbRepository.cs" />
-    <Compile Include="Db\Ef\CollectionInitializer.cs" />
+    <Compile Include="Db\CollectionInitializer.cs" />
     <Compile Include="Db\Ef\DbSetUtil.cs" />
     <Compile Include="Db\Ef\EfUtil.cs" />
-    <Compile Include="Db\Ef\EntityBase.cs" />
+    <Compile Include="Db\EntityBase.cs" />
     <Compile Include="Db\Ef\EntityEvents.cs" />
     <Compile Include="Db\Ef\EventArgs.cs" />
     <Compile Include="Db\Ef\ExtendedContext.cs" />
-    <Compile Include="Db\IDbRepository.cs" />
+    <Compile Include="Db\IDatabaseRepository.cs" />
     <Compile Include="Db\IOrmDatabaseContext.cs" />
     <Compile Include="Db\MockDbRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

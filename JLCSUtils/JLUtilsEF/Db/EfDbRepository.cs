@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Db
 {
-    public class EfDbRepositoryBase<TEntity> : IDbRepositoryBase<TEntity>
+    public class EfDbRepositoryBase<TEntity> : IDatabaseRepositoryBase<TEntity>
         where TEntity : class
     {
         public EfDbRepositoryBase(DbContext context) : this(context, (IDbSet<TEntity>)context.Set(typeof(TEntity)))
@@ -42,7 +42,7 @@ namespace JohnLambe.Util.Db
     }
 
 
-    public class EfReadOnlyDbRepository<TEntity> : EfDbRepositoryBase<TEntity>, IReadOnlyDbRepository<TEntity>
+    public class EfReadOnlyDbRepository<TEntity> : EfDbRepositoryBase<TEntity>, IReadOnlyDatabaseRepository<TEntity>
         where TEntity : class
     {
         public EfReadOnlyDbRepository(DbContext context) : base(context)
@@ -55,7 +55,7 @@ namespace JohnLambe.Util.Db
     }
 
 
-    public class EfMutableDbRepository<TEntity> : EfDbRepositoryBase<TEntity>, IMutableDbRepository<TEntity>
+    public class EfMutableDbRepository<TEntity> : EfDbRepositoryBase<TEntity>, IMutableDatabaseRepository<TEntity>
         where TEntity : class
     {
         public EfMutableDbRepository(DbContext context) : base(context)

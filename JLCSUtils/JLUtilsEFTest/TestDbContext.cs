@@ -26,7 +26,7 @@ namespace JLUtilsEFTest
         public virtual DbSet<Entity1> Entity1s { get; set; }
         public virtual DbSet<CollectionEntity> CollectionEntities { get; set; }
         public virtual DbSet<CollectionEntityInit> CollectionEntityInits { get; set; }
-        public virtual DbSet<EbCollectionEntity> EbCollectionEntitys { get; set; }
+        public virtual DbSet<EbCollectionEntity1> EbCollectionEntitys { get; set; }
         public virtual DbSet<ProtectedPropertyEntity> ProtectedPropertyEntitys { get; set; }
         
     }

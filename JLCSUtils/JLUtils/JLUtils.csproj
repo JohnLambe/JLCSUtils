@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\ArrayUtil.cs" />
+    <Compile Include="Collections\CollectionInitializer.cs" />
     <Compile Include="Collections\CompareUtil.cs" />
     <Compile Include="Collections\EnumerableCaster.cs" />
     <Compile Include="Collections\EnumeratorUtil.cs" />

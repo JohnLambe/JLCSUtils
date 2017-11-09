@@ -10,13 +10,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JohnLambe.Util.Db
 {
-    public class MockDbRepository<TEntity> : IMutableDbRepository<TEntity>, IReadOnlyDbRepository<TEntity>
+    public class MockDatabaseRepository<TEntity> : IMutableDatabaseRepository<TEntity>, IReadOnlyDatabaseRepository<TEntity>
         where TEntity : class
     {
         //TODO: tracking entity state (e.g. whether attached entities are modified).
         //  The behaviour of this does not fully match Entity Framework.
 
-        public MockDbRepository(ICollection<TEntity> initialData)
+        public MockDatabaseRepository(ICollection<TEntity> initialData)
         {
             if (initialData != null)
             {

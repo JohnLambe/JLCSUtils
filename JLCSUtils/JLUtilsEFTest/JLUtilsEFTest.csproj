@@ -80,6 +80,10 @@
       <Project>{57DD0BFC-5A06-48D2-8E49-57D191E00D4A}</Project>
       <Name>JLUtilsEF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\JLUtils\JLUtils.csproj">
+      <Project>{2C2E5049-976D-408F-A67D-1463271F3E98}</Project>
+      <Name>JLUtils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
