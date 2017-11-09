@@ -12,47 +12,47 @@ using System.Threading.Tasks;
 
 namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
 {
-    public class EbCollectionEntity1 : EntityBase
+    public class EbCollectionEntity : EntityBase
     {
         [Key]
         public virtual int Id { get; set; }
 
-        [InverseProperty(nameof(EbCollectionItemEntity1.Parent))]
-        public virtual ICollection<EbCollectionItemEntity1> Children { get; set; }  // should be initialized
+        [InverseProperty(nameof(EbCollectionItemEntity.Parent))]
+        public virtual ICollection<EbCollectionItemEntity> Children { get; set; }  // should be initialized
 
         public virtual IAsyncResult Dummy1 { get; set; }         // not a collection
-        public virtual ICollection<EbCollectionItemEntity1> Dummy2 { get; }  // can't be assigned
-        public virtual List<EbCollectionItemEntity1> Dummy3 { get; }  // not supported
+        public virtual ICollection<EbCollectionItemEntity> Dummy2 { get; }  // can't be assigned
+        public virtual List<EbCollectionItemEntity> Dummy3 { get; }  // not supported
 
         [InitializeCollection(false)]
 //        [InverseProperty(nameof(EbCollectionItemEntity1.Parent))]
-        public virtual ICollection<EbCollectionItemEntity1> Dummy4 { get; set; }  // should NOT be initialized
+        public virtual ICollection<EbCollectionItemEntity> Dummy4 { get; set; }  // should NOT be initialized
 
         [InitializeCollection]
         public virtual ICollection<int> NonEntities { get; set; }  // should be initialized
 
         [InitializeCollection]
-        protected virtual ICollection<EbCollectionItemEntity1> ProtectedCollection { get; set; }  // should be initialized
+        protected virtual ICollection<EbCollectionItemEntity> ProtectedCollection { get; set; }  // should be initialized
     }
 
-    public class EbCollectionItemEntity1 : EntityBase
+    public class EbCollectionItemEntity : EntityBase
     {
         [Key]
         public virtual int Id { get; set; }
 
         [ForeignKey(nameof(ParentId))]
-        public virtual EbCollectionEntity1 Parent { get; set; }
+        public virtual EbCollectionEntity Parent { get; set; }
         public virtual int? ParentId { get; set; }
     }
 
-    public class EbCollectionEntitySubclass : EbCollectionEntity1
+    public class EbCollectionEntitySubclass : EbCollectionEntity
     {
         [InitializeCollection(true)]
-        public ICollection<EbCollectionItemEntity1> WriteOnly
+        public ICollection<EbCollectionItemEntity> WriteOnly
         {
             set { GetterForWriteOnly = value; }
         }
-        public ICollection<EbCollectionItemEntity1> GetterForWriteOnly { get; protected set; }
+        public ICollection<EbCollectionItemEntity> GetterForWriteOnly { get; protected set; }
 
         public object GetterForProtected => ProtectedCollection;
     }
@@ -70,7 +70,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public void InitializeCollections()
         {
             // Act:
-            var e1 = new EbCollectionEntity1();
+            var e1 = new EbCollectionEntity();
 
             // Assert:
             Assert.AreNotEqual(null, e1.Children);
@@ -130,12 +130,12 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public void InitializeWithCollectionProperty()
         {
             // Arrange:
-            var e1 = new EbCollectionEntity1()
+            var e1 = new EbCollectionEntity()
             {
             };
             Assert.AreNotEqual(null, e1.Children);  // initialized
 
-            _dbContext.Set<EbCollectionEntity1>().Add(e1);
+            _dbContext.Set<EbCollectionEntity>().Add(e1);
 
             Assert.AreNotEqual(null, e1.Children);  // initialized
 
@@ -154,19 +154,19 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public void LazyLoad()
         {
             // Arrange:
-            var collection = new EbCollectionEntity1()
+            var collection = new EbCollectionEntity()
             {
             };
-            _dbContext.Set<EbCollectionEntity1>().Add(collection);
+            _dbContext.Set<EbCollectionEntity>().Add(collection);
 
-            var item = new EbCollectionItemEntity1()   // new item in the collection
+            var item = new EbCollectionItemEntity()   // new item in the collection
             {
                 Parent = collection
             };
 
             Assert.AreNotEqual(null, collection.Children);
 
-            _dbContext.Set<EbCollectionItemEntity1>().Add(item);
+            _dbContext.Set<EbCollectionItemEntity>().Add(item);
             Assert.AreNotEqual(null, collection.Children);     // collection.Children has been populated
 
             _dbContext.SaveChanges();
@@ -174,13 +174,13 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
             Assert.AreNotEqual(null, collection.Children);
 
             // Act:
-            var reloadCollection = _dbContext.Set<EbCollectionEntity1>().Find(collection.Id);
+            var reloadCollection = _dbContext.Set<EbCollectionEntity>().Find(collection.Id);
 
             Assert.AreEqual(reloadCollection, collection);
             Assert.AreNotEqual(null, reloadCollection.Children);
 
             var context2 = new TestDbContext();
-            var reloadCollection2 = context2.Set<EbCollectionEntity1>().Find(collection.Id);
+            var reloadCollection2 = context2.Set<EbCollectionEntity>().Find(collection.Id);
 
             Assert.AreNotEqual(reloadCollection2, collection);    // doesn't return the cached instance (from the other context)
             Assert.AreNotEqual(null, reloadCollection2.Children);
@@ -194,21 +194,21 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public void LazyLoad_Empty()
         {
             // Arrange:
-            var collection = new EbCollectionEntity1()
+            var collection = new EbCollectionEntity()
             {
             };
-            _dbContext.Set<EbCollectionEntity1>().Add(collection);
+            _dbContext.Set<EbCollectionEntity>().Add(collection);
 
             _dbContext.SaveChanges();
 
             // Act:
-            var reloadCollection = _dbContext.Set<EbCollectionEntity1>().Find(collection.Id);
+            var reloadCollection = _dbContext.Set<EbCollectionEntity>().Find(collection.Id);
 
             Assert.AreEqual(reloadCollection, collection);
             Assert.AreNotEqual(null, reloadCollection.Children);
 
             var context2 = new TestDbContext();
-            var reloadCollection2 = context2.Set<EbCollectionEntity1>().Find(collection.Id);
+            var reloadCollection2 = context2.Set<EbCollectionEntity>().Find(collection.Id);
 
             // Assert:
             Assert.AreNotEqual(reloadCollection2, collection);    // doesn't return the cached instance (from the other context)
@@ -224,22 +224,22 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         public void LazyLoad_TryAssign()
         {
             // Arrange:
-            var collection = new EbCollectionEntity1()
+            var collection = new EbCollectionEntity()
             {
             };
-            _dbContext.Set<EbCollectionEntity1>().Add(collection);
+            _dbContext.Set<EbCollectionEntity>().Add(collection);
 
-            var item = new EbCollectionItemEntity1()
+            var item = new EbCollectionItemEntity()
             {
                 Parent = collection
             };
             _dbContext.SaveChanges();
 
             var context2 = new TestDbContext();
-            var reloadCollection2 = context2.Set<EbCollectionEntity1>().Find(collection.Id);
+            var reloadCollection2 = context2.Set<EbCollectionEntity>().Find(collection.Id);
 
             // Act:
-            reloadCollection2.Children = new List<EbCollectionItemEntity1>();   // throws InvalidOperationException
+            reloadCollection2.Children = new List<EbCollectionItemEntity>();   // throws InvalidOperationException
                                                                                 // Assigning in the constructor CollectionItemEntity would also throw this exception.
         }
 
