@@ -22,15 +22,15 @@ namespace JohnLambe.Util.Security
         /// The year to which <see cref="BaseInterationsCount"/> applies.
         /// If the system year is earlier than this, the number of iterations for this year is used (to reduce the impact of the clock being wrong).
         /// </summary>
-        public static int BaseYear = 2016;
+        public static int BaseYear { get; set; } = 2016;
         /// <summary>
         /// Number of interations to use in the year <see cref="BaseYear"/>.
         /// </summary>
-        public static int BaseInterationsCount = 20000;   // this is low - chosen for speed
+        public static int BaseInterationsCount { get; set; } = 2000;   // this is low - chosen for speed
         /// <summary>
         /// Multiply the iterations count by this for each year after <see cref="BaseYear"/>.
         /// </summary>
-        public static double AnnualIterationsMultiplier = 1.5;
+        public static double AnnualIterationsMultiplier { get; set; } = 1.5;
         // This is low, in case the hardware isn't being upgraded at the same rate as technological advancement.
         // Moore's Law suggests a value of 1.58 (doubling every 18 months).
 

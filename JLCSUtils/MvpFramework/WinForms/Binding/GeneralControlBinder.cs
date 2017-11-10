@@ -185,9 +185,12 @@ namespace MvpFramework.Binding
         {
             if (EventEnabled)
             {
+                PropertyBinder.Validated(sender, e, _controlProperty.GetValue(_boundControl));
+                /*
                 Model.GetProperty(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
                 //| We could set _boundControl.'Modified' (if it exists) to false:
 //                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
+                */
             }
         }
 
@@ -195,6 +198,12 @@ namespace MvpFramework.Binding
         {
             if (EventEnabled)
             {
+                object value = _controlProperty.GetValue(_boundControl);
+                if(PropertyBinder.Validating(sender, e, ref value, DialogService))
+                {
+                    _controlProperty.SetValue(_boundControl, value);
+                }
+                /*
                 var value = _controlProperty.GetValue(_boundControl);
                 var results = new ValidationResults();
                 Model.GetProperty(_modelPropertyName).TryValidateValue(value, results);
@@ -218,6 +227,7 @@ namespace MvpFramework.Binding
                     _controlProperty.SetValue(_boundControl, results.NewValue);
 //                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
                 }
+                */
             }
         }
 
@@ -303,6 +313,9 @@ namespace MvpFramework.Binding
         /// The model of the View that the control is placed in.
         /// </summary>
         protected ModelBinderWrapper Model;
+
+        protected ModelPropertyBinder PropertyBinder => Model?.GetProperty(_modelPropertyName);
+
         /// <summary>
         /// The control bound by this <see cref="IControlBinder"/>.
         /// </summary>

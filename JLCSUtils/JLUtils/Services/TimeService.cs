@@ -147,13 +147,23 @@ namespace JohnLambe.Util.Services
     public class MockTimeService : TimeServiceBase, ITimeService
     {
         /// <summary>
-        /// Uses a default of 1/1/2000.
+        /// The initial time used by the default contructor.
         /// </summary>
-        public MockTimeService()
+        public static readonly DateTime DefaultStartTime = new DateTime(2000, 1, 1);
+
+        /// <summary>
+        /// Uses an initial time of <see cref="DefaultStartTime"/>.
+        /// </summary>
+        //| We use a default constructor rather than a default parameter on the other constructor
+        //| because SimpleInjector (and maybe other frameworks) doesn't use default parameter values.
+        public MockTimeService() : this(DefaultStartTime)
         {
-            Now = new DateTime(1, 1, 2000);
         }
 
+        /// <summary>
+        /// Initializes with a given time.
+        /// </summary>
+        /// <param name="value"></param>
         public MockTimeService(DateTime value)
         {
             Now = value;
@@ -165,7 +175,7 @@ namespace JohnLambe.Util.Services
 
         public virtual long NowTicks => Now.Ticks;
 
-        public virtual int TickCount { get; set; } = 1000;
+        public virtual int TickCount { get; set; } = 1000000;
 
         public virtual TimeZone CurrentTimeZone { get; set; } = TimeZone.CurrentTimeZone;
 
@@ -188,11 +198,26 @@ namespace JohnLambe.Util.Services
         // Additional features for use in mocking.
         // Note: The properties can also be set directly.
 
+        /// <summary>
+        /// Increment the simulated current time (<see cref="Now"/>) by the given number of ticks.
+        /// </summary>
+        /// <param name="ticks"></param>
         public virtual void AdvanceTime(int ticks)
         {
             // simulate time advancing:
             TickCount += ticks;
             Now = Now.AddTicks(ticks);
+        }
+
+        /// <summary>
+        /// Increment the simulated current time (<see cref="Now"/>) by the given number of ticks.
+        /// </summary>
+        /// <param name="interval"></param>
+        public virtual void AdvanceTime(TimeSpan interval)
+        {
+            // simulate time advancing:
+            TickCount += (int)interval.Ticks;
+            Now = Now.Add(interval);
         }
 
         /// <summary>

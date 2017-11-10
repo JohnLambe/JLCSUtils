@@ -9,6 +9,9 @@ using JohnLambe.Util.Text;
 using JohnLambe.Util.Reflection;
 using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util.Validation;
+using MvpFramework.Dialog.Dialogs;
+using System.ComponentModel;
+using MvpFramework.Dialog;
 
 namespace MvpFramework.Binding
 {
@@ -229,6 +232,49 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual string Group
             => _displayAttribute?.GetGroupName() ?? "";
+
+        #region Validation
+
+        public virtual void Validated(object sender, EventArgs e, object value)
+        {
+            Value = value; 
+                // _controlProperty.GetValue(_boundControl);
+            //| We could set _boundControl.'Modified' (if it exists) to false:
+//                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
+        }
+
+        public bool Validating(object sender, CancelEventArgs e, ref object value, IMessageDialogService dialogService = null)
+        {
+////            var value = _controlProperty.GetValue(_boundControl);
+            var results = new ValidationResults();
+            TryValidateValue(value, results);
+            if ( !results.IsValid )
+            {
+                e.Cancel = true;   // validation fails. This usually means that the control stays focussed.
+
+                // We show the dialog here, if we have the service to do so,
+                // because raising an exception would cause WinForms not to handle the cancelling of the event
+                // (it would allow the focus to leave the control).
+                if (dialogService != null)
+                    dialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
+                else
+                    results.ThrowIfInvalid();
+            }
+
+            //TODO: Warnings
+
+            if (results.Modified)
+            {
+                value = results.NewValue;
+////                _controlProperty.SetValue(_boundControl, results.NewValue);
+//                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
+            }
+
+            return results.Modified;
+        }
+
+        #endregion
+
 
         //TODO: Lazily initialise:
         protected DisplayAttribute _displayAttribute;

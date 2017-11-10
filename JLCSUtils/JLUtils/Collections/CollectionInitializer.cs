@@ -13,6 +13,7 @@ namespace JohnLambe.Util.Collections
 {
     /// <summary>
     /// Specifies whether a property should be initialized by <see cref="CollectionInitializer"/>.
+    /// For use on properties of type <see cref="ICollection{T}"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class InitializeCollectionAttribute : Attribute
@@ -72,20 +73,24 @@ namespace JohnLambe.Util.Collections
         }
 
         /// <summary>
-        /// Assigns the given property to an empty collection compatible with its type.
+        /// Assigns the given property to an empty collection (compatible with its type),
+        /// if it is null. (If it is write-only, it is assigned regardless of its current value.)
         /// </summary>
-        /// <param name="property">Must be a property of a closed generic type matching <see cref="ICollection{T}"/>.</param>
+        /// <param name="property">The property to assign.
+        /// Must be a settable property of a closed generic type matching <see cref="ICollection{T}"/>.
+        /// </param>
         /// <param name="target">The object on which to assign this property. Can be null if the property is static.</param>
         public static void InitializeProperty([NotNull] PropertyInfo property, [Nullable] object target)
         {
-            property.SetValue(target, CreateCollection(property.PropertyType));
+            if(!property.CanRead || property.GetValue(target) == null)
+                property.SetValue(target, CreateCollection(property.PropertyType));
         }
 
         /// <summary>
         /// Creates an empty collection containing of the given type.
         /// </summary>
         /// <param name="collectionType">Must be a closed generic matching <see cref="ICollection{T}"/>.</param>
-        /// <returns>Collection implementing the generic interface specified by <paramref name="collectionType"/>.</returns>
+        /// <returns>Collection implementing the generic interface specified by <paramref name="collectionType"/> (and <see cref="ICollection"/>).</returns>
         public static ICollection CreateCollection([NotNull] Type collectionType)
         {
             return CreateCollectionOfType(collectionType.GetGenericArguments()[0]);
@@ -94,8 +99,8 @@ namespace JohnLambe.Util.Collections
         /// <summary>
         /// Creates an empty collection containing the given type.
         /// </summary>
-        /// <param name="elementType"></param>
-        /// <returns>Collection implementing <see cref="ICollection{T}"/> where T is <paramref name="elementType"/>.</returns>
+        /// <param name="elementType">The type of elements in the collection.</param>
+        /// <returns>Collection implementing <see cref="ICollection{T}"/> where T is <paramref name="elementType"/> (and <see cref="ICollection"/>).</returns>
         public static ICollection CreateCollectionOfType([NotNull] Type elementType)
         {
             return typeof(List<>).MakeGenericType(elementType).Create<ICollection>();

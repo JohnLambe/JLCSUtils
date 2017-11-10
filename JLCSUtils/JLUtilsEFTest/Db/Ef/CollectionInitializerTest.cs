@@ -240,7 +240,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
 
             // Act:
             reloadCollection2.Children = new List<EbCollectionItemEntity>();   // throws InvalidOperationException
-                                                                                // Assigning in the constructor CollectionItemEntity would also throw this exception.
+                                                                               // Assigning in the constructor CollectionItemEntity would also throw this exception.
         }
 
     }

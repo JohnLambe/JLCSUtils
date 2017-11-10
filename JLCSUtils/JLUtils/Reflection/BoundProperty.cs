@@ -169,16 +169,33 @@ namespace JohnLambe.Util.Reflection
         #region ICustomAttributeProvider
         // Delegates to Property.
 
+        /// <summary>
+        /// Returns the attributes of the bound property.
+        /// </summary>
+        /// <param name="attributeType"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
         public virtual object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
             return ((ICustomAttributeProvider)Property).GetCustomAttributes(attributeType, inherit);
         }
 
+        /// <summary>
+        /// Returns the attributes of the bound property.
+        /// </summary>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
         public virtual object[] GetCustomAttributes(bool inherit)
         {
             return ((ICustomAttributeProvider)Property).GetCustomAttributes(inherit);
         }
 
+        /// <summary>
+        /// Tests whether a given attribute is defined on the bound property.
+        /// </summary>
+        /// <param name="attributeType"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
         public virtual bool IsDefined(Type attributeType, bool inherit)
         {
             return ((ICustomAttributeProvider)Property).IsDefined(attributeType, inherit);

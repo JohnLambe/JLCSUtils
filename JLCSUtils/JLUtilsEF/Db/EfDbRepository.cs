@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Db
 {
-    public class EfDbRepositoryBase<TEntity> : IDatabaseRepositoryBase<TEntity>
+    public class EfDatabaseRepositoryBase<TEntity> : IDatabaseRepositoryBase<TEntity>
         where TEntity : class
     {
-        public EfDbRepositoryBase(DbContext context) : this(context, (IDbSet<TEntity>)context.Set(typeof(TEntity)))
+        public EfDatabaseRepositoryBase(DbContext context) : this(context, (IDbSet<TEntity>)context.Set(typeof(TEntity)))
         {
         }
 
-        public EfDbRepositoryBase(DbContext context, IDbSet<TEntity> set)
+        public EfDatabaseRepositoryBase(DbContext context, IDbSet<TEntity> set)
         {
             Context = context;
             Data = set;
@@ -42,27 +42,27 @@ namespace JohnLambe.Util.Db
     }
 
 
-    public class EfReadOnlyDbRepository<TEntity> : EfDbRepositoryBase<TEntity>, IReadOnlyDatabaseRepository<TEntity>
+    public class EfReadOnlyDatabaseRepository<TEntity> : EfDatabaseRepositoryBase<TEntity>, IReadOnlyDatabaseRepository<TEntity>
         where TEntity : class
     {
-        public EfReadOnlyDbRepository(DbContext context) : base(context)
+        public EfReadOnlyDatabaseRepository(DbContext context) : base(context)
         {
         }
 
-        public EfReadOnlyDbRepository(DbContext context, IDbSet<TEntity> set) : base(context,set)
+        public EfReadOnlyDatabaseRepository(DbContext context, IDbSet<TEntity> set) : base(context,set)
         {
         }
     }
 
 
-    public class EfMutableDbRepository<TEntity> : EfDbRepositoryBase<TEntity>, IMutableDatabaseRepository<TEntity>
+    public class EfMutableDatabaseRepository<TEntity> : EfDatabaseRepositoryBase<TEntity>, IMutableDatabaseRepository<TEntity>
         where TEntity : class
     {
-        public EfMutableDbRepository(DbContext context) : base(context)
+        public EfMutableDatabaseRepository(DbContext context) : base(context)
         {
         }
 
-        public EfMutableDbRepository(DbContext context, IDbSet<TEntity> set) : base(context,set)
+        public EfMutableDatabaseRepository(DbContext context, IDbSet<TEntity> set) : base(context,set)
         {
         }
 
