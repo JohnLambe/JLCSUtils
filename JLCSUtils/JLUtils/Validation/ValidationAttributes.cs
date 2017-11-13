@@ -62,6 +62,10 @@ namespace JohnLambe.Util.Validation
             }
         }
 
+        /// <summary>
+        /// All characters allowed in the string. null for all.
+        /// </summary>
+        /// <seealso cref="AllowedCharactersString"/>
         public virtual char[] AllowedCharacters
         {
             get { return _allowedCharacters.ToArray(); }
@@ -81,6 +85,7 @@ namespace JohnLambe.Util.Validation
         protected StringCharacterSet _allowedCharacters;
 
 
+        /// <seealso cref="DisallowedCharactersSet"/>
         public virtual string DisallowedCharactersString
         {
             get { return _disallowedCharacters?.StringValue; }
@@ -105,6 +110,7 @@ namespace JohnLambe.Util.Validation
             get { return _disallowedCharacters; }
         }
 
+        /// <seealso cref="DisallowedCharactersSet"/>
         public virtual char[] DisallowedCharacters
         {
             get { return _allowedCharacters.ToArray(); }
@@ -311,6 +317,9 @@ namespace JohnLambe.Util.Validation
     }
 
 
+    /// <summary>
+    /// Option for padding strings.
+    /// </summary>
     public enum PaddingType
     {
         /// <summary> No padding. </summary>
@@ -502,7 +511,7 @@ namespace JohnLambe.Util.Validation
             if ((value == null && InvalidValue == null)
                 || (value != null && value.Equals(InvalidValue)))
             {
-                results.Add("The value " + InvalidValue + " is invalid");
+                results.Add("The value '" + InvalidValue + "' is invalid");
             }
         }
 
@@ -1222,6 +1231,10 @@ namespace JohnLambe.Util.Validation
     }
 
 
+    /// <summary>
+    /// Specifies that the attributed item identifies a device (such as a hardware peripheral),
+    /// usually identified by the unique name of its operating system driver.
+    /// </summary>
     public class DeviceNameValidationAttribute : ValidationAttributeBase
     {
     }
@@ -1239,4 +1252,7 @@ namespace JohnLambe.Util.Validation
     public class ScannerValidationAttribute : DeviceNameValidationAttribute
     {
     }
+
+    //TODO: Attribute to set initial value, or default value to be used when null.
+    //   or use DefaultValueAttribute ?
 }

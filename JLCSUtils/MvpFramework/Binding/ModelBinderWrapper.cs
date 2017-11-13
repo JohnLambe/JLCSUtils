@@ -12,6 +12,7 @@ using JohnLambe.Util.Validation;
 using MvpFramework.Dialog.Dialogs;
 using System.ComponentModel;
 using MvpFramework.Dialog;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.Binding
 {
@@ -28,6 +29,7 @@ namespace MvpFramework.Binding
             this.Model = model;
         }
 
+        #region obsolete
         // Methods obsoleted. Use GetProperty instead:
 
         [Obsolete]
@@ -76,7 +78,6 @@ namespace MvpFramework.Binding
             return GetProperty(propertName);
         }
         */
-
         /*
                /// <summary>
                /// Provides attributes of the property, which may include details
@@ -92,6 +93,8 @@ namespace MvpFramework.Binding
                    return GetProperty(propertyName);
                }
        */
+        #endregion
+
 
         /// <summary>
         /// The collection of groups (of properties), sorted.
@@ -136,6 +139,64 @@ namespace MvpFramework.Binding
         {
             return new ModelPropertyBinder(Model, propertName);
         }
+
+        #region Validation
+
+        /// <summary>
+        /// Validate the model (<see cref="Model"/>).
+        /// </summary>
+        /// <param name="dialogService"></param>
+        /// <remarks>
+        /// This is for validating the whole model as an object.
+        /// See <see cref="ModelPropertyBinder.Validating(object, CancelEventArgs, ref object, IMessageDialogService, out ValidationResults)"/> (and similar) for validating individual properties.
+        /// </remarks>
+        public virtual void Validate([Nullable] IMessageDialogService dialogService)
+        {
+            ValidationResults results;
+            Validate(Model, dialogService, out results);
+        }
+
+        //TODO: Returning validation results, with no exception or dialog.
+        /// <summary>
+        /// Validate an object in the model.
+        /// </summary>
+        /// <param name="instance">The object to be validated. The model or an object within it. NOT a primitive value.</param>
+        /// <param name="dialogService"></param>
+        /// <param name="results"></param>
+        public virtual void Validate([TypeValidation(IsPrimitive = false)] object instance, [Nullable] IMessageDialogService dialogService, out ValidationResults results)
+        {
+            results = new ValidationResults();
+
+            Validator.TryValidateObject(instance, results);
+
+            if (!results.IsValid)
+            {
+                if (dialogService != null)
+                    dialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
+                else
+                    results.ThrowIfInvalid();
+            }
+
+            //TODO: Warnings
+
+            /*
+            if (results.Modified)
+            {
+                value = results.NewValue;
+                ////                _controlProperty.SetValue(_boundControl, results.NewValue);
+                //                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
+            }
+
+            return results.Modified;
+            */
+        }
+
+        /// <summary>
+        /// Validator used to validate the model.
+        /// </summary>
+        protected virtual ValidatorEx Validator { get; set; } = new ValidatorEx(); //TODO: Make injectable.  OR lazy populate.
+
+        #endregion
 
         /// <summary>
         /// Returns the model as an object, if supported.
@@ -235,22 +296,32 @@ namespace MvpFramework.Binding
 
         #region Validation
 
-        public virtual void Validated(object sender, EventArgs e, object value)
+
+        public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService = null)
         {
-            Value = value; 
-                // _controlProperty.GetValue(_boundControl);
-            //| We could set _boundControl.'Modified' (if it exists) to false:
-//                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
+            ValidationResults results;
+            return Validating(sender,evt,ref value,dialogService, out results);
         }
 
-        public bool Validating(object sender, CancelEventArgs e, ref object value, IMessageDialogService dialogService = null)
+        //TODO: Returning validation results, with no exception or dialog.
+        /// <summary>
+        /// Called when a value is modified in the UI, to validate the new value.
+        /// In WinForms, this should be called on the <see cref="System.Windows.Forms.Control.Validating"/> event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="evt"></param>
+        /// <param name="value">The value in the UI, to be updated to the model.</param>
+        /// <param name="dialogService">If not null, a dialog is shown if invalid.</param>
+        /// <param name="results"></param>
+        /// <returns>true iff <paramref name="value"/> is modified.</returns>
+        public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService, out ValidationResults results)
         {
-////            var value = _controlProperty.GetValue(_boundControl);
-            var results = new ValidationResults();
+            ////            var value = _controlProperty.GetValue(_boundControl);
+            results = new ValidationResults();
             TryValidateValue(value, results);
             if ( !results.IsValid )
             {
-                e.Cancel = true;   // validation fails. This usually means that the control stays focussed.
+                evt.Cancel = true;   // validation fails. This usually means that the control stays focussed.
 
                 // We show the dialog here, if we have the service to do so,
                 // because raising an exception would cause WinForms not to handle the cancelling of the event
@@ -273,7 +344,24 @@ namespace MvpFramework.Binding
             return results.Modified;
         }
 
+        /// <summary>
+        /// Called when a value is modified and validated in the user interface. In WinForms, this should be called on the <see cref="System.Windows.Forms.Control.Validated"/> event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="value">The value in the UI, to be updated to the model.</param>
+        public virtual void Validated(object sender, EventArgs e, object value)
+        {
+            Value = value;
+            // _controlProperty.GetValue(_boundControl);
+            //| We could set _boundControl.'Modified' (if it exists) to false:
+            //                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
+        }
+
         #endregion
+
+        //TODO: public virtual bool Modified { get; set; }
+        //TODO: ValueChanged event
 
 
         //TODO: Lazily initialise:

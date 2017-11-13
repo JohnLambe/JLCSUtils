@@ -181,7 +181,6 @@
     <Compile Include="Validation\ValidationContextExtension.cs" />
     <Compile Include="Validation\ValidatorEx.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
-    <Compile Include="Validation\Validators.cs" />
     <Compile Include="Var.cs" />
     <Compile Include="Xml\!NamespaceDoc.cs" />
     <Compile Include="Xml\XmlUtil.cs" />

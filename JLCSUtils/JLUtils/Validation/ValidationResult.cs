@@ -93,6 +93,9 @@ namespace JohnLambe.Util.Validation
             _results.Add(new ValidationResult(message));
         }
 
+        /// <summary>
+        /// The attribute validated (that this <see cref="ValidationResultEx"/> is the result of).
+        /// </summary>
         public virtual ValidationAttribute Attribute { get; set; }
 
         public virtual void Fail()

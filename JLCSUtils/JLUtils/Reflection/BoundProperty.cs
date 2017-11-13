@@ -141,7 +141,7 @@ namespace JohnLambe.Util.Reflection
         /// <summary>
         /// Validator used to validate the property when set.
         /// </summary>
-        protected virtual ValidatorEx Validator { get; set; } = new ValidatorEx(); //TODO: Make injectable
+        protected virtual ValidatorEx Validator { get; set; } = new ValidatorEx(); //TODO: Make injectable.  OR lazy populate.
 
         /// <summary>
         /// Test whether the given value is valid for assignment to the property.

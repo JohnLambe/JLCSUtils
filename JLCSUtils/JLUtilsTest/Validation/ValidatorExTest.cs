@@ -13,13 +13,36 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
     public class ValidatorExTest
     {
         [TestMethod]
+        [ExpectedException(typeof(ValidationException))]
         public void ValidateObject()
         {
+            // Arrange:
             _model.Property1 = "X";
-            Validator.ValidateObject(_model, new ValidationContext(_model));
 
-            //TODO
+            // Act:
+//            Validator.ValidateObject(_model, new ValidationContext(_model));
+            _validator.ValidateObject(_model);
         }
+
+        [TestMethod]
+        public void TryValidateObject()
+        {
+            // Arrange:
+            _model.Property1 = "X";
+            var results = new ValidationResults();
+
+            // Act:
+            //            var result = Validator.TryValidateObject(_model, new ValidationContext(_model), results);
+            var result = _validator.TryValidateObject(_model, results);
+
+            // Assert:
+            Assert.AreEqual(false, result);
+            Assert.AreEqual(false, results.IsValid);
+            Assert.IsTrue(results.Count > 0);
+            Console.Out.WriteLine("Error message: " + results.First().ErrorMessage);
+            Console.Out.WriteLine("Validation result: " + results.First());
+        }
+
 
         #region ValidateProperty
 

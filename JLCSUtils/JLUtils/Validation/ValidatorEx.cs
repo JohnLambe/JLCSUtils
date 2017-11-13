@@ -34,7 +34,7 @@ namespace JohnLambe.Util.Validation
             if (instance == null)
                 return true;
             else
-                return Validator.TryValidateObject(instance, GetContext(instance), results);
+                return Validator.TryValidateObject(instance, GetContext(instance), results, true);
         }
 
         /// <summary>

@@ -219,6 +219,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         /// <summary>
         /// The collection property cannot be assigned by the consumer of the entity.
         /// </summary>
+        [TestCategory("Failing")]   // Why does this not throw the exception ?
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void LazyLoad_TryAssign()

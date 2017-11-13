@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Util.Types;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -53,21 +54,25 @@ namespace JohnLambe.Util.Misc
     public static class LazyInitialize
     {
         /// <summary>
-        /// Read the value of a lazily-initialised item.
+        /// Read the value of a lazily-initialized item.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="field">Field that stores the value when initialised.
-        /// Must be null when not initialised.</param>
-        /// <param name="createDelegate">Delegate to initialise the item.
-        /// <paramref name="field"/> is set to the result of this if it is null initially.
+        /// <typeparam name="T">The type of the lazily-initialized item.</typeparam>
+        /// <param name="field">Field that stores the value when initialized.
+        /// Must be default(<typeparamref name="T"/>) when not initialised.</param>
+        /// <param name="createDelegate">Delegate to initialize the item.
+        /// <paramref name="field"/> is set to the result of this if it is default(<typeparamref name="T"/>) initially.
+        /// If this is null, <paramref name="field"/> will always be returned, even if null.
         /// </param>
-        /// <returns>The value of <paramref name="field"/> (which is initialised on exit).
-        /// This can be null if and only if <paramref name="createDelegate"/> returns null.
+        /// <returns>The value of <paramref name="field"/> (which is initialized on exit).
+        /// This can be null if and only if <paramref name="createDelegate"/> returns null or is null.
         /// </returns>
-        public static T GetValue<T>(ref T field, Func<T> createDelegate)
+        public static T GetValue<T>([Nullable] ref T field, [Nullable] Func<T> createDelegate)
         {
-            if (field == null)
-                field = createDelegate();
+            if (field == null) // || field.Equals(default(T)))
+            {
+                if(createDelegate != null)
+                    field = createDelegate();
+            }
             return field;
         }
     }
