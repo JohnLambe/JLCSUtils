@@ -86,6 +86,7 @@ namespace JohnLambe.Util.Reflection
                     Validator?.ValidateValue(Target, ref value, Property);
 
                     Property?.SetValue(Target, value);
+                    //TODO: Fire ValueChanged event ?
                 }
             }
         }

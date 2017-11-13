@@ -40,7 +40,15 @@ namespace JohnLambe.Util.Validation
         // Returns:
         //     An instance of the System.ComponentModel.DataAnnotations.ValidationResult class.
 
-        // Override this only to change the logic of this implementation, not to do the actual validation of the derived type.
+        /// <summary>
+        /// <inheritdoc cref="ValidationAttribute.IsValid(object, ValidationContext)"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="validationContext"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Override this only to change the logic of this implementation, not to do the actual validation of the derived type.
+        /// </remarks>
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (ResultType == ValidationResultType.None)

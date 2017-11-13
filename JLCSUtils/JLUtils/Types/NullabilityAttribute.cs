@@ -47,6 +47,7 @@ namespace JohnLambe.Util.Types
         public virtual string Documentation { get; set; }
     }
 
+
     /// <summary>
     /// Specifies that the attributed item must not be null.
     /// <para>When used on parameters, passing null is not valid, and it is recommended that it should cause an <see cref="ArgumentNullException"/>.</para>
@@ -77,6 +78,30 @@ namespace JohnLambe.Util.Types
 
         // see Nullability.IsDefaultAttribute() - this must be overridden if any properties settable when declaring an attribute are added here or in a subclass.
     }
+
+
+    /// <summary>
+    /// Specifies that the attributed item cannot be null,
+    /// and can provided a default value that can be used (in contexts that support this) when it is null.
+    /// </summary>
+    public class NotNullDefaultAttribute : NotNullAttribute
+    {
+        /// <summary/>
+        /// <param name="documentation"><inheritdoc cref="Documentation"/></param>
+        public NotNullDefaultAttribute(string documentation = null) : base(documentation)
+        {
+        }
+
+        //TODO: IsValid
+
+        /// <summary>
+        /// Value to use when null.
+        /// </summary>
+        public virtual object DefaultValue { get; set; }
+
+        public override bool IsDefaultAttribute() => base.IsDefaultAttribute() && DefaultValue == null;
+    }
+
 
     /// <summary>
     /// Specifies that the attributed item is allowed to be null (for documentation purposes).

@@ -16,6 +16,7 @@ using MvpFramework.Dialog;
 using MvpFramework.Dialog.Dialogs;
 using DiExtension.AutoFactory;
 using JohnLambe.Util.Misc;
+using DiExtension.Attributes;
 
 namespace MvpFramework.Binding
 {
@@ -181,7 +182,7 @@ namespace MvpFramework.Binding
             }
         }
 
-        private void BoundControl_Validated(object sender, EventArgs e)
+        protected virtual void BoundControl_Validated(object sender, EventArgs e)
         {
             if (EventEnabled)
             {
@@ -194,7 +195,7 @@ namespace MvpFramework.Binding
             }
         }
 
-        protected void BoundControl_Validating(object sender, CancelEventArgs e)
+        protected virtual void BoundControl_Validating(object sender, CancelEventArgs e)
         {
             if (EventEnabled)
             {
@@ -299,13 +300,8 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Service for showing a dialog on validation errors.
         /// </summary>
-        protected virtual IMessageDialogService DialogService
-        {
-            get
-            {
-                return LazyInitialize.GetValue(ref _dialogService, DialogServiceFactory);
-            }
-        }
+        protected virtual IMessageDialogService DialogService => LazyInitialize.GetValue(ref _dialogService, DialogServiceFactory);
+        [Inject]
         private Func<IMessageDialogService> DialogServiceFactory { get; set; }
         private IMessageDialogService _dialogService;
 

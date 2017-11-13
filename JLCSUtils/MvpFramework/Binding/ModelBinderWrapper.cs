@@ -133,12 +133,15 @@ namespace MvpFramework.Binding
         /// Get an object representing the binding of a requested property, and allowing reading and writing the property value.
         /// </summary>
         /// <param name="propertName">The name of the property in the model.
-        /// (This is usually case-sensitive, but that depends on the type model (the subclass of this)).</param>
+        /// (This is usually case-sensitive, but that depends on the type of model (the subclass of this)).</param>
         /// <returns></returns>
         public virtual ModelPropertyBinder GetProperty(string propertName)
         {
             return new ModelPropertyBinder(Model, propertName);
         }
+
+        //TODO: Lazily populate property binders (Map) ?
+        //  OR populate all property binders initially, but individual binder objects lazily populate their contents.
 
         #region Validation
 
@@ -238,9 +241,7 @@ namespace MvpFramework.Binding
         /// May be null if the provider of the data does not support it (it may not be a real object property).
         /// </summary>
         public virtual Type PropertyType
-        {
-            get { return Property?.PropertyType; }
-        }
+            => Property?.PropertyType;
 
         /// <summary>
         /// Sorting order weight.
@@ -299,6 +300,8 @@ namespace MvpFramework.Binding
 
         public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService = null)
         {
+            if (Property == null)
+                return false;
             ValidationResults results;
             return Validating(sender,evt,ref value,dialogService, out results);
         }
@@ -316,8 +319,10 @@ namespace MvpFramework.Binding
         /// <returns>true iff <paramref name="value"/> is modified.</returns>
         public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService, out ValidationResults results)
         {
-            ////            var value = _controlProperty.GetValue(_boundControl);
             results = new ValidationResults();
+            if (Property == null)
+                return false;
+
             TryValidateValue(value, results);
             if ( !results.IsValid )
             {
@@ -337,7 +342,6 @@ namespace MvpFramework.Binding
             if (results.Modified)
             {
                 value = results.NewValue;
-////                _controlProperty.SetValue(_boundControl, results.NewValue);
 //                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
             }
 
@@ -353,7 +357,6 @@ namespace MvpFramework.Binding
         public virtual void Validated(object sender, EventArgs e, object value)
         {
             Value = value;
-            // _controlProperty.GetValue(_boundControl);
             //| We could set _boundControl.'Modified' (if it exists) to false:
             //                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
         }
@@ -364,7 +367,7 @@ namespace MvpFramework.Binding
         //TODO: ValueChanged event
 
 
-        //TODO: Lazily initialise:
+        //TODO: Lazily initialize:
         protected DisplayAttribute _displayAttribute;
         protected MvpDisplayAttribute _mvpDisplayAttribute;  
     }
