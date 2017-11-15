@@ -230,6 +230,8 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
         #endregion
 
+        #region Hierarchy
+
         [TestMethod]
         public void GetTypeHierarchy()
         {
@@ -240,6 +242,23 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             // Assert:
             Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object), typeof(ClassForTestBase), typeof(ClassForTest) }));
         }
+
+        [TestMethod]
+        public void GetLowestNonAbstractAncestor()
+        {
+            Multiple(
+                () => Assert.AreEqual(typeof(TestClass3), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass5)))
+            );
+        }
+
+        public abstract class TestClass1 { }
+        public abstract class TestClass2 : TestClass1 { }
+        public class TestClass3 : TestClass2 { }
+        public class TestClass4 : TestClass3 { }
+        public class TestClass5 : TestClass4 { }
+        public class TestClass6 : TestClass5 { }
+
+        #endregion
 
         [TestMethod]
         public void InstanceInvoke()

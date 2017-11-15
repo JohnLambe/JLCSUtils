@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 
 using JohnLambe.Util;
 
@@ -83,5 +84,17 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         #endregion
+
+        [TestMethod]
+        public void NullableEquals()
+        {
+            Multiple(
+                () => Assert.AreEqual(true,ObjectExtension.NullableEquals(null, null)),
+                () => Assert.AreEqual(false, ObjectExtension.NullableEquals(null, "")),
+                () => Assert.AreEqual(false, ObjectExtension.NullableEquals(this, null)),
+                () => Assert.AreEqual(false, ObjectExtension.NullableEquals(5m, 5)),
+                () => Assert.AreEqual(true, ObjectExtension.NullableEquals(9.7, 9.7))
+                );
+        }
     }
 }

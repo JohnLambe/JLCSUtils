@@ -12,6 +12,26 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
     [TestClass]
     public class TypeUtilTest
     {
+        [TestMethod]
+        public void IsNullable()
+        {
+            Multiple(
+                () => Assert.AreEqual(false, TypeUtil.IsNullable(typeof(int)), "primitive"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(typeof(int?)), "nullable primitive"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(typeof(object)), "class"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(this.GetType()), "class"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(typeof(Type)), "Type (class)"),
+                () => Assert.AreEqual(false, TypeUtil.IsNullable(typeof(System.UriKind)), "enum"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(typeof(System.UriKind?)), "nullable enum"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(typeof(System.IConvertible)), "interface"),
+                () => Assert.AreEqual(false, TypeUtil.IsNullable(typeof(TestStruct)), "struct"),
+                () => Assert.AreEqual(true, TypeUtil.IsNullable(typeof(TestStruct?)), "nullable struct"),
+                () => Assert.AreEqual(false, TypeUtil.IsNullable(typeof(void)), "void (primitive)"),
+                () => Assert.AreEqual(false, TypeUtil.IsNullable(typeof(System.Environment)), "static class"),
+                () => Assert.AreEqual(false, TypeUtil.IsNullable(null), "null")
+                );
+        }
+
         #region Numeric
 
         [TestMethod]
@@ -115,6 +135,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
                 () => Assert.AreEqual(null, TypeUtil.GetTypeDefaultValue(typeof(object))),
                 () => Assert.AreEqual(null, TypeUtil.GetTypeDefaultValue(typeof(System.Action)))
             );
+        }
+
+        public struct TestStruct
+        {
+            int Field1;
         }
     }
 }

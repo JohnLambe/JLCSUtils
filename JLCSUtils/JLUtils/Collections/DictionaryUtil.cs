@@ -3,6 +3,7 @@
 ////////////////////////////////////////
 
 using JohnLambe.Util.TypeConversion;
+using JohnLambe.Util.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace JohnLambe.Util.Collections
         /// <param name="dictionary"></param>
         /// <param name="key">The key to look up. Must not be null.</param>
         /// <returns>The value corresponding to the requested key, or the default for the type if there is no corresponding value.</returns>
-        public static V TryGetValue<K, V>(this IDictionary<K, V> dictionary, K key)
+        public static V TryGetValue<K, V>([NotNull] this IDictionary<K, V> dictionary, [NotNull] K key)
         {
             V value;
             dictionary.TryGetValue(key, out value);

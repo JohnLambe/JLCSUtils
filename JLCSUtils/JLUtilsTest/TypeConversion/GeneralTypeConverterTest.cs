@@ -108,6 +108,43 @@ namespace JohnLambe.Tests.JLUtilsTest.TypeConversion
             );
         }
 
+        /// <summary>
+        /// Conversion between int (and int?) and decimal (and decimal?), in both directions.
+        /// </summary>
+        [TestMethod]
+        public void IntToDecimal()
+        {
+            Multiple(
+                () => Assert.AreEqual(345m, GeneralTypeConverter.Convert<int>(345m)),
+
+                () => Assert.AreEqual(-45m, GeneralTypeConverter.Convert<int>(-45.2m)),
+
+                () => Assert.AreEqual(-10000m, GeneralTypeConverter.Convert<int>(-9999.9m)),
+
+                () => Assert.AreEqual(10000, GeneralTypeConverter.Convert<int?>(9999.5m)),
+
+                () => Assert.AreEqual(1000000, GeneralTypeConverter.Convert<decimal?>(1000000)),
+
+                () => Assert.AreEqual(1000000, GeneralTypeConverter.Convert<decimal>((int?)1000000)),
+
+                () => Assert.AreEqual((decimal?)789, GeneralTypeConverter.Convert<decimal?>((int?)789)),
+
+                () => Assert.AreEqual((decimal?)789, GeneralTypeConverter.Convert<decimal?>((int)789))
+            );
+        }
+
+        [TestMethod]
+        public void ObjectIntToDecimal()
+        {
+            int input1 = 23456;
+            object input = input1;
+
+            decimal d = GeneralTypeConverter.Convert<decimal>(input1);
+
+            Assert.AreEqual((decimal)23456, d);
+        }
+
+
         [TestMethod]
         public void StringToGuid()
         {
@@ -115,7 +152,27 @@ namespace JohnLambe.Tests.JLUtilsTest.TypeConversion
                 () => Assert.AreEqual(Guid.Empty, GeneralTypeConverter.Convert<Guid>(Guid.Empty.ToString())),
                 () => Assert.AreEqual(new Guid("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da"), GeneralTypeConverter.Convert<Guid>("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da")),
                 () => Assert.AreEqual(new Guid("d0701409-4769-4720-a39f-3b057d62cbba"), GeneralTypeConverter.Convert<Guid>("d070140947694720a39f3b057d62cbba"), "no hyphens"),
-                () => Assert.AreEqual(new Guid("d0701409-4769-4720-a39f-3b057d62cbba"), GeneralTypeConverter.Convert<Guid>("d070140947694720a39f3b057d62cbba".ToUpper()), "no hyphens, capital letters")
+                () => Assert.AreEqual(new Guid("d0701409-4769-4720-a39f-3b057d62cbba"), GeneralTypeConverter.Convert<Guid>("d070140947694720a39f3b057d62cbba".ToUpper()), "no hyphens, capital letters"),
+
+                // nullable:
+                () => Assert.AreEqual(Guid.Empty, GeneralTypeConverter.Convert<Guid?>(Guid.Empty.ToString()), "Empty GUID (NOT converted to null)"),
+                () => Assert.AreEqual(new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"), GeneralTypeConverter.Convert<Guid?>("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), "Empty GUID (NOT converted to null)"),
+                () => Assert.AreEqual((Guid?)null, GeneralTypeConverter.Convert<Guid?>(null), "null"),
+                () => Assert.AreEqual((Guid?)null, GeneralTypeConverter.Convert<Guid?>(""), "Empty string to null")
+            );
+        }
+
+        [TestMethod]
+        public void GuidToString()
+        {
+            Multiple(
+                () => Assert.AreEqual(Guid.Empty.ToString(), GeneralTypeConverter.Convert<string>(Guid.Empty)),
+                () => Assert.AreEqual("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da", GeneralTypeConverter.Convert<string>(new Guid("5061a89d-6d4a-4559-9ef7-f4c9ea7f95da"))),
+
+                // nullable:
+                () => Assert.AreEqual(Guid.Empty.ToString(), GeneralTypeConverter.Convert<string>((Guid?)Guid.Empty), "Empty GUID (NOT converted to null)"),
+                () => Assert.AreEqual("ffffffff-ffff-ffff-ffff-ffffffffffff", GeneralTypeConverter.Convert<string>((Guid?)new Guid("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")), "Empty GUID (NOT converted to null)"),
+                () => Assert.AreEqual((string)null, GeneralTypeConverter.Convert<string>((Guid?)null), "null")
             );
         }
 

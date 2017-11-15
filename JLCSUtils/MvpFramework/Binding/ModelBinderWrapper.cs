@@ -290,6 +290,15 @@ namespace MvpFramework.Binding
         }
 
         /// <summary>
+        /// true iff the property is allowed to be null (when validating).
+        /// This is always false (for bound properties) if the type does not support null.
+        /// </summary>
+        public virtual bool Nullable
+            => TypeUtil.IsNullable(Property.PropertyType)           // if the type supports null
+                    && (!IsDefined(typeof(RequiredAttribute), true)             // and it is not flagged as not-nullable by one of these attributes
+                    || (this.GetCustomAttribute<NullabilityAttribute>()?.IsNullable ?? false));
+
+        /// <summary>
         /// The user interface group (<see cref="DisplayAttribute.GroupName"/>) of this item.
         /// </summary>
         public virtual string Group
@@ -320,7 +329,7 @@ namespace MvpFramework.Binding
         public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService, out ValidationResults results)
         {
             results = new ValidationResults();
-            if (Property == null)
+            if (Property == null)   // if no bound property
                 return false;
 
             TryValidateValue(value, results);
@@ -356,7 +365,8 @@ namespace MvpFramework.Binding
         /// <param name="value">The value in the UI, to be updated to the model.</param>
         public virtual void Validated(object sender, EventArgs e, object value)
         {
-            Value = value;
+            if(CanWrite)
+                ValueConverted = value;
             //| We could set _boundControl.'Modified' (if it exists) to false:
             //                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
         }

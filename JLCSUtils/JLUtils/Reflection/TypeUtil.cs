@@ -13,6 +13,14 @@ namespace JohnLambe.Util.Reflection
     /// </summary>
     public static class TypeUtil
     {
+        /// <summary>
+        /// true if the given type can be assigned null.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsNullable([Nullable] Type type)
+            => type != null && (!type.IsValueType || type.IsNullableValueType());
+
         #region Numeric
 
         /// <summary>

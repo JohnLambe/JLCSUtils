@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Collections;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Validation
 {
@@ -27,13 +29,11 @@ namespace JohnLambe.Util.Validation
         /// Gets a value indicating which features are supported by the system.
         /// </summary>
         /// <param name="context">The validation context. If null, <see cref="ValidationFeatures.None"/> is returned.</param>
-        /// <returns></returns>
+        /// <returns>The supported features value, or <see cref="ValidationFeatures.None"/> if <paramref name="context"/> is null.</returns>
         //| This is implemented as an extension method because ValidationContext is sealed (otherwise, we would have subclassed it).
-        public static ValidationFeatures GetSupportedFeatures(this ValidationContext context)
+        public static ValidationFeatures GetSupportedFeatures([Nullable] this ValidationContext context)
         {
-            if (context == null)
-                return ValidationFeatures.None;
-            return (ValidationFeatures)context.Items[Key_SupportedFeatures];
+            return (ValidationFeatures)(context?.Items.TryGetValue(Key_SupportedFeatures) ?? ValidationFeatures.None);
         }
 
         /// <summary>
@@ -50,15 +50,13 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// Set the state (<see cref="ValidationState"/> value.
+        /// Get the state (<see cref="ValidationState"/>) value.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static ValidationState GetState(this ValidationContext context)
+        public static ValidationState GetState([Nullable] this ValidationContext context)
         {
-            if (context == null)
-                return ValidationState.Default;
-            return (ValidationState)context.Items[Key_State];
+            return (ValidationState)(context?.Items.TryGetValue(Key_State) ?? ValidationState.Default);
         }
 
         /// <summary>
@@ -108,7 +106,7 @@ namespace JohnLambe.Util.Validation
         /// for assignment to a property.
         /// <seealso cref="ValidationContextExtension.NoObject"/>
         /// </summary>
-        ValidateWithoutObject
+        ValidateWithoutObject = 4
     }
 
     /// <summary>
@@ -122,7 +120,16 @@ namespace JohnLambe.Util.Validation
         /// Validation is being done immediately after a user has entered or modified the data.
         /// Some validation rules may be applied only at the time on entering the information: e.g. a date may be required to be in the future at the time it is entered.
         /// </summary>
-        LiveInput = 1
+        LiveInput = 1,
+        /// <summary>
+        /// A whole object is being validated, not just a property.
+        /// </summary>
+        WholeObject = 2,
+        /// <summary>
+        /// A non-final validation. The user will continue editing the item after this, and a final validation (without this flag) will
+        /// be done before saving/submitting the data. (Some items may be allowed to be invalid or blank at this stage.)
+        /// </summary>
+        ContinuingInput = 4
     }
 
 }

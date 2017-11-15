@@ -191,6 +191,20 @@ namespace JohnLambe.Util
             return value;
         }
 
+        /// <summary>
+        /// Compare two values, either (or both) of which may be null.
+        /// If both are null, they are equal. Otherwise, they are compared with <see cref="object.Equals(object)"/>.
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <returns>true if the values are equal.</returns>
+        public static bool NullableEquals(object value1, object value2)
+        {
+            if (value1 == null && value2 == null)
+                return true;
+            return value1?.Equals(value2) ?? false;
+        }
+
     }
 
 }

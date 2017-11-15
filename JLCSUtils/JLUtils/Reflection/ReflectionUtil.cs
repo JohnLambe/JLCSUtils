@@ -42,6 +42,17 @@ namespace JohnLambe.Util.Reflection
 
         // end AutoConfig
 
+        public static Type GetLowestNonAbstractAncestor(Type type)
+        {
+            Type nextType = type;
+            do
+            {
+                type = nextType;
+                nextType = nextType.BaseType;
+            } while (nextType != null && !nextType.IsAbstract);
+            return type;
+        }
+
 
         /*
     public static IEnumerable<MemberInfo> GetMemberHeirarchy(MemberInfo target)

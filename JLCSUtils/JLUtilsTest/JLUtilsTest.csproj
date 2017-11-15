@@ -162,6 +162,7 @@
     <Compile Include="Validation\StringValidationAttributeTest.cs" />
     <Compile Include="Validation\TestModel.cs" />
     <Compile Include="Validation\TypeValidationAttributeTest.cs" />
+    <Compile Include="Validation\ValidationContextExtensionTest.cs" />
     <Compile Include="Validation\ValidatorExTest.cs" />
     <Compile Include="Xml\XmlUtilTest.cs" />
   </ItemGroup>
