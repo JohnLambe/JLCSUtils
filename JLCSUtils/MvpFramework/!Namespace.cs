@@ -8,7 +8,7 @@ namespace MvpFramework
 {
     /// <summary>
     /// Model-View-Presenter framework.
-    /// <para>This includes non-UI specific abstractions, and an implementation for WinForms</para>
+    /// <para>This includes non-UI specific abstractions, and an implementation for WinForms.</para>
     /// </summary>
     static class NamespaceDoc { }
 }

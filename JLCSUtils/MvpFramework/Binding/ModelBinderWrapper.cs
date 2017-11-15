@@ -382,4 +382,6 @@ namespace MvpFramework.Binding
         protected MvpDisplayAttribute _mvpDisplayAttribute;  
     }
 
+    //TODO: raise EventHandler<ValueChangedEventArgs>
+
 }
