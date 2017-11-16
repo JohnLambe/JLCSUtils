@@ -384,11 +384,11 @@ namespace MvpFramework
                     return result;
             }
 
-            throw new MvpResolutionException("Resolution failed on resolving View for Presenter: " + presenterType.FullName + ".\n"
-                + (viewInterfaceType == null ? "Failed to resolve View Interface (Check that it is defined with a conventional name, e.g. " + viewInterfaceName + ")\n"
-                : "View Interface: " + viewInterfaceType.FullName + " (Check that there is a DI registration for this interface, or an implementing class with the [View] attribute)\n")
-                + (viewClassType != null ? "Tried getting class " + viewClassType.FullName + " from DI\n"
-                : !string.IsNullOrEmpty(viewClassName) ? "No class found called " + viewClassName + "\n" : "")
+            throw new MvpResolutionException("Resolution failed on resolving View for Presenter: " + presenterType.FullName + "." + NL
+                + (viewInterfaceType == null ? "Failed to resolve View Interface (Check that it is defined with a conventional name, e.g. " + viewInterfaceName + ")" + NL
+                : "View Interface: " + viewInterfaceType.FullName + " (Check that there is a DI registration for this interface, or an implementing class with the [View] attribute)" + NL)
+                + (viewClassType != null ? "Tried getting class " + viewClassType.FullName + " from DI" + NL
+                : !string.IsNullOrEmpty(viewClassName) ? "No class found called " + viewClassName + NL : "")
                 );
         }
 
@@ -575,6 +575,11 @@ namespace MvpFramework
             // This class currently does not require the order to be preserved, but preserving the order could be more intuitive for debugging.
         }
         private Assembly[] _assemblies;
+
+        /// <summary>
+        /// Line separator used in error messages.
+        /// </summary>
+        protected const string NL = "\r\n";
     }
 
 

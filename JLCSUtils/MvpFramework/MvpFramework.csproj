@@ -173,6 +173,7 @@
     </Compile>
     <Compile Include="WinForms\IconUtil.cs" />
     <Compile Include="WinForms\ResolverExtension.cs" />
+    <Compile Include="WinForms\Util\WinFormsDiUtil.cs" />
     <Compile Include="WinForms\Util\ControlSorter.cs" />
     <Compile Include="WinForms\Util\WinFormsUtil.cs" />
     <Compile Include="WinForms\ViewBase.cs">
@@ -243,7 +244,9 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Util\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

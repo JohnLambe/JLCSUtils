@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Util.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -118,8 +119,18 @@ namespace JohnLambe.Util.Documentation
 
         /// <summary>
         /// The constant value of the item.
+        /// Valid only on constants and static fields.
+        /// When used on the latter, it reads the value that they have at the time of running the tool that uses it.
+        /// This is probably only useful when the field has an initial value.
         /// </summary>
-        Value = 16
+        Value = 16,
+
+        All = Summary | Remarks | DescriptionAttribute | Attributes | Value,
+
+        /// <summary>
+        /// All values that can be used with <see cref="ReferenceAttribute"/>.
+        /// </summary>
+        AllReferenceable = Summary | Remarks | DescriptionAttribute | Attributes
     }
 
 }

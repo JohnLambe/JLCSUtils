@@ -183,6 +183,17 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         [TestMethod]
+        public void BlankToNull()
+        {
+            Multiple(
+                () => Assert.AreEqual(null, StrUtil.BlankToNull(null)),
+                () => Assert.AreEqual(null, StrUtil.BlankToNull("")),
+                () => Assert.AreEqual(" ", StrUtil.BlankToNull(" ")),
+                () => Assert.AreEqual("asd ", StrUtil.BlankToNull("asd "))
+            );
+        }
+
+        [TestMethod]
         public void FirstNonBlank()
         {
             Assert.AreEqual("third", StrUtil.FirstNonBlank("",null,"third",null,"fifth"));

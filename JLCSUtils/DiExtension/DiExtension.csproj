@@ -47,6 +47,7 @@
     <Compile Include="Attributes\AutoEventAttributes.cs" />
     <Compile Include="Attributes\DiAttribute.cs" />
     <Compile Include="Attributes\InjectAttribute.cs" />
+    <Compile Include="Attributes\SupportsInjectionAttribute.cs" />
     <Compile Include="AutoFactory\AutoFactory.cs" />
     <Compile Include="AutoFactory\AutoFactoryAttribute.cs" />
     <Compile Include="AutoFactory\AutoFactoryFactory.cs" />

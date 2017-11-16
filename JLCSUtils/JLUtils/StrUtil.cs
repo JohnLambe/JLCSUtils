@@ -52,7 +52,7 @@ namespace JohnLambe.Util
         */
 
         /// <summary>
-        /// If the string is null, blank is returned, otherwise the string is returned unmodified.
+        /// If the string is null, blank ("") is returned, otherwise the string is returned unmodified.
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -60,6 +60,19 @@ namespace JohnLambe.Util
         {
             if (s == null)
                 return "";
+            else
+                return s;
+        }
+
+        /// <summary>
+        /// If the string is "", null is returned, otherwise the string is returned unmodified.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string BlankToNull(this string s)
+        {
+            if (s == "")
+                return null;
             else
                 return s;
         }

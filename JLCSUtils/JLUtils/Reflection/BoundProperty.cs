@@ -11,6 +11,7 @@ using JohnLambe.Util.Validation;
 using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.TypeConversion;
+using System.ComponentModel;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -93,7 +94,7 @@ namespace JohnLambe.Util.Reflection
 
         /// <summary>
         /// The value of this property on the bound object.
-        /// Setting this tries to convert the value to the value of the underlying property.
+        /// Setting this tries to convert the value to the type of the underlying property.
         /// </summary>
         public virtual object ValueConverted
         {
@@ -107,7 +108,7 @@ namespace JohnLambe.Util.Reflection
                 {
                     Validator?.ValidateValue(Target, ref value, Property);
 
-                    Property?.SetValue(Target, GeneralTypeConverter.Convert<TProperty>(value));
+                    Property?.SetValue(Target, GeneralTypeConverter.Convert(value, Property.PropertyType));
                 }
             }
         }
@@ -124,6 +125,10 @@ namespace JohnLambe.Util.Reflection
         public virtual string DisplayName
             => CaptionUtil.GetDisplayName(Property);
 
+        /// <summary>
+        /// A description or hint for display.
+        /// As defined with <see cref="DescriptionAttribute"/>.
+        /// </summary>
         public virtual string Description
             => CaptionUtil.GetDescriptionFromAttribute(Property);
 

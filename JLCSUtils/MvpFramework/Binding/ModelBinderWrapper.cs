@@ -324,9 +324,11 @@ namespace MvpFramework.Binding
         /// <param name="evt"></param>
         /// <param name="value">The value in the UI, to be updated to the model.</param>
         /// <param name="dialogService">If not null, a dialog is shown if invalid.</param>
+        /// <param name="exception">Iff true, and <paramref name="dialogService"/> is null, a <see cref="ValidationException"/> is thrown on failure.</param>
         /// <param name="results"></param>
         /// <returns>true iff <paramref name="value"/> is modified.</returns>
-        public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService, out ValidationResults results)
+        public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value,
+            [Nullable] IMessageDialogService dialogService, out ValidationResults results, bool exception = false)
         {
             results = new ValidationResults();
             if (Property == null)   // if no bound property
@@ -342,7 +344,7 @@ namespace MvpFramework.Binding
                 // (it would allow the focus to leave the control).
                 if (dialogService != null)
                     dialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
-                else
+                else if(exception)
                     results.ThrowIfInvalid();
             }
 
@@ -374,7 +376,8 @@ namespace MvpFramework.Binding
         #endregion
 
         //TODO: public virtual bool Modified { get; set; }
-        //TODO: ValueChanged event
+        //        ValueChanged event ?
+        //        Revert
 
 
         //TODO: Lazily initialize:

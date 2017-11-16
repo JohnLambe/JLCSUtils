@@ -148,7 +148,7 @@ namespace MvpFramework
                                 {
                                     throw new MvpResolutionException("Attempt to nest non-nestable View: "
                                         + view + " in " + viewParent
-                                        + "\n(View must implement " + nameof(INestableView) + ")");
+                                        + NL + "(View must implement " + nameof(INestableView) + ")");
                                     //| Alternativelty, if view is of the control class for its UI framework and it has a Parent property, we could use it.
                                     //| This would require a UI-framework-specific handler to provide the way of assigning controls to parents in the UI framework.
                                     //| But implementing ViewParent on a base class basically provides the similar functionality for this purpose, and is simpler.
@@ -218,10 +218,10 @@ namespace MvpFramework
             }
             catch(Exception ex)
             {
-                throw new MvpResolutionException("Error on creating presenter: Type: " + typeof(TPresenter) + "\n"
-                    + (TargetClass != null ? "Presenter class: " + TargetClass + "\n" : "")
-                    + (TargetConstructor != null ? "Target Presenter constructor: " + TargetConstructor + "\n" : "")
-                    + (SuppliedView != null ? "With supplied View: " + SuppliedView + "\n" : "")
+                throw new MvpResolutionException("Error on creating presenter: Type: " + typeof(TPresenter) + NL
+                    + (TargetClass != null ? "Presenter class: " + TargetClass + NL : "")
+                    + (TargetConstructor != null ? "Target Presenter constructor: " + TargetConstructor + NL : "")
+                    + (SuppliedView != null ? "With supplied View: " + SuppliedView + NL : "")
                     + ex.Message
                     , ex);
                 //TODO: Include more information in error message
@@ -307,6 +307,11 @@ namespace MvpFramework
         /// Non null. May be a null object.
         /// </summary>
         protected readonly IResolverExtension UiManager;
+
+        /// <summary>
+        /// Line separator used in error messages.
+        /// </summary>
+        protected const string NL = "\r\n";
     }
 
 
