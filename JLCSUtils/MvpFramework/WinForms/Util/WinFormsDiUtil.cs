@@ -10,15 +10,22 @@ using System.Windows.Forms;
 
 namespace MvpFramework.WinForms.Util
 {
+    /// <summary>
+    /// Dependency injection utilities for use with WinForms and DiExtension.
+    /// </summary>
     public static class WinFormsDiUtil
     {
         /// <summary>
         /// Run property injection on the given control, and optionally, its children.
+        /// <para>
+        /// Only types attributed with <see cref="SupportsInjectionAttribute"/> are injected, but all <see cref="Control"/>s have their properties scanned (if <paramref name="injectChildren"/> is true).
+        /// The classes must be injectable by the dependency injection implementation.
+        /// </para>
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="control"></param>
-        /// <param name="injectChildren">Iff true, the child controls are also injected.</param>
-        public static void RunPropertyInjection(IDiContext context, Control control, bool injectChildren = true)
+        /// <param name="control">The control to have its properties injected.</param>
+        /// <param name="injectChildren">Iff true, the child controls of <paramref name="control"/> (recursively) are also injected.</param>
+        public static void RunPropertyInjection(this IDiResolver context, Control control, bool injectChildren = true)
         {
             if(control.GetType().GetCustomAttribute<SupportsInjectionAttribute>()?.Enabled ?? false)
                 context.BuildUp(control);
@@ -28,20 +35,23 @@ namespace MvpFramework.WinForms.Util
 
         /// <summary>
         /// Run property injection on the children of the given control.
+        /// <para>
+        /// This has the same restrictions as <see cref="RunPropertyInjection"/> regarding what is injected.
+        /// </para>
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="control"></param>
-        public static void RunPropertyInjectionOnChildren(IDiContext context, Control control)
+        /// <param name="containerControl"></param>
+        public static void RunPropertyInjectionOnChildren(IDiResolver context, Control containerControl)
         {
-            if (control.HasChildren)
+            if (containerControl.HasChildren)
             {
-                foreach (var c in control.Controls)
+                foreach (var control in containerControl.Controls)
                 {
-                    RunPropertyInjection(context, control);
+                    RunPropertyInjection(context, control as Control);
                 }
             }
         }
 
-        //TODO: Inject 
+        //TODO: Inject Component and IContainer (not WinForms-specific) ?
     }
 }

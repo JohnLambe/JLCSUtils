@@ -39,6 +39,10 @@ namespace DiExtension
         /// <summary>
         /// Run property (and/or method) injection on a given instance.
         /// </summary>
+        /// <para>
+        /// Note: Implementations may have restrictions on what can be injected.
+        /// Currently, when using SimpleInjector, property injection fails if there a constructor for injection cannot be resolved (even though it wouldn't be called).
+        /// </para>
         /// <returns><paramref name="instance"/></returns>
         /// <param name="instance"></param>
         T BuildUp<T>(T instance);

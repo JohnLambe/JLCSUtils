@@ -16,7 +16,7 @@ namespace DiExtension.Attributes
         /// <summary>
         /// </summary>
         /// <param name="enabled"><see cref="Enabled"/></param>
-        public SupportsInjectionAttribute(bool enabled)
+        public SupportsInjectionAttribute(bool enabled = true)
         {
             this.Enabled = enabled;
         }
