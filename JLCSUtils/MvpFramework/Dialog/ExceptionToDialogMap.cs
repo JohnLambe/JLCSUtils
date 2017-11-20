@@ -9,6 +9,9 @@ using JohnLambe.Util.Reflection;
 using System.Reflection;
 using JohnLambe.Util;
 using JohnLambe.Util.Types;
+using JohnLambe.Util.Exceptions;
+using SimpleInjector;
+using DiExtension;
 
 namespace MvpFramework.Dialog
 {
@@ -31,8 +34,8 @@ namespace MvpFramework.Dialog
         /// </summary>
         /// <param name="exceptionType"></param>
         /// <param name="dialogType"></param>
-        /// <returns></returns>
-        protected virtual bool InternalGetDialogTypeForExceptionType(Type exceptionType, out Type dialogType)
+        /// <returns>true if the exception type can be mapped to a dialog type.</returns>
+        protected virtual bool InternalGetDialogTypeForExceptionType(Type exceptionType, [Nullable] out Type dialogType)
         {
             KeyValuePair<Type,Type> bestMatch = new KeyValuePair<Type, Type>();
             bool match = false;
@@ -96,8 +99,11 @@ namespace MvpFramework.Dialog
         /// </summary>
         /// <param name="dialogType"></param>
         /// <returns></returns>
-        public virtual Type GetDialogModelTypeForDialogType(Type dialogType)
+        [return: Nullable]
+        public virtual Type GetDialogModelTypeForDialogType([Nullable] Type dialogType)
         {
+            if (dialogType == null)
+                return null;
             if (typeof(MessageDialogModel<string>).IsAssignableFrom(dialogType))   //TODO: Handle any generic parameter
                 return dialogType;                     // already a model type
 
@@ -128,6 +134,7 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// Returns a populated <see cref="MessageDialogModel{TResult}"/> instance with the details 
         /// of the given exception.
+        /// The type of message dialog is chosen based on the exception type, after applying <see cref="ExceptionUtil.ExtractException(Exception)"/>.
         /// </summary>
         /// <param name="exception">The exception type to convert.
         /// If null, null is returned.</param>
@@ -138,7 +145,7 @@ namespace MvpFramework.Dialog
             if (exception == null)
                 return null;
 
-            var dialogType = GetDialogTypeForExceptionType(exception.GetType());
+            var dialogType = GetDialogTypeForExceptionType(ExtractException(exception).GetType());
             var dialogModelType = GetDialogModelTypeForDialogType(dialogType);
             var dialogModel = ReflectionUtil.Create<MessageDialogModel<string>>(dialogModelType);
             dialogModel.Exception = exception;
@@ -212,10 +219,36 @@ namespace MvpFramework.Dialog
             CachedMappings = new CachedSimpleLookup<Type, Type>(InternalGetDialogTypeForExceptionType);
         }
 
+        /// <summary>
+        /// Drop the cache of mappings. (They will be repopulated on or before the call to get a mapping.)
+        /// </summary>
         protected virtual void DropCache()
         {
             InitialiseCache();
         }
+
+        /// <summary>
+        /// Before mapping, 
+        /// </summary>
+        /// <param name="exception">The original exception to be mapped.</param>
+        /// <returns>The exception used for the mapping.</returns>
+        [return: Nullable("Iff passed null")]
+        public virtual Exception ExtractException([Nullable] Exception exception)
+            => ExceptionUtil.ExtractException(exception, WrappingExceptionsAssignable, WrappingExceptions);
+
+        /// <summary>
+        /// Exceptions for which the <see cref="Exception.InnerException"/> is extracted before mapping. Exceptions of types assignable to these types are also included.
+        /// <see cref="ExceptionUtil.ExtractException(Exception, Type[], Type[])"/>
+        /// </summary>
+        [Nullable("none")]
+        public virtual Type[] WrappingExceptionsAssignable { get; set; } = new Type[] { typeof(TargetInvocationException), typeof(ActivationException) };
+        /// <summary>
+        /// Exceptions for which the <see cref="Exception.InnerException"/> is extracted before mapping.
+        /// <see cref="ExceptionUtil.ExtractException(Exception, Type[], Type[])"/>
+        /// </summary>
+        [Nullable("none")]
+        public virtual Type[] WrappingExceptions { get; set; } = new Type[] { typeof(Exception), typeof(DependencyInjectionException) };
+
 
         /// <summary>
         /// The defined mappings.

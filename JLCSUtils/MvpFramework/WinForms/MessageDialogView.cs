@@ -72,7 +72,7 @@ namespace MvpFramework.WinForms
                 uiIcon2.BackgroundImage = _iconRepository.GetIcon(Model.Dialog.MessageImage) as Image;
                 uiIcon2.Visible = uiIcon2.BackgroundImage != null;         // hide the control if there is no image in it
 
-                uiMessageText.Text = Model.Dialog.Message;
+                uiMessageText.Text = Model.Dialog?.Message;
 
                 uiFullDetails.Text = (Model.DetailMessage ?? "")
                     + "\n\n"

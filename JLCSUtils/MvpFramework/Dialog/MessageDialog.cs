@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using MvpFramework.Menu;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.Misc;
+using JohnLambe.Util.Exceptions;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.Dialog
 {
@@ -36,78 +38,46 @@ namespace MvpFramework.Dialog
             MessageTypeId = GetType().FullName;
         }
 
-        /// <summary>
-        /// ID unique to an message/warning/error type and a place where it can occur.
-        /// May be null.
-        /// <para>A hierarchical ID (parts separated by "/") is recommended.</para>
-        /// <para>This can be used in analysing log files for occurrences of the same error condition, etc.,
-        /// or potentially for applying UI styles, changing the default button,
-        /// or hiding the dialog and returning as if the default option had been chosen.</para>
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.InstanceId"/>
         public virtual string InstanceId { get; set; }
 
-        /// <summary>
-        /// Title of the message dialog. (For display).
-        /// May be null. (If it is, it is recommended that the UI hide the title bar of the window etc.).
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.Title"/>
         public virtual string Title { get; set; }
 
-        /// <summary>
-        /// Main message for display.
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.Message"/>
+        [Nullable("The exception message is returned if this is null. If both are null, null is returned.")]
         public virtual string Message
         {
-            get { return _message ?? Exception?.Message; }
+            get { return _message ?? ExceptionUtil.ExtractException(Exception)?.Message; }
             set { _message = value; }
         }
         private string _message;
 
+        /// <inheritdoc cref="IMessageDialogModel.MessageType"/>
         public virtual MessageDialogType MessageType { get; set; } = MessageDialogType.Informational;
         //| Inferred from MessageTypeId ?
 
-        /// <summary>
-        /// Hierarchical ID of the type of message (parts separated by "/").
-        /// Could have UI styles or defaults for other properties mapped to it.
-        /// May be null.
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.MessageTypeId"/>
         public virtual string MessageTypeId { get; set; }
 
-        /// <summary>
-        /// Identifier of an icon indicating the type of message or error.
-        /// May be null, for a default determined by <see cref="MessageType"/> (possibly no icon).
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.Icon"/>
         [IconId]
         public virtual string Icon { get; set; }
 
-        /// <summary>
-        /// Identifier of an image related to the message (rather than the type (error, warning, etc.)).
-        /// (It might be displayed in the background of the dialog.)
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.MessageImage"/>
         [IconId]
         public virtual string MessageImage { get; set; }
 
-        /// <summary>
-        /// What type of UI to use to show the message.
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.DisplayType"/>
         public virtual MessageDisplayType DisplayType { get; set; } = MessageDisplayType.Default;
 
-        /// <summary>
-        /// The exception which lead to this message.
-        /// May be null.
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.Exception"/>
         public virtual Exception Exception { get; set; }
 
-        /// <summary>
-        /// Low-level details (not shown to the user, except possibly by their requesting it by a UI interaction
-        /// (expanding a panel, clicking a 'Detail' button, etc.)).
-        /// May be null (in which case, it is recommended that any UI control for showing it should be hidden).
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.DiagnosticMessage"/>
         public virtual string DiagnosticMessage { get; set; }
 
-        /// <summary>
-        /// The buttons or options that the user can choose, in the order in which they are displayed.
-        /// null for default based on MessageType.
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.Options"/>
         public virtual IOptionCollection Options { get; set; }
 
         /// <summary>
@@ -115,30 +85,30 @@ namespace MvpFramework.Dialog
         /// </summary>
         public virtual int LogLevel { get; set; }
 
-
-        /// <summary>
-        /// Flags relating to what interceptors can do with this message.
-        /// </summary>
+        /// <inheritdoc cref="IMessageDialogModel.InterceptFlags"/>
         public virtual MessageDialogInterceptFlags InterceptFlags => MessageDialogInterceptFlags.Default;
 
 
         /// <summary>
-        /// A human-readable desription of this type of message.
+        /// A human-readable description of this type of message.
         /// Can be used for showing configuration settings relating to it, etc.
         /// </summary>
         public virtual string Description { get; set; }
 
-        
-        /// <summary>
-        /// Event that is fired when an option is chosen.
-        /// (For use with modeless dialogs, but fired whether modal or not).
-        /// </summary>
+        #region Dialog grouping
+
+        /// <inheritdoc cref="IMessageDialogModel.GroupId"/>
+        public virtual string GroupId { get; set; }
+
+        /// <inheritdoc cref="IMessageDialogModel.CommonMessage"/>
+        public virtual string CommonMessage { get; set; }
+
+        #endregion
+
+        /// <inheritdoc cref="IMessageDialogModel.Responded"/>
         public virtual event MessageDialogRespondedDelegate Responded;
 
-        /// <summary>
-        /// Fire the <see cref="Responded"/> event.
-        /// </summary>
-        /// <param name="messageDialogResult">The 'messageDialogResult' parameter to <see cref="MessageDialogRespondedDelegate"/>.</param>
+        /// <inheritdoc cref="IMessageDialogModel.FireResponded"/>
         public virtual void FireResponded(object messageDialogResult)
         {
             Responded?.Invoke(this, new MessageDialogRespondedEventArgs(messageDialogResult));

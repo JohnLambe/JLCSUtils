@@ -11,12 +11,13 @@ namespace JohnLambe.Util.Reflection
     /// <summary>
     /// Type-related utilities.
     /// </summary>
+    /// <seealso cref="ReflectionUtil"/>
     public static class TypeUtil
     {
         /// <summary>
-        /// true if the given type can be assigned null.
+        /// Returns true if the given type can be assigned null.
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">The type to test. If null, false is returned.</param>
         /// <returns></returns>
         public static bool IsNullable([Nullable] Type type)
             => type != null && (!type.IsValueType || type.IsNullableValueType());
@@ -241,6 +242,70 @@ namespace JohnLambe.Util.Reflection
                 return Activator.CreateInstance(type);    // this returns null for nullable value types
             else
                 return null;   // null is the default for all reference types
+        }
+
+        /// <summary>
+        /// Returns true if <paramref name="type"/> is a subclass of any of <paramref name="compareTypes"/>.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="compareTypes"></param>
+        /// <returns></returns>
+        public static bool IsSubclassOfAny([Nullable] Type type, [NotNull] params Type[] compareTypes)
+        {
+            if (type == null)
+                return false;
+            foreach (var t in compareTypes)
+            {
+                if (type.IsSubclassOf(t))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true iff <paramref name="type"/> is assignable from of any of <paramref name="compareTypes"/>.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="compareTypes"></param>
+        /// <returns>
+        /// true iff
+        /// <c>x = y</c>, where <c>x</c> is of type <paramref name="type"/> and <c>y</c> is an instance of one of <paramref name="compareTypes"/>, is valid.
+        /// Returns false if either parameter is null.
+        /// </returns>
+        public static bool IsAssignableFromAny([Nullable] Type type, [Nullable] params Type[] compareTypes)
+        {
+            if (type == null || compareTypes == null)
+                return false;
+            foreach (var t in compareTypes)
+            {
+                if (type.IsAssignableFrom(t))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true iff <paramref name="type"/> is assignable to of any of <paramref name="compareTypes"/>.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="compareTypes"></param>
+        /// <returns>
+        /// true iff
+        /// <c>x = y</c> is valid, where 
+        /// <c>x</c> is of one of the types <paramref name="compareTypes"/>
+        /// and <c>y</c> is an instance of <paramref name="type"/>.<br/>
+        /// Returns false if either parameter is null.
+        /// </returns>
+        public static bool IsAssignableToAny([Nullable] Type type, [Nullable] params Type[] compareTypes)
+        {
+            if (type == null || compareTypes == null)
+                return false;
+            foreach (var t in compareTypes)
+            {
+                if (t.IsAssignableFrom(type))
+                    return true;
+            }
+            return false;
         }
     }
 }

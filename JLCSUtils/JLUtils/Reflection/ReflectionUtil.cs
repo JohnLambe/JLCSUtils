@@ -18,6 +18,7 @@ namespace JohnLambe.Util.Reflection
     /// Reflection-related utilities.
     /// </summary>
     /// <seealso cref="GenericTypeUtil"/>
+    /// <seealso cref="TypeUtil"/>
     public static class ReflectionUtil
     {
 
@@ -487,6 +488,7 @@ namespace JohnLambe.Util.Reflection
 
         #endregion
 
+        //TODO: Move to TypeUtil?
         /// <summary>
         /// Returns an array in which each element is the type of the corresponding element in the given array.
         /// </summary>
@@ -639,19 +641,21 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         public static readonly object DefaultValue = new object();
 
+        //TODO: Move to TypeUtil?
         /// <summary>
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        /// <returns>True iff this type can be assigned the given value.</returns>
+        /// <returns>true iff this type can be assigned the given value (i.e. <c>x = value</c>, where <c>x</c> is of type <paramref name="type"/>, is valid).</returns>
         public static bool IsAssignableFromValue([NotNull] this Type type, [Nullable] object value)
         {
             if (value == null)
-                return !type.IsValueType;     // assignable to null iff not a value type
+                return !TypeUtil.IsNullable(type);
             else
                 return type.IsAssignableFrom(value.GetType());
         }
 
+        //TODO: Move to TypeUtil?
         /// <summary>
         /// Returns true if this type is the given type or a subclass of it.
         /// </summary>
@@ -1128,23 +1132,25 @@ namespace JohnLambe.Util.Reflection
     //| Visible ASCII characters:
     //|
     //| Symbol	Other uses or associations
-    //| .	used
-    //| ?	nullable; question/doubt; help; '?.'
+    //| .	used (member); Acorn: file path separator.
+    //| ?	nullable; question/doubt; help; C# '?.'; C ternary operator; wildcard (Windows filanames)
     //| !	proposed C# feature: non-nullable reference type; logical NOT; comment; ! path; error
     //| @	Prefix for variable or expression in Razor; email address; this?; Twitter account; Acorn: current directory
-    //| #	expected to be followed by a number/ID?
-    //| $	hexadecimal; currency?; string (BASIC); Acorn: root of disc
-    //| %	display as percentage; modulo; format specifier (printf); enclosing a variable name; Acorn: library directory
+    //| #	expected to be followed by a number/ID?; Twitter hashtag
+    //| $	hexadecimal (Pascal); currency?; string (BASIC); Acorn: root of disc
+    //| %	display as percentage; modulo; escaping (e.g. URLs); format specifier (printf); enclosing a variable name; Acorn: library directory
     //| &   address-of; BBC BASIC: hexadecimal
     //| ^	dereference; power (BASIC, Pascal); bitwise XOR
     //| "'()[]{}	brackets, quotes; expected to be matched
-    //| / * + -	mathematical operators
+    //| * +	mathematical operators; wildcards ('*' (filenames, regex), '+' (regex)); UML visibility
+    //| / - mathematical operators; Unix and web path separator ('/'); separators; private visibility (UML '-')
     //| ,:;|	separators; C comma operator; comment (';','|'); bitwise OR ('|')
-    //| <>	brackets, comparison
-    //| =	assignment / equality; name/value separator
+    //| <>	brackets; comparison; enclose tag (XML, HTML) or variable etc.
+    //| =	assignment (e.g. C) / equality (e.g. BASIC, Pascal); name/value separator
     //| `	quote; Maths: decorator; separator (.NET generic type names); too different to '?' and '!' ?
     //| ~	approximate; bitwise NOT; BBC BASIC: display in hex.
-    //| \	path separator; escaping next character
+    //| \	Windows (and Registry) path separator; escaping next character
     //| 'A'-'Z','a'-'z','0'-'9','_'	identifier characters
+    //| ' '
 
 }

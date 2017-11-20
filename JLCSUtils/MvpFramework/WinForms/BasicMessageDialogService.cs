@@ -16,7 +16,7 @@ namespace MvpFramework.WinForms
         public virtual TResult ShowMessage<TResult>(IMessageDialogModel<TResult> messageModel)
         {
             // Mock/placeholder implementation:
-            MessageBox.Show(messageModel.Message, messageModel.Title);
+            MessageBox.Show(messageModel.Message ?? "", messageModel.Title);
             //TOOD: support the other properties, with a better dialog box.
             return default(TResult);
         }

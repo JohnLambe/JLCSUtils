@@ -17,14 +17,18 @@ namespace JohnLambe.Util.Types
     /// When applied to a collection, the nullability specification applies to the collection itself, not the elements.
     /// </para>
     /// <para>
+    /// When applied to an <c>out</c> parameter, it relates to whether it can be null on exit (when no exception is raised).
+    /// When applied to a parameter passed by reference and not declared as out-only (C# <c>ref</c>), it applies to both its value on entry and its value on exit.
+    /// </para>
+    /// <para>
     /// Primitive types:<br/>
     /// A <see cref="NullableAttribute"/> on a non-nullable type could never be valid.
     /// This attribute applies to nullable primitives just like reference types, but placing a <see cref="NullabilityAttribute"/>
-    /// attribute on them in unnecessary since they can be assumed to be nullable unless otherwise indicated (since they have a non-nullable equivalent),
-    /// and using the non-nullable type is preferred to using a <see cref="NotNullAttribute"/>.
+    /// attribute on them is unnecessary since they can be assumed to be nullable unless otherwise indicated (since they have a non-nullable equivalent),
+    /// and using the non-nullable type rather than <see cref="NotNullAttribute"/> is recommended.
     /// </para>
     /// </summary>
-    //| This could be allowed on methods to apply the setting to all parameters, but that could be error-prone (a developer might have intended to apply it to the return value).
+    //| This could be allowed on methods to apply the setting to all parameters, but that could be error-prone (a developer might have intended to apply it to the return value, or another developer might add a parameter and forget to change the attribute).
     [AttributeUsage(AttributeTargets.Event | AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue
           | AttributeTargets.Class | AttributeTargets.Delegate | AttributeTargets.Interface,
         AllowMultiple = false, Inherited = true)]
@@ -122,5 +126,8 @@ namespace JohnLambe.Util.Types
 
         // see Nullability.IsDefaultAttribute() - this must be overridden if any properties settable when declaring an attribute are added here or in a subclass.
     }
+
+
+    //TODO: New subclass that can specify the input and output nullability of a 'ref' parameter independently ?
 
 }

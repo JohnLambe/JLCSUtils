@@ -1,4 +1,5 @@
-﻿using JohnLambe.Util.Types;
+﻿using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,24 +9,49 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Exceptions
 {
+    /// <summary>
+    /// Utilities related to exceptions.
+    /// </summary>
     public static class ExceptionUtil
     {
         /// <summary>
-        /// Returns the inner exception (recursively) of the given one if the out is <see cref="TargetInvocationException"/> (later versions may also do this for other exceptions that just wrap another),
+        /// Returns the inner exception (recursively) of the given one if the given one is <see cref="TargetInvocationException"/> (later versions may also do this for other exceptions that just wrap another),
         /// otherwise the given exception.
         /// </summary>
-        /// <param name="ex">The initial exception.</param>
+        /// <param name="ex">The initial exception.
+        /// There must not be a loop in the InnerException chain (<see cref="Exception.InnerException"/> must not point to an exception in which this is nested) (otherwise, this would loop indefinitely).
+        /// </param>
         /// <returns>
-        /// The given exception or inner exception.
+        /// The given exception.
         /// Returns null if and only if <paramref name="ex"/> is null.
         /// The given exception is returned if its inner exception is null.
         /// </returns>
-        [return: Nullable]
+        [return: Nullable("Iff passed null")]
         public static Exception ExtractException([Nullable] Exception ex)
         {
             if (ex == null)
                 return null;
             while(ex is TargetInvocationException && ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+            }
+            return ex;
+        }
+
+        /// <summary>
+        /// Exctract the inner exception recursively, where the outer one is one of the specified types.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="wrappingExceptionsAssignable">Exceptions of types that can be assigned to these (e.g. of subclasses of these) are removed.</param>
+        /// <param name="wrappingExceptions">Exceptions matching exactly these types are removed.</param>
+        /// <returns>The extracted exception (may be the <paramref name="ex"/>).</returns>
+        [return: Nullable("Iff passed null")]
+        public static Exception ExtractException([Nullable] Exception ex, Type[] wrappingExceptionsAssignable, Type[] wrappingExceptions)
+        {
+            if (ex == null)
+                return null;
+            while (ex.InnerException != null
+                && (TypeUtil.IsAssignableToAny(ex.GetType(), wrappingExceptionsAssignable) || (wrappingExceptions?.Contains(ex.GetType()) ?? false)))
             {
                 ex = ex.InnerException;
             }

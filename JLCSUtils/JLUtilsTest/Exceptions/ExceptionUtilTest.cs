@@ -25,18 +25,19 @@ namespace JohnLambe.Tests.JLUtilsTest.Exceptions
             var ex = new InvalidOperationException("test", new InvalidCastException());
 
             // Act/Assert:
-            Assert.AreEqual(null, ExceptionUtil.ExtractException(null));
+            Assert.AreEqual(ex, ExceptionUtil.ExtractException(ex));
         }
 
         [TestMethod]
         public void ExtractException_Wrapped()
         {
             // Arranage:
-            var ex = new InvalidOperationException("test", new InvalidCastException("test2", new TargetInvocationException(new SystemException())));
-            var ex2 = new TargetInvocationException("to be removed", new TargetInvocationException("to be removed 2", ex));
+            var ex = new InvalidOperationException("test", new InvalidCastException("test2", new TargetInvocationException(new SystemException())));  // exception to be extracted (which has inner exceptions itself)
+            var ex2 = new TargetInvocationException("to be removed", new TargetInvocationException("to be removed 2", ex));  // nested two levels deep
 
             // Act/Assert:
             Assert.AreEqual(ex, ExceptionUtil.ExtractException(ex2));
         }
+
     }
 }

@@ -60,7 +60,7 @@ namespace MvpFramework.Dialog
 
         public virtual string DetailMessage =>
             Dialog?.Exception == null ? null
-            : Dialog?.Message + "\r\n\r\n"
+            : (Dialog?.Message ?? "") + "\r\n\r\n"
             //+ (Dialog?.Exception?.ToString());
             + (ExceptionUtil.ExtractException(Dialog?.Exception)?.Message);
     }

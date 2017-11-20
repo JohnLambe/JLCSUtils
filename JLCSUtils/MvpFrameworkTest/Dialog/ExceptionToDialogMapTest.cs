@@ -9,6 +9,7 @@ using MvpFramework.Dialog;
 using MvpFramework.Dialog.Dialogs;
 
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+using System.Reflection;
 
 namespace MvpFrameworkTest.Dialog
 {
@@ -31,6 +32,54 @@ namespace MvpFrameworkTest.Dialog
 
                 () => Assert.AreEqual(typeof(ConfirmationDialogType), map.GetDialogTypeForExceptionType(typeof(System.IO.IOException))),
                 () => Assert.AreEqual(typeof(ConfirmationDialogType), map.GetDialogTypeForExceptionType(typeof(System.IO.FileNotFoundException)))
+            );
+        }
+
+        [TestMethod]
+        public void GetDialogTypeForExceptionType_ExtractException()
+        {
+            // Arrange:
+            var map = new ExceptionToDialogMap();
+            map.AddMapping(typeof(System.IO.IOException), typeof(ConfirmationDialogType));
+            map.AddMapping(typeof(System.Exception), typeof(ErrorDialogType));
+
+            var exception = new TargetInvocationException("Outer exception", new System.IO.FileNotFoundException("File not found", new Exception("innermost exception")));
+            // The FileNotFoundException exception should be mapped.
+
+            // Act / Assert:
+
+            Multiple(
+                () =>
+                {
+                    // Act:
+                    var dialogModel = map.GetMessageDialogModelForException(exception);
+
+                    // Assert:
+                    Assert.AreEqual(typeof(ConfirmationDialog), dialogModel.GetType());
+                    Assert.AreEqual(typeof(ConfirmationDialogType), dialogModel.MessageType.GetType());
+                    Assert.AreEqual(exception, dialogModel.Exception);
+                },
+
+                () =>
+                {
+                    // Act:
+                    var dialogModel = map.GetMessageDialogModelForException(new TargetInvocationException(exception));  // nest one level deeper
+
+                    // Assert:
+                    Assert.AreEqual(typeof(ConfirmationDialog), dialogModel.GetType());
+                    Assert.AreEqual(typeof(ConfirmationDialogType), dialogModel.MessageType.GetType());
+                    Assert.AreEqual(exception, dialogModel.Exception.InnerException);
+                },
+
+                () =>
+                {
+                    // Act:
+                    var dialogModel = map.GetMessageDialogModelForException(new TargetInvocationException("", null));  // if no InnerException, the TargetInvocationException is mapped
+
+                    // Assert:
+                    Assert.AreEqual(typeof(ErrorDialogType), dialogModel.MessageType.GetType());
+                    Assert.AreEqual(typeof(TargetInvocationException), dialogModel.Exception.GetType());
+                }
             );
         }
 
