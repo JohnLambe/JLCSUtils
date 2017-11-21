@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Binding;
 using MvpFramework.Generator;
+using MvpFramework.Dialog;
 
 namespace MvpFramework.WinForms
 {
     public partial class AutoView : WindowViewBase, IAutoView
     {
-        public AutoView()
+        public AutoView(IMessageDialogService dialogService = null) : base(dialogService)
         {
             InitializeComponent();
         }

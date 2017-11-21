@@ -30,6 +30,11 @@ namespace MvpFramework.WinForms
 
             _iconRepository = iconRepository ?? new NullIconRepository<string, object>();
             DefaultButtonsBackColor = uiButtons.BackColor;           // the default color is that specified in the form designer
+
+            //TODO: Handle key press events and delegate to ButtonContainer (so that buttons can be invoked by typing a character) ?
+            //      Make form the Associated control?
+            uiButtons.AssociatedControl = this;
+            //uiButtons.SetupLinkedControl();
         }
 
         protected int ExpandedHeight { get; }

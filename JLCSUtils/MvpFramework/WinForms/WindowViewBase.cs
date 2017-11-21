@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MvpFramework.Dialog;
 
 namespace MvpFramework.WinForms
 {
@@ -15,7 +16,10 @@ namespace MvpFramework.WinForms
     /// </summary>
     public partial class WindowViewBase : ViewBase, IWindowView
     {
-        public WindowViewBase()
+        public WindowViewBase() : this(null)
+        {
+        }
+        public WindowViewBase(IMessageDialogService dialogService) : base(dialogService)
         {
             InitializeComponent();
 

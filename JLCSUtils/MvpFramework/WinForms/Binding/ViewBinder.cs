@@ -12,6 +12,7 @@ using JohnLambe.Util.Reflection;
 using JohnLambe.Util;
 using JohnLambe.Util.Collections;
 using MvpFramework.Menu;
+using MvpFramework.Dialog;
 
 namespace MvpFramework.WinForms.Binding
 {
@@ -21,13 +22,17 @@ namespace MvpFramework.WinForms.Binding
     /// </summary>
     public class ViewBinder : ViewBinderBase<Control>
     {
+        public ViewBinder(IMessageDialogService dialogService = null) : base(dialogService)
+        {
+        }
+
         /// <summary>
         /// Bind the model and presenter to the view.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="presenter"></param>
         /// <param name="binderFactory"></param>
-        /// <param name="view"></param>
+        /// <param name="view">The view to be bound by this binder.</param>
         public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory, Control view)
         {
             View = view;
@@ -49,6 +54,9 @@ namespace MvpFramework.WinForms.Binding
                 //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
                 BindControl(view, binderFactory, presenter);   // bind the root control recursively
             }
+
+            //TODO: Attach event handler to view to receive key presses, and pass to ProcessKey.
+
         }
 
         /// <summary>
@@ -66,19 +74,7 @@ namespace MvpFramework.WinForms.Binding
                 if (binder != null)
                 {
                     Binders.Add(binder);
-                    /*
-                    if (binder is IEmbeddedView)
-                    {
-                        var viewId = ((IEmbeddedView)binder).ViewId;
-                        var subModel = ReflectionUtils.TryGetPropertyValue<object>(binder,viewId);
-                        IPresenter subPresenter = ReflectionUtils.TryGetPropertyValue<IPresenter>(presenter, viewId);
-                        ((IEmbeddedView)binder).Bind(subModel, subPresenter, binderFactory);
-                        //TODO
-                    }
-                    else */
-                    {
-                        binder.BindModel(ModelBinder, presenter);
-                    }
+                    binder.BindModel(ModelBinder, presenter);
 
                     bindChildren = control.GetType().GetCustomAttribute<MvpBindChildrenAttribute>()?.Enabled ?? false;
                     // By default, controls that implement IControlBinder do not have their children bound (because the children are probably used by the control and bound by it if necessary),
@@ -127,7 +123,7 @@ namespace MvpFramework.WinForms.Binding
         /// </summary>
         /// <param name="handlerId"></param>
         /// <param name="args"></param>
-        // View bases classes could have a method that delegates to this.
+        // View base classes could have a method that delegates to this.
         public virtual void FireHandler(string handlerId, EventArgs args = null)
         {
             PresenterBinder.GetHandler(handlerId).Invoke(View, args ?? EventArgs.Empty);
@@ -144,16 +140,6 @@ namespace MvpFramework.WinForms.Binding
         /// Collection of binders for the controls in this view.
         /// </summary>
         protected virtual IList<IControlBinder> Binders { get; private set; }
-
-        /// <summary>
-        /// The binder for the model.
-        /// </summary>
-        protected virtual ModelBinderWrapper ModelBinder { get; set; }
-
-        /// <summary>
-        /// The binder for the presenter.
-        /// </summary>
-        protected virtual PresenterBinderWrapperBase PresenterBinder { get; set; }
 
         /// <summary>
         /// The bound view.

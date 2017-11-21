@@ -1398,8 +1398,8 @@ namespace JohnLambe.Util
         /// Replace all line separators (CR, LF or CRLF) in the string with the given one.
         /// </summary>
         /// <param name="s"></param>
-        /// <param name="newLineSeparator"></param>
-        /// <returns></returns>
+        /// <param name="newLineSeparator">The new line separator.</param>
+        /// <returns>The string with the new line separator.</returns>
         public static string ReplaceLineSeparator(this string s, string newLineSeparator)
         {
             return s

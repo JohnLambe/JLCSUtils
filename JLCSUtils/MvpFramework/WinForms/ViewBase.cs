@@ -12,6 +12,10 @@ using JohnLambe.Util;
 using System.ComponentModel;
 using System.Reflection;
 using System.IO;
+using System.ComponentModel.DataAnnotations;
+using JohnLambe.Util.Types;
+using MvpFramework.Dialog;
+using DiExtension.Attributes;
 
 namespace MvpFramework.WinForms
 {
@@ -24,6 +28,13 @@ namespace MvpFramework.WinForms
         {
         }
 
+        public ViewBase(IMessageDialogService dialogService)  //TODO: Change parameter to IMvpFramework ?
+        {
+            this.DialogService = dialogService;
+        }
+
+        private IMessageDialogService DialogService { get; }  //TODO: Make 'protected' ? Change to IMvpFramework ?
+
         #region Binding
 
         /// <summary>
@@ -34,14 +45,11 @@ namespace MvpFramework.WinForms
         /// <param name="binderFactory"></param>
         public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {
-            ViewBinder = new ViewBinder();
+            ViewBinder = new ViewBinder(DialogService);
             ViewBinder.Bind(model, presenter, binderFactory, this);
         }
 
-        /// <summary>
-        /// (Re)populate the view from the model (to update it when the model changes).
-        /// </summary>
-        // Implements IView method.
+        /// <inheritdoc cref="IView.RefreshView"/>
         // Not virtual because the other overload should be overridden instead.
         public void RefreshView()
         {
@@ -52,7 +60,7 @@ namespace MvpFramework.WinForms
         /// Refresh the view, or a specified control on it, from the model.
         /// </summary>
         /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
-        protected virtual void RefreshView(Control control)
+        protected virtual void RefreshView([Nullable] Control control)
         {
             ViewBinder.RefreshView(control);
         }
@@ -188,6 +196,12 @@ namespace MvpFramework.WinForms
         private Form _shownEventForm;
 
         #endregion
+
+        /// <inheritdoc cref="ViewBinderBase{TControl}.ValidateModel"/>
+        public virtual bool ValidateModel()
+        {
+            return ViewBinder.ValidateModel();
+        }
 
     }
 

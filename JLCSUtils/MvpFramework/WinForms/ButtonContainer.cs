@@ -74,7 +74,7 @@ namespace MvpFramework.WinForms
                             }
                         }
                             );
-                            */
+            */
             ResumeLayout();
         }
 
@@ -151,9 +151,10 @@ namespace MvpFramework.WinForms
                     var buttonSorted = buttons.Children;
                     if (ReverseButtonOrder)
                         buttonSorted = buttonSorted.Reverse();
+                    int index = 0x40000000;
                     foreach (var button in buttonSorted)
                     {
-                        AddButton(button);
+                        AddButton(button, index += ReverseDirection ? -1 : 1);
                     }
                 }
                 finally
@@ -189,13 +190,15 @@ namespace MvpFramework.WinForms
         /// Add a button to the collection.
         /// </summary>
         /// <param name="buttonModel"></param>
-        protected virtual void AddButton(MenuItemModel buttonModel)
+        /// <param name="index">Index in the tab order.</param>
+        protected virtual void AddButton(MenuItemModel buttonModel, int index)
         {
             if (buttonModel.Visible)
             {
                 Control button = CreateButtonControl(buttonModel);
 
                 button.Click += (sender, args) => Button_Click(sender, new ButtonClickedEventArgs(buttonModel));
+                button.TabIndex = index;
 
                 buttonModel.Tag = button;
 
@@ -560,7 +563,7 @@ namespace MvpFramework.WinForms
         {
             if (e.KeyChar == '\r')
                 InvokeDefault();
-            //TODO: Process other keys
+            //TODO: Process other keys; Context Keys
         }
 
         /// <summary>

@@ -37,6 +37,7 @@
             this.uiRightPanel = new MvpFramework.WinForms.ButtonContainer();
             this.uiButtonContainer2 = new MvpFramework.WinForms.ButtonContainer();
             this.button3 = new System.Windows.Forms.Button();
+            this.btnValidate = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -101,34 +102,36 @@
             // 
             // uiRightPanel
             // 
+            this.uiRightPanel.AssociatedControl = null;
             this.uiRightPanel.BackColor = System.Drawing.Color.Silver;
             this.uiRightPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.uiRightPanel.ButtonAlignment = System.Windows.Forms.HorizontalAlignment.Right;
             this.uiRightPanel.Buttons = null;
             this.uiRightPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.uiRightPanel.Location = new System.Drawing.Point(302, 0);
+            this.uiRightPanel.Location = new System.Drawing.Point(336, 0);
             this.uiRightPanel.Name = "uiRightPanel";
-            this.uiRightPanel.Size = new System.Drawing.Size(121, 174);
+            this.uiRightPanel.Size = new System.Drawing.Size(121, 183);
             this.uiRightPanel.TabIndex = 6;
             // 
             // uiButtonContainer2
             // 
+            this.uiButtonContainer2.AssociatedControl = null;
             this.uiButtonContainer2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.uiButtonContainer2.Buttons = null;
             this.uiButtonContainer2.ButtonsLayout = System.Windows.Forms.TabAlignment.Left;
             this.uiButtonContainer2.ButtonSpacing = 4;
             this.uiButtonContainer2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.uiButtonContainer2.Location = new System.Drawing.Point(0, 132);
+            this.uiButtonContainer2.Location = new System.Drawing.Point(0, 141);
             this.uiButtonContainer2.Margin = new System.Windows.Forms.Padding(10, 20, 3, 3);
             this.uiButtonContainer2.Name = "uiButtonContainer2";
-            this.uiButtonContainer2.Size = new System.Drawing.Size(302, 42);
+            this.uiButtonContainer2.Size = new System.Drawing.Size(336, 42);
             this.uiButtonContainer2.TabIndex = 7;
             this.uiButtonContainer2.OnGetFilter += new MvpFramework.Binding.GetNameDelegate(this.buttonContainer2_OnGetFilter);
             // 
             // button3
             // 
             this.button3.CausesValidation = false;
-            this.button3.Location = new System.Drawing.Point(15, 96);
+            this.button3.Location = new System.Drawing.Point(3, 86);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(90, 23);
             this.button3.TabIndex = 8;
@@ -136,10 +139,22 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // btnValidate
+            // 
+            this.btnValidate.CausesValidation = false;
+            this.btnValidate.Location = new System.Drawing.Point(110, 115);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnValidate.TabIndex = 9;
+            this.btnValidate.Text = "&Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
+            // 
             // EditContactView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnValidate);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.uiButtonContainer2);
             this.Controls.Add(this.uiRightPanel);
@@ -150,7 +165,7 @@
             this.Controls.Add(this.uiName);
             this.Controls.Add(this.button1);
             this.Name = "EditContactView";
-            this.Size = new System.Drawing.Size(423, 174);
+            this.Size = new System.Drawing.Size(457, 183);
             this.Title = "Edit Contact";
             this.ViewVisibilityChanged += new MvpFramework.ViewVisibilityChangedDelegate(this.EditContactView_ViewVisibilityChanged);
             this.ResumeLayout(false);
@@ -169,6 +184,7 @@
         private MvpFramework.WinForms.ButtonContainer uiRightPanel;
         private MvpFramework.WinForms.ButtonContainer uiButtonContainer2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnValidate;
     }
 }
 

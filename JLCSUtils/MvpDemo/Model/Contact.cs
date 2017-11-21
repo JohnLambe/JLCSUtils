@@ -30,7 +30,7 @@ namespace MvpDemo.Model
         }
         protected string _address;
 
-        [PhoneNumberValidation]
+        [PhoneNumberValidation(MinimumLength = 3)]
         [Display(Order = 1000)]
         public string PhoneNumber { get; set; }
 

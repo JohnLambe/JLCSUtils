@@ -12,13 +12,14 @@ using MvpFramework;
 using MvpFramework.WinForms;
 using MvpFramework.Binding;
 using MvpDemo.Model;
+using MvpFramework.Dialog;
 
 namespace MvpDemo
 {
     [View]
     public partial class EditContactView : WindowViewBase, IEditContactView
     {
-        public EditContactView()
+        public EditContactView(IMessageDialogService dialogService = null) : base(dialogService)
         {
             InitializeComponent();
             //Text = "Edit Contact Window";
@@ -57,6 +58,8 @@ namespace MvpDemo
             TestEvent?.Invoke(this, EventArgs.Empty);
 
             Test2Event?.Invoke(this, e);
+
+            Model1.PhoneNumber = "A";  // invalid
         }
 
         [MvpBind("EntityDescription")]
@@ -77,6 +80,11 @@ namespace MvpDemo
         private string buttonContainer2_OnGetFilter(object sender, EventArgs args)
         {
             return ButtonContainer.FilterAll;
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            ViewBinder.ValidateModel();
         }
     }
 }

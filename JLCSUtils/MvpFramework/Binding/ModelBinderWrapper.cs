@@ -146,20 +146,20 @@ namespace MvpFramework.Binding
         #region Validation
 
         /// <summary>
-        /// Validate the model (<see cref="Model"/>).
+        /// Validate the model.
         /// </summary>
         /// <param name="dialogService"></param>
         /// <remarks>
         /// This is for validating the whole model as an object.
-        /// See <see cref="ModelPropertyBinder.Validating(object, CancelEventArgs, ref object, IMessageDialogService, out ValidationResults)"/> (and similar) for validating individual properties.
+        /// See <see cref="ModelPropertyBinder.Validating(object, CancelEventArgs, ref object, IMessageDialogService)"/> (and similar) for validating individual properties.
         /// </remarks>
-        public virtual void Validate([Nullable] IMessageDialogService dialogService)
+        public virtual bool Validate([Nullable] IMessageDialogService dialogService)
         {
             ValidationResults results;
             Validate(Model, dialogService, out results);
+            return results.IsValid;
         }
 
-        //TODO: Returning validation results, with no exception or dialog.
         /// <summary>
         /// Validate an object in the model.
         /// </summary>

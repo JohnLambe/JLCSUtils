@@ -61,4 +61,14 @@ namespace MvpFramework
 
     }
 
+
+    //TODO: Framework interface:
+    /*
+    public interface IMvpFramework
+    {
+        IMessageDialogService MessageDialogService { get; }
+        //IControlBinderFactory ?
+    }
+    */
+
 }

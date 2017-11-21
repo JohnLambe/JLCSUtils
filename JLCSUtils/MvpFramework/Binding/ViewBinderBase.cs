@@ -1,6 +1,8 @@
-﻿using System;
+﻿using MvpFramework.Dialog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,13 @@ namespace MvpFramework.Binding
     /// <typeparam name="TControl">The type of the UI framework's control/widget base class.</typeparam>
     public class ViewBinderBase<TControl> : Component, IOptionUpdate
     {
+        public ViewBinderBase(IMessageDialogService dialogService = null)
+        {
+            this.DialogService = dialogService;
+        }
+
+        protected virtual IMessageDialogService DialogService { get; }
+
         /*        
                 /// <summary>
                 /// Bind the model and presenter to the view.
@@ -100,20 +109,22 @@ namespace MvpFramework.Binding
                 protected virtual IList<IControlBinder> Binders { get; private set; }
 
                 /// <summary>
-                /// The binder for the model.
-                /// </summary>
-                protected virtual ModelBinderWrapper ModelBinder { get; set; }
-
-                /// <summary>
-                /// The binder for the presenter.
-                /// </summary>
-                protected virtual PresenterBinderWrapperBase PresenterBinder { get; set; }
-
-                /// <summary>
                 /// The bound view.
                 /// </summary>
                 protected virtual TControl View { get; set; }
                 */
+
+        /// <summary>
+        /// The binder for the model.
+        /// </summary>
+        protected virtual ModelBinderWrapper ModelBinder { get; set; }
+
+        /// <summary>
+        /// The binder for the presenter.
+        /// </summary>
+        protected virtual PresenterBinderWrapperBase PresenterBinder { get; set; }
+
+        #region OptionUpdate
 
         public virtual void UpdateOption(OptionUpdateArgs args)
         {
@@ -121,6 +132,28 @@ namespace MvpFramework.Binding
         }
 
         protected event UpdateOptionDelegate OptionUpdate;
+
+        #endregion
+
+        /// <summary>
+        /// Validate the model, showing an error dialog if invalid.
+        /// </summary>
+        /// <returns>true iff valid.</returns>
+        public virtual bool ValidateModel()
+        {
+            ModelBinder.Validate(DialogService);
+            return true; //TODO
+        }
+
+        /// <summary>
+        /// Process a keystroke on the form.
+        /// </summary>
+        /// <param name="key"></param>
+        public virtual void ProcessKey(KeyboardKey key)
+        {
+
+        }
+
     }
 
     /*

@@ -70,6 +70,9 @@ namespace MvpFramework
         //     The exception that is the cause of the current exception, or a null reference
         //     (Nothing in Visual Basic) if no inner exception is specified.
         public MvpResolutionException(string message, Exception innerException) : base(message, innerException) { }
+
+        public override string Message
+            => Consts.ResolutionFailedMessage + base.Message;
     }
 
     /// <summary>

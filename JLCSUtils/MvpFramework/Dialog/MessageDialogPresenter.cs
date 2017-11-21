@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using DiExtension.Attributes;
 using MvpFramework.Binding;
 using JohnLambe.Util.Exceptions;
+using JohnLambe.Util.Text;
+using JohnLambe.Util;
 
 namespace MvpFramework.Dialog
 {
@@ -26,6 +28,11 @@ namespace MvpFramework.Dialog
             DisposeOnClose = false;    // this presenter is intended to be shown multiple times
         }
 
+        /// <summary>
+        /// Show a message dialog.
+        /// </summary>
+        /// <param name="messageDialog"></param>
+        /// <returns>The response (such as a modal result) to the dialog.</returns>
         public virtual object ShowDialog(IMessageDialogModel messageDialog)
         {
             if (messageDialog == null)
@@ -41,27 +48,5 @@ namespace MvpFramework.Dialog
             return View.ShowModal();
         }
 
-    }
-
-    /// <summary>
-    /// The model of <see cref="IMessageDialogView"/>.
-    /// </summary>
-    public class MessageDialogViewModel
-    {
-        /// <summary>
-        /// Model of the current dialog.
-        /// </summary>
-        public virtual IMessageDialogModel Dialog { get; set; }
-
-        /// <summary>
-        /// Window title (for the current dialog).
-        /// </summary>
-        public virtual string Title => Dialog?.Title;
-
-        public virtual string DetailMessage =>
-            Dialog?.Exception == null ? null
-            : (Dialog?.Message ?? "") + "\r\n\r\n"
-            //+ (Dialog?.Exception?.ToString());
-            + (ExceptionUtil.ExtractException(Dialog?.Exception)?.Message);
     }
 }
