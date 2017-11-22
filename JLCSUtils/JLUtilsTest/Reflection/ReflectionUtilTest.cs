@@ -143,7 +143,7 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             Console.Out.WriteLine(CollectionUtil.CollectionToString(result));
 
             // Assert:
-            Assert.AreEqual(CollectionUtil.CollectionToString(new Type[] { typeof(int), typeof(string), null, typeof(object), typeof(DateTime) }),
+            Assert.AreEqual(CollectionUtil.CollectionToString(new Type[] { typeof(int), typeof(string), typeof(object), typeof(object), typeof(DateTime) }),
                 CollectionUtil.CollectionToString(result));
         }
 

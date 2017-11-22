@@ -67,6 +67,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         /// The collection is not initialized on adding and saving (it remains null, NOT an empty collection).
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void InitializeCollections()
         {
             // Act:
@@ -83,6 +84,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         }
 
         [TestMethod]
+        [TestCategory("Db")]
         public void InitializeCollections_Subclass()
         {
             // Act:
@@ -101,6 +103,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         }
 
         [TestMethod]
+        [TestCategory("Db")]
         public void InitializeCollections_Protected()
         {
             // Arrange:
@@ -127,6 +130,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         /// The collection is not initialized on adding and saving (it remains null, NOT an empty collection).
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void InitializeWithCollectionProperty()
         {
             // Arrange:
@@ -151,6 +155,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         /// but not when the cached referencing entity is re-fetched (it couldn't have overriden the property).
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void LazyLoad()
         {
             // Arrange:
@@ -191,6 +196,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         /// If there are no items in the collection, lazy loading populates an empty collection.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void LazyLoad_Empty()
         {
             // Arrange:
@@ -220,6 +226,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionInitializerTst
         /// The collection property cannot be assigned by the consumer of the entity.
         /// </summary>
         [TestCategory("Failing")]   // Why does this not throw the exception ?
+        //         [TestCategory("Db")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void LazyLoad_TryAssign()

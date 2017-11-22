@@ -24,6 +24,9 @@ namespace MvpFramework.WinForms
     /// </summary>
     public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView, INotifyOnDispose, INestableView
     {
+        /// <summary>
+        /// Initialise with no Message Dialog Service.
+        /// </summary>
         public ViewBase()
         {
         }
@@ -33,7 +36,17 @@ namespace MvpFramework.WinForms
             this.DialogService = dialogService;
         }
 
-        private IMessageDialogService DialogService { get; }  //TODO: Make 'protected' ? Change to IMvpFramework ?
+        public ViewBase(IMvpFrameworkDetails mvpFramework)
+        {
+            this.DialogService = mvpFramework.MessageDialogService;
+        }
+
+        private IMessageDialogService DialogService { get; set; }  //TODO: Make 'protected' ? Change to IMvpFramework ?
+
+        protected virtual void SetDialogService(IMessageDialogService dialogService)
+        {
+            this.DialogService = dialogService;
+        }
 
         #region Binding
 

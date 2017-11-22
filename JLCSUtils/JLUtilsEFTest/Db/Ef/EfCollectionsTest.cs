@@ -61,6 +61,7 @@ namespace JLUtilsEFTest.Db.Ef.Collections
         /// The collection is not initialized on adding and saving (it remains null, NOT an empty collection).
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void InitializeWithCollectionProperty()
         {
             // Arrange:
@@ -124,6 +125,7 @@ namespace JLUtilsEFTest.Db.Ef.Collections
         /// If there are no items in the collection, lazy loading populates an empty collection.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void LazyLoad_Empty()
         {
             // Arrange:
@@ -153,6 +155,7 @@ namespace JLUtilsEFTest.Db.Ef.Collections
         /// The collection property cannot be assigned by the consumer of the entity.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         [ExpectedException(typeof(InvalidOperationException))]
         public void LazyLoad_TryAssign()
         {

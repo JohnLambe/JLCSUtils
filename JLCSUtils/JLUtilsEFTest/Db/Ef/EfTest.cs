@@ -35,6 +35,7 @@ namespace JLUtilsEFTest.Db.Ef
         /// The key value is assigned on saving an added entity (not on the Add() call), ignoring any value already assigned.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void AssignKey()
         {
             // Arrange:
@@ -62,6 +63,7 @@ namespace JLUtilsEFTest.Db.Ef
         /// EF assigns the Id, on SaveChanges().
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void ReferenceIdPopulationTest()
         {
             // Arrange:
@@ -90,6 +92,7 @@ namespace JLUtilsEFTest.Db.Ef
         /// EF overwrites the Id, on SaveChanges().
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void ReferenceIdPopulationTest2()
         {
             // Arrange:
@@ -121,6 +124,7 @@ namespace JLUtilsEFTest.Db.Ef
         /// EF does NOT assign the object.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void ReferencePopulationTest()
         {
             // Arrange:
@@ -158,6 +162,7 @@ namespace JLUtilsEFTest.Db.Ef
         /// on the Add() call.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void ReferencePopulationTest2()
         {
             const int ReferencedId = 1;

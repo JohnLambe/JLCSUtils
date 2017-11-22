@@ -51,6 +51,7 @@ namespace JLUtilsEFTest.Db.Ef.CollectionsInitialized
         /// but not when created by Entity Framework (so that it will be lazily loaded).
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void LazyLoad_Initialized()
         {
             // Arrange:

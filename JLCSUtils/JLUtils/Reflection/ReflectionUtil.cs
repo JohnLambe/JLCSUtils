@@ -497,7 +497,19 @@ namespace JohnLambe.Util.Reflection
         /// If a null array is passed, null is returned.
         /// </param>
         /// <returns>Array of types, or null if <paramref name="values"/> is null.
-        /// Where there is a null value in the input, the corresponding type is output as null.</returns>
+        /// Where there is a null value in the input (as an element of the input array), the corresponding type is output is typeof(<see cref="object"/>).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Returning typeof(object) for null inputs is because:
+        ///  If the input value had a type, `object` is the only type that we know that its type must have been assignable to.
+        /// The inputs can be assigned to the types represented by the corresponding outputs.
+        /// This property is important for some uses, for example, finding a method which can take the input object array as parameters, or populating generic type parameters.
+        /// </para>
+        /// <para>
+        /// This can never return elements with the value typeof(<see cref="void"/>) because no object (therefore no input to this) can have that type.
+        /// </para>
+        /// </remarks>
         public static Type[] ArrayOfTypes([Nullable] params object[] values)
         {
             if (values == null)
@@ -505,7 +517,7 @@ namespace JohnLambe.Util.Reflection
             Type[] result = new Type[values.Length];    // same length as given array
             for (int i = 0; i < values.Length; i++)
             {
-                result[i] = values[i]?.GetType();
+                result[i] = values[i]?.GetType() ?? typeof(object);
             }
             return result;
         }

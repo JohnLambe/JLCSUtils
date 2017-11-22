@@ -35,6 +35,7 @@ namespace JohnLambe.Util.Db.Ef
         TestDbContext _dbContext = new TestDbContext();
 
         [TestMethod]
+        [TestCategory("Db")]
         public void ProtectedSetter()
         {
             // Arrange:

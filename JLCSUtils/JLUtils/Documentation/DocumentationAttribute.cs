@@ -107,15 +107,21 @@ namespace JohnLambe.Util.Documentation
         Remarks = 2,
 
         /// <summary>
-        /// The description from the <see cref="DescriptionAttribute"/>.
+        /// The description from the <see cref="System.ComponentModel.DescriptionAttribute"/>.
         /// </summary>
-        DescriptionAttribute = 4,
+        //| The name is shortened with "Attrib" to avoid a conflict with System.ComponentModel.DescriptionAttribute itself.
+        DescriptionAttrib = 4,
 
         /// <summary>
-        /// Documentation of any attributes on the item other than <see cref="DescriptionAttribute"/>.
+        /// The name and description from the <see cref="System.ComponentModel.DataAnnotations.DisplayAttribute"/>.
+        /// </summary>
+        DisplayAttrib = 8,
+
+        /// <summary>
+        /// Documentation of any attributes on the item other than <see cref="System.ComponentModel.DescriptionAttribute"/>.
         /// This includes any attributes implementing <see cref="IProvidesDescription"/>.
         /// </summary>
-        Attributes = 8,
+        Attributes = 0x10,
 
         /// <summary>
         /// The constant value of the item.
@@ -123,14 +129,14 @@ namespace JohnLambe.Util.Documentation
         /// When used on the latter, it reads the value that they have at the time of running the tool that uses it.
         /// This is probably only useful when the field has an initial value.
         /// </summary>
-        Value = 16,
+        Value = 0x20,
 
-        All = Summary | Remarks | DescriptionAttribute | Attributes | Value,
+        All = Summary | Remarks | DescriptionAttrib | Attributes | Value,
 
         /// <summary>
         /// All values that can be used with <see cref="ReferenceAttribute"/>.
         /// </summary>
-        AllReferenceable = Summary | Remarks | DescriptionAttribute | Attributes
+        AllReferenceable = Summary | Remarks | DescriptionAttrib | DisplayAttrib | Attributes
     }
 
 }

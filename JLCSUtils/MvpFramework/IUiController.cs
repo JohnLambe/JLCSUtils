@@ -60,15 +60,4 @@ namespace MvpFramework
         void ShowMessage(string message, string title = "");
 
     }
-
-
-    //TODO: Framework interface:
-    /*
-    public interface IMvpFramework
-    {
-        IMessageDialogService MessageDialogService { get; }
-        //IControlBinderFactory ?
-    }
-    */
-
 }

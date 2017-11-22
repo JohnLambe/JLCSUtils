@@ -11,6 +11,7 @@ namespace JLUtilsEFTest
         /// Test firing of <see cref="IEntityBeforeSaveChanges.BeforeSaveChanges"/>.
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void BeforeSave()
         {
             // Arrange:

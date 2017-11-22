@@ -22,7 +22,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="sourceType"><see cref="SourceType"/></param>
         /// <param name="sourcePropertyName"><see cref="SourcePropertyName"/></param>
-        /// <param name="source"><see cref="source"/></param>
+        /// <param name="source"><paramref name="source"/></param>
         public ReferenceAttribute(Type sourceType, string sourcePropertyName = null, DocumentationSource source = DocumentationSource.AllReferenceable)
         {
             this.SourceType = sourceType;
@@ -43,6 +43,9 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual string SourcePropertyName { get; }
 
+        /// <summary>
+        /// What details to use from the referenced item.
+        /// </summary>
         public virtual DocumentationSource Source { get; }
 
         protected override void IsValid([Nullable(null)] ref object value, [NotNull(null)] ValidationContext validationContext, [NotNull(null)] ValidationResults results)
@@ -112,4 +115,6 @@ namespace JohnLambe.Util.Validation
         [NotNull]
         protected readonly Lazy<MemberInfo> _source;
     }
+
+    //TODO: ReferenceDisplayAttribute
 }

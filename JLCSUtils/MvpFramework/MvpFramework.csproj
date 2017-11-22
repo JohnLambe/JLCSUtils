@@ -84,6 +84,7 @@
     <Compile Include="IReport.cs" />
     <Compile Include="Menu\!NamespaceDoc.cs" />
     <Compile Include="Generator\QueryGenerator.cs" />
+    <Compile Include="MvpFramework.cs" />
     <Compile Include="Security\!NamespaceDoc.cs" />
     <Compile Include="Security\ISecurityManager.cs" />
     <Compile Include="Security\NullSecurityManager.cs" />

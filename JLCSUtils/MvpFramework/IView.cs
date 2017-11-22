@@ -98,4 +98,10 @@ namespace MvpFramework
         /// <returns>The requested view.</returns>
         IView GetNestedView(string nestedViewId, out INestedViewPlaceholder viewParent);
     }
+
+    public interface IValidatableView
+    {
+        /// <inheritdoc cref="ViewBinderBase{TControl}.ValidateModel"/>
+        bool ValidateModel();
+    }
 }

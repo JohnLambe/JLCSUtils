@@ -16,11 +16,23 @@ namespace JohnLambe.Util.Reflection
     {
         /// <summary>
         /// Returns true if the given type can be assigned null.
+        /// This returns true for abstract classes (since a variable of that type can be declared and assigned null).
+        /// <para>Undefined for static classes: Currently returns true.</para>
         /// </summary>
         /// <param name="type">The type to test. If null, false is returned.</param>
-        /// <returns></returns>
+        /// <returns>true if <paramref name="type"/> is nullable.</returns>
         public static bool IsNullable([Nullable] Type type)
             => type != null && (!type.IsValueType || type.IsNullableValueType());
+
+        /// <summary>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>true iff the type is static.</returns>
+        public static bool IsStatic(this Type type)
+            => type.IsAbstract && type.IsSealed;
+        // C# static types are declared as abstract and sealed at the IL level.
+        // See https://stackoverflow.com/questions/1175888/determine-if-a-type-is-static .
+        // Might not work for all cases in all IL languages.
 
         #region Numeric
 

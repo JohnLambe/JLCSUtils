@@ -149,6 +149,7 @@ namespace MvpFramework.Binding
         /// Validate the model.
         /// </summary>
         /// <param name="dialogService"></param>
+        /// <returns>true iff valid.</returns>
         /// <remarks>
         /// This is for validating the whole model as an object.
         /// See <see cref="ModelPropertyBinder.Validating(object, CancelEventArgs, ref object, IMessageDialogService)"/> (and similar) for validating individual properties.

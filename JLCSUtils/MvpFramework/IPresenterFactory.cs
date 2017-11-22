@@ -99,6 +99,41 @@ namespace MvpFramework
         TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5);
     }
 
+    /// <summary>
+    /// Interface for a factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam3">The type of the third parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam4">The type of the fourth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam5">The type of the fifth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam6">The type of the sixth parameter to the Create method.</typeparam>
+    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6>
+        where TPresenter : IPresenter
+    {
+        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5, TParam6 param6);
+    }
+
+    /// <summary>
+    /// Interface for a factory that creates a Presenter.
+    /// Can be used for automatic factory creation on dependency injection.
+    /// </summary>
+    /// <typeparam name="TPresenter">Type of the presenter created by the factory.</typeparam>
+    /// <typeparam name="TParam1">The type of the first parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam2">The type of the second parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam3">The type of the third parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam4">The type of the fourth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam5">The type of the fifth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam6">The type of the sixth parameter to the Create method.</typeparam>
+    /// <typeparam name="TParam7">The type of the seventh parameter to the Create method.</typeparam>
+    public interface IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TParam7>
+        where TPresenter : IPresenter
+    {
+        TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5, TParam6 param6, TParam7 param7);
+    }
+
     #endregion
 
 

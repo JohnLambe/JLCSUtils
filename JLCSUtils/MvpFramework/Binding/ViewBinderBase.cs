@@ -141,8 +141,7 @@ namespace MvpFramework.Binding
         /// <returns>true iff valid.</returns>
         public virtual bool ValidateModel()
         {
-            ModelBinder.Validate(DialogService);
-            return true; //TODO
+            return ModelBinder.Validate(DialogService);
         }
 
         /// <summary>

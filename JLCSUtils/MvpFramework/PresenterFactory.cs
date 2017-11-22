@@ -9,6 +9,7 @@ using DiExtension.Attributes;
 using JohnLambe.Util;
 using JohnLambe.Util.Text;
 using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework
 {
@@ -272,12 +273,14 @@ namespace MvpFramework
         /// The type of the Presenter created by this factory.
         /// This must not be null if <see cref="TargetConstructor"/> is not null.
         /// </summary>
+        [Nullable]
         protected virtual Type TargetClass { get; set; }
 
         /// <summary>
         /// The constructor of <see cref="TargetClass"/> to be used.
         /// Must be null if <see cref="TargetClass"/> is null.
         /// </summary>
+        [Nullable]
         protected virtual ConstructorInfo TargetConstructor { get; set; }
 
         #region INestedPresenterFactory
@@ -292,20 +295,21 @@ namespace MvpFramework
 
         /// <summary>
         /// Interface to the dependency injection container.
-        /// Non null.
         /// </summary>
+        [NotNull]
         protected readonly IDiResolver DiResolver;
 
         /// <summary>
         /// Resolver for resolving the View.
-        /// Non null.
         /// </summary>
+        [NotNull]
         protected readonly MvpResolver Resolver;
 
         /// <summary>
         /// UI Manager (places new views in the UI, etc.).
         /// Non null. May be a null object.
         /// </summary>
+        [NotNull]
         protected readonly IResolverExtension UiManager;
 
         /// <summary>
@@ -514,6 +518,34 @@ namespace MvpFramework
         //TPresenter IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>.Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
         {
             return CreatePresenter(param1, param2, param3, param4, param5);
+        }
+    }
+
+    public class PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> : PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6>
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
+        {
+        }
+
+        public virtual TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5, TParam6 param6)
+        {
+            return CreatePresenter(param1, param2, param3, param4, param5, param6);
+        }
+    }
+
+    public class PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TParam7> : PresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6>,
+        IPresenterFactory<TPresenter, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TParam7>
+        where TPresenter : IPresenter
+    {
+        public PresenterFactory(MvpResolver resolver, IDiResolver diResolver, IResolverExtension uiManager) : base(resolver, diResolver, uiManager)
+        {
+        }
+
+        public virtual TPresenter Create(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5, TParam6 param6, TParam7 param7)
+        {
+            return CreatePresenter(param1, param2, param3, param4, param5, param6, param7);
         }
     }
 
