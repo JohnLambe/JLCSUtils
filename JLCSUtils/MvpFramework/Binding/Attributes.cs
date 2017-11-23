@@ -131,6 +131,15 @@ namespace MvpFramework.Binding
         public virtual string[] Rights { get; set; }
         //TODO?: Change type to an interface, IPrivilege (same for all similar 'Rights' properties).
 
+        /// <summary>
+        /// Human-readable description of the item. (Can be used as a hint or help text.)
+        /// </summary>
+        public virtual string Description { get; set; }
+
+        /// <summary>
+        /// For use by consumers of this framework.
+        /// The meaning is defined by the consumer.
+        /// </summary>
         public virtual object Tag { get; set; }
     }
 
@@ -161,9 +170,21 @@ namespace MvpFramework.Binding
         /// <summary>
         /// true iff this is the default button or default item in a list, etc.
         /// </summary>
-        public virtual bool IsDefault { get; set; }
+        public virtual bool IsDefault { get; set; } = false;
+
+        /// <summary>
+        /// true if this is 'Cancel' handler (for a button etc. that cancels an action or dialog etc.).
+        /// Must not be true if <see cref="IsDefault"/> is true.
+        /// </summary>
+        public virtual bool IsCancel { get; set; } = false;
 
         //TOOO?: public virtual object ModalResult { get; set; }
+        //  Replace IsDefault and IsCancel with a property with a button type/function, including these. (Other common actions: Add,   ). ModalResult?
+
+        /// <summary>
+        /// If true, any value being editing in a control must be validated and updated to the model before calling the handler.
+        /// </summary>
+        public virtual bool CausesValidation { get; set; } = true;
     }
 
     #endregion

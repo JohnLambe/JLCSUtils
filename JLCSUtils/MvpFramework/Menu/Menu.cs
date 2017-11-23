@@ -309,7 +309,7 @@ namespace MvpFramework.Menu
         /// <param name="id">Value to match <see cref="Id"/>, if not null.</param>
         /// <param name="filter">Value to match <see cref="Filter"/>, if not null.</param>
         /// <returns>true iff this item matches.</returns>
-        internal virtual bool Matches(string id, string filter)
+        public virtual bool Matches(string id, string filter)
         {
             return (id != null && id == Id) || (filter != null && (Filter?.Contains(filter) ?? false));
         }

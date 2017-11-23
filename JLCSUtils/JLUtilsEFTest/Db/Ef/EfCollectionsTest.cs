@@ -85,6 +85,7 @@ namespace JLUtilsEFTest.Db.Ef.Collections
         /// but not when the cached referencing entity is re-fetched (it couldn't have overriden the property).
         /// </summary>
         [TestMethod]
+        [TestCategory("Db")]
         public void LazyLoad()
         {
             // Arrange:

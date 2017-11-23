@@ -99,26 +99,15 @@ namespace MvpFramework.WinForms
         [Browsable(true)]
         public override string Text
         {
-            get
-            {
-                return base.Text;
-            }
-            set
-            {
-                base.Text = value;
-            }
+            get { return base.Text; }
+            set { base.Text = value; }
         }
 
+        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] ?
         public virtual string Title
         {
-            get
-            {
-                return base.Text;
-            }
-            set
-            {
-                base.Text = value;
-            }
+            get { return base.Text; }
+            set { base.Text = value; }
         }
 
         /*
@@ -128,6 +117,10 @@ namespace MvpFramework.WinForms
         }
         */
 
+        // To be synchronized with wrapper form:
+        [DefaultValue(true)]
+        public virtual bool ControlBox { get; set; } = true;
+        //TODO: Other Form properties
 
         /// <summary>
         /// Fired when the View is Opened or closing.
@@ -140,6 +133,7 @@ namespace MvpFramework.WinForms
         /// If it was never shown, this is false.
         /// </summary>
         //| Named for consistency with System.Windows.Forms.Form.Modal.
+        [DefaultValue(false)]
         public virtual bool Modal { get; private set; }
 
         /// <summary>

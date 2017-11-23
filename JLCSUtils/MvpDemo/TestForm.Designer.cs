@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.uiPanel1 = new System.Windows.Forms.Panel();
+            this.uiTextBox1_1 = new System.Windows.Forms.TextBox();
             this.uiButton1_2 = new System.Windows.Forms.Button();
             this.uiPanel2 = new System.Windows.Forms.Panel();
-            this.uiTextBox_5 = new System.Windows.Forms.Button();
-            this.uiTextBox1_1 = new System.Windows.Forms.TextBox();
-            this.uiTextBox0 = new System.Windows.Forms.TextBox();
-            this.uiTextBox2_15 = new System.Windows.Forms.TextBox();
             this.uiTextBox2_25 = new System.Windows.Forms.TextBox();
+            this.uiTextBox2_15 = new System.Windows.Forms.TextBox();
+            this.uiTextBox_5 = new System.Windows.Forms.Button();
+            this.uiTextBox0 = new System.Windows.Forms.TextBox();
             this.uiPanel1.SuspendLayout();
             this.uiPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -48,6 +48,13 @@
             this.uiPanel1.Name = "uiPanel1";
             this.uiPanel1.Size = new System.Drawing.Size(260, 100);
             this.uiPanel1.TabIndex = 1;
+            // 
+            // uiTextBox1_1
+            // 
+            this.uiTextBox1_1.Location = new System.Drawing.Point(47, 15);
+            this.uiTextBox1_1.Name = "uiTextBox1_1";
+            this.uiTextBox1_1.Size = new System.Drawing.Size(100, 20);
+            this.uiTextBox1_1.TabIndex = 10;
             // 
             // uiButton1_2
             // 
@@ -67,6 +74,20 @@
             this.uiPanel2.Size = new System.Drawing.Size(259, 74);
             this.uiPanel2.TabIndex = 2000;
             // 
+            // uiTextBox2_25
+            // 
+            this.uiTextBox2_25.Location = new System.Drawing.Point(46, 40);
+            this.uiTextBox2_25.Name = "uiTextBox2_25";
+            this.uiTextBox2_25.Size = new System.Drawing.Size(100, 20);
+            this.uiTextBox2_25.TabIndex = 25;
+            // 
+            // uiTextBox2_15
+            // 
+            this.uiTextBox2_15.Location = new System.Drawing.Point(46, 14);
+            this.uiTextBox2_15.Name = "uiTextBox2_15";
+            this.uiTextBox2_15.Size = new System.Drawing.Size(100, 20);
+            this.uiTextBox2_15.TabIndex = 5;
+            // 
             // uiTextBox_5
             // 
             this.uiTextBox_5.Location = new System.Drawing.Point(13, 227);
@@ -77,33 +98,12 @@
             this.uiTextBox_5.UseVisualStyleBackColor = true;
             this.uiTextBox_5.Click += new System.EventHandler(this.button2_Click);
             // 
-            // uiTextBox1_1
-            // 
-            this.uiTextBox1_1.Location = new System.Drawing.Point(47, 15);
-            this.uiTextBox1_1.Name = "uiTextBox1_1";
-            this.uiTextBox1_1.Size = new System.Drawing.Size(100, 20);
-            this.uiTextBox1_1.TabIndex = 10;
-            // 
             // uiTextBox0
             // 
             this.uiTextBox0.Location = new System.Drawing.Point(13, 9);
             this.uiTextBox0.Name = "uiTextBox0";
             this.uiTextBox0.Size = new System.Drawing.Size(100, 20);
             this.uiTextBox0.TabIndex = 2;
-            // 
-            // uiTextBox2_15
-            // 
-            this.uiTextBox2_15.Location = new System.Drawing.Point(46, 14);
-            this.uiTextBox2_15.Name = "uiTextBox2_15";
-            this.uiTextBox2_15.Size = new System.Drawing.Size(100, 20);
-            this.uiTextBox2_15.TabIndex = 5;
-            // 
-            // uiTextBox2_25
-            // 
-            this.uiTextBox2_25.Location = new System.Drawing.Point(46, 40);
-            this.uiTextBox2_25.Name = "uiTextBox2_25";
-            this.uiTextBox2_25.Size = new System.Drawing.Size(100, 20);
-            this.uiTextBox2_25.TabIndex = 25;
             // 
             // TestForm
             // 
@@ -116,6 +116,7 @@
             this.Controls.Add(this.uiPanel1);
             this.Name = "TestForm";
             this.Text = "TestForm";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TestForm_KeyDown);
             this.uiPanel1.ResumeLayout(false);
             this.uiPanel1.PerformLayout();
             this.uiPanel2.ResumeLayout(false);

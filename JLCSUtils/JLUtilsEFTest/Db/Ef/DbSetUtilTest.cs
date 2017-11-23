@@ -29,6 +29,7 @@ namespace JLUtilsEFTest.Db.Ef
         }
 
         [TestMethod]
+        [TestCategory("Db")]
         public void AddIfNotExists1()
         {
             // Arrange:

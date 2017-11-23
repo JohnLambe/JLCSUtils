@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace MvpFramework.Binding
     /// </summary>
     /// <typeparam name="TModel">The type of the model.</typeparam>
     /// <typeparam name="TValue">The type of the property.</typeparam>
-    public class ValueChangedEventArgs<TModel,TValue> : EventArgs
+    public class ValueChangedEventArgs<TModel,TValue> : CancelEventArgs
     {
         /// <summary>
         /// </summary>

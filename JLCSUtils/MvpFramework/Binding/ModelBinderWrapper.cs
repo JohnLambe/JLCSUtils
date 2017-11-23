@@ -282,20 +282,24 @@ namespace MvpFramework.Binding
         {
             get
             {
-                int length = Property.GetCustomAttribute<StringValidationAttribute>()?.MaximumLength ?? StringValidationAttribute.Na;
+                int length = Property?.GetCustomAttribute<StringValidationAttribute>()?.MaximumLength ?? StringValidationAttribute.Na;
                 if(length == StringValidationAttribute.Na)
-                    length = Property.GetCustomAttribute<MaxLengthAttribute>()?.Length
+                    length = Property?.GetCustomAttribute<MaxLengthAttribute>()?.Length
                         ?? Property.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength ?? StringValidationAttribute.Na;
                 return length;
             }
         }
 
+        [Obsolete("Use IsNullable")]
+        public virtual bool Nullable => IsNullable;
+
         /// <summary>
         /// true iff the property is allowed to be null (when validating).
         /// This is always false (for bound properties) if the type does not support null.
         /// </summary>
-        public virtual bool Nullable
-            => TypeUtil.IsNullable(Property.PropertyType)           // if the type supports null
+        public virtual bool IsNullable
+            => Property == null ? true
+                : TypeUtil.IsNullable(Property.PropertyType)           // if the type supports null
                     && (!IsDefined(typeof(RequiredAttribute), true)             // and it is not flagged as not-nullable by one of these attributes
                     || (this.GetCustomAttribute<NullabilityAttribute>()?.IsNullable ?? false));
 

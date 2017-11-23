@@ -33,5 +33,10 @@ namespace MvpDemo
             }
             */
         }
+
+        private void TestForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            MessageBox.Show("KeyDown: " + e.KeyCode.ToString());
+        }
     }
 }

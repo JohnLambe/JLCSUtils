@@ -549,6 +549,7 @@ namespace MvpFramework.WinForms
 
         [Nullable]
         [Description("Control that shares any popup menu with this panel, and keystrokes in this control may invoke commands in this panel.")]
+        [DefaultValue(null)]
         public virtual Control AssociatedControl { get; set; }  //TODO: Implement this.
         //TODO: Rename?
 
@@ -557,12 +558,18 @@ namespace MvpFramework.WinForms
         public virtual void SetupLinkedControl()
         {
             AssociatedControl.KeyPress += AssociatedControl_KeyPress;
+            AssociatedControl.KeyDown += AssociatedControl_KeyDown;
         }
 
         protected virtual void AssociatedControl_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r')
                 InvokeDefault();
+            //TODO: Process other keys; Context Keys
+        }
+
+        protected virtual void AssociatedControl_KeyDown(object sender, KeyEventArgs e)
+        {
             //TODO: Process other keys; Context Keys
         }
 
