@@ -32,7 +32,7 @@ namespace MvpFramework.Binding
     /// Binds some common WinForms controls.
     /// </summary>
     //| Could be called "TagControlBinder", "GeneralWinFormsControlBinder", or "WinFormsTagControlBinder".
-    public class GeneralControlBinder : IControlBinderExt
+    public class GeneralControlBinder : IControlBinderExt, IKeyboardKeyHandler
     {
         public const char TagPrefix = '[';
         public const char TagSuffix = ']';
@@ -274,6 +274,11 @@ namespace MvpFramework.Binding
             {
                 Model.GetProperty(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
             }
+        }
+
+        public void NotifyKeyDown(KeyboardKeyEventArgs args)
+        {
+            //TODO: Invoke certain controls, e.g. buttons, if the key matches their hotkey.
         }
 
         /// <summary>

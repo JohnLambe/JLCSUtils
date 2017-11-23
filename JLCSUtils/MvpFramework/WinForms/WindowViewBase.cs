@@ -8,13 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MvpFramework.Dialog;
+using MvpFramework.Binding;
 
 namespace MvpFramework.WinForms
 {
     /// <summary>
     /// Base class for views that can open as a window.
     /// </summary>
-    public partial class WindowViewBase : ViewBase, IWindowView
+    public partial class WindowViewBase : ViewBase, IWindowView, IChildWindow
     {
         public WindowViewBase() : this((IMessageDialogService)null)
         {
@@ -127,6 +128,8 @@ namespace MvpFramework.WinForms
         /// </summary>
         public virtual event ViewVisibilityChangedDelegate ViewVisibilityChanged;
 
+        //TODO: Synchronize events of wrapper form: 'Shown', 'Load', 'Activated', 'Deactivate'  ?
+
         /// <summary>
         /// true iff the view was shown modally.
         /// If the view is closed, this indicates the state of the last time it was shown.
@@ -140,5 +143,25 @@ namespace MvpFramework.WinForms
         /// The value to be returned to a modal caller.
         /// </summary>
         protected virtual object ModalResult { get; set; }
+
+
+        #region From key events
+
+        /// <inheritdoc cref="IChildWindow.KeyPreview"/>
+        [DefaultValue(true)]
+        public virtual bool KeyPreview { get; set; } = true;
+
+        void IChildWindow.NotifyKeyDown(KeyEventArgs args)
+        {
+            NotifyKeyDown(args);
+        }
+
+        protected virtual void NotifyKeyDown(KeyEventArgs args)
+        {
+            ViewBinder?.ProcessKey(new KeyboardKeyEventArgs() { Key = KeyboardKeyExtension.ToKeyboardKey(args.KeyData) });
+        }
+
+        #endregion
+
     }
 }

@@ -136,6 +136,23 @@ namespace MvpFramework.WinForms.Binding
         }
         */
 
+        public override void ProcessKey(KeyboardKeyEventArgs args)
+        {
+            if (Binders != null)
+            {
+                foreach (var binder in Binders)
+                {
+                    if (args.Cancel)            // if cancelled (by previous handler, or before entering this method)
+                        return;                 // don't process remaining handlers
+
+                    if (binder is IKeyboardKeyHandler)
+                    {
+                        ((IKeyboardKeyHandler)binder).NotifyKeyDown(args);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Collection of binders for the controls in this view.
         /// </summary>

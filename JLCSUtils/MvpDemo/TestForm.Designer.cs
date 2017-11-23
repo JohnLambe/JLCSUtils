@@ -114,9 +114,13 @@
             this.Controls.Add(this.uiTextBox_5);
             this.Controls.Add(this.uiPanel2);
             this.Controls.Add(this.uiPanel1);
+            this.HelpButton = true;
+            this.KeyPreview = true;
             this.Name = "TestForm";
             this.Text = "TestForm";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TestForm_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TestForm_KeyPress);
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TestForm_PreviewKeyDown);
             this.uiPanel1.ResumeLayout(false);
             this.uiPanel1.PerformLayout();
             this.uiPanel2.ResumeLayout(false);

@@ -24,7 +24,7 @@ namespace MvpFramework.Binding
 
         protected virtual IMessageDialogService DialogService { get; }
 
-        /*        
+        /* TODO: Move methods from ViewBinder:
                 /// <summary>
                 /// Bind the model and presenter to the view.
                 /// </summary>
@@ -148,9 +148,8 @@ namespace MvpFramework.Binding
         /// Process a keystroke on the form.
         /// </summary>
         /// <param name="key"></param>
-        public virtual void ProcessKey(KeyboardKey key)
+        public virtual void ProcessKey(KeyboardKeyEventArgs key)
         {
-
         }
 
     }
@@ -165,5 +164,19 @@ namespace MvpFramework.Binding
             void SetViewTitle(TView view, string title);
         }
         */
+
+
+    public class KeyboardKeyEventArgs : CancelEventArgs
+    {
+        public virtual KeyboardKey Key { get; set; }
+    }
+
+    /// <summary>
+    /// A handler that receives key events.
+    /// </summary>
+    public interface IKeyboardKeyHandler
+    {
+        void NotifyKeyDown(KeyboardKeyEventArgs args);
+    }
 
 }

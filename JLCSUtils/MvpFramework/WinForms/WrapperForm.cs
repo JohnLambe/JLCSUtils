@@ -1,4 +1,5 @@
 ﻿using MvpFramework;
+using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -123,6 +124,19 @@ namespace MvpFramework.WinForms
             Visible = Child.Visible;
         }
 
+        protected override void OnKeyDown(KeyEventArgs evt)
+        {
+            if(Child is IChildWindow)
+            {
+                if(((IChildWindow)Child).KeyPreview)
+                {
+                    ((IChildWindow)Child).NotifyKeyDown(evt);
+                }
+            }
+            if(!evt.Handled)
+                base.OnKeyDown(evt);
+        }
+
         /*
         protected override void OnShown(EventArgs e)
         {
@@ -136,4 +150,19 @@ namespace MvpFramework.WinForms
 
         protected Control Child { get; private set; }
     }
+
+
+    /// <summary>
+    /// Optional interface for a window embedded in <see cref="WrapperForm"/> (or equivalent) to provide additional form-like features.
+    /// </summary>
+    public interface IChildWindow
+    {
+        /// <summary>
+        /// true to have <see cref="NotifyKeyDown"/> called for key events on the form.
+        /// </summary>
+        bool KeyPreview { get; }
+
+        void NotifyKeyDown(KeyEventArgs args);
+    }
+
 }

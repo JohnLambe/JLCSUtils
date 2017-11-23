@@ -24,7 +24,7 @@ namespace MvpFramework.WinForms
     /// A control that holds a set of buttons, provided as an <see cref="IOptionCollection"/>,
     /// or generated based on a Presenter.
     /// </summary>
-    public partial class ButtonContainer : UserControl, IControlBinderExt, IOptionUpdate
+    public partial class ButtonContainer : UserControl, IControlBinderExt, IOptionUpdate, IKeyboardKeyHandler
     {
         public ButtonContainer()
         {
@@ -579,6 +579,16 @@ namespace MvpFramework.WinForms
         public virtual void InvokeDefault()
         {
             Buttons?.Default?.Invoke();
+        }
+
+        public virtual void NotifyKeyDown(KeyboardKeyEventArgs args)
+        {
+            foreach(var button in Buttons.Children.Where(c => c.HotKey == args.Key))  //TODO: Move this to a method of IOptionCollection
+            {
+                button.Invoke();
+                args.Cancel = true;
+                return;   //TODO: decide whether to fire all handlers for the key, or just the first one.
+            }
         }
 
         /// <summary>
