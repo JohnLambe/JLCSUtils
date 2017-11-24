@@ -102,11 +102,11 @@
             // 
             // uiRightPanel
             // 
-            this.uiRightPanel.AssociatedControl = null;
             this.uiRightPanel.BackColor = System.Drawing.Color.Silver;
             this.uiRightPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.uiRightPanel.ButtonAlignment = System.Windows.Forms.HorizontalAlignment.Right;
             this.uiRightPanel.Buttons = null;
+            this.uiRightPanel.CausesValidation = false;
             this.uiRightPanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.uiRightPanel.Location = new System.Drawing.Point(336, 0);
             this.uiRightPanel.Name = "uiRightPanel";
@@ -115,7 +115,6 @@
             // 
             // uiButtonContainer2
             // 
-            this.uiButtonContainer2.AssociatedControl = null;
             this.uiButtonContainer2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.uiButtonContainer2.Buttons = null;
             this.uiButtonContainer2.ButtonsLayout = System.Windows.Forms.TabAlignment.Left;

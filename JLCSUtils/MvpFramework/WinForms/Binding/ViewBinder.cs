@@ -39,6 +39,10 @@ namespace MvpFramework.WinForms.Binding
             View = view;
             ModelBinder = new ModelBinderWrapper(model);
             PresenterBinder = new PresenterBinderWrapper(presenter);
+
+            //TODO: add events handlers to ModelBinder for validation notification
+            // ModelBinder.ValidationStateChanged += ModelBinder_ValidationStateChanged;
+
             if (binderFactory != null)
             {
                 Binders = new List<IControlBinder>();
@@ -108,10 +112,6 @@ namespace MvpFramework.WinForms.Binding
             }
         }
 
-        /// <summary>
-        /// Refresh the view, or a specified control on it, from the model.
-        /// </summary>
-        /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
         public override void RefreshView(Control control = null)
         {
             //TODO: Provide a way to refresh only properties on the View itself ?
@@ -134,21 +134,9 @@ namespace MvpFramework.WinForms.Binding
             }
         }
 
-        /// <summary>
-        /// Fire a handler on the presenter.
-        /// </summary>
-        /// <param name="handlerId"></param>
-        /// <param name="args"></param>
-        // View base classes could have a method that delegates to this.
-        public virtual void FireHandler(string handlerId, EventArgs args = null)
-        {
-            PresenterBinder.GetHandler(handlerId).Invoke(View, args ?? EventArgs.Empty);
-        }
-
         /*
         public virtual MenuItemModel GetOption(string id)
         {
-
         }
         */
 
@@ -169,6 +157,7 @@ namespace MvpFramework.WinForms.Binding
             }
         }
 
+        /*
         /// <summary>
         /// Collection of binders for the controls in this view.
         /// </summary>
@@ -179,6 +168,7 @@ namespace MvpFramework.WinForms.Binding
         /// </summary>
         [NotNull]
         protected virtual Control View { get; set; }
+        */
     }
 
 }

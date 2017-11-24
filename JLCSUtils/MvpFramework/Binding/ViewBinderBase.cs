@@ -1,4 +1,5 @@
-﻿using MvpFramework.Dialog;
+﻿using JohnLambe.Util.Types;
+using MvpFramework.Dialog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,22 +48,6 @@ namespace MvpFramework.Binding
                     }
                 }
 
-                protected virtual void BindControl(TControl control, IControlBinderFactory binderFactory, IPresenter presenter)
-                {
-                    var binder = binderFactory.Create(control);
-                    if (binder != null)
-                    {
-                        Binders.Add(binder);
-                        binder.BindModel(ModelBinder, presenter);
-                    }
-
-                    var controls = GetChildren(control);
-                    foreach (TControl childControl in controls)
-                    {
-                        BindControl(childControl, binderFactory, presenter);
-                    }
-                }
-
                 /// <summary>
                 /// Refresh the view, or a specified control on it, from the model.
                 /// </summary>
@@ -104,15 +89,6 @@ namespace MvpFramework.Binding
                     return JohnLambe.Util.Collections.EmptyCollection<TControl>.EmptyArray;
                 }
 
-                /// <summary>
-                /// Collection of binders for the controls in this view.
-                /// </summary>
-                protected virtual IList<IControlBinder> Binders { get; private set; }
-
-                /// <summary>
-                /// The bound view.
-                /// </summary>
-                protected virtual TControl View { get; set; }
 */
 
         /// <summary>
@@ -121,6 +97,21 @@ namespace MvpFramework.Binding
         /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
         public virtual void RefreshView(TControl control = null)
         {
+            /*
+            var binder = binderFactory.Create(control);
+            if (binder != null)
+            {
+                Binders.Add(binder);
+                binder.BindModel(ModelBinder, presenter);
+            }
+
+            var controls = GetChildren(control);
+            foreach (TControl childControl in controls)
+            {
+                BindControl(childControl, binderFactory, presenter);
+            }
+            */
+
         }
 
         /// <summary>
@@ -154,12 +145,25 @@ namespace MvpFramework.Binding
         }
 
         /// <summary>
+        /// Fire a handler on the presenter.
+        /// </summary>
+        /// <param name="handlerId"></param>
+        /// <param name="args"></param>
+        // View base classes could have a method that delegates to this.
+        public virtual void FireHandler(string handlerId, EventArgs args = null)
+        {
+            PresenterBinder.GetHandler(handlerId).Invoke(View, args ?? EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Process a keystroke on the form.
         /// </summary>
         /// <param name="key"></param>
         public virtual void ProcessKey(KeyboardKeyEventArgs key)
         {
         }
+
+        #region Invalidation
 
         /// <summary>
         /// Cause the view to be refreshed, while not in validation handler.
@@ -182,6 +186,26 @@ namespace MvpFramework.Binding
             }
         }
 
+        /*
+        protected virtual void ModelBinder_ValidationStateChanged(object sender, BinderValidationState state)
+        {
+            if (state == BinderValidationState.Validated)
+                RefreshIfInvalidated();
+        }
+        */
+
+        #endregion
+
+        /// <summary>
+        /// Collection of binders for the controls in this view.
+        /// </summary>
+        protected virtual IList<IControlBinder> Binders { get; /*private*/ set; }
+
+        /// <summary>
+        /// The bound view.
+        /// </summary>
+        [NotNull]
+        protected virtual TControl View { get; set; }
     }
 
     /*
