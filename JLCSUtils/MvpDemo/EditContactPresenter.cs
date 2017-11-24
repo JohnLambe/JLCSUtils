@@ -79,6 +79,17 @@ namespace MvpDemo
             });
         }
 
+        [MvpHandler(Filter = new string[] { "RightPanel" }, CausesValidation = false)]
+        public void NoValidationButton()
+        {
+            UiController.ShowMessage(
+            new ConfirmationDialog()
+            {
+                Title = "No Validation",
+                Message = "message"
+            });
+        }
+
         [MvpHandler("Test")]
         public void TestEventHandler()
         {

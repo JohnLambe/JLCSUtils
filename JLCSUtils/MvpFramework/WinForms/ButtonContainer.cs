@@ -337,6 +337,8 @@ namespace MvpFramework.WinForms
             button.Location = _nextButtonCoords;
             button.Anchor = ButtonAnchor;
 
+            button.CausesValidation = buttonModel.CausesValidation;
+
             button.Enabled = buttonModel.Enabled;
 
             switch (Orientation)

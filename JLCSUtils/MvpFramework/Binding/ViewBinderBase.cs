@@ -16,6 +16,7 @@ namespace MvpFramework.Binding
     /// </summary>
     /// <typeparam name="TControl">The type of the UI framework's control/widget base class.</typeparam>
     public class ViewBinderBase<TControl> : Component, IOptionUpdate
+        where TControl : class
     {
         public ViewBinderBase(IMessageDialogService dialogService = null)
         {
@@ -112,7 +113,15 @@ namespace MvpFramework.Binding
                 /// The bound view.
                 /// </summary>
                 protected virtual TControl View { get; set; }
-                */
+*/
+
+        /// <summary>
+        /// Refresh the view, or a specified control on it, from the model.
+        /// </summary>
+        /// <param name="control">null to refresh the whole view, otherwise, this control and all children (direct and indirect) are refreshed.</param>
+        public virtual void RefreshView(TControl control = null)
+        {
+        }
 
         /// <summary>
         /// The binder for the model.
@@ -150,6 +159,27 @@ namespace MvpFramework.Binding
         /// <param name="key"></param>
         public virtual void ProcessKey(KeyboardKeyEventArgs key)
         {
+        }
+
+        /// <summary>
+        /// Cause the view to be refreshed, while not in validation handler.
+        /// </summary>
+        public virtual void InvalidateView()
+        {
+            Invalidated = true;
+        }
+        /// <summary>
+        /// true iff a refresh of the view is pending.
+        /// </summary>
+        protected bool Invalidated { get; set; }
+
+        protected virtual void RefreshIfInvalidated()
+        {
+            if(Invalidated)
+            {
+                RefreshView();
+                Invalidated = false;
+            }
         }
 
     }

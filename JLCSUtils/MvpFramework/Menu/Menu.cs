@@ -133,6 +133,9 @@ namespace MvpFramework.Menu
         /// </summary>
         public virtual bool IsDefault { get; set; }
 
+        /// <inheritdoc cref="Binding.MvpHandlerAttribute.CausesValidation"/>
+        public virtual bool CausesValidation { get; set; } = true;
+
         /// <summary>
         /// Ordered list of the immediate children of this item.
         /// Never null. Empty if this is a leaf menu item (not a menu).
@@ -219,7 +222,7 @@ namespace MvpFramework.Menu
         }
 
         /// <summary>
-        /// The type of the model for handler of this menu item.
+        /// The type of the model for the handler of this menu item.
         /// </summary>
         [Nullable]
         public virtual Type ModelType { get; set; }

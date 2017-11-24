@@ -40,6 +40,7 @@ namespace MvpFramework.Menu
                         ContextKey = handlerInfo.Attribute.ContextKey,
                         IconId = handlerInfo.Attribute.IconId,
                         IsDefault = handlerInfo.Attribute.IsDefault,
+                        CausesValidation = handlerInfo.Attribute.CausesValidation,
                         Order = handlerInfo.Attribute.Order,
                         Filter = filter    // handlerInfo.Attribute.Filter
                     };
