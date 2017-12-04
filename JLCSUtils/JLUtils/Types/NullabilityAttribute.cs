@@ -124,6 +124,9 @@ namespace JohnLambe.Util.Types
         /// <inheritdoc cref="NullabilityAttribute.IsNullable"/>
         public override bool IsNullable => true;
 
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+            => ValidationResult.Success;              // all values are valid
+
         // see Nullability.IsDefaultAttribute() - this must be overridden if any properties settable when declaring an attribute are added here or in a subclass.
     }
 

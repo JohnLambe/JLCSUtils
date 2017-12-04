@@ -25,6 +25,7 @@ namespace MvpFramework.WinForms.Binding
     {
         public ViewBinder(IMessageDialogService dialogService = null) : base(dialogService)
         {
+            ControlAdaptor = new WinFormsControlAdaptor();
         }
 
         /// <summary>
@@ -34,50 +35,30 @@ namespace MvpFramework.WinForms.Binding
         /// <param name="presenter"></param>
         /// <param name="binderFactory"></param>
         /// <param name="view">The view to be bound by this binder.</param>
-        public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory, Control view)
+        public override void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory, Control view)
         {
-            View = view;
-            ModelBinder = new ModelBinderWrapper(model);
-            PresenterBinder = new PresenterBinderWrapper(presenter);
-
-            //TODO: add events handlers to ModelBinder for validation notification
-            // ModelBinder.ValidationStateChanged += ModelBinder_ValidationStateChanged;
-
             if (binderFactory != null)
             {
-                Binders = new List<IControlBinder>();
-
-                var viewControlBinder = ViewControlBinder.GetBinderForView(View);
-
-                View.SuspendLayout();
+                view.SuspendLayout();
                 try
                 {
-                    if (viewControlBinder != null)
-                    {
-                        viewControlBinder.BindModel(ModelBinder, presenter);
-                        //TODO: Don't bind if there was nothing to bind
-                        Binders.Add(viewControlBinder);
-                    }
-
-                    //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
-                    BindControl(view, binderFactory, presenter);   // bind the root control recursively
+                    base.Bind(model, presenter, binderFactory, view);
                 }
                 finally
                 {
-                    View.ResumeLayout();
+                    view.ResumeLayout();
                 }
-
-                //TODO: Attach event handler to view to receive key presses, and pass to ProcessKey.
             }
         }
 
+        /* moved to base class:
         /// <summary>
         /// Set up the binding of a control, including its children.
         /// </summary>
         /// <param name="control">The control to bind.</param>
         /// <param name="binderFactory"></param>
         /// <param name="presenter"></param>
-        protected virtual void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
+        protected override void BindControl(Control control, IControlBinderFactory binderFactory, IPresenter presenter)
         {
             try
             {
@@ -107,18 +88,17 @@ namespace MvpFramework.WinForms.Binding
             }
             catch(Exception ex)
             {
-                throw new MvpBindingException("Binding Control failed: " + control.Name,
-                    ex);
+                throw new MvpBindingException("Binding Control failed: " + control.Name, ex);
             }
         }
+        */
 
         public override void RefreshView(Control control = null)
         {
-            //TODO: Provide a way to refresh only properties on the View itself ?
-
             View.SuspendLayout();
             try
             {
+                //TODO: Move to base class:
                 if (Binders != null)
                 {
                     foreach (var binder in Binders)
@@ -127,6 +107,7 @@ namespace MvpFramework.WinForms.Binding
                             binder.MvpRefresh();
                     }
                 }
+                base.RefreshView(control);
             }
             finally
             {
@@ -140,35 +121,47 @@ namespace MvpFramework.WinForms.Binding
         }
         */
 
-        public override void ProcessKey(KeyboardKeyEventArgs args)
+        /* Moved to base class:
+    public override void ProcessKey(KeyboardKeyEventArgs args)
+    {
+        if (Binders != null)
         {
-            if (Binders != null)
+            foreach (var binder in Binders)
             {
-                foreach (var binder in Binders)
-                {
-                    if (args.Cancel)            // if cancelled (by previous handler, or before entering this method)
-                        return;                 // don't process remaining handlers
+                if (args.Cancel)            // if cancelled (by previous handler, or before entering this method)
+                    return;                 // don't process remaining handlers
 
-                    if (binder is IKeyboardKeyHandler)
-                    {
-                        ((IKeyboardKeyHandler)binder).NotifyKeyDown(args);
-                    }
+                if (binder is IKeyboardKeyHandler)
+                {
+                    ((IKeyboardKeyHandler)binder).NotifyKeyDown(args);
                 }
             }
         }
-
-        /*
-        /// <summary>
-        /// Collection of binders for the controls in this view.
-        /// </summary>
-        protected virtual IList<IControlBinder> Binders { get; private set; }
-
-        /// <summary>
-        /// The bound view.
-        /// </summary>
-        [NotNull]
-        protected virtual Control View { get; set; }
+    }
         */
+
+    }
+
+    /// <summary>
+    /// Implementation of <see cref="IControlAdaptor{TControl}"/> for WinForms 
+    /// (to enable the framework to support WinForms).
+    /// </summary>
+    public class WinFormsControlAdaptor : IControlAdaptor<Control>
+    {
+        public IEnumerable<Control> GetChildren(Control control)
+        {
+            return control.Controls.Cast<Control>();
+        }
+
+        public string GetName(Control control)
+        {
+            return control.Name;
+        }
+
+        public bool IsInControl(Control control, Control testParent)
+        {
+            return control.IsInControl(testParent);
+        }
     }
 
 }

@@ -97,7 +97,7 @@ namespace MvpFramework.WinForms.Controls
         /// <param name="model"></param>
         public virtual void SetModel(object model)
         {
-            ModelBinder = new ModelBinderWrapper(model);
+            ModelBinder = new ModelBinderWrapper(model);  //TODO: ViewBinder argument ?
         }
 
         /// <summary>

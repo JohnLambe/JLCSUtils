@@ -38,14 +38,14 @@ namespace MvpFramework.Binding
 
             public virtual EventHandler HandlerDelegate
                 => Target == null ? (EventHandler)((sender, args) => { })
-                : (sender, args) => Method.Invoke(Target, Array.Empty<object>());
+                    : (sender, args) => Method.Invoke(Target, Array.Empty<object>());
 
             /// <summary>
             /// Delegate to invoke the handler.
             /// </summary>
             public virtual MenuItemModel.InvokedDelegate HandlerWithArgsDelegate
                 => Target == null ? (sender, args) => { }
-            : CreateInvokeDelegate();
+                    : CreateInvokeDelegate();
 
             /// <summary>
             /// Name corresponding to this handler, for displaying in a user interface.

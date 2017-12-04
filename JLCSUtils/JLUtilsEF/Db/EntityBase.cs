@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace JohnLambe.Util.Db
 {
     /// <summary>
-    /// Base class for Entity Framework entities.
+    /// Base class for ORM entities.
     /// <para>
     /// Automatically initializes certain inverse collection properties to empty collections. See <see cref="CollectionInitializer"/>.
     /// </para>
@@ -19,7 +19,7 @@ namespace JohnLambe.Util.Db
     {
         public EntityBase()
         {
-            if(!EfUtil.IsEfClass(this))
+            if (!EfUtil.IsEfClass(this))
                 CollectionInitializer.InitializeInstance(this);
         }
     }
@@ -49,5 +49,21 @@ namespace JohnLambe.Util.Db
 
         [Key]
         public virtual TKey Id { get; protected set; }
+    }
+
+    public abstract class MarkDeleteEntityBase<TKey> : EntityBase<TKey>, IMarkDeleteEntityBase
+    {
+        public virtual bool IsActive { get; set; } = true;
+    }
+
+    /// <summary>
+    /// Entity which has a flag indicating whether it is considered deleted.
+    /// </summary>
+    public interface IMarkDeleteEntityBase
+    {
+        /// <summary>
+        /// false iff this entity is considered deleted.
+        /// </summary>
+        bool IsActive { get; set; }  // Could name IsDeleted, Active ?
     }
 }

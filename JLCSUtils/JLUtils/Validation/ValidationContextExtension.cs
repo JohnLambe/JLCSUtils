@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JohnLambe.Util.Collections;
 using JohnLambe.Util.Types;
+using System.ComponentModel;
 
 namespace JohnLambe.Util.Validation
 {
@@ -129,7 +130,31 @@ namespace JohnLambe.Util.Validation
         /// A non-final validation. The user will continue editing the item after this, and a final validation (without this flag) will
         /// be done before saving/submitting the data. (Some items may be allowed to be invalid or blank at this stage.)
         /// </summary>
-        ContinuingInput = 4
+        ContinuingInput = 4,
+    }
+
+    public enum ValidationStage
+    { 
+        NotValidating = 0,
+
+        Validating,
+        AfterValidating,
+
+        Validated,
+        AfterValidated,
+
+        /// <summary>
+        /// The change has not yet been saved (in a GUI this means that it has not been saved from the control to the model) (and won't be saved if rejected).
+        /// <para>e.g. on System.Windows.Forms.Control.Validating events.</para>
+        /// </summary>
+        BeforeChange = 0x100,
+
+        /// <summary>
+        /// The change has already been saved. Cancelling or rejecting it will have no effect.
+        /// <para>e.g. on System.Windows.Forms.Control.Validated events.</para>
+        /// <para>This cannot be combined with <see cref="BeforeChange"/>.</para>
+        /// </summary>
+        AfterChange = 0x200
     }
 
 }

@@ -42,11 +42,13 @@ namespace MvpFramework.Binding
 
     /// <summary>
     /// Interface to return a binder for a given control.
-    /// May return null if the control does not bind to anything.
-    /// If not null, the returned instance must not be shared with any other controls (if shared, it would not be possible to refresh just one of them, for example).
     /// <para>
     /// The <see cref="IFactory{IControlBinder, T}.Create(T)"/> method takes
     /// a parameter of a control, and returns the control binder (or null).
+    /// </para>
+    /// <para>
+    /// May return null if the control does not bind to anything.
+    /// If not null, the returned instance must not be shared with any other controls (if shared, it would not be possible to refresh just one of them, for example).
     /// </para>
     /// </summary>
     //| TODO?: Could add a generic parameter for the type of the control (the control base class for the UI framework).

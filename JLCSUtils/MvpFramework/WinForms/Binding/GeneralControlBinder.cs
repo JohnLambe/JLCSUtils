@@ -43,7 +43,8 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="control"></param>
         /// <param name="messageDialogServiceFactory">Providers the message dialog service to be used by the binder.
-        /// See the corresponding parameter of <see cref="GeneralControlBinder.GeneralControlBinder(Control, Func{IMessageDialogService})"/>.</param>
+        /// See the corresponding parameter of <see cref="GeneralControlBinder.GeneralControlBinder(Control, Func{IMessageDialogService})"/>.
+        /// </param>
         /// <returns>Binder or null.</returns>
         public static IControlBinderExt TryCreateBinder(Control control, Func<IMessageDialogService> messageDialogServiceFactory)
         {

@@ -13,6 +13,7 @@ using MvpFramework.Dialog.Dialogs;
 using System.ComponentModel;
 using MvpFramework.Dialog;
 using JohnLambe.Util.Types;
+using System.Runtime.CompilerServices;
 
 namespace MvpFramework.Binding
 {
@@ -24,11 +25,13 @@ namespace MvpFramework.Binding
     //| Currently, it supports only accessing properties of an object.
     public class ModelBinderWrapper
     {
-        public ModelBinderWrapper(object model)
+        public ModelBinderWrapper(object model, IViewBinder viewBinder = null)
         {
             this.Model = model;
+            this.ViewBinder = viewBinder;
         }
 
+        /*
         #region obsolete
         // Methods obsoleted. Use GetProperty instead:
 
@@ -71,30 +74,8 @@ namespace MvpFramework.Binding
             return CaptionUtil.GetDisplayName(GetPropertyInternal(propertyName));
         }
 
-        /*
-        [Obsolete("Use GetProperty")]
-        public ModelPropertyBinder GetProp(string propertName)
-        {
-            return GetProperty(propertName);
-        }
-        */
-        /*
-               /// <summary>
-               /// Provides attributes of the property, which may include details
-               /// related to binding or validation.
-               /// This may (in subclasses or future versions) return attributes even if 
-               /// <see cref="GetProperty(string)"/> returns null, so it is recommended to use this instead of using it
-               /// as <see cref="ICustomAttributeProvider"/>.
-               /// </summary>
-               /// <param name="propertyName"></param>
-               /// <returns></returns>
-               public virtual ICustomAttributeProvider GetAttributes(string propertyName)
-               {
-                   return GetProperty(propertyName);
-               }
-       */
         #endregion
-
+        */
 
         /// <summary>
         /// The collection of groups (of properties), sorted.
@@ -113,11 +94,11 @@ namespace MvpFramework.Binding
         /// <returns></returns>
         public virtual IEnumerable<ModelPropertyBinder> GetPropertiesByGroup(string groupId)
             => Model.GetType().GetProperties()
-                .Select(p => new ModelPropertyBinder(Model, p))
+                .Select(p => new ModelPropertyBinder(Model, p, this))
                 .Where(p => groupId == null || (p.Group ?? "") == groupId)
                 .OrderBy(p => p.Order);     // same order as Properties
         //TODO: Could exclude properties based on a naming convention, e.g. ending with "Id",
-        //  or exclude properties referenced by an Entity Framework ForeignKeyAttribute
+        //  or exclude properties referenced by a ForeignKeyAttribute
         //  (unless overridden in an attribute).
 
         /// <summary>
@@ -126,7 +107,7 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual IEnumerable<ModelPropertyBinder> Properties
             => Model.GetType().GetProperties()
-                    .Select(p => new ModelPropertyBinder(Model, p))
+                    .Select(p => new ModelPropertyBinder(Model, p, this))
                     .OrderBy(p => p.Order);
 
         /// <summary>
@@ -137,7 +118,17 @@ namespace MvpFramework.Binding
         /// <returns></returns>
         public virtual ModelPropertyBinder GetProperty(string propertName)
         {
-            return new ModelPropertyBinder(Model, propertName);
+            return new ModelPropertyBinder(Model, propertName, this);
+        }
+
+        public virtual void NotifyValidationStage(ValidationStage stage)
+        {
+            ViewBinder?.NotifyValidationStage(stage);
+        }
+
+        public virtual void InvalidateView()
+        {
+            ViewBinder.RefreshView();
         }
 
         //TODO: Lazily populate property binders (Map) ?
@@ -212,6 +203,7 @@ namespace MvpFramework.Binding
         /// The underlying Model object.
         /// </summary>
         protected readonly object Model;
+        protected readonly IViewBinder ViewBinder;
     }
 
 
@@ -221,21 +213,25 @@ namespace MvpFramework.Binding
     /// </summary>
     public class ModelPropertyBinder : BoundProperty<object, object>
     {
-        public ModelPropertyBinder(object target, PropertyInfo property) : base(target, property)
+        public ModelPropertyBinder(object target, PropertyInfo property, ModelBinderWrapper modelBinder /* = null*/) : base(target, property)
         {
-            Init();
+            Init(modelBinder);
         }
 
-        public ModelPropertyBinder(object target, string propertyName) : base(target, propertyName)
+        public ModelPropertyBinder(object target, string propertyName, ModelBinderWrapper modelBinder /*= null*/) : base(target, propertyName)
         {
-            Init();
+            Init(modelBinder);
         }
 
-        protected void Init()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init(ModelBinderWrapper modelBinder)
         {
             _displayAttribute = Property?.GetCustomAttribute<DisplayAttribute>();
             _mvpDisplayAttribute = Property?.GetCustomAttribute<MvpDisplayAttribute>();
+            this.ModelBinder = modelBinder;
         }
+
+        protected ModelBinderWrapper ModelBinder { get; set; }
 
         /// <summary>
         /// The data type of the property.
@@ -317,51 +313,73 @@ namespace MvpFramework.Binding
             if (Property == null)
                 return false;
             ValidationResults results;
-            return Validating(sender,evt,ref value,dialogService, out results);
+            return Validating(sender, evt, ref value, dialogService, out results);
         }
 
-        //TODO: Returning validation results, with no exception or dialog.
         /// <summary>
         /// Called when a value is modified in the UI, to validate the new value.
         /// In WinForms, this should be called on the <see cref="System.Windows.Forms.Control.Validating"/> event.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="evt"></param>
-        /// <param name="value">The value in the UI, to be updated to the model.</param>
+        /// <param name="newValue">The value in the UI, to be updated to the model.</param>
         /// <param name="dialogService">If not null, a dialog is shown if invalid.</param>
         /// <param name="exception">Iff true, and <paramref name="dialogService"/> is null, a <see cref="ValidationException"/> is thrown on failure.</param>
         /// <param name="results"></param>
-        /// <returns>true iff <paramref name="value"/> is modified.</returns>
-        public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value,
+        /// <returns>true iff <paramref name="newValue"/> is modified.</returns>
+        public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object newValue,
             [Nullable] IMessageDialogService dialogService, out ValidationResults results, bool exception = false)
         {
             results = new ValidationResults();
             if (Property == null)   // if no bound property
                 return false;
 
-            TryValidateValue(value, results);
-            if ( !results.IsValid )
+            var eventArgs = new ValueChangedEventArgs<object, object>(ModelBinder.AsObject, Name, Value, newValue, ValidationStage.Validating, evt);
+
+            ModelBinder.NotifyValidationStage(ValidationStage.Validating);
+            try
             {
-                evt.Cancel = true;   // validation fails. This usually means that the control stays focussed.
+                OnValidating?.Invoke(this, eventArgs);
 
-                // We show the dialog here, if we have the service to do so,
-                // because raising an exception would cause WinForms not to handle the cancelling of the event
-                // (it would allow the focus to leave the control).
-                if (dialogService != null)
-                    dialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
-                else if(exception)
-                    results.ThrowIfInvalid();
+                evt.Cancel = eventArgs.IsCancelled;   // if cancelled, cancel the original event
+                newValue = eventArgs.NewValue;   // may have been updated by a handler
+                if (eventArgs.InvalidateView)
+                    ModelBinder.InvalidateView();
+
+                if (!eventArgs.IsCancelled)
+                {
+                    TryValidateValue(newValue, results);
+                    if (!results.IsValid)
+                    {
+                        evt.Cancel = true;   // validation fails. This usually means that the control stays focussed.
+
+                        // We show the dialog here, if we have the service to do so,
+                        // because raising an exception would cause WinForms not to handle the cancelling of the event
+                        // (it would allow the focus to leave the control).
+                        if (dialogService != null)
+                            dialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
+                        else if (exception)
+                            results.ThrowIfInvalid();
+                    }
+
+                    //TODO: Warnings
+
+                    if (results.Modified)
+                    {
+                        newValue = results.NewValue;
+                        //                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
+                    }
+                }
+
+                return results.Modified;
             }
-
-            //TODO: Warnings
-
-            if (results.Modified)
+            finally
             {
-                value = results.NewValue;
-//                    ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", true);  // leave it 'modified' until the property is assigned to the model
+                if(eventArgs.IsCancelled)
+                    ModelBinder.NotifyValidationStage(ValidationStage.NotValidating);     // change cancelled
+                else
+                    ModelBinder.NotifyValidationStage(ValidationStage.AfterValidating);
             }
-
-            return results.Modified;
         }
 
         /// <summary>
@@ -369,14 +387,23 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        /// <param name="value">The value in the UI, to be updated to the model.</param>
-        public virtual void Validated(object sender, EventArgs e, object value)
+        /// <param name="newValue">The value in the UI, to be updated to the model.</param>
+        public virtual void Validated(object sender, EventArgs evt, object newValue)
         {
             if(CanWrite)
-                ValueConverted = value;
+                ValueConverted = newValue;
             //| We could set _boundControl.'Modified' (if it exists) to false:
             //                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
+
+            var eventArgs = new ValueChangedEventArgs<object, object>(ModelBinder.AsObject, Name, Value, newValue, ValidationStage.Validating, evt);
+            OnValidated?.Invoke(this, eventArgs);
+
+            ModelBinder.NotifyValidationStage(ValidationStage.AfterValidated);
         }
+
+        public virtual event EventHandler<ValueChangedEventArgs<object,object>> OnValidating;
+
+        public virtual event EventHandler<ValueChangedEventArgs<object, object>> OnValidated;
 
         #endregion
 
