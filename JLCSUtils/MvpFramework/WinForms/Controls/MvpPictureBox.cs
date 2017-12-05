@@ -29,6 +29,14 @@ namespace MvpFramework.WinForms.Controls
         [MvpModelProperty(nameof(Image))]
         public event GetNameDelegate OnGetImageProperty;
 
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [MvpDefineValidatingEventAttribute]
+        public event ValueChangedEventHandler ValidatingExt;  //| Or OnValidatingExt 
+
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [MvpDefineValidatedEventAttribute]
+        public event ValueChangedEventHandler ValidatedExt;
+
         //TODO: Define what happens when both events are set.
 
 #pragma warning restore CS0067

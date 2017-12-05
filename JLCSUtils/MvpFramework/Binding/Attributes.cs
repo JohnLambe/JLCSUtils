@@ -524,6 +524,28 @@ namespace MvpFramework.Binding
     }
 
     /// <summary>
+    /// Flags an event to be fired when the Validating event is fired.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
+    public class MvpDefineValidatingEventAttribute : MvpMappingPropertyBaseAttribute
+    {
+        public MvpDefineValidatingEventAttribute()
+        {
+        }
+    }
+
+    /// <summary>
+    /// Flags an event to be fired when the Validated event is fired.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Event, AllowMultiple = false, Inherited = true)]
+    public class MvpDefineValidatedEventAttribute : MvpMappingPropertyBaseAttribute
+    {
+        public MvpDefineValidatedEventAttribute()
+        {
+        }
+    }
+
+    /// <summary>
     /// Flags a property whose value is a binder string.
     /// Supported property types are <see cref="string"/>, <see cref="string"/>[] (each element is a binder string)
     /// and anything whose <see cref="object.ToString()"/> method returns the required value.

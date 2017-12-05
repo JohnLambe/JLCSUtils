@@ -55,7 +55,10 @@ namespace MvpFramework.Binding
 
         public virtual void BindModel(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenter)
         {
-//            BoundControl.GetType().GetProperties().Where(p => p.IsDefined<MvpMappingPropertyBaseAttribute>())
+            foreach(var prop in BoundControl.GetType().GetProperties().Where(p => p.IsDefined<MvpMappingPropertyBaseAttribute>()))
+            {
+
+            }
 //TODO
 /*
             if(Attribute?.IconIdProperty != null)

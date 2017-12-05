@@ -36,6 +36,14 @@ namespace MvpFramework.WinForms.Controls
         [Description(MvpUiComponentConsts.ModelPropertyNameDescription)]
         [MvpModelProperty(nameof(Text), nameof(TextChanged))]
         public event GetNameDelegate OnGetModelProperty;
+
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [MvpDefineValidatingEventAttribute]
+        public event ValueChangedEventHandler ValidatingExt;  //| Or OnValidatingExt 
+
+        [Category(MvpUiComponentConsts.DesignerCategory)]
+        [MvpDefineValidatedEventAttribute]
+        public event ValueChangedEventHandler ValidatedExt;
 #pragma warning restore CS0067
 
         [Category(MvpUiComponentConsts.DesignerCategory)]

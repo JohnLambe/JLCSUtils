@@ -105,4 +105,7 @@ namespace MvpFramework.Binding
         }
         //| Should this and InvalidateView allow changing from true to false?
     }
+
+
+    public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs<object, object> args);
 }

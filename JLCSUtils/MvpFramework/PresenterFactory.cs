@@ -202,7 +202,13 @@ namespace MvpFramework
                 }
 
                 var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
-                DiResolver.BuildUp(presenter);                                 // inject properties
+                try
+                {
+                    DiResolver.BuildUp(presenter);                                 // inject properties
+                }
+                catch(Exception)        //TODO: catch only errors that imply that `presenter` doesn't support property injection
+                {
+                }
 
                 try
                 {
