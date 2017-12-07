@@ -29,7 +29,7 @@ Locating Presenter for Model:
 
 TODO:
 	General exception handler: Handles unhandled exceptions on anything invoked by the framework.
-		Tester-Doer: If test rejects exception, it is isn't caught ?
+		Tester-Doer: If test rejects exception, it isn't caught ?
 		Default implementation shows an error dialog, and has a dependency of IMessageDialogService.
 
     Interfaces for [Model/Presenter]BinderWrapper.

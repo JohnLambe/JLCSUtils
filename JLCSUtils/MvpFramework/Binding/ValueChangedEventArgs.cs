@@ -75,7 +75,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// The stage of the validation process.
         /// </summary>
-        public virtual ValidationStage Stage { get; }
+        public virtual ValidationStage Stage { get; set; }
 
         /// <summary>
         /// Set to true to cause the whole View to be refreshed from the model, after the validation events.

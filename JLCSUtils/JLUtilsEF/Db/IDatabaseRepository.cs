@@ -88,6 +88,12 @@ namespace JohnLambe.Util.Db
         TEntity Create();
         TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, TEntity;
 
+        /// <summary>
+        /// Delete an item from the repository, or mark it deleted (if <see cref="IMarkDeleteEntity"/>).
+        /// </summary>
+        /// <param name="entity">The entity to be deleted.</param>
+        void Delete(TEntity entity);
+
         /*  These could be added, preferably replacing the EntityState type with one not specific to Entity Framework.
          *  Currently, separate methods are used for each state transition instead.
            

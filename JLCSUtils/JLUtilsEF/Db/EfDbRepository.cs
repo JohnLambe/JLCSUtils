@@ -37,6 +37,14 @@ namespace JohnLambe.Util.Db
             return entity;
         }
 
+        public virtual void Delete(TEntity entity)
+        {
+            if (entity is IMarkDeleteEntity)
+                ((IMarkDeleteEntity)entity).IsActive = false;
+            else
+                Context.Entry<TEntity>(entity).State = EntityState.Deleted;
+        }
+
         protected readonly DbContext Context;
         protected readonly IDbSet<TEntity> Data;
     }

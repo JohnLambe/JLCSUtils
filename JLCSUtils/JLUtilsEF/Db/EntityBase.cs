@@ -51,15 +51,16 @@ namespace JohnLambe.Util.Db
         public virtual TKey Id { get; protected set; }
     }
 
-    public abstract class MarkDeleteEntityBase<TKey> : EntityBase<TKey>, IMarkDeleteEntityBase
+    public abstract class MarkDeleteEntityBase<TKey> : EntityBase<TKey>, IMarkDeleteEntity
     {
+        /// <inheritdoc cref="IMarkDeleteEntity.IsActive"/>
         public virtual bool IsActive { get; set; } = true;
     }
 
     /// <summary>
     /// Entity which has a flag indicating whether it is considered deleted.
     /// </summary>
-    public interface IMarkDeleteEntityBase
+    public interface IMarkDeleteEntity
     {
         /// <summary>
         /// false iff this entity is considered deleted.

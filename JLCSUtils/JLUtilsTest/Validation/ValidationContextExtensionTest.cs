@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JohnLambe.Util.Validation;
 
 namespace JohnLambe.Tests.JLUtilsTest.Validation
 {

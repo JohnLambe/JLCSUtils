@@ -31,52 +31,6 @@ namespace MvpFramework.Binding
             this.ViewBinder = viewBinder;
         }
 
-        /*
-        #region obsolete
-        // Methods obsoleted. Use GetProperty instead:
-
-        [Obsolete]
-        public virtual object GetValue(string propertyName)
-        {
-            //            return GetProperty(propertyName)?.GetValue(Model);
-            return ReflectionUtil.TryGetPropertyValue<object>(Model, propertyName);
-        }
-
-        [Obsolete]
-        public virtual void SetValue(string propertyName, object value)
-            //            => GetProperty(propertyName)?.SetValue(Model, value);
-            => ReflectionUtil.TrySetPropertyValue<object>(Model, propertyName, value);
-
-        [Obsolete]
-        public virtual bool CanRead(string propertyName)
-            => GetPropertyInternal(propertyName)?.CanRead ?? false;
-
-        [Obsolete]
-        public virtual bool CanWrite(string propertyName)
-            => GetPropertyInternal(propertyName)?.CanWrite ?? false;
-
-        /// <summary>
-        /// Get a property of the model.
-        /// Returns null if this model does not support it.
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        [Obsolete]
-        private PropertyInfo GetPropertyInternal(string propertyName)
-        {
-            var model = Model; 
-            return ReflectionUtil.GetProperty(ref model, propertyName);
-        }
-
-        [Obsolete]
-        public virtual string GetCaptionForProperty(string propertyName)
-        {
-            return CaptionUtil.GetDisplayName(GetPropertyInternal(propertyName));
-        }
-
-        #endregion
-        */
-
         /// <summary>
         /// The collection of groups (of properties), sorted.
         /// </summary>
@@ -307,7 +261,16 @@ namespace MvpFramework.Binding
 
         #region Validation
 
-
+        /// <summary>
+        /// Validates the given value for assignment to the bound property.
+        /// (Called when a value is modified in the UI, to validate the new value.)
+        /// In WinForms, this should be called on the <see cref="System.Windows.Forms.Control.Validating"/> event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="evt"></param>
+        /// <param name="value"></param>
+        /// <param name="dialogService"></param>
+        /// <returns></returns>
         public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object value, [Nullable] IMessageDialogService dialogService = null)
         {
             if (Property == null)
@@ -317,8 +280,7 @@ namespace MvpFramework.Binding
         }
 
         /// <summary>
-        /// Called when a value is modified in the UI, to validate the new value.
-        /// In WinForms, this should be called on the <see cref="System.Windows.Forms.Control.Validating"/> event.
+        /// <inheritdoc cref="Validating(object, CancelEventArgs, ref object, IMessageDialogService, out ValidationResults, bool)"/>
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="evt"></param>
@@ -330,6 +292,7 @@ namespace MvpFramework.Binding
         public virtual bool Validating([Nullable] object sender, CancelEventArgs evt, ref object newValue,
             [Nullable] IMessageDialogService dialogService, out ValidationResults results, bool exception = false)
         {
+            bool modified = false;
             results = new ValidationResults();
             if (Property == null)   // if no bound property
                 return false;
@@ -339,12 +302,19 @@ namespace MvpFramework.Binding
             ModelBinder.NotifyValidationStage(ValidationStage.Validating);
             try
             {
-                OnValidating?.Invoke(this, eventArgs);
+                /*TODO
+                if ()  
+                {
+                    OnValidating?.Invoke(this, eventArgs);
 
-                evt.Cancel = eventArgs.IsCancelled;   // if cancelled, cancel the original event
-                newValue = eventArgs.NewValue;   // may have been updated by a handler
-                if (eventArgs.InvalidateView)
-                    ModelBinder.InvalidateView();
+                    evt.Cancel = eventArgs.IsCancelled;   // if cancelled, cancel the original event
+                    if (newValue != eventArgs.NewValue)
+                    {
+                        newValue = eventArgs.NewValue;        // may have been updated by a handler
+                        modified = true;
+                    }
+                }
+                */
 
                 if (!eventArgs.IsCancelled)
                 {
@@ -371,7 +341,19 @@ namespace MvpFramework.Binding
                     }
                 }
 
-                return results.Modified;
+                eventArgs.Stage = ValidationStage.AfterValidating;
+                OnValidating?.Invoke(this, eventArgs);
+
+                evt.Cancel = eventArgs.IsCancelled;   // if cancelled, cancel the original event
+                if (newValue != eventArgs.NewValue)
+                {
+                    newValue = eventArgs.NewValue;        // may have been updated by a handler
+                    modified = true;
+                }
+                if (eventArgs.InvalidateView)
+                    ModelBinder.InvalidateView();
+
+                return results.Modified || modified;
             }
             finally
             {
@@ -386,7 +368,7 @@ namespace MvpFramework.Binding
         /// Called when a value is modified and validated in the user interface. In WinForms, this should be called on the <see cref="System.Windows.Forms.Control.Validated"/> event.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="evt"></param>
         /// <param name="newValue">The value in the UI, to be updated to the model.</param>
         public virtual void Validated(object sender, EventArgs evt, object newValue)
         {
@@ -401,9 +383,19 @@ namespace MvpFramework.Binding
             ModelBinder.NotifyValidationStage(ValidationStage.AfterValidated);
         }
 
-        public virtual event EventHandler<ValueChangedEventArgs<object,object>> OnValidating;
+        /// <summary>
+        /// Fired by the <see cref="Validating(object, CancelEventArgs, ref object, IMessageDialogService)"/> method.
+        /// Equivalent to Control.Validating.
+        /// Fired to validate a change before updating the property.
+        /// </summary>
+        public virtual event ValueChangedEventHandler OnValidating;
 
-        public virtual event EventHandler<ValueChangedEventArgs<object, object>> OnValidated;
+        /// <summary>
+        /// Fired by <see cref="Validated"/>.
+        /// Equivalent to Control.Validated.
+        /// Fired after a property change has been successfully validated and updated.
+        /// </summary>
+        public virtual event ValueChangedEventHandler OnValidated;
 
         #endregion
 

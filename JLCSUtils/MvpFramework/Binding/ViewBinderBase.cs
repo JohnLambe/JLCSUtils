@@ -203,7 +203,7 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Process a keystroke on the form. (Pass a keyboard event to relevant bound controls.)
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="args"></param>
         public virtual void ProcessKey(KeyboardKeyEventArgs args)
         {
             if (Binders != null)
