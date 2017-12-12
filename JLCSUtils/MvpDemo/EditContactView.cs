@@ -27,7 +27,8 @@ namespace MvpDemo
 
         private void textBox2_Validating(object sender, CancelEventArgs e)
         {
-//            MessageBox.Show("Validating " + (sender as Control).Name);
+            //            MessageBox.Show("Validating " + (sender as Control).Name);
+            //ViewBinder.InvalidateView();
         }
 
         private void textBox2_Validated(object sender, EventArgs e)

@@ -77,6 +77,98 @@ namespace JohnLambe.Util.GraphicUtil
             return sourceImage;
         }
 
+        public static Image Transform([NotNull] Image sourceImage, IImageTransform transform)
+        {
+            sourceImage.ArgNotNull(nameof(sourceImage));
+            Bitmap bm = new Bitmap(sourceImage);
+
+            transform.ArgNotNull(nameof(transform)).Image = bm;
+
+            Graphics g = Graphics.FromImage(sourceImage);
+            try
+            {
+                for (int y = 0; y < bm.Width; y++)
+                    for (int x = 0; x < bm.Width; x++)
+                    {
+                        Color? c = transform.CalculatePixel(x, y);
+                        if (c != null)
+                            bm.SetPixel(x, y, c.Value);
+                    }
+//                g.DrawImage(overlayImage, overlayRectangle.Left, overlayRectangle.Top, overlayRectangle.Width, overlayRectangle.Height);
+            }
+            finally
+            {
+                g.Dispose();
+            }
+
+            return sourceImage;
+        }
+
+    }
+
+    public interface IImageTransform
+    {
+        Bitmap Image { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>The color of the speicified pxiel, or null to leave it unchanged.</returns>
+        Color? CalculatePixel(int x, int y);
+    }
+
+    public abstract class ImageTransformBase : IImageTransform
+    {
+        public Bitmap Image { get; set; }
+
+        public abstract Color? CalculatePixel(int x, int y);
+
+        /// <summary>
+        /// Read a pixel in the source image.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>The pixel Color, or Color.Transparent if out of bounds.</returns>
+        protected Color GetPixel(int x, int y)
+        {
+            if ((x < 0) || (y > 0) || (x >= Image.Width) || (y >= Image.Height))
+                return Color.Transparent;
+            else
+                return Image.GetPixel(x, y);
+        }
+    }
+
+    /// <summary>
+    /// Add a shadow to an image.
+    /// Currently a basic hard shadow.
+    /// </summary>
+    public class ShadowTransform : ImageTransformBase
+    {
+        public ShadowTransform()
+        {
+        }
+        public ShadowTransform(Color shadowColor)
+        {
+            ShadowColor = shadowColor;
+        }
+
+        public override Color? CalculatePixel(int x, int y)
+        {
+            if(GetPixel(x,y) == Color.Transparent)  // cast shadow on transparent pixels only. //TODO: Merge color on translucent pixels
+            {
+                Color sourceColor = Image.GetPixel(x - XOffset, y - YOffset);
+                return Color.FromArgb(sourceColor.A, ShadowColor.R, ShadowColor.G, ShadowColor.B);  // shadow has same transparency as the pixel casting it
+                //TODO: Merge transparency with ShadowColor
+            }
+            return null;
+        }
+
+        public Color ShadowColor { get; } = Color.Black;
+        public int XOffset { get; } = 2;
+        public int YOffset { get; } = 2;
+        //TODO: public float Soften { get; }    // blur shadow
     }
 
 }

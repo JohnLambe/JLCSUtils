@@ -3,6 +3,7 @@ using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -126,7 +127,8 @@ namespace JohnLambe.Util.Validation
         /// Describes the type of validation rule(s).
         /// This does NOT take account of any properties of the instance.
         /// </summary>
-        public virtual string GeneralDescription => null;
+        public virtual string GeneralDescription 
+            => GetType().GetCustomAttribute<DescriptionAttribute>().Description;   // defaults to DescriptionAttribute on the class
 
         #endregion
     }

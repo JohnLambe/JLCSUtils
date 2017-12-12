@@ -25,6 +25,8 @@ namespace MvpFramework.Binding
 
         /// <inheritdoc cref="ViewBinderBase{TControl}.RefreshView(TControl)"/>
         void RefreshView();
+
+        void InvalidateView();
     }
 
 
@@ -57,7 +59,7 @@ namespace MvpFramework.Binding
         public virtual void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory, TControl view)
         {
             View = view;
-            ModelBinder = new ModelBinderWrapper(model);
+            ModelBinder = new ModelBinderWrapper(model, this);
             PresenterBinder = new PresenterBinderWrapper(presenter);
 
             //TODO: add event handlers to ModelBinder for validation notification ?
@@ -253,6 +255,10 @@ namespace MvpFramework.Binding
             {
                 _ValidationStage = ValidationStage.NotValidating;
                 RefreshIfInvalidated();
+            }
+            else
+            {
+                _ValidationStage = stage;
             }
         }
         protected ValidationStage _ValidationStage;

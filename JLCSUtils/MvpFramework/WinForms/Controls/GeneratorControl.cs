@@ -97,7 +97,7 @@ namespace MvpFramework.WinForms.Controls
         /// <param name="model"></param>
         public virtual void SetModel(object model)
         {
-            ModelBinder = new ModelBinderWrapper(model);  //TODO: ViewBinder argument ?
+            ModelBinder = new ModelBinderWrapper(model, ViewBinder);
         }
 
         /// <summary>
@@ -131,6 +131,11 @@ namespace MvpFramework.WinForms.Controls
             + "(null or \"\" for the model itself (root)).")]
         [Category(MvpUiComponentConsts.DesignerCategory)]
         public virtual string ModelProperty { get; set; }
+
+        /// <summary>
+        /// The View Binder of the target view.
+        /// </summary>
+        public virtual IViewBinder ViewBinder { get; set; }
 
         /* TODO:
         /// <summary>

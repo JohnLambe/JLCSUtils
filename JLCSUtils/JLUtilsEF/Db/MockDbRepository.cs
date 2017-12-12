@@ -61,6 +61,11 @@ namespace JohnLambe.Util.Db
             return AddInternal(entity);
         }
 
+        public virtual void Delete(TEntity entity)
+        {
+            Data.Remove(entity);
+        }
+
         protected virtual TEntity AddInternal(TEntity entity)
         {
             Data.Add(GetKeyValues(entity), entity);

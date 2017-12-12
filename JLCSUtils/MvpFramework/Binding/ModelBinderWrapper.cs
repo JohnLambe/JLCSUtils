@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-
 using JohnLambe.Util.Text;
 using JohnLambe.Util.Reflection;
 using System.ComponentModel.DataAnnotations;
@@ -75,14 +73,22 @@ namespace MvpFramework.Binding
             return new ModelPropertyBinder(Model, propertName, this);
         }
 
+        /// <summary>
+        /// Notifies this instance of the state of a validation operation.
+        /// </summary>
+        /// <param name="stage"></param>
         public virtual void NotifyValidationStage(ValidationStage stage)
         {
             ViewBinder?.NotifyValidationStage(stage);
         }
 
+        /// <summary>
+        /// Cause the view to be refreshed, not necessarily immediately.
+        /// If validation is in progress, the view will be refreshed after it.
+        /// </summary>
         public virtual void InvalidateView()
         {
-            ViewBinder.RefreshView();
+            ViewBinder?.InvalidateView();
         }
 
         //TODO: Lazily populate property binders (Map) ?
@@ -211,8 +217,8 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual bool AutoGenerate
             => _displayAttribute?.GetAutoGenerateField() ??
-            _mvpDisplayAttribute?.IsVisible ??
-            true;
+                _mvpDisplayAttribute?.IsVisible ??
+                true;
 
         /// <summary>
         /// Maximum string length in characters.
@@ -241,7 +247,7 @@ namespace MvpFramework.Binding
         }
 
         [Obsolete("Use IsNullable")]
-        public virtual bool Nullable => IsNullable;
+        public bool Nullable => IsNullable;
 
         /// <summary>
         /// true iff the property is allowed to be null (when validating).

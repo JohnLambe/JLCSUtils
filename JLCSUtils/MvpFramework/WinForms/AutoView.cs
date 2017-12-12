@@ -18,6 +18,8 @@ namespace MvpFramework.WinForms
         public AutoView(IMessageDialogService dialogService = null) : base(dialogService)
         {
             InitializeComponent();
+
+            uiGeneratorControl.ViewBinder = ViewBinder;
         }
 
         /*

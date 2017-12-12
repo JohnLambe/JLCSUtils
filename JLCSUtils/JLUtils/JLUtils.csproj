@@ -110,11 +110,16 @@
     <Compile Include="TimeUtilities\!NamespaceDoc.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Types\NullableBooleanExtension.cs" />
+    <Compile Include="Types\PureAttribute.cs" />
     <Compile Include="Validation\!NamespaceDoc.cs" />
     <Compile Include="Validation\Attributes.cs" />
     <Compile Include="Validation\CollectionValidationAttribute.cs" />
+    <Compile Include="Validation\NumberValidationAttributes.cs" />
     <Compile Include="Validation\ReferenceAttribute.cs" />
+    <Compile Include="Validation\StringValidationAttribute.cs" />
+    <Compile Include="Validation\StringValidationAttributes.cs" />
     <Compile Include="Validation\TimeDependantAttribute.cs" />
+    <Compile Include="Validation\TimeValidationAttributes.cs" />
     <Compile Include="Validation\TypeValidationAttribute.cs" />
     <Compile Include="Validation\ValidationAttributeBase.cs" />
     <Compile Include="Validation\ValidationAttributes.cs" />

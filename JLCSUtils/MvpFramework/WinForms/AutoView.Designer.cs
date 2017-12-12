@@ -28,24 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.generatorControl = new MvpFramework.WinForms.Controls.GeneratorControl();
+            this.uiGeneratorControl = new MvpFramework.WinForms.Controls.GeneratorControl();
             this.SuspendLayout();
             // 
             // generatorControl
             // 
-            this.generatorControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.generatorControl.Location = new System.Drawing.Point(0, 0);
-            this.generatorControl.ModelBinder = null;
-            this.generatorControl.ModelProperty = null;
-            this.generatorControl.Name = "generatorControl";
-            this.generatorControl.Size = new System.Drawing.Size(495, 251);
-            this.generatorControl.TabIndex = 0;
+            this.uiGeneratorControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiGeneratorControl.Location = new System.Drawing.Point(0, 0);
+            this.uiGeneratorControl.ModelBinder = null;
+            this.uiGeneratorControl.ModelProperty = null;
+            this.uiGeneratorControl.Name = "generatorControl";
+            this.uiGeneratorControl.Size = new System.Drawing.Size(495, 251);
+            this.uiGeneratorControl.TabIndex = 0;
             // 
             // AutoView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.generatorControl);
+            this.Controls.Add(this.uiGeneratorControl);
             this.Name = "AutoView";
             this.Size = new System.Drawing.Size(495, 251);
             this.ResumeLayout(false);
@@ -54,6 +54,6 @@
 
         #endregion
 
-        private Controls.GeneratorControl generatorControl;
+        private Controls.GeneratorControl uiGeneratorControl;
     }
 }
