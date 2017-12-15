@@ -69,10 +69,11 @@ namespace JohnLambe.Util.Db
         TEntity Attach(TEntity entity, bool modified = false);
 
         /// <summary>
-        /// Delete an entity from the repository.
+        /// Delete an entity from the repository
+        /// (or mark it deleted (if <see cref="IMarkDeleteEntity"/>)).
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <param name="entity">The entity to be deleted.</param>
+        /// <returns>the entity</returns>
         TEntity Remove(TEntity entity);
 
         /// <summary>
@@ -86,13 +87,17 @@ namespace JohnLambe.Util.Db
         /// </summary>
         /// <returns></returns>
         TEntity Create();
-        TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, TEntity;
 
         /// <summary>
-        /// Delete an item from the repository, or mark it deleted (if <see cref="IMarkDeleteEntity"/>).
+        /// Create an instance of a specified type that can be stored in the repository (the repository's type or a subclass of it).
         /// </summary>
-        /// <param name="entity">The entity to be deleted.</param>
-        void Delete(TEntity entity);
+        /// <typeparam name="TDerivedEntity">The type of entity to be created.</typeparam>
+        /// <returns>the new entity.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// If the requested type cannot be created or stored in this repository.
+        /// A repository may not be able to store all subclasses of its base type.
+        /// </exception>
+        TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, TEntity;
 
         /*  These could be added, preferably replacing the EntityState type with one not specific to Entity Framework.
          *  Currently, separate methods are used for each state transition instead.

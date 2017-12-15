@@ -89,8 +89,10 @@
     <Compile Include="Misc\ImmutableAttribute.cs" />
     <Compile Include="Misc\LazyPopulatedProxy.cs" />
     <Compile Include="Misc\NotifyOnChangeProxy.cs" />
-    <Compile Include="Misc\PureFunctionAttribute.cs" />
+    <Compile Include="Misc\Observable.cs" />
+    <Compile Include="Misc\PureAttribute.cs" />
     <Compile Include="Misc\Range.cs" />
+    <Compile Include="Misc\ValueChangedEventArgs.cs" />
     <Compile Include="Reflection\!NamespaceDoc.cs" />
     <Compile Include="Reflection\AttributeAndMember.cs" />
     <Compile Include="Reflection\BoundProperty.cs" />
@@ -110,7 +112,6 @@
     <Compile Include="TimeUtilities\!NamespaceDoc.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Types\NullableBooleanExtension.cs" />
-    <Compile Include="Types\PureAttribute.cs" />
     <Compile Include="Validation\!NamespaceDoc.cs" />
     <Compile Include="Validation\Attributes.cs" />
     <Compile Include="Validation\CollectionValidationAttribute.cs" />

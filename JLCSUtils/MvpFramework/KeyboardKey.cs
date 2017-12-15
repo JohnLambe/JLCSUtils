@@ -1064,7 +1064,7 @@ namespace MvpFramework
         /// <remarks>
         /// Using this instead of bitwise OR provides some validation (that would detect a key code (e.g. ControlKey) being used in place of a modifier.
         /// </remarks>
-        [PureFunction]
+        [Pure]
         public static KeyboardKey AddModifier(this KeyboardKey key, KeyboardKey modifier)
         {
             if ((key & KeyboardKey.KeyCode) == 0)

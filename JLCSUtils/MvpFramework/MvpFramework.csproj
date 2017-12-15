@@ -60,7 +60,6 @@
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
     <Compile Include="Binding\MvpContext.cs" />
     <Compile Include="Binding\OptionUpdate.cs" />
-    <Compile Include="Binding\ValueChangedEventArgs.cs" />
     <Compile Include="Binding\ViewBinderBase.cs">
       <SubType>Component</SubType>
     </Compile>

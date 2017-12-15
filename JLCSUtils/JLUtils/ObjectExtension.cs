@@ -207,4 +207,23 @@ namespace JohnLambe.Util
 
     }
 
+
+    public static class ObjectUtil
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>true if <paramref name="a"/> is equals to <paramref name="b"/>.</returns>
+        public static bool CompareEqual(object a, object b)
+        {
+            if (a == null && b == null)         // if both are null
+                return true;                    // they're equal
+            else if (a != null || b != null)    // if one is not null
+                return false;                   // not equal, because one is null, but not both
+            else
+                return a.Equals(b);             // compare. a.Equals(b) should be the same as b.Equals(a).
+        }
+    }
+
 }

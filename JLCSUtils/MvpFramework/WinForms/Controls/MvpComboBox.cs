@@ -1,4 +1,5 @@
-﻿using MvpFramework.Binding;
+﻿using JohnLambe.Util.Misc;
+using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

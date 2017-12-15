@@ -12,6 +12,7 @@ using System.ComponentModel;
 using MvpFramework.Dialog;
 using JohnLambe.Util.Types;
 using System.Runtime.CompilerServices;
+using JohnLambe.Util.Misc;
 
 namespace MvpFramework.Binding
 {

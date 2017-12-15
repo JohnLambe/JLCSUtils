@@ -111,6 +111,7 @@
     <Compile Include="BitUtilTest.cs" />
     <Compile Include="Encoding\HexConverterTest.cs" />
     <Compile Include="Misc\GeneralUtilTest.cs" />
+    <Compile Include="Misc\ObservableTest.cs" />
     <Compile Include="ObjectConfigProviderTest.cs" />
     <Compile Include="ObjectExtensionTest.cs" />
     <Compile Include="OrdinalUtilsTest.cs" />

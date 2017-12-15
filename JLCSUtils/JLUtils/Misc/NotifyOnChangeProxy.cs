@@ -9,6 +9,10 @@ using JohnLambe.Util.Reflection;
 
 namespace JohnLambe.Util.Misc
 {
+    /// <summary>
+    /// Proxy that raises an event when the wrapped object changes.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class NotifyOnChangeProxy<T> : DynamicProxyBase<T>
         where T : class
     {
