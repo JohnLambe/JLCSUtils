@@ -358,7 +358,10 @@ namespace MvpFramework.Binding
                     modified = true;
                 }
                 if (eventArgs.InvalidateView)
+                {
                     ModelBinder.InvalidateView();
+                    eventArgs.InvalidateView = false;
+                }
 
                 return results.Modified || modified;
             }
@@ -386,6 +389,11 @@ namespace MvpFramework.Binding
 
             var eventArgs = new ValueChangedEventArgs<object, object>(ModelBinder.AsObject, Name, Value, newValue, ValidationStage.Validating, evt);
             OnValidated?.Invoke(this, eventArgs);
+            if (eventArgs.InvalidateView)
+            {
+                ModelBinder.InvalidateView();
+                eventArgs.InvalidateView = false;
+            }
 
             ModelBinder.NotifyValidationStage(ValidationStage.AfterValidated);
         }

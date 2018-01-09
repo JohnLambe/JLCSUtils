@@ -43,6 +43,16 @@ namespace JohnLambe.Util.Misc
         /// Fired when <see cref="VarBase{T}.Value"/> changes (after the change).
         /// </summary>
         public virtual event EventHandler<ValueChangedEventArgs<T>> ValueChanged;
+
+        /// <summary>
+        /// Cast a value to this.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static explicit operator Observable<T>(T value)
+        {
+            return new CancellableObservable<T>(value);
+        }
     }
 
 
@@ -78,6 +88,16 @@ namespace JohnLambe.Util.Misc
         /// Handlers can cancel the change and/or modify the new value.
         /// </summary>
         public virtual event EventHandler<ValueChangedEventArgs<T>> ValueChanging;
+
+        /// <summary>
+        /// Cast a value to this.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static explicit operator CancellableObservable<T>(T value)
+        {
+            return new CancellableObservable<T>(value);
+        }
     }
 
 }

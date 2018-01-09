@@ -85,6 +85,8 @@ namespace JohnLambe.Util.Misc
 
         /// <summary>
         /// Set to true to cause the whole View to be refreshed from the model, after the validation events.
+        /// This is set back to false when the view is refreshed.
+        /// The refresh happens after the Validating and Validated events (if this is true).
         /// </summary>
         public virtual bool InvalidateView { get; set; } = false;
 
