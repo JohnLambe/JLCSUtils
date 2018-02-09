@@ -142,7 +142,7 @@ namespace MvpFramework
                             {
                                 if (view is INestableView)    // if it has the ability to have its parent assigned
                                 {
-                                    viewParent.SetNestedView((INestableView)view);
+                                    viewParent.NestedView = (INestableView)view;
                                     //((INestableView)view).ViewParent = viewParent;
                                 }
                                 else   // Exception if viewParent != null && !(view is INestableView)

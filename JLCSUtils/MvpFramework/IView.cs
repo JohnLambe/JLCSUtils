@@ -53,10 +53,9 @@ namespace MvpFramework
     public interface INestedViewPlaceholder : INestedView
     {
         /// <summary>
-        /// Set the nested view to be contained in this control.
+        /// The nested view contained in this control.
         /// </summary>
-        /// <param name="nestedView">The nested view.</param>
-        void SetNestedView(INestableView nestedView);
+        INestableView NestedView { set; }
     }
 
     /// <summary>

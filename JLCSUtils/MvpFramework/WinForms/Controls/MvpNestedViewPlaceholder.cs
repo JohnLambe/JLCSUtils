@@ -1,4 +1,5 @@
 ﻿using JohnLambe.Util.Misc;
+using JohnLambe.Util.Types;
 using MvpFramework.Binding;
 using System;
 using System.Collections.Generic;
@@ -37,26 +38,40 @@ namespace MvpFramework.WinForms.Controls
         [Category(MvpUiComponentConsts.DesignerCategory)]
         public virtual string ViewId { get; set; }
 
-        public virtual void SetNestedView(INestableView nestedView)
+        /// <summary>
+        /// The view nested in this one.
+        /// </summary>
+        [Nullable("If there is no nested view.")]
+        public virtual INestableView NestedView
         {
-            //if((NestedView as Control)?.Parent == this)
-            //    ((Control)NestedView).Parent = null;
-            if (NestedView != null)
+            get { return _nestedView; }
+            set
             {
-                NestedView.ViewParent = null;
-                NestedView = null;
-            }
+                //if((NestedView as Control)?.Parent == this)
+                //    ((Control)NestedView).Parent = null;
+                if (NestedView != null)
+                {   // remove any existing nested view:
+                    NestedView.ViewParent = null;
+                    NestedView = null;
+                }
 
-            nestedView.ViewParent = this;
-            if (nestedView is Control)
-            {
-                //((Control)nestedView).Parent = this;
-                ((Control)nestedView).Dock = NestedDock;
+                value.ViewParent = this;
+                if (value is Control)
+                {
+                    //((Control)nestedView).Parent = this;
+                    ((Control)value).Dock = NestedDock;
+                }
+                _nestedView = value;
             }
-            NestedView = nestedView;
         }
+        protected INestableView _nestedView;
 
-        protected virtual INestableView NestedView { get; set; }
+        /// <summary>
+        /// The nested view control.
+        /// null if the nested view is not a Control.
+        /// </summary>
+        [Nullable]
+        public virtual Control ViewControl => NestedView as Control;
 
         #endregion
 
@@ -96,6 +111,8 @@ namespace MvpFramework.WinForms.Controls
         [Description("How the nested view is docked within this control.")]
         [DefaultValue(DockStyle.Fill)]
         public virtual DockStyle NestedDock { get; set; } = DockStyle.Fill;
+
+        // AutoSize
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
         [Description("true to make the contained view refresh when the containing one is refreshed.")]

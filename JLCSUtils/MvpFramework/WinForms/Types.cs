@@ -13,7 +13,7 @@ namespace MvpFramework.WinForms
     /// <summary>
     /// Extension methods of or relating to <see cref="KeyboardKey"/>.
     /// </summary>
-    public static class KeyboardKeyExtension
+    public static class KeyboardKeyExtension  //TODO: Rename to avoid conflict with MvpFramework.KeyboardKeyExtension
     {
         /// <summary>
         /// Converts this <see cref="KeyboardKey"/> to a <see cref="System.Windows.Forms.Keys"/>.

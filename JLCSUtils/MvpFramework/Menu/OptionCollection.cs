@@ -21,12 +21,35 @@ namespace MvpFramework.Menu
         void SetDefaultByReturnValue(object returnValue);
 
         /// <summary>
+        /// Invoke option(s) by their keyboard shortcut.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="keyType">Which keys to match.</param>
+        /// <returns>true iff any option was invoked.</returns>
+        bool ProcessKey(KeyboardKey key, KeyType keyType = KeyType.All);
+
+        /// <summary>
+        /// Invoke the option(s) with the given accelerator character.
+        /// </summary>
+        /// <param name="accelChar"></param>
+        /// <returns>true iff any option was invoked.</returns>
+        bool ProcessAcceleratorChar(char accelChar);
+
+        /// <summary>
         /// The default option.
         /// null if there is no default.
         /// </summary>
         MenuItemModel Default { get; set; }
 
         event MenuItemModel.ChangedDelegate Changed;
+    }
+
+    [Flags]
+    public enum KeyType
+    {
+        HotKey = 1,
+        ContextKey = 2,
+        All = HotKey | ContextKey
     }
 
 
@@ -77,5 +100,29 @@ namespace MvpFramework.Menu
 
         //        public virtual IEnumerable<MenuItemModel> Options
         //            => base.Children; //.OrderBy(o => o.Order);
+
+        public virtual bool ProcessKey(KeyboardKey key, KeyType keyType = KeyType.All)
+        {
+            bool handled = false;
+            foreach (var option in Children.Where(c => (keyType.HasFlag(KeyType.HotKey) && c.HotKey == key)
+                || (keyType.HasFlag(KeyType.ContextKey) && c.ContextKey == key)) )
+            {
+                option.Invoke();
+                handled = true;
+            }
+            return handled;
+        }
+
+        public virtual bool ProcessAcceleratorChar(char accelChar)
+        {
+            bool handled = false;
+            foreach (var option in Children.Where(c => c.AcceleratorChar == accelChar))
+            {
+                option.Invoke();
+                handled = true;
+            }
+            return handled;
+        }
     }
+
 }

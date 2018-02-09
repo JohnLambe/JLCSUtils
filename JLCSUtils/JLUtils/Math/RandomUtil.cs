@@ -46,6 +46,7 @@ namespace JohnLambe.Util.Math
         public static long RandomPositiveLong()
         {
             return _random.Next() | (_random.Next() << 31) | (_random.Next(2) << 62);
+            // random.Next() returns 31 random bits (always positive), so we call a third time for another bit. (63 bits in total.)
         }
 
         /// <summary>
