@@ -32,7 +32,7 @@ namespace Test.DiExtensionTest
         }
 
         /// <summary>
-        /// Register an additional, independent instance in the base context, after creating the child.
+        /// Register an additional, independent instance in the base context, after creating the child context.
         /// </summary>
         [TestMethod]
         public void AddToBaseAndResolve()

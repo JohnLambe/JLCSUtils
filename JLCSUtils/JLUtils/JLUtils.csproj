@@ -93,6 +93,7 @@
     <Compile Include="Misc\PureAttribute.cs" />
     <Compile Include="Misc\Range.cs" />
     <Compile Include="Misc\ValueChangedEventArgs.cs" />
+    <Compile Include="Misc\VersionUtil.cs" />
     <Compile Include="Reflection\!NamespaceDoc.cs" />
     <Compile Include="Reflection\AttributeAndMember.cs" />
     <Compile Include="Reflection\BoundProperty.cs" />

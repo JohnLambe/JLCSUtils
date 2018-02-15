@@ -99,4 +99,63 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation
             );
         }
     }
+
+
+    [TestClass]
+    public class RegexValidationAttributeTest
+    {
+        [TestMethod]
+        public void IsValid()
+        {
+            var attrib = new RegexValidationAttribute("^([0-9]{3})$")
+            {
+                AllowBlank = false
+            };
+
+            Multiple(
+                () => Assert.IsTrue(attrib.IsValid("123"), "Valid"),
+                () => Assert.IsFalse(attrib.IsValid("1234")),
+                () => Assert.IsFalse(attrib.IsValid("")),
+                () => Assert.IsFalse(attrib.IsValid(null))
+            );
+        }
+
+        [TestMethod]
+        public void IsValid_AllowBlank()
+        {
+            var attrib = new RegexValidationAttribute("^([0-9]{3})$")
+            {
+                AllowBlank = true
+            };
+
+            Multiple(
+                () => Assert.IsTrue(attrib.IsValid("000"), "Valid"),
+                () => Assert.IsFalse(attrib.IsValid("A")),
+                () => Assert.IsFalse(attrib.IsValid("9999")),
+                () => Assert.IsFalse(attrib.IsValid("5")),
+                () => Assert.IsTrue(attrib.IsValid("")),
+                () => Assert.IsTrue(attrib.IsValid(null))
+            );
+        }
+
+        [TestMethod]
+        public void TestValid_Truncate()
+        {
+            var attrib = new RegexValidationAttribute("^([0-9]{3})$")
+            {
+                AllowBlank = false,
+                Truncate = true,
+                MaximumLength = 3
+            };
+            var context = new ValidationContext(this);
+            ValidationContextExtension.SetSupportedFeatures(context, ValidationFeatures.All);
+
+            Multiple(
+                () => Assert.IsTrue(attrib.TestValid("123",context), "Valid"),
+                () => Assert.IsTrue(attrib.TestValid("1234",context)),
+                () => Assert.IsFalse(attrib.TestValid("1",context)),
+                () => Assert.IsFalse(attrib.TestValid("",context))
+            );
+        }
+    }
 }

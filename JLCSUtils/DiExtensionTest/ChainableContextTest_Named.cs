@@ -74,14 +74,18 @@ namespace Test.DiExtensionTest
         [TestMethod]
         public void OverrideAndResolveNamed()
         {
+            // Test configuration:
+            var resolved0 = _context.GetValue<TestClass>("Named1", typeof(TestClass));
+            Assert.AreEqual("Named1", resolved0.X);   // from base context
+
             // Arrange:
-            _context.RegisterInstance("Named1", new TestClass2() { X = "B" });
+            _context.RegisterInstance("Named1", new TestClass2() { X = "B" });   // overriding registration
 
             // Act:
             var resolved = _context.GetValue<TestClass>("Named1", typeof(TestClass));
 
             // Assert:
-            Assert.AreEqual("B", resolved.X);
+            Assert.AreEqual("B", resolved.X);              // returns the overriding one
         }
     }
 }

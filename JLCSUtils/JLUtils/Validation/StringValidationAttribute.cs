@@ -42,6 +42,7 @@ namespace JohnLambe.Util.Validation
                 + (MaximumLength >= 0 ? "Maximum length: " + MaximumLength + "; " : "")
             ;
 
+
         /// <summary>
         /// All characters allowed in the string. null for all.
         /// </summary>
@@ -114,6 +115,7 @@ namespace JohnLambe.Util.Validation
             get { return _allowedCharacters.ToArray(); }
             set { _allowedCharacters = new StringCharacterSet(StrUtil.Concat(value)); }
         }
+
 
         /// <summary>
         /// Specifies how the string should be capitalised.
@@ -201,6 +203,7 @@ namespace JohnLambe.Util.Validation
         /// Value that the string must end with (case-sensitive).
         /// </summary>
         public virtual string Suffix { get; set; }
+
         //TODO: Case-sensitivity.
 
         /// <summary>
@@ -318,6 +321,7 @@ namespace JohnLambe.Util.Validation
     /// <summary>
     /// Option for padding strings.
     /// </summary>
+    //| Could use StringTrimmingOption (generalised).
     public enum PaddingType
     {
         /// <summary> No padding. </summary>
@@ -340,8 +344,10 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// The pattern that the must match.
+        /// The pattern that the value must match.
         /// If this is null, it is treated as always valid.
+        /// It is treated as valid if this pattern has any match in the value.
+        /// To provide a pattern to match the whole value, prefix it with "^" and end it with "$".
         /// </summary>
         public virtual string Pattern { get; set; }
 
@@ -359,7 +365,7 @@ namespace JohnLambe.Util.Validation
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
-            if (!AllowBlank || !value.Equals(""))
+            if (!AllowBlank || (!value?.Equals("") ?? false))
                 if (Pattern != null && !Regex.IsMatch(value?.ToString() ?? "", Pattern, Options))
                     results.Fail();
         }

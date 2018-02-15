@@ -95,6 +95,16 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="validationContext"></param>
+        /// <returns>true iff valid.</returns>
+        public virtual bool TestValid(object value, [Nullable] ValidationContext validationContext)
+        {
+            return IsValid(value, validationContext).IsValid();
+        }
+
+        /// <summary>
         /// A human-readable text description of this validation rule.
         /// <para>If no description is explicitly defined on an instance (or this is set to null), this returns <see cref="DefaultDescription"/>.</para>
         /// </summary>

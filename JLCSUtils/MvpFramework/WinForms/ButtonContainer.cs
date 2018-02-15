@@ -249,7 +249,7 @@ namespace MvpFramework.WinForms
         }
 
         /// <summary>
-        /// Refrshes the buttons from the model if they are flagged as updated (by <see cref="ModelChanged"/>).
+        /// Refreshes the buttons from the model if they are flagged as updated (by <see cref="ModelChanged"/>).
         /// </summary>
         protected virtual void RefreshIfUpdated()
         {
@@ -586,14 +586,6 @@ namespace MvpFramework.WinForms
         public virtual void NotifyKeyDown(KeyboardKeyEventArgs args)
         {
             args.Cancel = Buttons.ProcessKey(args.Key);
-            /*
-            foreach(var button in Buttons.Children.Where(c => c.HotKey == args.Key))  //TODO: Move this to a method of IOptionCollection
-            {
-                button.Invoke();
-                args.Cancel = true;
-                return;   //TODO: decide whether to fire all handlers for the key, or just the first one.
-            }
-            */
         }
 
         /// <summary>
