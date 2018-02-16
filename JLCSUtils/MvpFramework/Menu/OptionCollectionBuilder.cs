@@ -40,9 +40,11 @@ namespace MvpFramework.Menu
                         ContextKey = handlerInfo.Attribute.ContextKey,
                         IconId = handlerInfo.Attribute.IconId,
                         IsDefault = handlerInfo.Attribute.IsDefault,
+                        Visible = handlerInfo.Attribute.IsVisible,
+                        Enabled = handlerInfo.Attribute.IsEnabled,
                         CausesValidation = handlerInfo.Attribute.CausesValidation,
                         Order = handlerInfo.Attribute.Order,
-                        Filter = filter    // handlerInfo.Attribute.Filter
+                        Filter = filter,    // handlerInfo.Attribute.Filter
                     };
                     option.Invoked += handlerInfo.HandlerWithArgsDelegate; // CreateInvokeDelegate(handlerInfo, target);
                         //(item, args) => handlerInfo.Method.Invoke(target, new object[] { });

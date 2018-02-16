@@ -142,6 +142,7 @@
     <Compile Include="Reflection\TypeUtilTest.cs" />
     <Compile Include="Security\HashedPasswordTest.cs" />
     <Compile Include="Security\RemoteHashedPasswordTest.cs" />
+    <Compile Include="Services\RandomServiceTest.cs" />
     <Compile Include="StrUtilTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TestUtilTest.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="TimeUtilities\TimeTest.cs" />
     <Compile Include="TimeUtilities\TimeUtilTest.cs" />
     <Compile Include="TypeConversion\GeneralTypeConverterTest.cs" />
+    <Compile Include="Types\GuidUtilTest.cs" />
     <Compile Include="Types\IDTest.cs" />
     <Compile Include="Types\NotNullAttributeTest.cs" />
     <Compile Include="Types\PersonNameTest.cs" />

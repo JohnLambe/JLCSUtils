@@ -92,6 +92,14 @@ namespace JohnLambe.Util.Services
         /// </summary>
         /// <returns>The new GUID value.</returns>
         Guid NewGuid();
+
+        /// <summary>
+        /// Generates a new random GUID.
+        /// <para>The returned GUID must be a standard variant and version (including future ones), and contain random data and no information about
+        /// the system or context in which it is generated (except for its type / version identification).</para>
+        /// </summary>
+        /// <returns>The new GUID value.</returns>
+        Guid RandomGuid();
     }
 
 
@@ -99,9 +107,17 @@ namespace JohnLambe.Util.Services
     /// Standard implementation of <see cref="IRandomService"/>.
     /// <para>For unit testing, this can be used with a constant seed.</para>
     /// </summary>
-    public class RandomService : RandomUtil, IRandomService
+    public class RandomService : RandomExt, IRandomService
     {
+        public RandomService()
+        {
+        }
+
+        public RandomService(int seed) : base(seed)
+        {
+        }
+
         /// <inheritdoc cref="IRandomService.NewGuid()"/>
-        public virtual Guid NewGuid() => Guid.NewGuid();
+        public virtual Guid NewGuid() => RandomGuid();
     }
 }

@@ -178,6 +178,7 @@ namespace MvpFramework.Menu
             {
                 ClearDefault();
                 value.IsDefault = true;
+                Changed?.Invoke(this, new ChangedEventArgs(MenuItemChangeType.Other));
             }
         }
 
@@ -294,7 +295,16 @@ namespace MvpFramework.Menu
         /// The state of a check box or toggle state of this menu item.
         /// null if this item does not support it.
         /// </summary>
-        public virtual bool? Checked { get; set; }  = null;
+        public virtual bool? Checked
+        {
+            get { return _checked; }
+            set
+            {
+                _checked = value;
+                Changed?.Invoke(this, new ChangedEventArgs(MenuItemChangeType.Other));
+            }
+        }
+        protected bool? _checked = null;
 
         public virtual void Refresh()
         {

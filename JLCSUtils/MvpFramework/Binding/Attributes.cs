@@ -324,7 +324,15 @@ namespace MvpFramework.Binding
     /// </summary>
     public abstract class MvpDisplayAttributeBase : MvpEnabledAttributeBase
     {
+        /// <summary>
+        /// Whether this item is visible in the UI.
+        /// </summary>
         public virtual bool IsVisible { get; set; } = true;
+
+        /// <summary>
+        /// Whether this item is enabled in the UI.
+        /// </summary>
+        public virtual bool IsEnabled { get; set; } = true;
 
         /// <summary>
         /// Character to choose this item in the UI when in a list, or a WinForms accelerator character, etc.

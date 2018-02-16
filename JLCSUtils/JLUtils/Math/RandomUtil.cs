@@ -13,7 +13,7 @@ namespace JohnLambe.Util.Math
     /// <summary>
     /// Random value utilities.
     /// </summary>
-    public static class RandomUtils
+    public static class RandomUtil
     {
         private static readonly Random _random = new System.Random(Environment.TickCount ^ System.Environment.MachineName.GetHashCode() ^ System.Threading.Thread.CurrentThread.ManagedThreadId);
             // seeded with the time, machine name and thread ID.
@@ -73,9 +73,20 @@ namespace JohnLambe.Util.Math
 
     /// <summary>
     /// Extends <see cref="Random"/> with methods for more data types.
+    /// <para>
+    /// This is NOT a secure random number generator.
+    /// </para>
     /// </summary>
-    public class RandomUtil : Random
+    public class RandomExt : Random
     {
+        public RandomExt()
+        {
+        }
+
+        public RandomExt(int seed) : base(seed)
+        {
+        }
+
         /*        public void Reseed(int seed)
                 {
                     Seed(Next() ^ seed);
@@ -130,6 +141,24 @@ namespace JohnLambe.Util.Math
         /// Returns a random GUID.
         /// </summary>
         /// <returns></returns>
-        public virtual Guid RandomGuid() => Guid.NewGuid();  //TODO: Make Random
+        public virtual Guid RandomGuid() => Guid.NewGuid();
+
+        /// <summary>
+        /// Returns a <see cref="Guid"/> in which all bits are random (NOT a standard random GUID).
+        /// The returned value is not valid for interpreting parts of the GUID value.
+        /// </summary>
+        /// <returns></returns>
+        public virtual Guid Random128Bits() => new Guid(RandomBytes(16));
+
+        /// <summary>
+        /// Returns an array of random bytes of the specified size.
+        /// </summary>
+        /// <param name="size">Size of the array.</param>
+        /// <returns>The new array.</returns>
+        public virtual byte[] RandomBytes(int size)
+        {
+            byte[] randomValue = new byte[size];
+            return randomValue;
+        }
     }
 }

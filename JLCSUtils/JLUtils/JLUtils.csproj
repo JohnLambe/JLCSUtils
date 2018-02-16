@@ -83,6 +83,7 @@
     <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />
+    <Compile Include="Types\GuidUtil.cs" />
     <Compile Include="Misc\IconRepository.cs" />
     <Compile Include="Misc\IIconRepository.cs" />
     <Compile Include="Logging\LoggingAttribute.cs" />
