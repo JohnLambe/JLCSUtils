@@ -27,9 +27,12 @@ namespace DiExtension.SimpleInject
         protected virtual void Container_ResolveUnregisteredType(object sender, SimpleInjector.UnregisteredTypeEventArgs e)
         {
             //            _parentContext.GetInstance<object>(e.UnregisteredServiceType);
-            var instanceProducer = _parentContext.Container.GetRegistration(e.UnregisteredServiceType);
-            e.Register(instanceProducer.Registration);
+            var instanceProducer = _parentContext.Container.GetRegistration(e.UnregisteredServiceType);  // try to get registration from parent
+            if(instanceProducer != null)                         // if successful
+                e.Register(instanceProducer.Registration);       // register with this context
         }
+
+        #region Child Context
 
         /// <summary>
         /// Create a child context of this one.
@@ -37,8 +40,40 @@ namespace DiExtension.SimpleInject
         /// <returns></returns>
         public virtual ChainableContext CreateChildContext()
         {
-            return new ChainableContext(this);
+            var newContext = new ChainableContext(this);
+            SetupChildContext(newContext);
+            return newContext;
         }
+
+        /// <summary>
+        /// Called on creating a child context, to register items with it.
+        /// </summary>
+        /// <param name="context"></param>
+        protected virtual void SetupChildContext(ChainableContext context)
+        {
+            OnSetupChildContext?.Invoke(this, new SetupContextEventArgs(context));
+        }
+
+        /// <summary>
+        /// Arguments to <see cref="OnSetupChildContext"/>
+        /// </summary>
+        public class SetupContextEventArgs : EventArgs
+        {
+            public SetupContextEventArgs(SiExtendedDiContext context)
+            {
+                this.Context = context;
+            }
+
+            public SiExtendedDiContext Context { get; }
+        }
+
+        /// <summary>
+        /// Fired when a child context of this context is created.
+        /// The context passed in the event arguments is the new (child) context.
+        /// </summary>
+        public event EventHandler<SetupContextEventArgs> OnSetupChildContext;
+
+        #endregion
 
         public override bool GetValue<T>(string key, Type type, out T value)
         {

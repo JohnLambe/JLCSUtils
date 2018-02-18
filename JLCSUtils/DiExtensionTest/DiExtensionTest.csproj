@@ -65,6 +65,10 @@
       <Project>{a6cc2dd9-bb55-4697-a6ff-8f43657a23df}</Project>
       <Name>DiExtension</Name>
     </ProjectReference>
+    <ProjectReference Include="..\JLUtilsTest\JLUtilsTest.csproj">
+      <Project>{4657D479-5E37-4ACD-BFDB-3D7B099EF67B}</Project>
+      <Name>JLUtilsTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JLUtils\JLUtils.csproj">
       <Project>{2c2e5049-976d-408f-a67d-1463271f3e98}</Project>
       <Name>JLUtils</Name>

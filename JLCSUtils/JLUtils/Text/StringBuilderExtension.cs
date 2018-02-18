@@ -54,5 +54,18 @@ namespace JohnLambe.Util.Text
             return sb;
         }
 
+        /// <summary>
+        /// Delete a specified number of characters from the end of the string.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="count">The number of charactes to delete. If 0 or negative, this does nothing. If longer than the string, the whole string is cleared.</param>
+        /// <returns>This <see cref="StringBuilder"/>.</returns>
+        public static StringBuilder RemoveLast(this StringBuilder sb, int count = 1)
+        {
+            if (count > sb.Length)
+                count = sb.Length;
+            return sb.Remove(sb.Length - count, count);
+        }
+
     }
 }

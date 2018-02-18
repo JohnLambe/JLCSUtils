@@ -8,6 +8,9 @@ namespace JohnLambe.Util.Misc
 {
     public static class FlowControlUtil
     {
+
+        #region TypeSwitch
+
         public static TypeSwitchContext<TSelector, TReturn> TypeSwitch<TSelector, TReturn>(TSelector selector)
         {
             return new TypeSwitchContext<TSelector, TReturn>(selector);
@@ -84,7 +87,7 @@ namespace JohnLambe.Util.Misc
             /// (This delegate is executed only if the type matches.)</param>
             /// <param name="del"></param>
             /// <returns></returns>
-            public virtual TypeSwitchContext<TSelector, TReturn> Case<TCaseType>(Func<TCaseType,bool> condition, Func<TCaseType, TReturn> del)
+            public virtual TypeSwitchContext<TSelector, TReturn> Case<TCaseType>(Func<TCaseType, bool> condition, Func<TCaseType, TReturn> del)
                 where TCaseType : TSelector
             {
                 if (!Handled)
@@ -189,5 +192,48 @@ namespace JohnLambe.Util.Misc
             }
         }
 
+        #endregion
+
+        #region ForEach
+
+        /// <summary>
+        /// Perform an action on each item in an enumerable, where the delegate also takes the index of the item as a parameter.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="values"></param>
+        /// <param name="action">
+        /// The action to be performed on each item.
+        /// The parameters are the index of the current item, and the item itself.
+        /// The return value is true to continue with the iteration; false to exit.
+        /// </param>
+        /// <param name="startIndex">The value of the index of the first item.</param>
+        /// <param name="step">The amount that the index increments by for each item.</param>
+        /// <returns>true if all elements were processed. false if it ended early due to the delegate returning false.
+        /// SUBJECT TO CHANGE.</returns>
+        //| Return what the new value of loop index would be in a 'for' loop ?
+        public static bool ForEach<T>(IEnumerable<T> values, Func<int, T, bool> action, int startIndex = 0, int step = 1)
+        {
+            int index = startIndex;
+            foreach (var value in values)
+            {
+                if (!action(index, value))
+                    return false;
+                index += step;
+            }
+            return true;
+        }
+
+        public static bool ForEach<T>(IEnumerable<T> values, VoidDelegate<int, T> action, int startIndex = 0, int step = 1)
+        {
+            int index = startIndex;
+            foreach (var value in values)
+            {
+                action(index, value);
+                index += step;
+            }
+            return true;
+        }
+
+        #endregion
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using JohnLambe.Util.Collections;
 
-namespace JohnLambe.Util
+namespace JohnLambe.Util.Misc
 {
     /// <summary>
     /// Represents a range of values - a minimum and maximum value.
@@ -110,6 +110,17 @@ namespace JohnLambe.Util
             }
         }
 
+        /// <summary>
+        /// If <paramref name="value"/> is outside this range, the nearest value in the range is returned,
+        /// otherwise <paramref name="value"/> is returned.
+        /// If <paramref name="value"/> is null (if <typeparamref name="T"/> is a nullable type), null is returned.
+        /// <para>SUPPORTS INCLUSIVE RANGES ONLY.</para>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public virtual T Constrain(T value)
+            => RangeUtil.ConstrainToRange<T>(value, Low, High);
+
         public override int GetHashCode()
         {
             return CalcHashCode(Low) ^ CalcHashCode(High);
@@ -171,6 +182,24 @@ namespace JohnLambe.Util
         public static readonly Range<T> NoneRange = new Range<T>(default(T), default(T), false);
     }
 
+    public static class RangeUtil
+    {
+        /// <summary>
+        /// If <paramref name="value"/> is outside the given range, the nearest value in the range is returned,
+        /// otherwise <paramref name="value"/> is returned.
+        /// If <paramref name="value"/> is null (if <typeparamref name="T"/> is a nullable type), null is returned.
+        /// </summary>
+        /// <param name="value">The value to be tested.</param>
+        /// <param name="low">The lower bound of the range (inclusive).</param>
+        /// <param name="high">The upper bound of the range (inclusive).</param>
+        public static T ConstrainToRange<T>(T value, T low, T high)
+            where T : IComparable
+            => value == null ? default(T)
+            : (value.CompareTo(low)) < 0 ? low
+            : (value.CompareTo(high)) > 0 ? high
+            : value;
+    }
+
     /// <summary>
     /// Range subclass that is immutable.
     /// <para>Subclasses must not allow changing the state.</para>
@@ -217,6 +246,5 @@ namespace JohnLambe.Util
             set { High = value; }
         }
     }
-
 
 }
