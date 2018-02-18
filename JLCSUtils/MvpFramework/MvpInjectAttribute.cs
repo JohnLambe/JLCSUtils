@@ -69,4 +69,22 @@ namespace MvpFramework
         /// </summary>
         public string NestedViewId { get; set; }
     }
+
+
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    public class MvpSharedContextAttribute : MvpInjectAttribute
+    {
+        /// <summary>
+        /// </summary>
+        /// <param name="useChildContext"><see cref="UseChildContext"/></param>
+        public MvpSharedContextAttribute(bool useChildContext)
+        {
+            this.UseChildContext = useChildContext;
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="ISharedContextPresenterFactory.UseChildContext"/>
+        /// </summary>
+        public bool UseChildContext { get; set; }
+    }
 }

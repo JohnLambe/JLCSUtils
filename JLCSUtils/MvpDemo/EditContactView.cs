@@ -76,7 +76,9 @@ namespace MvpDemo
         public event EventHandler Test2Event;
 
         [MvpEvent("Test_NoHandler")]
+#pragma warning disable CS0067   // event never used
         public event EventHandler TestEvent2;
+#pragma warning restore CS0067
 
         private string buttonContainer2_OnGetFilter(object sender, EventArgs args)
         {

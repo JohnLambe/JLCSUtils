@@ -9,7 +9,7 @@ namespace DiExtension.SimpleInject
     /// <summary>
     /// A dependency injection context that (optionally) delegates to a parent context for anything that it cannot resolve.
     /// </summary>
-    public class ChainableContext : SiExtendedDiContext
+    public class ChainableContext : SiExtendedDiContext, IChainableDiResolver
     {
         /// <summary>
         /// 
@@ -35,7 +35,7 @@ namespace DiExtension.SimpleInject
         #region Child Context
 
         /// <summary>
-        /// Create a child context of this one.
+        /// <inheritdoc cref="IChainableDiResolver.CreateChildContext"/>
         /// </summary>
         /// <returns></returns>
         public virtual ChainableContext CreateChildContext()
@@ -45,17 +45,26 @@ namespace DiExtension.SimpleInject
             return newContext;
         }
 
+        /// <inheritdoc cref="IChainableDiResolver.CreateChildContext"/>
+        IDiResolver IChainableDiResolver.CreateChildContext()
+        {
+            return CreateChildContext();
+        }
+
         /// <summary>
         /// Called on creating a child context, to register items with it.
+        /// (Called just after creating it, before returning it from <see cref="CreateChildContext"/>.)
+        /// <para>Fires <see cref="OnSetupChildContext"/>.</para>
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">the new (child) context.</param>
         protected virtual void SetupChildContext(ChainableContext context)
         {
             OnSetupChildContext?.Invoke(this, new SetupContextEventArgs(context));
         }
 
         /// <summary>
-        /// Arguments to <see cref="OnSetupChildContext"/>
+        /// Arguments to <see cref="OnSetupChildContext"/>:
+        /// To provide handlers with the ability to register items in a DI context.
         /// </summary>
         public class SetupContextEventArgs : EventArgs
         {
@@ -64,7 +73,11 @@ namespace DiExtension.SimpleInject
                 this.Context = context;
             }
 
+            /// <summary>
+            /// The context to be set up.
+            /// </summary>
             public SiExtendedDiContext Context { get; }
+            //| TODO: Change to IDiTypeRegistrar and make this class non-implementation-specific ?
         }
 
         /// <summary>
@@ -82,7 +95,6 @@ namespace DiExtension.SimpleInject
             else
                 return _parentContext.GetValue<T>(key, type, out value);
         }
-
 
         protected readonly SiExtendedDiContext _parentContext;
     }

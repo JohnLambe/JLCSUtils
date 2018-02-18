@@ -134,7 +134,7 @@ namespace MvpFrameworkTest
     {
 #pragma warning disable CS0067   // Suppress 'Event never used'
         public event ViewVisibilityChangedDelegate ViewVisibilityChanged;
-#pragma warning disable CS0067
+#pragma warning restore CS0067
 
         public void Bind(object model, IPresenter presenter, IControlBinderFactory binderFactory)
         {

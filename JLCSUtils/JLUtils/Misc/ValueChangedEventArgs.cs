@@ -68,7 +68,7 @@ namespace JohnLambe.Util.Misc
 
         /// <summary>
         /// The name of the property (possibly indirectly) of <see cref="Model"/> being changed,
-        /// in the form used by <see cref="MvpFramework.Binding.GetNameDelegate"/>.
+        /// in the form used by MvpFramework.Binding.GetNameDelegate.
         /// </summary>
         public virtual string PropertyName { get; }
 

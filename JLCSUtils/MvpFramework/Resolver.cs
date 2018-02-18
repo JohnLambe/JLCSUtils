@@ -313,7 +313,7 @@ namespace MvpFramework
         /// <param name="presenterType"></param>
         /// <returns></returns>
         [return: NotNull]
-        public virtual TView GetViewForPresenterType<TView>([NotNull] Type presenterType)
+        public virtual TView GetViewForPresenterType<TView>([NotNull] Type presenterType /*, TContext {IDiResolver} context */)
             where TView : IView
         {
             Diagnostics.PreCondition(presenterType != null);
@@ -524,7 +524,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="forType"></param>
         /// <returns></returns>
-        protected abstract T GetInstance<T>(Type forType);
+        protected abstract T GetInstance<T>(Type forType /*, TContext {IDiResolver} context */);
 
         protected abstract Type ResolveType(Type serviceType);
 

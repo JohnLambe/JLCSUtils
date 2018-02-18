@@ -55,7 +55,7 @@ namespace MvpFramework
         protected virtual void Init()
         {   // This is separate from the constructor since it involves resolving items which may come from a DI container,
             // and SimpleInjector cannot register items after any resolve (so this should be called only after everything is registered).
-            if (TargetConstructor == null)
+            if (TargetConstructor == null)    // if the target constructor is not resolved yet (it is resolved when first needed)
             {
                 try
                 {
@@ -95,9 +95,14 @@ namespace MvpFramework
             {
                 Init();
 
+                IDiResolver currentDiResolver = DiResolver;
+                if (EffectiveUseChildContext && DiResolver is IChainableDiResolver)
+                    currentDiResolver = ((IChainableDiResolver)DiResolver).CreateChildContext();
+
                 var resolverContext = new ResolverExtensionContext(createArguments)
                 {
                     Nested = ContainingView != null
+                    // DiResolver = currentDiResolver ?
                 };
 
                 var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
@@ -169,13 +174,13 @@ namespace MvpFramework
                     }
                 }
 
-                var args = DiResolver.PopulateArgs(constructorParameters, createArguments,
+                var args = currentDiResolver.PopulateArgs(constructorParameters, createArguments,
                     DiMvpResolver.AttributeSourceSelector,
                     1    // skip the first parameter (it's for the View)
                     );
 
                 int paramIndex = 0;
-                foreach (var arg in args)
+                foreach (var arg in args)   // for each of the (now populated) arguments
                 {
                     if (paramIndex > 0)    // ignore the first parameter - the View
                     {
@@ -189,9 +194,23 @@ namespace MvpFramework
                             }
                             else
                             {
-                                throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute) + ": This can be used only on Presenter Factories");
+                                throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute) + ": This can be used only on Presenter Factories implementing " + nameof(INestedPresenterFactory));
                             }
                         }
+                        
+                        var sharedConextAttribute = constructorParameters[paramIndex].GetCustomAttribute<MvpSharedContextAttribute>();
+                        if (sharedConextAttribute != null)    // if flagged as shared context
+                        {
+                            if (arg is ISharedContextPresenterFactory)                        // and the argument supports this
+                            {
+                                ((ISharedContextPresenterFactory)arg).UseChildContext = false;
+                            }
+                            else
+                            {
+                                throw new MvpResolutionException("Invalid use of " + typeof(MvpSharedContextAttribute) + ": This can be used only on Presenter Factories implementing " + nameof(ISharedContextPresenterFactory));
+                            }
+                        }
+                        
                     }
                     paramIndex++;
                 }
@@ -204,7 +223,7 @@ namespace MvpFramework
                 var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
                 try
                 {
-                    DiResolver.BuildUp(presenter);                                 // inject properties
+                    currentDiResolver.BuildUp(presenter);                                 // inject properties
                 }
                 catch(Exception)        //TODO: catch only errors that imply that `presenter` doesn't support property injection
                 {
@@ -268,6 +287,19 @@ namespace MvpFramework
         /// </summary>
         protected virtual IView SuppliedView
             => ((INestedPresenterFactory)this).View;
+
+        /// <summary>
+        /// <inheritdoc cref="ISharedContextPresenterFactory.UseChildContext"/>
+        /// </summary>
+        /// <seealso cref="EffectiveUseChildContext"/>
+        public virtual bool? UseChildContext { get; set; }
+
+        /// <summary>
+        /// Whether a child context is to be created (the effective value of <see cref="UseChildContext"/>, applying a default if it is null).
+        /// </summary>
+        /// <seealso cref="UseChildContext"/>
+        public virtual bool EffectiveUseChildContext => UseChildContext ?? ContainingView == null;
+        // By default, nested views share the context of their container.
 
         /// <summary>
         /// True iff views created by this factory are modal.

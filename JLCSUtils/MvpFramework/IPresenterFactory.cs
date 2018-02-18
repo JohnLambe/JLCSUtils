@@ -152,13 +152,29 @@ namespace MvpFramework
 
         /// <summary>
         /// The view in which the view of the created presenter is to be created.
+        /// null if the created view is not to be nested.
         /// </summary>
         IView ContainingView { get; set; }
 
         /// <summary>
         /// ID of the nested view within the containing one.
+        /// null if the created view is not to be nested.
         /// </summary>
         string NestedViewId { get; set; }
+    }
+
+
+    /// <summary>
+    /// For Presenter Factories that support creating child contexts for each presenter.
+    /// This interface allows configuring whether the factory should create new a context per presenter.
+    /// </summary>
+    /// <seealso cref="MvpNestedAttribute"/>
+    public interface ISharedContextPresenterFactory
+    {
+        /// <summary>
+        /// true to create a new dependency injection context (a child of the given one) for each presenter created.
+        /// </summary>
+        bool? UseChildContext { get; set; }
     }
 
 }

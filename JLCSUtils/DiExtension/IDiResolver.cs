@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DiExtension
 {
     /// <summary>
-    /// Abstraction of DI container,
+    /// Abstraction of a DI container,
     /// for use by consumers that only resolve items (get instances from the DI container).
     /// </summary>
     public interface IDiResolver
@@ -52,4 +52,18 @@ namespace DiExtension
     // And/or return null on failure.
     //TODO: These can currently throw SimpleInjector.ActivationException.
     // Wrap in DependencyInjectionException.
+
+
+    /// <summary>
+    /// Abstraction of a DI container that supports child contexts.
+    /// </summary>
+    public interface IChainableDiResolver : IDiResolver
+    {
+        /// <summary>
+        /// Create a child context of this one.
+        /// </summary>
+        /// <returns>the child context.</returns>
+        IDiResolver CreateChildContext();
+    }
+
 }
