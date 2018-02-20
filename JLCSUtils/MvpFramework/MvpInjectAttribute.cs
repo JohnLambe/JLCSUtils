@@ -70,14 +70,18 @@ namespace MvpFramework
         public string NestedViewId { get; set; }
     }
 
-
+    /// <summary>
+    /// For use on presenter factories for constructor injection.
+    /// This specifies whether new presenters created by the injected factory each use a new dependency injection context 
+    /// or share the context of the presenter that the factory is injected into.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
     public class MvpSharedContextAttribute : MvpInjectAttribute
     {
         /// <summary>
         /// </summary>
         /// <param name="useChildContext"><see cref="UseChildContext"/></param>
-        public MvpSharedContextAttribute(bool useChildContext)
+        public MvpSharedContextAttribute(bool useChildContext = false)
         {
             this.UseChildContext = useChildContext;
         }

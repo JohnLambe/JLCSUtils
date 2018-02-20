@@ -182,7 +182,7 @@ namespace MvpFramework
                 int paramIndex = 0;
                 foreach (var arg in args)   // for each of the (now populated) arguments
                 {
-                    if (paramIndex > 0)    // ignore the first parameter - the View
+                    if (paramIndex > 0)     // ignore the first parameter - the View
                     {
                         var attribute = constructorParameters[paramIndex].GetCustomAttribute<MvpNestedAttribute>();
                         if (attribute != null)    // if flagged as nested
@@ -210,7 +210,6 @@ namespace MvpFramework
                                 throw new MvpResolutionException("Invalid use of " + typeof(MvpSharedContextAttribute) + ": This can be used only on Presenter Factories implementing " + nameof(ISharedContextPresenterFactory));
                             }
                         }
-                        
                     }
                     paramIndex++;
                 }

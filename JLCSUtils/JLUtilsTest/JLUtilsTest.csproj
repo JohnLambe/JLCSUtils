@@ -151,6 +151,7 @@
     <Compile Include="Text\CaptionUtilTest.cs" />
     <Compile Include="Text\LetterCapitalizationOptionTest.cs" />
     <Compile Include="Text\MultiPartEntry.cs" />
+    <Compile Include="Text\PreprocessComparerTest.cs" />
     <Compile Include="Text\StringBuilderExtensionTest.cs" />
     <Compile Include="Text\StringCharacterSetTest.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />

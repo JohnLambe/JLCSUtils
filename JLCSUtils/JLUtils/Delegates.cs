@@ -2,6 +2,8 @@
 //   See licence.
 ////////////////////////////////////////
 
+using System;
+
 namespace JohnLambe.Util
 {
     public static class DelegateUtil
@@ -18,6 +20,11 @@ namespace JohnLambe.Util
         /// A delegate (with one parameter) that does nothing.
         /// </summary>
         public static readonly VoidDelegate<T> NullDelegate = (p1) => { };
+
+        /// <summary>
+        /// Function that returns its argument.
+        /// </summary>
+        public static Func<T,T> IdentityFunction = (x) => x;
     }
 
     // Common delegates:
