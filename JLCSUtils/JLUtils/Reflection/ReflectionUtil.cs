@@ -17,7 +17,9 @@ namespace JohnLambe.Util.Reflection
     /// <summary>
     /// Reflection-related utilities.
     /// </summary>
-    /// <seealso cref="GenericTypeUtil"/>
+    /// <remarks>
+    /// </remarks>
+    /// <seealso cref="GenericTypeUtil">For reflection-related utilities relating to generic types (including conversion between generic and non-generic).</seealso>
     /// <seealso cref="TypeUtil"/>
     public static class ReflectionUtil
     {
@@ -482,13 +484,14 @@ namespace JohnLambe.Util.Reflection
             where T : class
         {
             //TODO: Give correct exception when constructor does not exist.
-            return (T)type.GetConstructor(argumentTypes).NotNull(() => "Constructor not found: " + typeof(T).FullName + " (" + Collections.CollectionUtil.CollectionToString(argumentTypes) + ")", typeof(MemberAccessException))  //TODO: exception type
+            return (T)type.GetConstructor(argumentTypes).NotNull(() => "Constructor not found: " + type.FullName + " (" + Collections.CollectionUtil.CollectionToString(argumentTypes) + ")", typeof(MemberAccessException))  //TODO: exception type
                 .Invoke(arguments);
         }
 
         #endregion
 
         //TODO: Move to TypeUtil?
+        //TODO: Use Type.GetTypeArray instead ?
         /// <summary>
         /// Returns an array in which each element is the type of the corresponding element in the given array.
         /// </summary>
@@ -920,6 +923,28 @@ namespace JohnLambe.Util.Reflection
             // camelCase must have at least one character (because of previous checks)
             return Char.ToUpperInvariant(camelCase[0]) + camelCase.Substring(1);
         }
+
+
+        /// <summary>
+        /// Get a type with the given name in one of the given assemblies.
+        /// </summary>
+        /// <param name="className">Full class name, without the assembly.</param>
+        /// <param name="assemblies">The assemblies to search (in order).</param>
+        /// <returns>The found class, or null if not found.</returns>
+        [return: Nullable("Not found")]
+        public static Type FindType(string className, Assembly[] assemblies = null)
+        {
+            if (assemblies == null)
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assm in assemblies)
+            {
+                var type = assm.GetType(className);
+                if (type != null)
+                    return type;
+            }
+            return null;
+        }
+
 
 
         // For converting between nullable and non-nullable types, see GenericTypeUtil.

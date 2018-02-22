@@ -5,6 +5,7 @@ using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Types;
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace MvpFramework.Binding
 {
@@ -184,7 +185,40 @@ namespace MvpFramework.Binding
         /// <summary>
         /// If true, any value being editing in a control must be validated and updated to the model before calling the handler.
         /// </summary>
-        public virtual bool CausesValidation { get; set; } = true;
+        public virtual bool CausesValidation //{ get; set; } = true;
+        {
+            get { return Validation != ValidationOption.None; }
+            set
+            {
+                if (!value)
+                    Validation = ValidationOption.None;
+                else if (Validation == ValidationOption.None)
+                    Validation = ValidationOption.ValidateProperty;
+            }
+        }
+
+        public virtual ValidationOption Validation { get; set; } = ValidationOption.ValidateProperty;
+
+        //TODO: Prototype
+
+    }
+
+    public enum ValidationOption
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Validate any property being edited before calling the handler.
+        /// </summary>
+        ValidateProperty,
+
+        /// <summary>
+        /// Validate all properties before calling the handler.
+        /// </summary>
+        ValidateModel
     }
 
     #endregion

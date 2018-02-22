@@ -130,6 +130,7 @@ namespace MvpFramework
                                             RegisterType(factoryInterfaceType, typeof(PresenterFactory<,>).MakeGenericType(presenterInterface, modelType));
                         */
                     }
+                    //TOOD?: else generate warning
                 }
             }
         }
