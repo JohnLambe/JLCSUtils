@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("JLUtils")]
-[assembly: AssemblyDescription("General library")]
+[assembly: AssemblyTitle("DataPopulater")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("JLUtils")]
-[assembly: AssemblyCopyright("Copyright © 2014-2017 John Bernard Lambe; MIT licence")]
+[assembly: AssemblyProduct("DataPopulater")]
+[assembly: AssemblyCopyright("Copyright © 2018 John Lambe; MIT Licence")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e33a12c3-d982-4841-9039-1c0260be37f1")]
+[assembly: Guid("d4ae645c-0518-466b-9533-668f32263f52")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.2.19.1")]
-[assembly: AssemblyFileVersion("0.2.19.1")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]

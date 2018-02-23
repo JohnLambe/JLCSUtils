@@ -185,7 +185,7 @@ namespace JohnLambe.Util.Math
         /// <returns></returns>
         public static char RandomChar(this IRandomService r, char minimum, char maximum)
         {
-            return (char)(maximum + r.Next((int)maximum - (int)minimum));
+            return (char)(minimum + r.Next((int)maximum - (int)minimum));
         }
 
         /// <summary>
