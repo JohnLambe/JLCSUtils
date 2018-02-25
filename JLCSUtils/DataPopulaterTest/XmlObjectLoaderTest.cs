@@ -19,6 +19,8 @@ namespace JohnLambe.Test.DataPopulater
             var result = _loader.Parse(XmlUtil.LoadFromFile(@"C:\Dev\Microsoft\DataPop\Config.xml"));
 
             Console.Out.WriteLine(result);
+
+            Assert.AreEqual("Test", (result as DataPopulaterConfig).Name);
         }
 
         protected XmlObjectLoader _loader = new XmlObjectLoader();

@@ -24,7 +24,7 @@ namespace JohnLambe.DataPopulater
 
         public virtual Type TargetClass { get; protected set; }
 
-        public virtual int MinimumInstances { get; set; } = 0;
+        public virtual int MinimumInstances { get; set; } = 1;
         public virtual int MaximumInstances { get; set; } = 1;
 
         public virtual int Instances

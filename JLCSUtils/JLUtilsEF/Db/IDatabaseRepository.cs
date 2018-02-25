@@ -108,4 +108,14 @@ namespace JohnLambe.Util.Db
         */
     }
 
+
+    [Obsolete("Interface not finalized")]
+    public interface IDatabase
+    {
+        IDatabaseRepositoryBase<T> GetRepositoryFor<T>(object entity);
+
+        IDatabaseRepositoryBase<T> GetRepositoryForType<T>(Type entityType);
+
+        bool SaveChanges(object entity);
+    }
 }

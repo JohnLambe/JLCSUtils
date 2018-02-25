@@ -831,6 +831,22 @@ namespace JohnLambe.Util.Reflection
             return property;
         }
 
+        /*
+        /// <summary>
+        /// Return the requested (possibly nested) property of a given type.
+        /// Each property in the chain must be defined on the declared type.
+        /// (<see cref="GetProperty(ref object, string)"/> allows properties defined only on the runtime type which can be a subclass or impleemnting class
+        /// of the declared type.)
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public static PropertyInfo GetPropertyFromType(Type type, [NotNull] string propertyName)
+        {
+            //TODO-L
+        }
+        */
+
         /// <summary>
         /// Return a possibly-nested property of the given object.
         /// </summary>

@@ -43,16 +43,23 @@ namespace JohnLambe.Test.DataPopulaterTest
         {
             _engine.Run();
 
-
-
         }
+
+        private void _engine_OnSaveInstnace(object sender, DataPopulaterEngine.SaveInstanceArgs e)
+        {
+            _lastInstance = e.Instance;
+            _instanceCount++;
+        }
+        protected object _lastInstance;
+        protected int _instanceCount;
 
         [TestMethod]
         public void TestMethod2()
         {
             _engine.Config = (DataPopulaterConfig) _loader.Parse(XmlUtil.LoadFromFile(@"C:\Dev\Microsoft\DataPop\Config.xml"));
-            _engine.Run();
+            _engine.OnSaveInstnace += _engine_OnSaveInstnace;
 
+            _engine.Run();
 
         }
 
@@ -83,6 +90,8 @@ namespace JohnLambe.Test.DataPopulaterTest
         public virtual string X { get; set; }
 
         public virtual int Y { get; set; }
+
+        public virtual TestClass Nested { get; set; } = new TestClass();
     }
 
 

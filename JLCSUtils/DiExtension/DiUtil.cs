@@ -17,7 +17,7 @@ namespace DiExtension
     public static class DiUtil
     {
         /// <summary>
-        /// Call a method, populating some or all of its parameters by dependeny injection.
+        /// Call a method (instance, static or constructor), populating some or all of its parameters by dependeny injection.
         /// </summary>
         /// <typeparam name="T">The return type. The return value of the method is cast to this.</typeparam>
         /// <param name="diResolver">The DI resolver to use for injecting parameters.</param>
@@ -26,10 +26,24 @@ namespace DiExtension
         /// <param name="contextArgs">See <see cref="PopulateArgs(IDiResolver, ParameterInfo[], object[], Func{ParameterInfo, bool?}, int, int)"/>.</param>
         /// <param name="selector">See <see cref="PopulateArgs(IDiResolver, ParameterInfo[], object[], Func{ParameterInfo, bool?}, int, int)"/>.</param>
         /// <returns>The value returned by the invoked method.</returns>
-        public static T CallMethod<T>(IDiResolver diResolver, MethodInfo method, object target, object[] contextArgs = null, SourceSelectorDelegate selector = null)
+        public static T CallMethod<T>(IDiResolver diResolver, MethodBase method, object target, object[] contextArgs = null, SourceSelectorDelegate selector = null)
         {
             var args = PopulateArgs(diResolver, method.GetParameters(), contextArgs, selector);
             return (T)method.Invoke(target, args);
+        }
+
+        /// <summary>
+        /// Call a constructor, populating some or all of its parameters by dependeny injection.
+        /// </summary>
+        /// <typeparam name="T">The return type. The return value of the method is cast to this.</typeparam>
+        /// <param name="diResolver">The DI resolver to use for injecting parameters.</param>
+        /// <param name="constructor">The constructor to invoke.</param>
+        /// <param name="contextArgs">See <see cref="PopulateArgs(IDiResolver, ParameterInfo[], object[], Func{ParameterInfo, bool?}, int, int)"/>.</param>
+        /// <param name="selector">See <see cref="PopulateArgs(IDiResolver, ParameterInfo[], object[], Func{ParameterInfo, bool?}, int, int)"/>.</param>
+        /// <returns>The created instance.</returns>
+        public static T CallConstructor<T>(IDiResolver diResolver, ConstructorInfo constructor, object[] contextArgs = null, SourceSelectorDelegate selector = null)
+        {
+            return CallMethod<T>(diResolver, constructor, null, contextArgs, selector);
         }
 
         /// <summary>

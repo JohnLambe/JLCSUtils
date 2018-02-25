@@ -16,7 +16,7 @@ namespace JohnLambe.Util.Math
     /// </summary>
     public static class RandomUtil
     {
-        public static readonly IRandomService RandomService = new RandomService(
+        public static readonly IRandomService RandomService = JohnLambe.Util.Services.RandomService.CreateWithSeed(
             Environment.TickCount ^ System.Environment.MachineName.GetHashCode() ^ System.Threading.Thread.CurrentThread.ManagedThreadId);
         // seeded with the time, machine name and thread ID.
 

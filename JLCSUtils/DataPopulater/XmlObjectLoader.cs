@@ -1,8 +1,10 @@
-﻿using JohnLambe.Util.Reflection;
+﻿using JohnLambe.Util;
+using JohnLambe.Util.Reflection;
 using JohnLambe.Util.TypeConversion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +38,7 @@ namespace JohnLambe.DataPopulater
             else
             {
                 var instance = CreateInstance(className);
+                //Later version: Populate contructor arguments from XML nodes
 
                 Populate(instance, source);
 
@@ -52,19 +55,23 @@ namespace JohnLambe.DataPopulater
         {
             foreach(XmlNode propertyNode in source.ChildNodes)
             {
-                if (!(propertyNode is XmlComment))
+                if (propertyNode.Name?.StartsWith(PropertyPrefix) ?? false)
                 {
-                    string propertyName;
-                    if (propertyNode.Name == "Property")
+                    if (!(propertyNode is XmlComment))
                     {
-                        propertyName = propertyNode.Attributes["name"].Value;
+                        string propertyName;
+                        if (propertyNode.Name == "Property")
+                        {
+                            propertyName = propertyNode.Attributes["name"].Value;
+                        }
+                        else
+                        {
+                            propertyName = propertyNode.Name?.RemovePrefix(PropertyPrefix);
+                        }
+                        SetProperty(target, propertyName, propertyNode);
                     }
-                    else
-                    {
-                        propertyName = propertyNode.Name;
-                    }
-                    SetProperty(target, propertyName, propertyNode);
                 }
+                //Later version: Method calls
             }
         }
 
@@ -92,7 +99,7 @@ namespace JohnLambe.DataPopulater
                             if (string.IsNullOrEmpty(lineValue))
                                 continue;
                         }
-                        addMethod.Invoke(items, new object[] { lineValue });
+                        addMethod.Invoke(items, new object[] { GeneralTypeConverter.Convert<object>(lineValue, elementType) });
                     }
                 }
                 else
@@ -100,7 +107,7 @@ namespace JohnLambe.DataPopulater
                     foreach (XmlNode node in source.ChildNodes)
                     {
                         if(!(node is XmlComment))
-                            addMethod.Invoke(items, new object[] { Parse(node, property.PropertyType) });
+                            addMethod.Invoke(items, new object[] { Parse(node, elementType) });
                     }
                 }
                 if (source.Attributes["includeBlank"]?.Value.Trim().Equals("1") ?? false)
@@ -120,6 +127,15 @@ namespace JohnLambe.DataPopulater
             else  // simple value
             {
                 value = source.InnerText;
+                bool isNull = source.Attributes["isNull"]?.Value.Equals("1") ?? false;
+                if(isNull)
+                {
+                    if (string.IsNullOrWhiteSpace(value.ToString()))
+                        value = null;
+                    else
+                        throw new InvalidDataException("Both Value and null specified for proeprty " + target?.GetType()?.Name + "." + propertyName);
+                }
+
                 string targetTypeName = source.Attributes["type"]?.Value;
                 Type targetType = targetTypeName == null ? null : Type.GetType(targetTypeName);
                 if (targetTypeName != null && targetType == null)
@@ -135,6 +151,11 @@ namespace JohnLambe.DataPopulater
             var type = ReflectionUtil.FindType(Namespace + "." + className);
             return ReflectionUtil.Create<object>(type);
         }
+
+        protected const string PropertyPrefix = "p-";
+        protected const string ClassPrefix = "c-";
+        protected const string MethodPrefix = "m-";
+        protected const string ArgumentPrefix = "a-";
 
         public virtual string Namespace { get; set; }
     }

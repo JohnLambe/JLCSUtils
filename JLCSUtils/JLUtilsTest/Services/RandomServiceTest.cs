@@ -24,6 +24,6 @@ namespace JohnLambe.Tests.JLUtilsTest.Services
             Assert.AreEqual(4, g1.GetVersion(), "Wrong GUID version");
         }
 
-        protected IRandomService _randomService = new RandomService(1234);
+        protected IRandomService _randomService = RandomService.CreateWithSeed(1234);
     }
 }

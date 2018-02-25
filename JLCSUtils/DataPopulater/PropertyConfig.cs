@@ -1,4 +1,6 @@
-﻿using JohnLambe.Util.Math;
+﻿using JohnLambe.Util.Collections;
+using JohnLambe.Util.Math;
+using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Services;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,8 @@ namespace JohnLambe.DataPopulater
     public interface IPropertyPopulaterContext
     {
         object GetRandomInstance(Type type);
+
+        Type RequiredType { get; set; }
     }
 
     public abstract class PropertyConfigBase
@@ -20,23 +24,50 @@ namespace JohnLambe.DataPopulater
 
         public virtual string PropertyName { get; set; }
 
-        public virtual PropertyInfo Property => Parent?.TargetClass?.GetProperty(PropertyName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+        /*
+        public virtual PropertyInfo Property =>
+            ReflectionUtil.GetPropertyFromType(Parent?.TargetClass, PropertyName);
+//            Parent?.TargetClass?.GetProperty(PropertyName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+        */
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>The value to use, or <see cref="NoValue"/> if the property should not be assigned.</returns>
         public abstract object GenerateValue(IPropertyPopulaterContext context);
-        //TODO: ability to indicate that value should not be assigned
 
         public virtual IRandomService RandomService { get; set; }
+
+        public static object NoValue => _noValue;
+        private static readonly object _noValue = new object();
     }
 
     public class RandomChoicePropertyConfig : PropertyConfigBase
     {
         public override object GenerateValue(IPropertyPopulaterContext context)
         {
-            return Values.ElementAt(RandomService.Next(Values.Count()));
+            var count = Values.Count();
             // Could optimise by evaluating Count() only once
+            if (count > 0)
+            {
+                var index = RandomService.Next(0,count);  // 0-based index ([0..count-1])
+                var value = Values.ElementAt(index);
+                if (!AllowDuplicates)
+                    Values = CollectionUtil.Remove(Values, value);
+                return value;
+            }
+            else
+            {
+                return NoValue;
+            }
         }
 
         public virtual IEnumerable<object> Values { get; set; }
+
+        public virtual bool AllowDuplicates { get; set; } = true;
+
+        public virtual object DefaultValue { get; set; } = NoValue;
     }
 
     public class ConstantPropertyConfig : PropertyConfigBase
@@ -53,7 +84,7 @@ namespace JohnLambe.DataPopulater
     {
         public override object GenerateValue(IPropertyPopulaterContext context)
         {
-            return context.GetRandomInstance(ValueType ?? Property.PropertyType);
+            return context.GetRandomInstance(ValueType ?? context.RequiredType);
         }
 
         public virtual Type ValueType { get; set; }

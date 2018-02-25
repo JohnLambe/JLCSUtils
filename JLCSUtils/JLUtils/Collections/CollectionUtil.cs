@@ -69,6 +69,44 @@ namespace JohnLambe.Util.Collections
             return result.ToString();
         }
 
+        /// <summary>
+        /// Returns a collection equalt to the given one with the specified item removed.
+        /// This modifies and returns the existing collection if it supports a way of removing the item from that collection type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="removeItem"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> Remove<T>(IEnumerable<T> collection, T removeItem)
+        {
+            if(collection is LinkedList<T>)
+            {
+                ((LinkedList<T>)collection).Remove(removeItem);
+                return collection;
+            }
+            /*
+            else if (collection is IList<T>)   // Some IList<T> implementations throw NotSupportedException
+            {
+                ((IList<T>)collection).Remove(removeItem);
+                return collection;
+            }
+            */
+            else
+            {
+                var list = new LinkedList<T>();
+                bool removed = false;
+                foreach(var item in collection)
+                {
+                    if (!removed && ObjectUtil.CompareEqual(item,removeItem))
+                    {
+                        list.AddLast(item);
+                        removed = true;
+                    }
+                }
+                return list;
+            }
+        }
+
         /*
         /// <summary>
         /// Returns the only element in a sequence, or null if the sequence is empty.

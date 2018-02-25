@@ -113,8 +113,13 @@ namespace JohnLambe.Util.Services
         {
         }
 
-        public RandomService(int seed) : base(seed)
+        protected RandomService(int seed) : base(seed)
         {
+        }
+
+        public static RandomService CreateWithSeed(int seed)
+        {
+            return new RandomService(seed);
         }
 
         /// <inheritdoc cref="IRandomService.NewGuid()"/>

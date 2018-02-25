@@ -10,6 +10,8 @@ using DiExtension;
 using System.Diagnostics;
 using DiExtension.Attributes;
 using System.Diagnostics.Contracts;
+using JohnLambe.Util.Types;
+using JohnLambe.Util;
 
 /* TODO: Done.
  * 
@@ -45,10 +47,10 @@ namespace MvpFramework
         /// </summary>
         /// <param name="resolver"><see cref="Resolver"/></param>
         /// <param name="diContext"><see cref="IDiTypeRegistrar"/> or <see cref="DiExtension.IDiContext"/>.</param>
-        public RegistrationHelper(MvpResolver resolver, IDiTypeRegistrar diContext)
+        public RegistrationHelper([NotNull] MvpResolver resolver, [NotNull] IDiTypeRegistrar diContext)
         {
-            this._resolver = resolver;
-            this._diContext = diContext;
+            this._resolver = resolver.ArgNotNull(nameof(resolver), "RegistrationHelper: resolver cannot be null");
+            this._diContext = diContext.ArgNotNull(nameof(diContext), "RegistrationHelper: diContexxt cannot be null");
         }
 
         /// <summary>

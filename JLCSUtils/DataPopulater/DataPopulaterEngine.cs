@@ -55,7 +55,15 @@ namespace JohnLambe.DataPopulater
         /// <param name="instance">the instance to be saved.</param>
         protected virtual void SaveInstance(ClassConfig clsConfig, object instance)
         {
+            OnSaveInstnace?.Invoke(this, new SaveInstanceArgs() { Config = clsConfig, Instance = instance });
+        }
 
+        public virtual event EventHandler<SaveInstanceArgs> OnSaveInstnace;
+
+        public class SaveInstanceArgs : EventArgs
+        {
+            public ClassConfig Config { get; set; }
+            public object Instance { get; set; }
         }
 
         /// <summary>
@@ -67,12 +75,16 @@ namespace JohnLambe.DataPopulater
         public virtual void ProcessProperty(Type cls, PropertyConfigBase propConfig, object instance)
         {
             propConfig.RandomService = RandomService; //TODO: Assign once only
-
+            
             var context = CreateContext();
+            object directInstance = instance;
+            context.RequiredType = ReflectionUtil.GetProperty(ref directInstance, propConfig.PropertyName).PropertyType;
 
-            var prop = propConfig.Property;
-            //ReflectionUtil.TrySetPropertyValue(instance, );
-            prop.SetValue(instance, GeneralTypeConverter.Convert(propConfig.GenerateValue(context), prop.PropertyType));
+            //var prop = propConfig.Property;
+            var value = GeneralTypeConverter.Convert<object>(propConfig.GenerateValue(context));
+            if(value != PropertyConfigBase.NoValue)
+                ReflectionUtil.TrySetPropertyValue(instance, propConfig.PropertyName, value);
+            //prop.SetValue(instance, GeneralTypeConverter.Convert(propConfig.GenerateValue(context), prop.PropertyType));
 
         }
 
@@ -88,6 +100,8 @@ namespace JohnLambe.DataPopulater
 
     public class PropertyPopulaterContext : IPropertyPopulaterContext
     {
+        public virtual Type RequiredType { get; set; }
+
         public virtual object GetRandomInstance(Type type)
         {
             return null;
