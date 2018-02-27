@@ -54,7 +54,7 @@ namespace MvpFramework
 
 
         [PercentageValidation]
-        public virtual int DisplayWidthPercentage { get; set; } = -1;
+        public virtual decimal DisplayWidthPercentage { get; set; } = -1;
 
         /// <summary>
         /// True iff this item should be shown in the grid.
@@ -133,6 +133,11 @@ namespace MvpFramework
         /// </summary>
         public virtual SortDirection Direction { get; set; } = SortDirection.Ascending;
         //TODO: Using SortDirection.None here is redundant. Enabled=false would do the same.
+
+        /// <summary>
+        /// For sorting on multiple columns/properties, this determines what order they are applied in - the lowest value is the major order.
+        /// </summary>
+        public virtual int Order { get; set; }
     }
 
 

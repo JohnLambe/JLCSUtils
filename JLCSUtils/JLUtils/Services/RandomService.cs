@@ -93,6 +93,7 @@ namespace JohnLambe.Util.Services
         /// <returns>The new GUID value.</returns>
         Guid NewGuid();
 
+        /*
         /// <summary>
         /// Generates a new random GUID.
         /// <para>The returned GUID must be a standard variant and version (including future ones), and contain random data and no information about
@@ -100,6 +101,7 @@ namespace JohnLambe.Util.Services
         /// </summary>
         /// <returns>The new GUID value.</returns>
         Guid RandomGuid();
+        */
     }
 
 
@@ -123,6 +125,6 @@ namespace JohnLambe.Util.Services
         }
 
         /// <inheritdoc cref="IRandomService.NewGuid()"/>
-        public virtual Guid NewGuid() => RandomGuid();
+        public virtual Guid NewGuid() => new Guid();
     }
 }

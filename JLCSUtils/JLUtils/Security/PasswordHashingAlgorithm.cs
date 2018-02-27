@@ -127,7 +127,7 @@ namespace JohnLambe.Util.Security
             if (failedAttempts == 0)
                 return 0;   // no delay
             else
-                return System.Math.Min(500 + failedAttempts * (client ? 1000 : 500), (client ? 25000 : 5000)) + RandomUtil.Random(500);
+                return System.Math.Min(500 + failedAttempts * (client ? 1000 : 500), (client ? 25000 : 5000)) + RandomUtil.RandomService.Next(500);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace JohnLambe.Util.Security
         /// <returns></returns>
         public virtual byte[] GenerateSalt()
         {
-            return BinaryConverter.FromLong(RandomUtil.RandomLong() ^ DateTime.Now.Ticks);   // random value XORed with the time
+            return BinaryConverter.FromLong(RandomUtil.RandomService.NextLong() ^ DateTime.Now.Ticks);   // random value XORed with the time
         }
 
         /// <summary>

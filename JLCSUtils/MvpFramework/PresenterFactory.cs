@@ -55,6 +55,7 @@ namespace MvpFramework
         protected virtual void Init()
         {   // This is separate from the constructor since it involves resolving items which may come from a DI container,
             // and SimpleInjector cannot register items after any resolve (so this should be called only after everything is registered).
+            int stage = 1;  // for tracking what stage of the process an exception occured in.
             if (TargetConstructor == null)    // if the target constructor is not resolved yet (it is resolved when first needed)
             {
                 try
@@ -62,13 +63,16 @@ namespace MvpFramework
                     if (TargetClass == null)              // if target class is not already known (it can be assigned by a subclass)
                         TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter));
                     //                this.TargetClass = Resolver.ResolvePresenterType(typeof(TPresenter), typeof(TParam1));
+
+                    stage = 2;
                     TargetConstructor = TargetClass.GetConstructors().First();
                     //TODO: if multiple constructors, choose one.
                     //   Evaluate which are compatible? Use Attribute.
                 }
                 catch (Exception ex)
                 {
-                    Resolver.ThrowException("Failed to resolve Presenter type or constructor: " + ex.Message, ex);
+                    Resolver.ThrowException("Failed to resolve Presenter "
+                        + (stage == 1 ? "type" : "constructor") + ": " + ex.Message, ex);
                 }
             }
         }

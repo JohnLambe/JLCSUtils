@@ -20,56 +20,58 @@ namespace JohnLambe.Util.Math
             Environment.TickCount ^ System.Environment.MachineName.GetHashCode() ^ System.Threading.Thread.CurrentThread.ManagedThreadId);
         // seeded with the time, machine name and thread ID.
 
-        /// <summary>
-        /// Returns a random integer in the range 0..<paramref name="range"/>-1.
-        /// </summary>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public static int Random(int range)
-        {
-            return RandomService.Next(range);
-        }
+        /*
+                /// <summary>
+                /// Returns a random integer in the range 0..<paramref name="range"/>-1.
+                /// </summary>
+                /// <param name="range"></param>
+                /// <returns></returns>
+                public static int Random(int range)
+                {
+                    return RandomService.Next(range);
+                }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        /// <returns></returns>
-        public static int Random(int min, int max)
-        {
-            return RandomService.Next(min, max);
-        }
+                /// <summary>
+                /// 
+                /// </summary>
+                /// <param name="min"></param>
+                /// <param name="max"></param>
+                /// <returns></returns>
+                public static int Random(int min, int max)
+                {
+                    return RandomService.Next(min, max);
+                }
 
-        /// <summary>
-        /// Positive 64-bit random number.
-        /// </summary>
-        /// <returns></returns>
-        public static long RandomPositiveLong()
-        {
-            return RandomService.RandomPositiveLong();
-        }
+                /// <summary>
+                /// Positive 64-bit random number.
+                /// </summary>
+                /// <returns></returns>
+                public static long RandomPositiveLong()
+                {
+                    return RandomService.RandomPositiveLong();
+                }
 
-        /// <summary>
-        /// 64-bit random number (positive or negative).
-        /// </summary>
-        /// <returns></returns>
-        public static long RandomLong()
-        {
-            return RandomService.RandomLong();
-        }
+                /// <summary>
+                /// 64-bit random number (positive or negative).
+                /// </summary>
+                /// <returns></returns>
+                public static long RandomLong()
+                {
+                    return RandomService.RandomLong();
+                }
 
-        /// <summary>
-        /// Returns a random Enum value of the type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T RandomEnumValue<T>()
-        {
-            //TODO Use IRandomService
-            var values = typeof(T).GetEnumValues();
-            return (T)values.GetValue(Random(values.Length));
-        }
+                /// <summary>
+                /// Returns a random Enum value of the type.
+                /// </summary>
+                /// <typeparam name="T"></typeparam>
+                /// <returns></returns>
+                public static T RandomEnumValue<T>()
+                {
+                    //TODO Use IRandomService
+                    var values = typeof(T).GetEnumValues();
+                    return (T)values.GetValue(Random(values.Length));
+                }
+                */
     }
 
     /// <summary>
@@ -78,7 +80,6 @@ namespace JohnLambe.Util.Math
     /// This is NOT a secure random number generator.
     /// </para>
     /// </summary>
-    [Obsolete("Use RandomServiceExtension")]
     public class RandomExt : Random
     {
         public RandomExt()
@@ -95,6 +96,7 @@ namespace JohnLambe.Util.Math
                 }
         */
 
+            /*
         /// <summary>
         /// Returns a random capital letter character (from the set of letters supported in ASCII).
         /// </summary>
@@ -132,6 +134,7 @@ namespace JohnLambe.Util.Math
         {
             return Next(2) == 0;
         }
+*/
 
         /// <summary>
         /// Returns a random positive 64-bit signed value, with a uniform distribution from 0 to 2^63-1 inclusive.
@@ -139,6 +142,7 @@ namespace JohnLambe.Util.Math
         /// <returns>The random <see cref="long"/> value.</returns>
         public virtual long NextLong() => Next() ^ (Next() << 31) ^ (Next() << 32);
 
+        /*
         /// <summary>
         /// Returns a random GUID.
         /// </summary>
@@ -162,6 +166,7 @@ namespace JohnLambe.Util.Math
             byte[] randomValue = new byte[size];
             return randomValue;
         }
+        */
     }
 
     public static class RandomServiceExtension
