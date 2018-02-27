@@ -96,14 +96,16 @@ namespace MvpFramework
                 Init();
 
                 IDiResolver currentDiResolver = DiResolver;
-                if (EffectiveUseChildContext && DiResolver is IChainableDiResolver)
-                    currentDiResolver = ((IChainableDiResolver)DiResolver).CreateChildContext();
-
                 var resolverContext = new ResolverExtensionContext(createArguments)
                 {
                     Nested = ContainingView != null
-                    // DiResolver = currentDiResolver ?
                 };
+
+                //UiManager.GetUseChildContext(TargetClass, resolverContext);
+                if (EffectiveUseChildContext && DiResolver is IChainableDiResolver)
+                    currentDiResolver = ((IChainableDiResolver)DiResolver).CreateChildContext();
+
+//                resolverContext.DiResolver = currentDiResolver ?
 
                 var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
                 if (existingPresenter != null)
@@ -291,7 +293,7 @@ namespace MvpFramework
         /// <inheritdoc cref="ISharedContextPresenterFactory.UseChildContext"/>
         /// </summary>
         /// <seealso cref="EffectiveUseChildContext"/>
-        public virtual bool? UseChildContext { get; set; }
+        public virtual bool? UseChildContext { get; set; } = false;
 
         /// <summary>
         /// Whether a child context is to be created (the effective value of <see cref="UseChildContext"/>, applying a default if it is null).
