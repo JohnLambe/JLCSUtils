@@ -123,8 +123,14 @@ namespace MvpFramework
         }
     }
 
+    /// <summary>
+    /// Specifies a sorting order.
+    /// <para>
+    /// Multiple instance of this attributing the same item are allowed to support different Filter values. Multiple attributes with the same Filter value is invalid.
+    /// </para>
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-    public class SortOrderAttribute : Attribute
+    public class SortOrderAttribute : GridAttribute
     {
         /// <summary>
         /// Whether sorting on the attributed item is ascending or descending.
@@ -134,10 +140,12 @@ namespace MvpFramework
         public virtual SortDirection Direction { get; set; } = SortDirection.Ascending;
         //TODO: Using SortDirection.None here is redundant. Enabled=false would do the same.
 
+        /*
         /// <summary>
         /// For sorting on multiple columns/properties, this determines what order they are applied in - the lowest value is the major order.
         /// </summary>
         public virtual int Order { get; set; }
+        */
     }
 
 
