@@ -200,7 +200,8 @@ namespace MvpFramework
                             }
                             else
                             {
-                                throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute) + ": This can be used only on Presenter Factories implementing " + nameof(INestedPresenterFactory));
+                                throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute)
+                                    + ": This can be used only on Presenter Factories implementing " + nameof(INestedPresenterFactory));
                             }
                         }
                         
@@ -213,7 +214,8 @@ namespace MvpFramework
                             }
                             else
                             {
-                                throw new MvpResolutionException("Invalid use of " + typeof(MvpSharedContextAttribute) + ": This can be used only on Presenter Factories implementing " + nameof(ISharedContextPresenterFactory));
+                                throw new MvpResolutionException("Invalid use of " + typeof(MvpSharedContextAttribute) 
+                                    + ": This can be used only on Presenter Factories implementing " + nameof(ISharedContextPresenterFactory));
                             }
                         }
                     }

@@ -100,8 +100,7 @@ namespace MvpFramework
         /// </summary>
         public virtual void Dispose()
         {
-            if(View is IDisposable)
-                ((IDisposable)View).Dispose();
+            (View as IDisposable)?.Dispose();
             Disposed?.Invoke(this, EventArgs.Empty);
         }
 

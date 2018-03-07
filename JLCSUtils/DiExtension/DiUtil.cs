@@ -17,7 +17,7 @@ namespace DiExtension
     public static class DiUtil
     {
         /// <summary>
-        /// Call a method (instance, static or constructor), populating some or all of its parameters by dependeny injection.
+        /// Call a method (instance, static or constructor), populating some or all of its parameters by dependency injection.
         /// </summary>
         /// <typeparam name="T">The return type. The return value of the method is cast to this.</typeparam>
         /// <param name="diResolver">The DI resolver to use for injecting parameters.</param>
@@ -33,7 +33,7 @@ namespace DiExtension
         }
 
         /// <summary>
-        /// Call a constructor, populating some or all of its parameters by dependeny injection.
+        /// Call a constructor, populating some or all of its parameters by dependency injection.
         /// </summary>
         /// <typeparam name="T">The return type. The return value of the method is cast to this.</typeparam>
         /// <param name="diResolver">The DI resolver to use for injecting parameters.</param>

@@ -111,7 +111,10 @@ namespace MvpFramework.Binding
                 if (binder != null)
                 {
                     Binders.Add(binder);
-                    binder.BindModel(ModelBinder, presenter);
+                    if (binder is IControlBinderV2)
+                        (binder as IControlBinderV2).BindModel(new MvpControlBindingContext(ModelBinder, PresenterBinder, this));
+                    else
+                        binder.BindModel(ModelBinder, presenter);
 
                     bindChildren = control.GetType().GetCustomAttribute<MvpBindChildrenAttribute>()?.Enabled ?? false;
                     // By default, controls that implement IControlBinder do not have their children bound (because the children are probably used by the control and bound by it if necessary),
@@ -126,7 +129,7 @@ namespace MvpFramework.Binding
                 {   // bind the children of this control:
                     foreach (TControl childControl in ControlAdaptor.GetChildren(control))
                     {
-                        BindControl(childControl, binderFactory, presenter);
+                        BindControl(childControl, binderFactory, presenter);    // recurse
                     }
                 }
             }
@@ -182,10 +185,7 @@ namespace MvpFramework.Binding
 
         #endregion
 
-        /// <summary>
-        /// Validate the model, showing an error dialog if invalid.
-        /// </summary>
-        /// <returns>true iff valid.</returns>
+        /// <inheritdoc cref="ViewBinderBase{TControl}.ValidateModel"/>
         public virtual bool ValidateModel()
         {
             return ModelBinder.Validate(DialogService);
@@ -226,7 +226,7 @@ namespace MvpFramework.Binding
         #region Invalidation
 
         /// <summary>
-        /// Cause the view to be refreshed, while not in validation handler.
+        /// Cause the view to be refreshed, while not in a validation handler.
         /// </summary>
         public virtual void InvalidateView()
         {
@@ -287,6 +287,7 @@ namespace MvpFramework.Binding
         protected virtual IControlAdaptor<TControl> ControlAdaptor { get; set; }
     }
 
+
     public interface IControlAdaptor<TControl>
     {
         /// <summary>
@@ -312,7 +313,7 @@ namespace MvpFramework.Binding
 
 
     /*
-        public interface IFrameworkAdaptor<TControl, TView>
+        public interface IUiFrameworkAdaptor<TControl, TView>
         {
             IEnumerable<TControl> GetChildren(TControl control);
 
@@ -330,6 +331,9 @@ namespace MvpFramework.Binding
 
     /// <summary>
     /// A handler that receives key events.
+    /// <para>
+    /// <see cref="ViewBinderBase{TControl}"/> calls this on bound controls that implement it.
+    /// </para>
     /// </summary>
     public interface IKeyboardKeyHandler
     {

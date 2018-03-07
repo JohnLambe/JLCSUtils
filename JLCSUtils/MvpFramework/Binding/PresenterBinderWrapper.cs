@@ -48,16 +48,17 @@ namespace MvpFramework.Binding
         [return: Nullable]
         public override EventHandler GetHandler([NotNull] string handlerId, string filter = null, bool allowNull = false)
         {
-            var handlerDelegate = _handlerResolver.GetHandler(Presenter, handlerId, filter, allowNull);
-            if (handlerDelegate == null)
+            return _handlerResolver.GetHandler(Presenter, handlerId, filter, allowNull);
+/*            if (handlerDelegate == null)
                 return null;
             return (sender, args) => handlerDelegate.Invoke(sender,args);
+            */
         }
 
         public virtual IEnumerable<EventHandler> GetHandlers(string filter = null)
         {
             return _handlerResolver.GetHandlersInfo(Presenter, null, filter)
-                .Select(h => new EventHandler((sender,args) => h.HandlerDelegate.Invoke(sender,args)));
+                      .Select(h => new EventHandler((sender,args) => h.HandlerDelegate.Invoke(sender,args))); //TODO: Doesn't need conversion?
         }
 
         //TODO: Return a type more decoupled from the presenter - that provides delegates instead of methods.

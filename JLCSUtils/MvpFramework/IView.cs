@@ -98,9 +98,18 @@ namespace MvpFramework
         IView GetNestedView(string nestedViewId, out INestedViewPlaceholder viewParent);
     }
 
-    public interface IValidatableView
+    /// <summary>
+    /// View that provides the ability to validate the model.
+    /// </summary>
+    public interface IValidatableView : IView
     {
-        /// <inheritdoc cref="ViewBinderBase{TControl}.ValidateModel"/>
+        /// <summary>
+        /// Validate the model, showing an error dialog if invalid.
+        /// <para>
+        /// This *may* highlight field controls with invalid values, or set the input focus on the first invalid one.
+        /// </para>
+        /// </summary>
+        /// <returns>true iff valid.</returns>
         bool ValidateModel();
     }
 }

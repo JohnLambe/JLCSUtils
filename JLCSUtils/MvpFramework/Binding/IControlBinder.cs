@@ -20,12 +20,16 @@ namespace MvpFramework.Binding
         /// <param name="modelBinder"></param>
         /// <param name="presenter"></param>
         void BindModel(ModelBinderWrapper modelBinder, IPresenter presenter);
-//TODO: Replace with       void BindModel(MvpControlBindingContext context);
 
         /// <summary>
         /// Update the control from the model.
         /// </summary>
         void MvpRefresh();
+    }
+
+    public interface IControlBinderV2 : IControlBinder
+    {
+        void BindModel(MvpControlBindingContext context);
     }
 
     public interface IControlBinderExt : IControlBinder

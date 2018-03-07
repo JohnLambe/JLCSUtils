@@ -8,15 +8,18 @@ namespace MvpFramework.Binding
 {
     public abstract class MvpContextBase
     {
-        public MvpContextBase(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
+        public MvpContextBase(ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder, IViewBinder viewBinder)
         {
-            ModelBinder = modelBinder;
-            PresenterBinder = presenterBinder;
+            this.ModelBinder = modelBinder;
+            this.PresenterBinder = presenterBinder;
+            this.ViewBinder = viewBinder;
         }
 
         public virtual ModelBinderWrapper ModelBinder { get; }
 
-        public virtual PresenterBinderWrapper PresenterBinder { get; }
+        public virtual PresenterBinderWrapperBase PresenterBinder { get; }
+
+        public virtual IViewBinder ViewBinder { get; }
     }
 
     /// <summary>
@@ -24,8 +27,8 @@ namespace MvpFramework.Binding
     /// </summary>
     public class MvpContext : MvpContextBase
     {
-        public MvpContext(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder, ControlBinderFactory controlBinderFactory)
-            : base(modelBinder, presenterBinder)
+        public MvpContext(ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder, ControlBinderFactory controlBinderFactory, IViewBinder viewBinder = null)
+            : base(modelBinder, presenterBinder, viewBinder)
         {
             ControlBinderFactory = controlBinderFactory;
         }
@@ -35,8 +38,8 @@ namespace MvpFramework.Binding
 
     public class MvpControlBindingContext : MvpContextBase
     {
-        public MvpControlBindingContext(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
-            : base(modelBinder, presenterBinder)
+        public MvpControlBindingContext(ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder, IViewBinder viewBinder)
+            : base(modelBinder, presenterBinder, viewBinder)
         {
         }
     }

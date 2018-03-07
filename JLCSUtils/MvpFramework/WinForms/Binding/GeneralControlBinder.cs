@@ -34,6 +34,9 @@ namespace MvpFramework.Binding
     //| Could be called "TagControlBinder", "GeneralWinFormsControlBinder", or "WinFormsTagControlBinder".
     public class GeneralControlBinder : IControlBinderExt, IKeyboardKeyHandler
     {
+        /// <summary>
+        /// Prefix of string in the Tag property that specifies how the control is bound.
+        /// </summary>
         public const char TagPrefix = '[';
         public const char TagSuffix = ']';
 
@@ -134,7 +137,6 @@ namespace MvpFramework.Binding
 
             try
             {
-
                 if (_controlProperty != null)
                 {
                     Model = modelBinder;
@@ -164,19 +166,30 @@ namespace MvpFramework.Binding
                 }
 
                 // 'Click' event handler:
-                var method = //presenterBinder.GetHandler(_modelPropertyName)
+                var handler = presenterBinder.GetHandler(_modelPropertyName,null,true);
+                //var handler = presenterBinder.GetHandler(_modelPropertyName);
+                if (handler != null)
+                {
+                    //                    _eventHandlerMethod = handler.Method;
+                    _eventHandlerDelegate = handler;
+                    _boundControl.Click += BoundControl_Click;  //TODO: Could add `handler` directly to Click. 
+                }
+
+                /*
+                var method = 
                     Presenter?.GetType().GetMethods().Where(
                     p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Id?.Equals(_modelPropertyName) ?? false).Any())
                     ?.FirstOrDefault();
                 if (method != null)
                 {
                     _eventHandlerMethod = method;
-                    _boundControl.Click += BoundControl_Click;
+                    _boundControl.Click += BoundControl_Click;  //TODO: Could add `handler` directly to Click. 
                 }
+                */
 
                 //TODO: Other events. Map to handler name: <Name>_<Event>
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string controlName = (BoundControl is Control) ? ((Control)BoundControl).Name : BoundControl.ToString();
                 throw new MvpBindingException("Error on binding control " + controlName + ": " + ex.Message, ex);
@@ -261,7 +274,8 @@ namespace MvpFramework.Binding
         /// <param name="e"></param>
         protected virtual void BoundControl_Click(object sender, EventArgs e)
         {
-            _eventHandlerMethod?.Invoke(Presenter, new object[] { });     //TODO populate any arguments of event handler
+            _eventHandlerDelegate?.Invoke(this, EventArgs.Empty);     //TODO populate any arguments of event handler
+            //_eventHandlerMethod?.Invoke(Presenter, new object[] { this, EventArgs.Empty });     //TODO populate any arguments of event handler
         }
 
         /// <summary>
@@ -296,7 +310,8 @@ namespace MvpFramework.Binding
         /// <summary>
         /// Method of the presenter to handler Click event.
         /// </summary>
-        protected MethodInfo _eventHandlerMethod;
+//        protected MethodInfo _eventHandlerMethod;
+        protected EventHandler _eventHandlerDelegate;
 
         /// <summary>
         /// The bound Presenter.

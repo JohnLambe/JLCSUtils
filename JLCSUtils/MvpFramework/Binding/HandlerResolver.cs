@@ -135,9 +135,15 @@ namespace MvpFramework.Binding
         [return: Nullable]
         public virtual EventHandler GetHandler([NotNull] object target, [Nullable] string handlerId, [Nullable] string filter = null, bool allowNull = false)
         {
-            var handlersSorted = GetHandlersInfo(target, handlerId).Select(h => h.Method);  // get list of handlers
-            if (allowNull && !handlersSorted.Any())
+            var handlersInfoSorted = GetHandlersInfo(target, handlerId);
+            if (allowNull && !handlersInfoSorted.Any())
                 return null;   // no handlers
+            var handlersSorted = handlersInfoSorted.Select(h => h.Method);  // get list of handlers
+
+            if(handlersInfoSorted.Any(h => h.Attribute.Validation == ValidationOption.ValidateModel))
+            {
+                
+            }
 
             // Make a delegate to invoke them in order:
             return (sender, args) =>

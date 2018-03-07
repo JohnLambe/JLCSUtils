@@ -107,7 +107,8 @@ namespace MvpFramework
             }
             set
             {
-                MinimumValue = value; MaximumValue = value;
+                MinimumValue = value;
+                MaximumValue = value;
             }
         }
 
@@ -132,13 +133,19 @@ namespace MvpFramework
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public class SortOrderAttribute : GridAttribute
     {
+        public SortOrderAttribute(SortDirection direction = SortDirection.Ascending, int order = 0)
+        {
+            this.Direction = direction;
+            this.Order = order;
+        }
+
         /// <summary>
         /// Whether sorting on the attributed item is ascending or descending.
         /// <para>This can be set to <see cref="SortDirection.None"/> to override an attribute on a superclass
         /// and cause the item to not be included in the sorting order.</para>
         /// </summary>
-        public virtual SortDirection Direction { get; set; } = SortDirection.Ascending;
-        //TODO: Using SortDirection.None here is redundant. Enabled=false would do the same.
+        public virtual SortDirection Direction { get; set; }
+        //| Using SortDirection.None here is redundant. Enabled=false would do the same.
 
         /*
         /// <summary>

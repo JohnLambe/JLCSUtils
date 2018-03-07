@@ -13,9 +13,11 @@ namespace MvpFramework.Binding
 
     /// <summary>
     /// Base class for attributes of this framework.
+    /// <para>
+    /// Subclasses are not necessarily required to be independent of the UI framework, but any in this assembly that have dependendies on one,
+    /// must be declared in a namespace relating to that framework (by convention).
+    /// </para>
     /// </summary>
-    // Subclasses are not necessarily required to be independent of the UI framework, but any that have dependendies on one,
-    // must be declared in a namespace relating to that framework.
     public abstract class MvpAttributeBase : Attribute
     {
     }
