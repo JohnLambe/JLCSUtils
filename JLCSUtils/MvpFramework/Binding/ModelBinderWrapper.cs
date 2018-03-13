@@ -109,18 +109,30 @@ namespace MvpFramework.Binding
         public virtual bool Validate([Nullable] IMessageDialogService dialogService)
         {
             ValidationResults results;
-            Validate(Model, dialogService, out results);
+            Validate(null, dialogService, out results);
+            return results.IsValid;
+        }
+
+        // Not virtual because the other overload should be overridden instead.
+        public bool Validate([TypeValidation(IsPrimitive = false)] object instance, [Nullable] IMessageDialogService dialogService)
+        {
+            var results = new ValidationResults();
+            Validate(instance, dialogService, out results);
             return results.IsValid;
         }
 
         /// <summary>
         /// Validate an object in the model.
         /// </summary>
-        /// <param name="instance">The object to be validated. The model or an object within it. NOT a primitive value.</param>
+        /// <param name="instance">The object to be validated. The model or an object within it. NOT a primitive value.
+        /// null to validate the whole model (<see cref="Model"/>).
+        /// </param>
         /// <param name="dialogService"></param>
         /// <param name="results"></param>
         public virtual void Validate([TypeValidation(IsPrimitive = false)] object instance, [Nullable] IMessageDialogService dialogService, out ValidationResults results)
         {
+            instance = instance ?? Model;
+
             results = new ValidationResults();
 
             Validator.TryValidateObject(instance, results);

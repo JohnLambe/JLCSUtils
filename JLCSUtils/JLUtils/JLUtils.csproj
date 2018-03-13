@@ -84,6 +84,8 @@
     <Compile Include="Misc\DefaultComparer.cs" />
     <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />
+    <Compile Include="Misc\NonReenter.cs" />
+    <Compile Include="StateMachine\StateTransitionValidator.cs" />
     <Compile Include="Text\PreprocessComparer.cs" />
     <Compile Include="Types\GuidUtil.cs" />
     <Compile Include="Misc\IconRepository.cs" />

@@ -211,9 +211,9 @@ namespace MvpFramework.WinForms
         #endregion
 
         /// <inheritdoc cref="ViewBinderBase{TControl}.ValidateModel"/>
-        public virtual bool ValidateModel()
+        public virtual bool ValidateModel(object model = null)
         {
-            return ViewBinder.ValidateModel();
+            return ViewBinder.ValidateModel(model);
         }
 
     }

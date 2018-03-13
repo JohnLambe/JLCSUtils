@@ -32,7 +32,7 @@ namespace MvpFramework.Binding
     /// Binds some common WinForms controls.
     /// </summary>
     //| Could be called "TagControlBinder", "GeneralWinFormsControlBinder", or "WinFormsTagControlBinder".
-    public class GeneralControlBinder : IControlBinderExt, IKeyboardKeyHandler
+    public class GeneralControlBinder : IControlBinderExt, IControlBinderV2, IKeyboardKeyHandler
     {
         /// <summary>
         /// Prefix of string in the Tag property that specifies how the control is bound.
@@ -126,24 +126,19 @@ namespace MvpFramework.Binding
             MvpBind(modelBinder, new PresenterBinderWrapper(presenter));
         }
 
-        /// <summary>
-        /// Bind this control to the given model.
-        /// </summary>
-        /// <param name="modelBinder"></param>
-        /// <param name="presenterBinder"></param>
-        public virtual void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
+        public void MvpBind(MvpControlBindingContext context)
         {
-            Presenter = presenterBinder.Presenter;
+            Presenter = (context.PresenterBinder as PresenterBinderWrapper).Presenter;
 
             try
             {
                 if (_controlProperty != null)
                 {
-                    Model = modelBinder;
+                    Model = context.ModelBinder;
 
                     MvpRefresh();
 
-                    if (modelBinder.GetProperty(_modelPropertyName).CanWrite)
+                    if (context.ModelBinder.GetProperty(_modelPropertyName).CanWrite)
                     {
                         _boundControl.Validating += BoundControl_Validating;
                         _boundControl.Validated += BoundControl_Validated;
@@ -153,7 +148,7 @@ namespace MvpFramework.Binding
 
                     if (_boundControl is TextBoxBase)
                     {
-                        var property = modelBinder.GetProperty(_modelPropertyName).Property;
+                        var property = context.ModelBinder.GetProperty(_modelPropertyName).Property;
                         var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
                         if (attrib != null)
                         {
@@ -166,7 +161,7 @@ namespace MvpFramework.Binding
                 }
 
                 // 'Click' event handler:
-                var handler = presenterBinder.GetHandler(_modelPropertyName,null,true);
+                var handler = context.PresenterBinder.GetHandler(_modelPropertyName, null, true);
                 //var handler = presenterBinder.GetHandler(_modelPropertyName);
                 if (handler != null)
                 {
@@ -194,6 +189,16 @@ namespace MvpFramework.Binding
                 string controlName = (BoundControl is Control) ? ((Control)BoundControl).Name : BoundControl.ToString();
                 throw new MvpBindingException("Error on binding control " + controlName + ": " + ex.Message, ex);
             }
+        }
+
+        /// <summary>
+        /// Bind this control to the given model.
+        /// </summary>
+        /// <param name="modelBinder"></param>
+        /// <param name="presenterBinder"></param>
+        public virtual void MvpBind(ModelBinderWrapper modelBinder, PresenterBinderWrapper presenterBinder)
+        {
+            MvpBind(new MvpControlBindingContext(modelBinder, presenterBinder));
         }
 
         protected virtual void BoundControl_Validated(object sender, EventArgs e)
@@ -332,6 +337,18 @@ namespace MvpFramework.Binding
         protected ModelBinderWrapper Model;
 
         protected ModelPropertyBinder PropertyBinder => Model?.GetProperty(_modelPropertyName);
+
+        public virtual bool ReadOnly
+        {
+            get
+            {
+                return ReflectionUtil.TryGetPropertyValue<bool>(BoundControl, "ReadOnly");
+            }
+            set
+            {
+                ReflectionUtil.TrySetPropertyValue(BoundControl, "ReadOnly", value);
+            }
+        }
 
         /// <summary>
         /// The control bound by this <see cref="IControlBinder"/>.

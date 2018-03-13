@@ -112,7 +112,7 @@ namespace MvpFramework.Binding
                 {
                     Binders.Add(binder);
                     if (binder is IControlBinderV2)
-                        (binder as IControlBinderV2).BindModel(new MvpControlBindingContext(ModelBinder, PresenterBinder, this));
+                        (binder as IControlBinderV2).MvpBind(new MvpControlBindingContext(ModelBinder, PresenterBinder, this));
                     else
                         binder.BindModel(ModelBinder, presenter);
 
@@ -149,16 +149,15 @@ namespace MvpFramework.Binding
         {
             //TODO: Provide a way to refresh only properties on the View itself ?
 
-            /*
             if (Binders != null)
             {
                 foreach (var binder in Binders)
                 {
-                    if (control == null || binder.IsInControl(control))      // if refreshing all controls, or this one is in the requested one
+                    if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl, control))      // if refreshing all controls, or this one is in the requested one
+//                        if (control == null || binder.IsInControl(control))      // if refreshing all controls, or this one is in the requested one
                         binder.MvpRefresh();
                 }
             }
-            */
 
             if (control == null)        // if we refreshed all controls
                 Invalidated = false;
@@ -186,9 +185,44 @@ namespace MvpFramework.Binding
         #endregion
 
         /// <inheritdoc cref="ViewBinderBase{TControl}.ValidateModel"/>
-        public virtual bool ValidateModel()
+        public virtual bool ValidateModel(object model = null)
         {
-            return ModelBinder.Validate(DialogService);
+            return ModelBinder.Validate(model, DialogService);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns>true iff there were no validation errors.</returns>
+        public virtual bool ValidateControls(TControl control)
+        {
+            bool valid = true;
+            if (Binders != null)
+            {
+                foreach (var binder in Binders.OrderBy(b => b.GetValidationOrder()))
+                {
+                    if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl,control))      // if refreshing all controls, or this one is in the requested one
+                    {
+                        if(binder is IValidateableControl)
+                        {
+                            valid = valid && ((IValidateableControl)binder).Validate(ControlValidationOptions.Highlight);
+                        }
+                    }
+                    if (!valid)
+                    {
+                        if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl, control))      // if refreshing all controls, or this one is in the requested one
+                        {
+                            if (binder is IValidateableControl)
+                            {
+                                if (!((IValidateableControl)binder).Validate(ControlValidationOptions.Enter))
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            return valid;
         }
 
         /// <summary>

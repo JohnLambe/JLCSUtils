@@ -38,7 +38,7 @@ namespace MvpFramework.Binding
 
     public class MvpControlBindingContext : MvpContextBase
     {
-        public MvpControlBindingContext(ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder, IViewBinder viewBinder)
+        public MvpControlBindingContext(ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder, IViewBinder viewBinder = null)
             : base(modelBinder, presenterBinder, viewBinder)
         {
         }

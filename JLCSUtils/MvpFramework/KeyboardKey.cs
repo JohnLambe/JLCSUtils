@@ -41,13 +41,13 @@ namespace MvpFramework
         //
         // Summary:
         //     The left mouse button.
-        [DisplayNameAny("Left Button")]
+        [DisplayNameAny("Left Button", ShortName = "LeftBtn")]
         [Description("The left mouse button")]
         LButton = 1,
         //
         // Summary:
         //     The right mouse button.
-        [DisplayNameAny("Right Button")]
+        [DisplayNameAny("Right Button", ShortName = "RightBtn")]
         [Description("The right mouse button")]
         RButton = 2,
         //
@@ -57,7 +57,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The middle mouse button (three-button mouse).
-        [DisplayNameAny("Middle Button")]
+        [DisplayNameAny("Middle Button", ShortName = "MidBtn")]
         [Description("The middle mouse button")]
         MButton = 4,
         //
@@ -74,11 +74,12 @@ namespace MvpFramework
         //
         // Summary:
         //     The BACKSPACE key.
-        [DisplayNameAny("Backspace")]
+        [DisplayNameAny("Backspace", ShortName = "\u232B")]
         Back = 8,
         //
         // Summary:
         //     The TAB key.
+        [DisplayNameAny(ShortName = "\u21E5")]  // RIGHTWARDS ARROW TO BAR'
         Tab = 9,
         //
         // Summary:
@@ -91,6 +92,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The RETURN key.
+        [DisplayNameAny(ShortName = "\u23CE")]  // https://www.fileformat.info/info/unicode/char/23ce/index.htm
         Return = 13,
         //
         // Summary:
@@ -102,7 +104,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The SHIFT key.
-        [DisplayNameAny("Shift")]
+        [DisplayNameAny("Shift", ShortName = "\u21E7")] // ⇧ https://www.fileformat.info/info/unicode/char/21e7/index.htm
         ShiftKey = 16,
         //
         // Summary:
@@ -125,7 +127,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The CAPS LOCK key.
-        [DisplayNameAny("Caps Lock")]
+        [DisplayNameAny("Caps Lock", ShortName = "CapsLock")]
         [EnumDuplicate]
         Capital = 20,
         //
@@ -167,6 +169,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The ESC key.
+        [DisplayNameAny(ShortName = "Esc")]
         Escape = 27,
 
         // WinForms only:
@@ -232,6 +235,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The LEFT ARROW key.
+        //[DisplayNameAny(ShortName = )]
         [Description("The Left Arrow key")]
         Left = 37,
         //
@@ -659,10 +663,12 @@ namespace MvpFramework
         //
         // Summary:
         //     The NUM LOCK key.
+        [DisplayNameAny(ShortName = "NumLock")]
         NumLock = 144,
         //
         // Summary:
         //     The SCROLL LOCK key.
+        [DisplayNameAny("Scroll Lock", ShortName = "ScrLock")]
         Scroll = 145,
         //
         // Summary:
@@ -984,12 +990,14 @@ namespace MvpFramework
         //     The SHIFT modifier key.
         [EnumHidden]
         [EnumFlag]
+        [DisplayNameAny("Shift", ShortName = "\u21E7")] // ⇧ https://www.fileformat.info/info/unicode/char/21e7/index.htm
         Shift = 65536,
         //
         // Summary:
         //     The CTRL modifier key.
         [EnumHidden]
         [EnumFlag]
+        [DisplayNameAny("Ctrl", ShortName = "^")]
         Control = 131072,
         //
         // Summary:

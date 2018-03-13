@@ -114,7 +114,6 @@
             this.mvpTextBox1.Name = "mvpTextBox1";
             this.mvpTextBox1.Size = new System.Drawing.Size(114, 20);
             this.mvpTextBox1.TabIndex = 5;
-            this.mvpTextBox1.TypeProperty = null;
             this.mvpTextBox1.TextChanged += new System.EventHandler(this.mvpTextBox1_TextChanged);
             // 
             // mvpComboBox1

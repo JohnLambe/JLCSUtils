@@ -86,9 +86,10 @@ namespace MvpFramework
         /// <summary>
         /// Validate the model if the View supports it (implements <seealso cref="IValidatableView"/>).
         /// </summary>
+        /// <param name="model">null to validate the model, otherwise an object to be validated.</param>
         /// <returns>true iff valid, or if the View does not support this validation.</returns>
         /// <seealso cref="ViewBinderBase{TControl}.ValidateModel"/>
-        protected virtual bool ValidateModel()
+        protected virtual bool ValidateModel(object model = null)
         {
             return (View as IValidatableView)?.ValidateModel() ?? true;
         }

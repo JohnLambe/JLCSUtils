@@ -219,7 +219,7 @@ namespace JohnLambe.Util
         {
             if (a == null && b == null)         // if both are null
                 return true;                    // they're equal
-            else if (a != null || b != null)    // if one is not null
+            else if (a == null || b == null)    // if one is null
                 return false;                   // not equal, because one is null, but not both
             else
                 return a.Equals(b);             // compare. a.Equals(b) should be the same as b.Equals(a).

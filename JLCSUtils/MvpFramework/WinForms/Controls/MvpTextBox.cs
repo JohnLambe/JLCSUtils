@@ -39,18 +39,20 @@ namespace MvpFramework.WinForms.Controls
         public event GetNameDelegate OnGetModelProperty;
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
-        [MvpDefineValidatingEventAttribute]
+        [MvpDefineValidatingEvent]
         public event ValueChangedEventHandler ValidatingExt;  //| Or OnValidatingExt 
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
-        [MvpDefineValidatedEventAttribute]
+        [MvpDefineValidatedEvent]
         public event ValueChangedEventHandler ValidatedExt;
 #pragma warning restore CS0067
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
+        [DefaultValue(null)]
         public string[] Items { get; set; }
 
         [Category(MvpUiComponentConsts.DesignerCategory)]
+        [DefaultValue(null)]
         public Type TypeProperty { get; set; }
     }
 

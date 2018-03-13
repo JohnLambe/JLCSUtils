@@ -651,6 +651,39 @@ namespace JohnLambe.Util.Reflection
 
         #endregion
 
+        /*
+        /// <summary>
+        /// Calls a static method that takes a type that it is called on as its first parameter,
+        /// treating methods with the same signature on subclasses as overriding.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="targetType"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        //UNTESTED
+        public static T CallVirtualStatic<T>(this Type targetType, string methodName, params object[] args)
+        {
+            var method = targetType.GetMethod(methodName, BindingFlags.Static);
+            object[] args1 = new object[args.Length + 1];
+            args1[0] = targetType;
+            for (int arg = 0; arg < args.Length; arg++)
+                args1[arg+1] = args[arg];
+            return (T)method.Invoke(null, args1);
+        }
+
+        public static T CallBaseVirtualStatic<T>(this Type targetType, Type declaringType, string methodName, params object[] args)
+        {
+            var method = declaringType.BaseType?.GetMethod(methodName, BindingFlags.Static);
+            //TODO if null ?
+            object[] args1 = new object[args.Length + 1];
+            args1[0] = targetType;
+            for (int arg = 0; arg < args.Length; arg++)
+                args1[arg + 1] = args[arg];
+            return (T)method.Invoke(null, args1);
+        }
+        */
+
         /// <summary>
         /// Passed as an argument value to certain methods (that call a method by reflection) to use the default value for that parameter.
         /// </summary>

@@ -29,7 +29,45 @@ namespace MvpFramework.Binding
 
     public interface IControlBinderV2 : IControlBinder
     {
-        void BindModel(MvpControlBindingContext context);
+        /// <summary>
+        /// Bind the model and presenter to this control.
+        /// </summary>
+        /// <param name="context"></param>
+        void MvpBind(MvpControlBindingContext context);
+
+        /// <summary>
+        /// Whether the value in the control can be modified.
+        /// Setting this has no effect if the control does not have a data value (e.g. a button).
+        /// </summary>
+        bool ReadOnly { get; set; }
+    }
+
+    public interface IValidateableControl
+    {
+        /// <summary>
+        /// Validate the value in the model bound to this control.
+        /// </summary>
+        /// <returns></returns>
+        bool Validate(ControlValidationOptions options);
+
+        /// <summary>
+        /// When controls on a form are validated, reporting of errors or focussing of controls with invalid values,
+        /// is done in this order (ascending order of this value).
+        /// </summary>
+        int ValidationOrder { get; }
+    }
+
+    public enum ControlValidationOptions
+    {
+        /// <summary>
+        /// Update the UI to indicate whether the control is valid. This may display the validation error modelessly (such as beside the control),
+        /// or just highlight the control (icon, change in style, etc.).
+        /// </summary>
+        Highlight = 1,
+        /// <summary>
+        /// If the value is invalid, focus the control, show a modal error, or otherwise get the user to correct the value.
+        /// </summary>
+        Enter
     }
 
     public interface IControlBinderExt : IControlBinder
@@ -58,6 +96,22 @@ namespace MvpFramework.Binding
     //| TODO?: Could add a generic parameter for the type of the control (the control base class for the UI framework).
     public interface IControlBinderFactory : IFactory<IControlBinder, object>
     {
+    }
+
+
+    public static class ControlBinderExtension
+    {
+        public static int GetValidationOrder(this IControlBinder binder)
+        {
+            return (binder as IValidateableControl)?.ValidationOrder ?? 0;
+        }
+
+        /*
+        public static void BindModel(this IControlBinderV2 binder, ModelBinderWrapper modelBinder, IPresenter presenter)
+        {
+            binder.MvpBind(new MvpControlBindingContext(modelBinder, new PresenterBinderWrapper(presenter), null));
+        }
+        */
     }
 
 

@@ -110,6 +110,6 @@ namespace MvpFramework
         /// </para>
         /// </summary>
         /// <returns>true iff valid.</returns>
-        bool ValidateModel();
+        bool ValidateModel(object model = null);
     }
 }

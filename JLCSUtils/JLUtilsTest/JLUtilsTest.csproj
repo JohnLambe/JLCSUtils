@@ -145,6 +145,7 @@
     <Compile Include="Security\HashedPasswordTest.cs" />
     <Compile Include="Security\RemoteHashedPasswordTest.cs" />
     <Compile Include="Services\RandomServiceTest.cs" />
+    <Compile Include="StateMachine\StateMachineTest.cs" />
     <Compile Include="StrUtilTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TestUtilTest.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Types\IDTest.cs" />
     <Compile Include="Types\NotNullAttributeTest.cs" />
     <Compile Include="Types\PersonNameTest.cs" />
+    <Compile Include="ObjectUtilTest.cs" />
     <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\PostcodeValidationAttributeTest.cs" />
     <Compile Include="Validation\StringValidationAttributeTest.cs" />

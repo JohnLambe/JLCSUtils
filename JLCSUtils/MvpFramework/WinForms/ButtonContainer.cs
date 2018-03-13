@@ -340,6 +340,7 @@ namespace MvpFramework.WinForms
             button.CausesValidation = buttonModel.CausesValidation;
 
             button.Enabled = buttonModel.Enabled;
+            button.Visible = buttonModel.Visible;
 
             switch (Orientation)
             {
