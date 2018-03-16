@@ -29,7 +29,7 @@ namespace JohnLambe.Util.Db
 
         #region IDbRepositoryBase
 
-        public virtual IQueryable<TEntity> AsQueryable()
+        public virtual IQueryable<TEntity> AsQueryable(bool includeDeleted = false)
         {
             return Data.Values.AsQueryable<TEntity>();
         }
@@ -72,12 +72,12 @@ namespace JohnLambe.Util.Db
             return entity;
         }
 
-        public virtual TEntity Create()
+        public virtual TEntity Create(object context = null)
         {
             return ReflectionUtil.Create<TEntity>(typeof(TEntity));
         }
 
-        public virtual TDerivedEntity Create<TDerivedEntity>()
+        public virtual TDerivedEntity Create<TDerivedEntity>(object context = null)
             where TDerivedEntity : class, TEntity
         {
             return ReflectionUtil.Create<TDerivedEntity>(typeof(TDerivedEntity));

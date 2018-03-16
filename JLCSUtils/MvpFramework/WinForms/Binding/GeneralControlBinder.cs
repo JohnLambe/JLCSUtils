@@ -17,6 +17,7 @@ using MvpFramework.Dialog.Dialogs;
 using DiExtension.AutoFactory;
 using JohnLambe.Util.Misc;
 using DiExtension.Attributes;
+using System.Drawing;
 
 namespace MvpFramework.Binding
 {
@@ -32,7 +33,7 @@ namespace MvpFramework.Binding
     /// Binds some common WinForms controls.
     /// </summary>
     //| Could be called "TagControlBinder", "GeneralWinFormsControlBinder", or "WinFormsTagControlBinder".
-    public class GeneralControlBinder : IControlBinderExt, IControlBinderV2, IKeyboardKeyHandler
+    public class GeneralControlBinder : IControlBinderExt, IControlBinderV2, IValidateableControl, IKeyboardKeyHandler
     {
         /// <summary>
         /// Prefix of string in the Tag property that specifies how the control is bound.
@@ -72,6 +73,7 @@ namespace MvpFramework.Binding
 
             _boundControl = control;
             //            this.Presenter = presenter;
+            _backColor = control.BackColor;
 
             _modelPropertyName = GetBinderString();
 
@@ -126,7 +128,7 @@ namespace MvpFramework.Binding
             MvpBind(modelBinder, new PresenterBinderWrapper(presenter));
         }
 
-        public void MvpBind(MvpControlBindingContext context)
+        public virtual void MvpBind(MvpControlBindingContext context)
         {
             Presenter = (context.PresenterBinder as PresenterBinderWrapper).Presenter;
 
@@ -138,7 +140,7 @@ namespace MvpFramework.Binding
 
                     MvpRefresh();
 
-                    if (context.ModelBinder.GetProperty(_modelPropertyName).CanWrite)
+                    if (PropertyBinder?.CanWrite ?? false)
                     {
                         _boundControl.Validating += BoundControl_Validating;
                         _boundControl.Validated += BoundControl_Validated;
@@ -148,11 +150,14 @@ namespace MvpFramework.Binding
 
                     if (_boundControl is TextBoxBase)
                     {
-                        var property = context.ModelBinder.GetProperty(_modelPropertyName).Property;
-                        var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
-                        if (attrib != null)
+                        var property = PropertyBinder?.Property;
+                        if (property != null)
                         {
-                            ((TextBoxBase)_boundControl).MaxLength = attrib.Length;
+                            var attrib = property.GetCustomAttribute<MaxLengthAttribute>();
+                            if (attrib != null)
+                            {
+                                ((TextBoxBase)_boundControl).MaxLength = attrib.Length;
+                            }
                         }
 
                         //TODO: Attach a handler for key press events (for TextBoxBase and possibly some other controls) that undoes any change on pressing ESCAPE.
@@ -169,18 +174,6 @@ namespace MvpFramework.Binding
                     _eventHandlerDelegate = handler;
                     _boundControl.Click += BoundControl_Click;  //TODO: Could add `handler` directly to Click. 
                 }
-
-                /*
-                var method = 
-                    Presenter?.GetType().GetMethods().Where(
-                    p => p.GetCustomAttributes<MvpHandlerAttribute>().Where(a => a.Id?.Equals(_modelPropertyName) ?? false).Any())
-                    ?.FirstOrDefault();
-                if (method != null)
-                {
-                    _eventHandlerMethod = method;
-                    _boundControl.Click += BoundControl_Click;  //TODO: Could add `handler` directly to Click. 
-                }
-                */
 
                 //TODO: Other events. Map to handler name: <Name>_<Event>
             }
@@ -205,7 +198,7 @@ namespace MvpFramework.Binding
         {
             if (EventEnabled)
             {
-                PropertyBinder.Validated(sender, e, _controlProperty.GetValue(_boundControl));
+                PropertyBinder?.Validated(sender, e, _controlProperty.GetValue(_boundControl));
                 /*
                 Model.GetProperty(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
                 //| We could set _boundControl.'Modified' (if it exists) to false:
@@ -224,21 +217,6 @@ namespace MvpFramework.Binding
                     _controlProperty.SetValue(_boundControl, value);
                 }
                 /*
-                var value = _controlProperty.GetValue(_boundControl);
-                var results = new ValidationResults();
-                Model.GetProperty(_modelPropertyName).TryValidateValue(value, results);
-                if ( !results.IsValid )
-                {
-                    e.Cancel = true;   // validation fails. This usually means that the control stays focussed.
-
-                    // We show the dialog here, if we have the service to do so,
-                    // because raising an exception would cause WinForms not to handle the cancelling of the event
-                    // (it would allow the focus to leave the control).
-                    if (DialogService != null)
-                        DialogService.ShowMessage(UserErrorDialog.CreateDialogModelForValidationResult(results));
-                    else
-                        results.ThrowIfInvalid();
-                }
 
                 //TODO: Warnings
 
@@ -262,8 +240,8 @@ namespace MvpFramework.Binding
                 try
                 {
                     if(Model != null)
-                        if (Model.GetProperty(_modelPropertyName).CanRead && _controlProperty.CanWrite)
-                            _controlProperty.SetValue(_boundControl, Model.GetProperty(_modelPropertyName).Value);
+                        if ((PropertyBinder?.CanRead ?? false) && _controlProperty.CanWrite)
+                            _controlProperty.SetValue(_boundControl, PropertyBinder.Value);
                 }
                 finally
                 {
@@ -292,7 +270,7 @@ namespace MvpFramework.Binding
         {
             if (EventEnabled)
             {
-                Model.GetProperty(_modelPropertyName).Value = _controlProperty.GetValue(_boundControl);
+                PropertyBinder.Value = _controlProperty.GetValue(_boundControl);
             }
         }
 
@@ -336,6 +314,9 @@ namespace MvpFramework.Binding
         /// </summary>
         protected ModelBinderWrapper Model;
 
+        /// <summary>
+        /// The binder of the bound property.
+        /// </summary>
         protected ModelPropertyBinder PropertyBinder => Model?.GetProperty(_modelPropertyName);
 
         public virtual bool ReadOnly
@@ -349,6 +330,41 @@ namespace MvpFramework.Binding
                 ReflectionUtil.TrySetPropertyValue(BoundControl, "ReadOnly", value);
             }
         }
+
+        public virtual bool Validate(ControlValidationOptions options)
+        {
+            var isValid = IsValid();
+
+            _boundControl.BackColor = isValid ? Color.Yellow : _backColor;
+
+            if (!isValid)
+            {
+                if (options.Flags.HasFlag(ControlValidationFlags.Enter))
+                {
+                    _boundControl.Focus();
+                }
+            }
+            return isValid;
+        }
+
+        protected Color _backColor;
+
+        protected virtual bool IsValid()
+        {
+            var value = _controlProperty.GetValue(_boundControl);
+
+            try
+            {
+                PropertyBinder?.ValidateValue(ref value);
+            }
+            catch (ValidationException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public virtual int ValidationOrder => PropertyBinder?.Order ?? 0;
 
         /// <summary>
         /// The control bound by this <see cref="IControlBinder"/>.

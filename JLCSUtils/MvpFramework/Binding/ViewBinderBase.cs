@@ -13,24 +13,6 @@ using System.Threading.Tasks;
 namespace MvpFramework.Binding
 {
     /// <summary>
-    /// Interface to a View Binder from other parts of the framework (currently from the Model Binder).
-    /// </summary>
-    public interface IViewBinder
-    {
-        /// <summary>
-        /// Notifies the View Binder of the stage of the validation process.
-        /// </summary>
-        /// <param name="stage"></param>
-        void NotifyValidationStage(ValidationStage stage);
-
-        /// <inheritdoc cref="ViewBinderBase{TControl}.RefreshView(TControl)"/>
-        void RefreshView();
-
-        void InvalidateView();
-    }
-
-
-    /// <summary>
     /// Base class for classes that bind a view to its model and presenter.
     /// Specific UI frameworks can subclass this.
     /// This class is independent of the UI framework.
@@ -197,27 +179,29 @@ namespace MvpFramework.Binding
         /// <returns>true iff there were no validation errors.</returns>
         public virtual bool ValidateControls(TControl control)
         {
-            bool valid = true;
+            bool valid = true;  // true iff all controls so far are valid
             if (Binders != null)
             {
-                foreach (var binder in Binders.OrderBy(b => b.GetValidationOrder()))
+                var binders = Binders.OfType<IValidateableControl>().OrderBy(b => b.ValidationOrder);  // get all validatable control binders
+
+                // Highlight all invalid:
+                foreach (var binder in binders)
                 {
-                    if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl,control))      // if refreshing all controls, or this one is in the requested one
+                    if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl, control))      // if refreshing all controls, or this one is in the requested one
                     {
-                        if(binder is IValidateableControl)
-                        {
-                            valid = valid && ((IValidateableControl)binder).Validate(ControlValidationOptions.Highlight);
-                        }
+                        valid = valid && ((IValidateableControl)binder).Validate(ControlValidationOptions.Highlight);
                     }
-                    if (!valid)
+                }
+
+                if (!valid)   // if any failed, set focus to or require entry of first invalid one
+                {
+                    foreach (var binder in binders)
                     {
                         if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl, control))      // if refreshing all controls, or this one is in the requested one
                         {
-                            if (binder is IValidateableControl)
-                            {
-                                if (!((IValidateableControl)binder).Validate(ControlValidationOptions.Enter))
-                                    break;
-                            }
+//                            if (binder is IValidateableControl)
+                            if (!((IValidateableControl)binder).Validate(ControlValidationOptions.Enter))
+                                break;
                         }
                     }
                 }
@@ -319,59 +303,6 @@ namespace MvpFramework.Binding
         protected virtual TControl View { get; set; }
 
         protected virtual IControlAdaptor<TControl> ControlAdaptor { get; set; }
-    }
-
-
-    public interface IControlAdaptor<TControl>
-    {
-        /// <summary>
-        /// Return the collection of children of the given control.
-        /// </summary>
-        /// <param name="control"></param>
-        /// <returns></returns>
-        IEnumerable<TControl> GetChildren(TControl control);
-
-        /// <summary>
-        /// </summary>
-        /// <param name="control"></param>
-        /// <param name="testParent"></param>
-        /// <returns>true iff <paramref name="control"/> is a direct or indirect child of <paramref name="testParent"/>.</returns>
-        bool IsInControl(TControl control, TControl testParent);
-
-        /// <summary>
-        /// </summary>
-        /// <param name="control"></param>
-        /// <returns>The name of the control as used in code.</returns>
-        string GetName(TControl control);
-    }
-
-
-    /*
-        public interface IUiFrameworkAdaptor<TControl, TView>
-        {
-            IEnumerable<TControl> GetChildren(TControl control);
-
-            bool IsInControl(TControl control, TControl testParent);
-
-            void SetViewTitle(TView view, string title);
-        }
-    */
-
-
-    public class KeyboardKeyEventArgs : CancelEventArgs
-    {
-        public virtual KeyboardKey Key { get; set; }
-    }
-
-    /// <summary>
-    /// A handler that receives key events.
-    /// <para>
-    /// <see cref="ViewBinderBase{TControl}"/> calls this on bound controls that implement it.
-    /// </para>
-    /// </summary>
-    public interface IKeyboardKeyHandler
-    {
-        void NotifyKeyDown(KeyboardKeyEventArgs args);
     }
 
 }

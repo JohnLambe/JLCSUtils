@@ -55,9 +55,11 @@
     <Compile Include="Binding\!NamespaceDoc.cs" />
     <Compile Include="Binding\AttributedControlBinder.cs" />
     <Compile Include="Binding\Attributes.cs" />
+    <Compile Include="Binding\BindingConsts.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
     <Compile Include="Binding\GetNameDelegate.cs" />
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
+    <Compile Include="Binding\IViewBinder.cs" />
     <Compile Include="Binding\MvpContext.cs" />
     <Compile Include="Binding\OptionUpdate.cs" />
     <Compile Include="Binding\ViewBinderBase.cs">

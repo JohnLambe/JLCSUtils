@@ -13,6 +13,7 @@ namespace JohnLambe.Util.Db
     {
         public EfDatabaseRepositoryBase(DbContext context) : this(context, (IDbSet<TEntity>)context.Set(typeof(TEntity)))
         {
+            _hasDeletedFlag = Reflection.ReflectionUtil.Implements(typeof(TEntity), typeof(IHasActiveFlag));
         }
 
         public EfDatabaseRepositoryBase(DbContext context, IDbSet<TEntity> set)
@@ -21,9 +22,12 @@ namespace JohnLambe.Util.Db
             Data = set;
         }
 
-        public virtual IQueryable<TEntity> AsQueryable()
+        public virtual IQueryable<TEntity> AsQueryable(bool includeDeleted = false)
         {
-            return Data.AsQueryable<TEntity>();
+            if (includeDeleted || !_hasDeletedFlag)
+                return Data.AsQueryable<TEntity>();
+            else
+                return Data.AsQueryable<TEntity>().Where(x => ((IHasActiveFlag)x).IsActive);
         }
 
         public virtual TEntity Find(params object[] keyValues)
@@ -36,6 +40,11 @@ namespace JohnLambe.Util.Db
             Context.Entry<TEntity>(entity).State = EntityState.Detached;
             return entity;
         }
+
+        /// <summary>
+        /// true iff the entity implements <see cref="IHasActiveFlag"/>.
+        /// </summary>
+        protected readonly bool _hasDeletedFlag;
 
         protected readonly DbContext Context;
         protected readonly IDbSet<TEntity> Data;
@@ -89,12 +98,12 @@ namespace JohnLambe.Util.Db
             return Context.SaveChanges();
         }
 
-        public virtual TEntity Create()
+        public virtual TEntity Create(object context = null)
         {
             return Data.Create();
         }
 
-        public virtual TDerivedEntity Create<TDerivedEntity>()
+        public virtual TDerivedEntity Create<TDerivedEntity>(object context = null)
             where TDerivedEntity : class, TEntity
         {
             return Data.Create<TDerivedEntity>();

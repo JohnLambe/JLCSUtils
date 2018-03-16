@@ -42,8 +42,9 @@ namespace MvpFramework.Menu
                         IsDefault = handlerInfo.Attribute.IsDefault,
                         Visible = handlerInfo.Attribute.IsVisible,
                         Enabled = handlerInfo.Attribute.IsEnabled,
-                        CausesValidation = handlerInfo.Attribute.CausesValidation,
+                        Validation = handlerInfo.Attribute.Validation,
                         Order = handlerInfo.Attribute.Order,
+                        Style = handlerInfo.Attribute.Style,
                         Filter = filter,    // handlerInfo.Attribute.Filter
                     };
                     option.Invoked += handlerInfo.HandlerWithArgsDelegate; // CreateInvokeDelegate(handlerInfo, target);

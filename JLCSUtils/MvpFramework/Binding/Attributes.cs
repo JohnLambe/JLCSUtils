@@ -44,6 +44,7 @@ namespace MvpFramework.Binding
         /// The ID of the handler, referenced in the user interface.
         /// null to derive from the method name.
         /// </summary>
+        [Nullable]
         public virtual string Id { get; set; }
 
         /// <summary>
@@ -55,13 +56,16 @@ namespace MvpFramework.Binding
         /// Filters where this appears or is accessible.
         /// e.g. depending on the view and this value, a button may be created that invokes the handler.
         /// </summary>
+        [Nullable]
         public virtual string[] Filter { get; set; }
 
         /// <summary>
         /// If there is only one item in <see cref="Filter"/>, this is it.
         /// If there are none, this is null.
         /// Otherwise, an exception is thrown on reading this.
+        /// (Setting this to a non-null value sets <see cref="Filter"/> to an array containing that value.)
         /// </summary>
+        [Nullable]
         public virtual string SingleFilter
         {
             get
@@ -93,29 +97,33 @@ namespace MvpFramework.Binding
         /// <summary>
         /// The name displayed for this item in the UI.
         /// </summary>
+        [Nullable]
         public virtual string DisplayName { get; set; }
         //TODO?: Localisation.
 
         /// <summary>
         /// Keystroke to invoke this item.
         /// </summary>
+        /// <seealso cref="Menu.KeyType.HotKey"/>
         public virtual KeyboardKey HotKey { get; set; }
 
         /// <summary>
         /// Keystroke to invoke this item while the UI representation of a menu or related item is focussed.
         /// </summary>
+        /// <seealso cref="Menu.KeyType.ContextKey"/>
         public virtual KeyboardKey ContextKey { get; set; }
 
         /// <summary>
         /// The icon to be displayed in the UI for this item.
         /// </summary>
-        [IconId]
+        [IconId,Nullable]
         public virtual string IconId { get; set; }
 
         /// <summary>
         /// An identifier of a group of items (commands or properties).
         /// This can be used by the user interface to group field controls or buttons, etc.
         /// </summary>
+        [Nullable]
         public virtual string Group { get; set; }
 
         /// <summary>
@@ -131,18 +139,28 @@ namespace MvpFramework.Binding
         /// The format of the string depends on the consuming system. It may specify a combination of rights/roles
         /// (So elements of the array are ORed, but rights may be ANDed within each element), or an expression.
         /// </summary>
+        [Nullable]
         public virtual string[] Rights { get; set; }
         //TODO?: Change type to an interface, IPrivilege (same for all similar 'Rights' properties).
 
         /// <summary>
         /// Human-readable description of the item. (Can be used as a hint or help text.)
         /// </summary>
+        [Nullable]
         public virtual string Description { get; set; }
+
+        /// <summary>
+        /// An identifier of a style in the UI. This is for specifying categories of items that can be distinguished by a UI style.
+        /// </summary>
+        /// <seealso cref="UiStyles"/>
+        [Nullable]
+        public virtual string Style { get; set; }
 
         /// <summary>
         /// For use by consumers of this framework.
         /// The meaning is defined by the consumer.
         /// </summary>
+        [Nullable]
         public virtual object Tag { get; set; }
     }
 
@@ -187,9 +205,9 @@ namespace MvpFramework.Binding
         /// <summary>
         /// If true, any value being editing in a control must be validated and updated to the model before calling the handler.
         /// </summary>
-        public virtual bool CausesValidation //{ get; set; } = true;
+        public virtual bool CausesValidation
         {
-            get { return Validation != ValidationOption.None; }
+            get { return Validation.CausesValidation(); }
             set
             {
                 if (!value)
@@ -221,6 +239,45 @@ namespace MvpFramework.Binding
         /// Validate all properties before calling the handler.
         /// </summary>
         ValidateModel
+    }
+
+    public static class ValidationOptionExt
+    {
+        /// <summary>
+        /// True iff this option requires that the value in a control should be validated before invoking an option/button handler.
+        /// Equivalent to the WinForms Control.CausesValidation property.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool CausesValidation(this ValidationOption value)
+            => value != ValidationOption.None;
+    }
+
+
+    /// <summary>
+    /// Identifies of UI styles.
+    /// </summary>
+    /// <seealso cref="MvpUiAttributeBase.Style"/>
+    public static class UiStyles
+    {
+        /// <summary>
+        /// Opposite of <see cref="Dangerous"/>.
+        /// e.g. for actions that avoid an action that involves data loss, e.g. cancelling deleting something.
+        /// <para>
+        /// Possible UI stlyes are a green border, or green tint.
+        /// </para>
+        /// </summary>
+        //| Inspired by Palm/HP webOS.
+        public const string Safe = "Safe";
+
+        /// <summary>
+        /// For actions that do something destructive (such as deleting information) or irreversible, that involve a warning, or that the user should be careful not to do accidentally.
+        /// <para>
+        /// Possible UI stlyes are a red border, or red tint.
+        /// </para>
+        /// </summary>
+        //| Inspired by Palm/HP webOS.
+        public const string Dangerous = "Dangerous";
     }
 
     #endregion

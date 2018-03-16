@@ -14,6 +14,7 @@ namespace MvpFramework.Binding
     {
         public abstract EventHandler GetHandler(string handlerId, string filter = null, bool allowNull = false);
 
+        public abstract IOptionCollection GetOptionCollection(string filter);
     }
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public virtual IOptionCollection GetOptionCollection(string filter)
+        public override IOptionCollection GetOptionCollection(string filter)
         {
             return new OptionCollectionBuilder().Build(Presenter, filter);
         }

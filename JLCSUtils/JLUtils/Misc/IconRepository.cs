@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Misc
 {
-    /*
     public abstract class IconRepositoryBase<TKeyType, TImageType> : IIconRepository<TKeyType, TImageType>
     {
-        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal)
+        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal, int size = -1)
         {
-            return LoadIcon(KeyString(iconId, state));
+            return LoadIcon(KeyString(iconId, state, size));
         }
 
         protected abstract TImageType LoadIcon(string iconKey);
 
-        protected virtual string KeyString(TKeyType iconId, IconState state = IconState.Normal)
+        protected virtual string KeyString(TKeyType iconId, IconState state = IconState.Normal, int size = -1)
         {
             if (iconId == null)
                 return null;
@@ -24,6 +23,7 @@ namespace JohnLambe.Util.Misc
         }
     }
 
+    /*
 
     public class FileIconRepository<TKeyType, TImageType> : IconRepositoryBase<TKeyType, TImageType>
     {
@@ -32,9 +32,9 @@ namespace JohnLambe.Util.Misc
             this.Directory = directory;
         }
 
-        protected virtual TImageType LoadIcon(string iconId)
+        protected override TImageType LoadIcon(string iconId)
         {
-
+            throw new NotImplementedException();
         }
 
         protected readonly string Directory;
@@ -43,7 +43,7 @@ namespace JohnLambe.Util.Misc
 
     public class ResourceIconRepository<TKeyType, TImageType> : IconRepositoryBase<TKeyType, TImageType>
     {
-        protected virtual TImageType LoadIcon(string iconId)
+        protected override TImageType LoadIcon(string iconId)
         {
 
         }
@@ -52,7 +52,7 @@ namespace JohnLambe.Util.Misc
 
     public class IconRepositoryChain<TKeyType, TImageType> : IconRepositoryBase<TKeyType, TImageType>
     {
-        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal)
+        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal, int size = -1)
         {
 
         }
@@ -68,7 +68,7 @@ namespace JohnLambe.Util.Misc
             this.InternalRepository = internalRepository;
         }
 
-        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal)
+        public virtual TImageType GetIcon(TKeyType iconId, IconState state = IconState.Normal, int size = -1)
         {
             TImageType result;
             if(Cache.TryGetValue(iconId, out result))

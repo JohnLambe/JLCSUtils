@@ -83,6 +83,7 @@ TODO:
 	Grid for linking with ButtonContainer:
 		Double-click on calls InvokeDefault().
 		Enable/Disable controls based on whether there is a selected record.
+	ViewBinder handles hotkeys on the model mathcing a certain filter.
 
 
 Possible additions:

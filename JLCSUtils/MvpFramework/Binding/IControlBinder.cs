@@ -57,18 +57,34 @@ namespace MvpFramework.Binding
         int ValidationOrder { get; }
     }
 
-    public enum ControlValidationOptions
+
+    /// <summary>
+    /// Options/context for validating a control.
+    /// </summary>
+    public class ControlValidationOptions
+    {
+        public ControlValidationFlags Flags { get; set; }
+
+        public static ControlValidationOptions Highlight => new ControlValidationOptions() { Flags = ControlValidationFlags.Highlight };
+        public static ControlValidationOptions Enter => new ControlValidationOptions() { Flags = ControlValidationFlags.Enter };
+    }
+
+
+    [Flags]
+    public enum ControlValidationFlags
     {
         /// <summary>
         /// Update the UI to indicate whether the control is valid. This may display the validation error modelessly (such as beside the control),
         /// or just highlight the control (icon, change in style, etc.).
         /// </summary>
         Highlight = 1,
+
         /// <summary>
         /// If the value is invalid, focus the control, show a modal error, or otherwise get the user to correct the value.
         /// </summary>
-        Enter
+        Enter = 2
     }
+
 
     public interface IControlBinderExt : IControlBinder
     {

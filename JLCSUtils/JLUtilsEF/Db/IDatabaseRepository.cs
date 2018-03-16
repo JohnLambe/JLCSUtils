@@ -19,7 +19,7 @@ namespace JohnLambe.Util.Db
         /// Get the whole contents of the repository.
         /// </summary>
         /// <returns></returns>
-        IQueryable<TEntity> AsQueryable();
+        IQueryable<TEntity> AsQueryable(bool includeDeleted = false);
 
         /// <summary>
         /// Find a single instance by its key.
@@ -85,19 +85,21 @@ namespace JohnLambe.Util.Db
         /// <summary>
         /// Create an instance of the type for the repository. It is not attached to the ORM context.
         /// </summary>
-        /// <returns></returns>
-        TEntity Create();
+        /// <param name="context">Context information for creating an entity. (The interpretation depends on the repository implementation.)</param>
+        /// <returns>the new entity.</returns>
+        TEntity Create(object context = null);
 
         /// <summary>
         /// Create an instance of a specified type that can be stored in the repository (the repository's type or a subclass of it).
         /// </summary>
         /// <typeparam name="TDerivedEntity">The type of entity to be created.</typeparam>
+        /// <param name="context">Context information for creating an entity.</param>
         /// <returns>the new entity.</returns>
         /// <exception cref="InvalidOperationException">
         /// If the requested type cannot be created or stored in this repository.
         /// A repository may not be able to store all subclasses of its base type.
         /// </exception>
-        TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, TEntity;
+        TDerivedEntity Create<TDerivedEntity>(object context = null) where TDerivedEntity : class, TEntity;
 
         /*  These could be added, preferably replacing the EntityState type with one not specific to Entity Framework.
          *  Currently, separate methods are used for each state transition instead.
@@ -118,4 +120,18 @@ namespace JohnLambe.Util.Db
 
         bool SaveChanges(object entity);
     }
+
+
+    /// <summary>
+    /// Interface for an entity that has a flag indicating whether it is deleted.
+    /// </summary>
+    public interface IHasActiveFlag
+    {
+        /// <summary>
+        /// true iff this is not deleted.
+        /// </summary>
+        //| It could, alternatively, be called "IsDeleted", with the opposite meaning.
+        bool IsActive { get; set; }
+    }
+
 }

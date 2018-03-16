@@ -8,6 +8,8 @@ using System.Diagnostics;
 using JohnLambe.Util;
 using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.Types;
+using JohnLambe.Util.Misc;
+using MvpFramework.Binding;
 
 namespace MvpFramework.Menu
 {
@@ -88,6 +90,7 @@ namespace MvpFramework.Menu
         /// Keystroke to invoke this item while the UI representation of a menu or related item is focussed.
         /// </summary>
         /// <seealso cref="MvpFramework.Binding.MvpUiAttributeBase.ContextKey"/>
+        /// <seealso cref="Menu.KeyType.ContextKey"/>
         public virtual KeyboardKey ContextKey { get; set; }
 
         /// <summary>
@@ -134,7 +137,10 @@ namespace MvpFramework.Menu
         public virtual bool IsDefault { get; set; }
 
         /// <inheritdoc cref="Binding.MvpHandlerAttribute.CausesValidation"/>
-        public virtual bool CausesValidation { get; set; } = true;
+        public virtual bool CausesValidation => Validation.CausesValidation();
+
+        /// <inheritdoc cref="Binding.MvpHandlerAttribute.Validation"/>
+        public virtual ValidationOption Validation { get; set; } = ValidationOption.ValidateProperty;
 
         /// <summary>
         /// Ordered list of the immediate children of this item.
@@ -185,11 +191,16 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Make the item (in the children of this item) with the given <see cref="MenuItemModel.ReturnValue"/> the default.
         /// </summary>
-        /// <param name="returnValue"></param>
-        public virtual void SetDefaultByReturnValue(object returnValue)
+        /// <param name="returnValue">Value to match <see cref="MenuItemModel.ReturnValue"/> of the item to be set as default.</param>
+        /// <returns>The new default item, or null if none matched the given value.</returns>
+        [return: Nullable]
+        public virtual MenuItemModel SetDefaultByReturnValue(object returnValue)
         {
             ClearDefault();
-            Children.FirstOrDefault(o => o.ReturnValue == returnValue).IsDefault = true;
+            var item = Children.FirstOrDefault(o => o.ReturnValue == returnValue);
+            if(item != null)
+                item.IsDefault = true;
+            return item;
         }
 
         /// <summary>
@@ -250,6 +261,7 @@ namespace MvpFramework.Menu
         /// Identifier of the icon of the menu.
         /// null for no icon.
         /// </summary>
+        [IconId,Nullable]
         public virtual string IconId { get; set; }  //TODO
         // From attribute, OR separately mapped to ID.
 
@@ -259,6 +271,7 @@ namespace MvpFramework.Menu
         /// Systems that use this must have their own rules for how it is used.
         /// It is recommended that use of this proprty is controlled by the View. It could be used to point to the UI object of the menu item in the view.
         /// </summary>
+        [Nullable]
         public virtual object Tag { get; set; }
 
         /// <summary>
@@ -305,6 +318,9 @@ namespace MvpFramework.Menu
             }
         }
         protected bool? _checked = null;
+
+        /// <inheritdoc cref="MvpUiAttributeBase.Style"/>
+        public virtual string Style { get; set; }
 
         public virtual void Refresh()
         {

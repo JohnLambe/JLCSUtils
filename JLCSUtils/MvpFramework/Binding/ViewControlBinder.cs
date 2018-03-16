@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MvpFramework.Menu;
+using JohnLambe.Util.Types;
 
 namespace MvpFramework.Binding
 {
@@ -12,7 +14,7 @@ namespace MvpFramework.Binding
     /// A control binder for the View itself (binds events and properties of the View class).
     /// <para>The bound control is typically a View (usually <see cref="IView"/>) but does not have to be.</para>
     /// </summary>
-    public class ViewControlBinder : IControlBinderExt
+    public class ViewControlBinder : IControlBinderExt, IKeyboardKeyHandler
     {
         /// <summary>
         /// </summary>
@@ -72,8 +74,10 @@ namespace MvpFramework.Binding
                 HasBindng = true;
             if (BindProperties(BoundControl, context.ModelBinder))
                 HasBindng = true;
+            if (BindKeys(BoundControl, context.PresenterBinder))
+                HasBindng = true;
 
-            if(HasBindng)
+            if (HasBindng)
                 MvpRefresh();    // to populate the property values bound in BindProperties(...)
         }
 
@@ -110,6 +114,27 @@ namespace MvpFramework.Binding
                 }
             }
             return anyBinding;
+        }
+
+        /// <summary>
+        /// Bind handlers to be invoked by keystrokes on the view.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="presenterBinder">Wrapper of the presenter to bind to.</param>
+        /// <returns></returns>
+        public virtual bool BindKeys(object target, PresenterBinderWrapperBase presenterBinder)
+        {
+            _keyHandlers = presenterBinder.GetOptionCollection(BindingConsts.Filter_Keys);
+            
+            if(!_keyHandlers.Children.Any())
+            {
+                _keyHandlers = null;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         /// <summary>
@@ -151,9 +176,20 @@ namespace MvpFramework.Binding
             return anyBinding;
         }
 
+        public virtual void NotifyKeyDown(KeyboardKeyEventArgs args)
+        {
+            _keyHandlers?.ProcessKey(args.Key, KeyType.HotKey);
+        }
+
         /// <summary>
         /// Delegate to populate the view properties from the model properties.
         /// </summary>
         protected event VoidDelegate _propertyBinding;
+
+        /// <summary>
+        /// Handlers for keystrokes.
+        /// </summary>
+        [Nullable]
+        protected IOptionCollection _keyHandlers;
     }
 }
