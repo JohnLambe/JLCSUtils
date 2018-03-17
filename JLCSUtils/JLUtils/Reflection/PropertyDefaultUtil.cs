@@ -48,6 +48,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="targetType">The type to set static properties on. If null, this does nothing.</param>
         /// <param name="bindingFlags">Binding flags to filter properties to be set.
         /// The default is all static properties, including non-public, and private properties on base classes.
+        /// Static properties of base classes are set if and only if <see cref="BindingFlagsExt.FlattenHierarchy"/> (for public/protected properties) and/or <see cref="BindingFlagsExt.InheritedPrivate"/> (for private properties) are included.
         /// <para>If <see cref="BindingFlagsExt.InheritedPrivate"/> is included, private properties (and properties with private setters) on base classes are recognised.</para>
         /// <para><see cref="BindingFlagsExt.Static"/> is treated as being set even if it is not set.</para>
         /// </param>
@@ -70,7 +71,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="inheritAttributes">true iff attributes inherited from the property on a base class are recognised.</param>
         private static void PopulateDefaultsInternal([NotNull] Type targetType, [NotNull]object target, BindingFlagsExt bindingFlags = BindingFlagsExt.Public | BindingFlagsExt.NonPublic | BindingFlagsExt.Static | BindingFlagsExt.FlattenHierarchy | BindingFlagsExt.InheritedPrivate, bool inheritAttributes = true)
         {
-            if (bindingFlags.HasFlag(BindingFlagsExt.InheritedPrivate))  // if we setting inherited private properties
+            if (bindingFlags.HasFlag(BindingFlagsExt.InheritedPrivate))  // if we are setting inherited private properties
             {
                 // The base class properties are done first, so if a property was matched by both scans, the overriding one would be set last.
                 // But the same property should not be set twice, because this could potentially have undesired side effects in logic in its setter.

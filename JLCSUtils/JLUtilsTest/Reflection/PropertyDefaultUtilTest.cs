@@ -110,11 +110,11 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
             // Assert:
 
-            Assert.AreEqual(10.5m, TestClassForDefaultPopulation.StaticProperty, "Static property should not be set");
+            Assert.AreEqual(10.5m, TestClassForDefaultPopulation.StaticProperty, "Static property not set");
 
             // Not to be set:
-            Assert.AreEqual(null, target.StringProperty2, "Common case");
-            Assert.AreEqual("initial value", target.NoDefault, "No default attribute");
+            Assert.AreEqual(null, target.StringProperty2, "Should not have been set: Common case");
+            Assert.AreEqual("initial value", target.NoDefault, "Should not have been set: No default attribute");
         }
 
         [TestMethod]
@@ -131,10 +131,14 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
         public void PopulateStaticDefaults_InheritedPrivate()
         {
             // Act:
-            PropertyDefaultUtil.PopulateStaticDefaults(typeof(TestClassForDefaultPopulation_NonPublic), BindingFlagsExt.Static | BindingFlagsExt.Public);
+            PropertyDefaultUtil.PopulateStaticDefaults(typeof(TestClassForDefaultPopulation_NonPublic), 
+                BindingFlagsExt.Static | BindingFlagsExt.Public | BindingFlagsExt.NonPublic | BindingFlagsExt.InheritedPrivate
+                | BindingFlagsExt.FlattenHierarchy);
 
             // Assert:
-            Assert.AreEqual(102, TestClassForDefaultPopulation.StaticPrivateProperty, "Static private");
+            Assert.AreEqual(102, TestClassForDefaultPopulationBase.ReadStaticPrivateProperty, "Static private");
+            Assert.AreEqual(-200, TestClassForDefaultPopulationBase.StaticPublicProperty, "Static public");
+            Assert.AreEqual("StaticPrivateSetterProperty", TestClassForDefaultPopulationBase.StaticPrivateSetterProperty, "StaticPrivateSetterProperty");
         }
 
         [TestMethod]
@@ -172,8 +176,19 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             [DefaultValue("Private")]
             public virtual string PrivateSetterProperty { get; private set; }
 
+            [DefaultValue("StaticPrivateSetterProperty")]
+            public static string StaticPrivateSetterProperty { get; private set; }
+
+            [DefaultValue(-200)]
+            public static int StaticPublicProperty { get; set; } = 999;
+
             [DefaultValue(102)]
-            public static int StaticPrivateProperty { get; set; } = 101;
+            private static int StaticPrivateProperty { get; set; } = 101;
+
+            /// <summary>
+            /// To test what value was assigned to the private property.
+            /// </summary>
+            public static int ReadStaticPrivateProperty => StaticPrivateProperty;
         }
 
         public class TestClassForDefaultPopulation : TestClassForDefaultPopulationBase
