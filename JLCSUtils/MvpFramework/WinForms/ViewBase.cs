@@ -22,7 +22,8 @@ namespace MvpFramework.WinForms
     /// <summary>
     /// Optional base class for Views.
     /// </summary>
-    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView, INotifyOnDispose, INestableView
+    public class ViewBase : UserControl, IView, IOptionUpdate, IContainerView, INotifyOnDispose, INestableView,
+        IValidatableView
     {
         /// <summary>
         /// Initialise with no Message Dialog Service.
@@ -216,6 +217,10 @@ namespace MvpFramework.WinForms
             return ViewBinder.ValidateModel(model);
         }
 
+        public virtual bool ValidateControls()
+        {
+            return ViewBinder.ValidateControls();
+        }
     }
 
 }

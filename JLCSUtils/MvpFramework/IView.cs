@@ -111,5 +111,7 @@ namespace MvpFramework
         /// </summary>
         /// <returns>true iff valid.</returns>
         bool ValidateModel(object model = null);
+
+        bool ValidateControls();
     }
 }

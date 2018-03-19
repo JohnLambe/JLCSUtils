@@ -177,7 +177,7 @@ namespace MvpFramework.Binding
         /// </summary>
         /// <param name="control"></param>
         /// <returns>true iff there were no validation errors.</returns>
-        public virtual bool ValidateControls(TControl control)
+        public virtual bool ValidateControls(TControl control = null)
         {
             bool valid = true;  // true iff all controls so far are valid
             if (Binders != null)

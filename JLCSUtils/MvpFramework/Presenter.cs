@@ -94,6 +94,15 @@ namespace MvpFramework
             return (View as IValidatableView)?.ValidateModel() ?? true;
         }
 
+        /// <summary>
+        /// Validate all bound controls in the view.
+        /// </summary>
+        /// <returns>true iff valid, or if the View does not support this validation.</returns>
+        protected virtual bool ValidateControls()
+        {
+            return (View as IValidatableView)?.ValidateControls() ?? true;
+        }
+
         #region Dispose
 
         /// <summary>

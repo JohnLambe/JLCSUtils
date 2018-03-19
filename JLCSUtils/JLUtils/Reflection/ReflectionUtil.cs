@@ -995,7 +995,6 @@ namespace JohnLambe.Util.Reflection
         }
 
 
-
         // For converting between nullable and non-nullable types, see GenericTypeUtil.
     }
 
@@ -1022,16 +1021,19 @@ namespace JohnLambe.Util.Reflection
         /// No nullability modifier is present.
         /// </summary>
         None = 0,
+
         /// <summary>
         /// The value may be null and/or the property may not exist.
         /// </summary>
         [EnumMappedValue('?')]
         Nullable = 1,
+
         /// <summary>
         /// The property must exist but may have a null value.
         /// </summary>
         [EnumMappedValue('@')]
         ExistsNullable = 2,
+        
         /// <summary>
         /// The value must not be null.
         /// (The property must exist, since there couldn't be a non-null value otherwise.)
