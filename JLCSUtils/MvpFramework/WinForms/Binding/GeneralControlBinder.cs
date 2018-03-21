@@ -334,14 +334,16 @@ namespace MvpFramework.Binding
         public virtual bool Validate(ControlValidationOptions options)
         {
             var isValid = IsValid();
-
-            _boundControl.BackColor = isValid ? Color.Yellow : _backColor;
-
-            if (!isValid)
+            if (HasValue())
             {
-                if (options.Flags.HasFlag(ControlValidationFlags.Enter))
+                _boundControl.BackColor = !isValid ? Color.Yellow : _backColor;
+
+                if (!isValid)
                 {
-                    _boundControl.Focus();
+                    if (options.Flags.HasFlag(ControlValidationFlags.Enter))
+                    {
+                        _boundControl.Focus();
+                    }
                 }
             }
             return isValid;
@@ -349,9 +351,22 @@ namespace MvpFramework.Binding
 
         protected Color _backColor;
 
+        /// <summary>
+        /// true iff the bound control has a data value that can be bound.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool HasValue()
+        {
+            return _controlProperty != null;
+        }
+
+        /// <summary>
+        /// true iff the valid in this control is valid. If it is not bound or does not do any validation, it is considered valid.
+        /// </summary>
+        /// <returns></returns>
         protected virtual bool IsValid()
         {
-            var value = _controlProperty.GetValue(_boundControl);
+            var value = _controlProperty?.GetValue(_boundControl) ?? true;
 
             try
             {

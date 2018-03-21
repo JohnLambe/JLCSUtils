@@ -47,10 +47,6 @@ namespace MvpDemo
 //            MessageBox.Show("ModifiedChanged " + (sender as Control).Name + " " + (sender as TextBoxBase).Modified);
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show("Ok clicked");  // fires before Presenter
-        }
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -88,6 +84,11 @@ namespace MvpDemo
         private void btnValidate_Click(object sender, EventArgs e)
         {
             ViewBinder.ValidateModel();
+        }
+
+        private void uiValidateControls_Click(object sender, EventArgs e)
+        {
+//            ViewBinder.ValidateControls();
         }
     }
 }

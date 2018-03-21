@@ -189,7 +189,8 @@ namespace MvpFramework.Binding
                 {
                     if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl, control))      // if refreshing all controls, or this one is in the requested one
                     {
-                        valid = valid && ((IValidateableControl)binder).Validate(ControlValidationOptions.Highlight);
+                        bool currentValid = ((IValidateableControl)binder).Validate(ControlValidationOptions.Highlight);   // do this even if !valid
+                        valid = valid && currentValid;
                     }
                 }
 

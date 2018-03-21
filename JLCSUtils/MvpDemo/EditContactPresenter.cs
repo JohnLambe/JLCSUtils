@@ -43,6 +43,13 @@ namespace MvpDemo
             View.RefreshView();
         }
 
+        [MvpHandler(Id = "ValidateControls")]
+        public void HandleValidateControlsClick()
+        {
+//            UiController.ShowMessage("ValidateControls");
+            (View as IValidatableView)?.ValidateControls();
+        }
+
         [MvpHandler(Filter = new [] { "RightPanel" }, HotKey = KeyboardKey.F2)]
         public void Command1()
         {
