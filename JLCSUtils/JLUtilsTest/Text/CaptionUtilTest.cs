@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JohnLambe.Util.Text;
 using System.Dynamic;
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace JohnLambe.Tests.JLUtilsTest.Text
 {
@@ -55,6 +57,17 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
             );
         }
 
+        [TestMethod]
+        public void GetDisplayName_Class()
+        {
+            Multiple(
+                () => Assert.AreEqual("test display name", CaptionUtil.GetDisplayName(typeof(TestClass)), "from attribute on class"),
+                () => Assert.AreEqual("test display name", CaptionUtil.GetDisplayName(typeof(TestSubClass)), "from attribute on base class"),
+                () => Assert.AreEqual("Caption Util Test", CaptionUtil.GetDisplayName(GetType()), "from class name")
+            );
+        }
+
+
         #region GetDisplayNameForObject
 
         [TestMethod]
@@ -86,12 +99,17 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
         }
         */
 
+        #endregion
+
+        [DisplayName("test display name")]
         public class TestClass
         {
             public string Description { get; set; }
         }
 
-        #endregion
+        public class TestSubClass : TestClass
+        {
+        }
 
         [System.ComponentModel.Description("Description of TestProperty1")]
         public string TestProperty1 { get; set; }

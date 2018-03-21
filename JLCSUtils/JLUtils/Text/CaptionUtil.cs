@@ -89,7 +89,22 @@ namespace JohnLambe.Util.Text
                 return null;
             else
                 return GetDisplayNameFromAttribute(member)
-                    ?? PascalCaseToCaption(member.Name.RemovePrefix(prefix).RemoveSuffix(suffix));
+                    ?? PascalCaseToCaption(PreprocessTypeName(member)).RemovePrefix(prefix).RemoveSuffix(suffix);
+        }
+
+        [return: Nullable]
+        static string PreprocessTypeName([Nullable] MemberInfo cls)
+        {
+            string className = (cls as TypeInfo)?.FullName;
+            if (className?.StartsWith("System.Data.Entity.DynamicProxies.") ?? false)    // if in the namespace for Entity Framework generated proxy classes
+            {   // name are in the format '<Original Name> "_" <added unique ID>' in this namespace.
+                className = cls.Name;
+                return className.Substring(0, className.LastIndexOf('_'));  // everthing before last '_' - remove the added part
+            }
+            else
+            {
+                return cls.Name;
+            }
         }
 
         /// <summary>
