@@ -20,14 +20,17 @@ namespace MvpFramework.WinForms
         public WindowViewBase() : this((IMessageDialogService)null)
         {
         }
+
         public WindowViewBase(IMessageDialogService dialogService) : base(dialogService)
         {
             Init();
         }
+
         public WindowViewBase(IMvpFrameworkDetails mvpFramework) : base(mvpFramework)
         {
             Init();
         }
+
         private void Init()
         {
             InitializeComponent();

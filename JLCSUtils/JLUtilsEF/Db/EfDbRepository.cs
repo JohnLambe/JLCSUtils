@@ -41,6 +41,11 @@ namespace JohnLambe.Util.Db
             return entity;
         }
 
+        public virtual object GetOriginalValue(TEntity entity, string propertyName)
+        {
+            return Context.Entry(entity).OriginalValues[propertyName];
+        }
+
         /// <summary>
         /// true iff the entity implements <see cref="IHasActiveFlag"/>.
         /// </summary>

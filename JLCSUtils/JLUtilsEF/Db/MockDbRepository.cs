@@ -112,6 +112,11 @@ namespace JohnLambe.Util.Db
             return entity;
         }
 
+        public object GetOriginalValue(TEntity entity, string propertyName)
+        {
+            throw new NotImplementedException("GetOriginalValue not implemented in MockDatabaseRepository");
+        }
+
         #endregion
 
         #region Mock features

@@ -35,6 +35,35 @@ namespace JohnLambe.Util.Db
         /// <param name="entity"></param>
         /// <returns></returns>
         TEntity Detach(TEntity entity);
+
+        /// <summary>
+        /// Get the original value of 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        object GetOriginalValue(TEntity entity, string propertyName);
+
+
+        //| We could provide this, for iterating through original values:
+        // IPropertyCollection GetOriginalValues(TEntity entity);
+    }
+
+    /*
+    public interface IPropertyCollection : IReadOnlyDictionary<string,object>
+    {
+    }
+    */
+
+
+    public interface IDatabaseExt<TEntity> : IDatabaseRepositoryBase<TEntity>
+    {
+        /// <summary>
+        /// Return the unmodified version of the given entity.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        TEntity GetOriginal(TEntity entity);
     }
 
 
@@ -101,7 +130,8 @@ namespace JohnLambe.Util.Db
         /// </exception>
         TDerivedEntity Create<TDerivedEntity>(object context = null) where TDerivedEntity : class, TEntity;
 
-        /*  These could be added, preferably replacing the EntityState type with one not specific to Entity Framework.
+
+        /*  These could be added, replacing the EntityState type with one not specific to Entity Framework.
          *  Currently, separate methods are used for each state transition instead.
            
                 void SetState<TEntity>(TEntity entity, EntityState state) where TEntity : class;

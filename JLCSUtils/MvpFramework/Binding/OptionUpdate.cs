@@ -56,7 +56,7 @@ namespace MvpFramework.Binding
         /// <param name="id">Id to match <see cref="MenuItemModel.Id"/>. null to not use this.</param>
         /// <param name="filter">Filter value to match against <see cref="MenuItemModel.Filter"/>. null to not filter on this.</param>
         /// <param name="d">Delegate to run on each option.</param>
-        public static void UpdateOptionByDelegate(this IOptionUpdate optionUpdate, string filter, string id, VoidDelegate<MenuItemModel> d)
+        public static void UpdateOptionByDelegate(this IOptionUpdate optionUpdate, string id, string filter, VoidDelegate<MenuItemModel> d)
         {
             optionUpdate.UpdateOption(new OptionUpdateArgs() { Filter = filter, Id = id, OnUpdate = args => d(args.Option) });
         }
