@@ -68,7 +68,7 @@ namespace MvpFramework.WinForms.Controls
 
         /// <summary>
         /// The nested view control.
-        /// null if the nested view is not a Control.
+        /// null if the nested view is not a <see cref="Control"/>.
         /// </summary>
         [Nullable]
         public virtual Control ViewControl => NestedView as Control;
@@ -79,7 +79,7 @@ namespace MvpFramework.WinForms.Controls
 
         /// <summary>
         /// Does nothing.
-        /// Binding the outer (containing) view does not bind the conatin the nested (contained) one.
+        /// Binding the outer (containing) view does not bind the nested (contained) one.
         /// The contained view must be bound separately in the usual way.
         /// </summary>
         /// <param name="modelBinder"></param>

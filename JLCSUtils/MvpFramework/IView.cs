@@ -66,7 +66,7 @@ namespace MvpFramework
     }
 
     /// <summary>
-    /// A View that be placed in another View.
+    /// A View that can be placed in another View.
     /// </summary>
     /// <seealso cref="INestedView"/>
     public interface INestableView : IView

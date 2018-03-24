@@ -82,7 +82,7 @@ namespace MvpFramework.Dialog
         public static readonly IOptionCollection Options_Ok = new OptionCollection(
             new MenuItemModel[]
             {
-                new MenuItemModel(MessageDialogResponse.Ok) { DisplayName = "Ok", AcceleratorChar = 'O', IsDefault = true }
+                new MenuItemModel(MessageDialogResponse.Ok) { DisplayName = "Ok", AcceleratorChar = 'O', HotKey = KeyboardKey.Return, IsDefault = true }
             }
         );
 
@@ -94,9 +94,13 @@ namespace MvpFramework.Dialog
             {
                 new MenuItemModel(MessageDialogResponse.Yes) { DisplayName = "Yes", AcceleratorChar = 'Y' },
                 new MenuItemModel(MessageDialogResponse.No) { DisplayName = "No", AcceleratorChar = 'N' },
-                new MenuItemModel(MessageDialogResponse.Cancel) { DisplayName = "Cancel", AcceleratorChar = 'C' },
+                new MenuItemModel(MessageDialogResponse.Cancel) { DisplayName = "Cancel", AcceleratorChar = 'C', HotKey = KeyboardKey.Escape },
             }
         );
+
+        public static readonly IOptionCollection Options_YesNo = new OptionCollection(
+            Options_Confirm.Children.Take(2).ToArray()
+            );
 
         #endregion
 

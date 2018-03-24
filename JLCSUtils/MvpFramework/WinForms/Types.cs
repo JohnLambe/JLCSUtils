@@ -30,7 +30,7 @@ namespace MvpFramework.WinForms
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static KeyboardKey ToKeyboardKey(Keys key)
+        public static KeyboardKey ToKeyboardKey(this Keys key)
         {
             return (KeyboardKey)key;
         }

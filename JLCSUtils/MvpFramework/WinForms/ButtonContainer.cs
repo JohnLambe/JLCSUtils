@@ -568,12 +568,13 @@ namespace MvpFramework.WinForms
         {
             if (e.KeyChar == '\r')
                 InvokeDefault();
-            //TODO: Process other keys; Context Keys
+            
+            //Buttons.ProcessKey( );    // Process other keys; Context Keys
         }
 
         protected virtual void AssociatedControl_KeyDown(object sender, KeyEventArgs e)
         {
-            //TODO: Process other keys; Context Keys
+            Buttons.ProcessKey(e.KeyData.ToKeyboardKey());
         }
 
         /// <summary>
@@ -663,11 +664,11 @@ namespace MvpFramework.WinForms
         /// <summary>
         /// Horizontal row of buttons, centred.
         /// </summary>
-        HorizontalCentred,
+        HorizontalCentered,
         /// <summary>
         /// Vertical row of buttons, centred.
         /// </summary>
-        VerticalCentred
+        VerticalCentered
     }
 
 }

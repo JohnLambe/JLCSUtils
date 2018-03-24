@@ -369,11 +369,7 @@ namespace MvpFramework.Binding
                     newValue = eventArgs.NewValue;        // may have been updated by a handler
                     modified = true;
                 }
-                if (eventArgs.InvalidateView)
-                {
-                    ModelBinder.InvalidateView();
-                    eventArgs.InvalidateView = false;
-                }
+                DoInvalidateView(eventArgs);
 
                 return results.Modified || modified;
             }
@@ -401,13 +397,23 @@ namespace MvpFramework.Binding
 
             var eventArgs = new ValueChangedEventArgs<object, object>(ModelBinder.AsObject, Name, Value, newValue, ValidationStage.Validating, evt);
             OnValidated?.Invoke(this, eventArgs);
+            DoInvalidateView(eventArgs);
+
+            ModelBinder.NotifyValidationStage(ValidationStage.AfterValidated);
+        }
+
+        /// <summary>
+        /// Invalidate the view (and reset the <see cref="ValueChangedEventArgs{TModel, TValue}.InvalidateView"/> flag to false),
+        /// if requested in <paramref name="eventArgs"/>.
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        private void DoInvalidateView(ValueChangedEventArgs<object, object> eventArgs)
+        {
             if (eventArgs.InvalidateView)
             {
                 ModelBinder.InvalidateView();
                 eventArgs.InvalidateView = false;
             }
-
-            ModelBinder.NotifyValidationStage(ValidationStage.AfterValidated);
         }
 
         /// <summary>
