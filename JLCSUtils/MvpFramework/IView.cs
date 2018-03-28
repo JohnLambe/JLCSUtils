@@ -50,6 +50,10 @@ namespace MvpFramework
         string ViewId { get; }
     }
 
+    /// <summary>
+    /// A control into which a nested view is inserted
+    /// (by assigning <see cref="INestableView.ViewParent"/> to this).
+    /// </summary>
     public interface INestedViewPlaceholder : INestedView
     {
         /// <summary>
@@ -112,6 +116,11 @@ namespace MvpFramework
         /// <returns>true iff valid.</returns>
         bool ValidateModel(object model = null);
 
+        /// <summary>
+        /// Validate the controls in the user interface and highlight invalid ones.
+        /// This may focus the first invalid control.
+        /// </summary>
+        /// <returns></returns>
         bool ValidateControls();
     }
 }

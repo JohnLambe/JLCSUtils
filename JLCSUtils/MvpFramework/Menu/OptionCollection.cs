@@ -7,6 +7,10 @@ using JohnLambe.Util.Types;
 
 namespace MvpFramework.Menu
 {
+    /// <summary>
+    /// A collection of options, such as a list of commands (which might correspond to buttons etc.)
+    /// or a menu.
+    /// </summary>
     public interface IOptionCollection
     {
         /// <summary>
@@ -45,6 +49,9 @@ namespace MvpFramework.Menu
         [Nullable]
         MenuItemModel Default { get; set; }
 
+        /// <summary>
+        /// Fired on certain changes to collection or an option in it.
+        /// </summary>
         event MenuItemModel.ChangedDelegate Changed;
     }
 
@@ -76,8 +83,7 @@ namespace MvpFramework.Menu
 
 
     /// <summary>
-    /// A collection of options, such as a list of commands (which might correspond to buttons etc.)
-    /// or a menu.
+    /// <inheritdoc cref="IOptionCollection"/>
     /// </summary>
     public class OptionCollection : MenuItemModel, IOptionCollection
     {

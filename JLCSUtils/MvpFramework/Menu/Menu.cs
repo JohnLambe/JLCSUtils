@@ -348,28 +348,34 @@ namespace MvpFramework.Menu
         /// <summary>
         /// A type of change to a menu item.
         /// </summary>
+        [Flags]
         public enum MenuItemChangeType
         {
             /// <summary>
             /// No change.
             /// </summary>
             None = 0,
+
             /// <summary>
             /// Force a refresh of a user interface displaying the item.
             /// </summary>
             Refresh = 1,
+
             /// <summary>
             /// A change other than those indicated by members of this enum.
             /// </summary>
             Other = 2,
+
             /// <summary>
             /// The DisplayName has changed.
             /// </summary>
             Name = 4,
+
             /// <summary>
             /// The Enabled state has changed.
             /// </summary>
             Enabled = 8,
+            
             /// <summary>
             /// The Visible state has changed.
             /// </summary>
@@ -392,6 +398,7 @@ namespace MvpFramework.Menu
             {
                 ChangeType = changeType;
             }
+
             public virtual MenuItemChangeType ChangeType { get; protected set; }
         }
 
