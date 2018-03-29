@@ -161,7 +161,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="member">The member (usually a property) to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
         /// <returns>true iff valid.</returns>
-        public virtual bool TryValidateValue<TValue>(object instance, TValue value, MemberInfo member, ValidationResults results)
+        public virtual bool TryValidateValue<TValue>(object instance, TValue value, MemberInfo member, ValidationResults results = null)
         {
             return TryValidateValue(instance, value, member.GetCustomAttributes<ValidationAttribute>(true), results, member.Name, CaptionUtil.GetDisplayName(member));
         }
@@ -179,7 +179,9 @@ namespace JohnLambe.Util.Validation
         /// <param name="instance">The object on which the value is being validated.</param>
         /// <param name="value">The value to be validated.</param>
         /// <param name="attributes">The attributes providing the validation rules.</param>
-        /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <param name="results">This is populated with validation errors and warnings.
+        /// Can be null (if this is not required).
+        /// </param>
         /// <param name="memberName">The name of the member being validated.</param>
         /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
         /// <returns>true iff valid.</returns>

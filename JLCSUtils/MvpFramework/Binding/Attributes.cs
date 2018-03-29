@@ -103,9 +103,26 @@ namespace MvpFramework.Binding
 
         /// <summary>
         /// Keystroke to invoke this item.
+        /// The first item in <see cref="HotKeys"/>.
         /// </summary>
         /// <seealso cref="Menu.KeyType.HotKey"/>
-        public virtual KeyboardKey HotKey { get; set; }
+        public virtual KeyboardKey HotKey
+        {
+            get { return HotKeys?.ElementAtOrDefault(0) ?? KeyboardKey.None; }
+            set
+            {
+                if (HotKeys == null || HotKeys.Length == 0)
+                    HotKeys = new KeyboardKey[] { value };
+                else
+                    HotKeys[0] = value;
+            }
+        }
+
+        /// <summary>
+        /// All keys to invoke this item.
+        /// Note: UI implementations may support only the first one.
+        /// </summary>
+        public virtual KeyboardKey[] HotKeys { get; set; }
 
         /// <summary>
         /// Keystroke to invoke this item while the UI representation of a menu or related item is focussed.
@@ -278,6 +295,8 @@ namespace MvpFramework.Binding
         /// </summary>
         //| Inspired by Palm/HP webOS.
         public const string Dangerous = "Dangerous";
+        
+        public const string Cancel = "Cancel";
     }
 
     #endregion

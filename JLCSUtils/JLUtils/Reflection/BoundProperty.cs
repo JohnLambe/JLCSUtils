@@ -153,9 +153,11 @@ namespace JohnLambe.Util.Reflection
         /// Test whether the given value is valid for assignment to the property.
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="results"></param>
+        /// <param name="results">This is populated with validation errors and warnings.
+        /// Can be null (if this is not required).
+        /// </param>
         /// <returns>true iff valid.</returns>
-        public virtual bool TryValidateValue(TProperty value, ValidationResults results)
+        public virtual bool TryValidateValue(TProperty value, ValidationResults results = null)
         {
             return Validator?.TryValidateValue(Target, value, Property, results)
                 ?? true;
