@@ -34,14 +34,14 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.contactBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.button2 = new System.Windows.Forms.Button();
-            this.mvpTextBox1 = new MvpFramework.WinForms.Controls.MvpTextBox();
-            this.mvpComboBox1 = new MvpFramework.WinForms.Controls.MvpComboBox();
             this.button3 = new System.Windows.Forms.Button();
             this.uiAutoView = new System.Windows.Forms.Button();
             this.uiNested = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.mvpTextBox1 = new MvpFramework.WinForms.Controls.MvpTextBox();
+            this.contactBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.mvpComboBox1 = new MvpFramework.WinForms.Controls.MvpComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.contactBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -80,9 +80,9 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 237);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 256);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(287, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(428, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -90,10 +90,6 @@
             // 
             this.bindingSource1.DataSource = this.contactBindingSource;
             this.bindingSource1.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
-            // 
-            // contactBindingSource
-            // 
-            this.contactBindingSource.DataSource = typeof(MvpDemo.Model.Contact);
             // 
             // button2
             // 
@@ -104,25 +100,6 @@
             this.button2.Text = "Exception";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // mvpTextBox1
-            // 
-            this.mvpTextBox1.DataBindings.Add(new System.Windows.Forms.Binding("Lines", this.contactBindingSource, "Name", true));
-            this.mvpTextBox1.Items = new string[] {
-        "[Text<->Name|TextChanged=>Updated]"};
-            this.mvpTextBox1.Location = new System.Drawing.Point(26, 154);
-            this.mvpTextBox1.Name = "mvpTextBox1";
-            this.mvpTextBox1.Size = new System.Drawing.Size(114, 20);
-            this.mvpTextBox1.TabIndex = 5;
-            this.mvpTextBox1.TextChanged += new System.EventHandler(this.mvpTextBox1_TextChanged);
-            // 
-            // mvpComboBox1
-            // 
-            this.mvpComboBox1.FormattingEnabled = true;
-            this.mvpComboBox1.Location = new System.Drawing.Point(149, 154);
-            this.mvpComboBox1.Name = "mvpComboBox1";
-            this.mvpComboBox1.Size = new System.Drawing.Size(121, 21);
-            this.mvpComboBox1.TabIndex = 3;
             // 
             // button3
             // 
@@ -164,11 +141,35 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // mvpTextBox1
+            // 
+            this.mvpTextBox1.DataBindings.Add(new System.Windows.Forms.Binding("Lines", this.contactBindingSource, "Name", true));
+            this.mvpTextBox1.Items = new string[] {
+        "[Text<->Name|TextChanged=>Updated]"};
+            this.mvpTextBox1.Location = new System.Drawing.Point(26, 154);
+            this.mvpTextBox1.Name = "mvpTextBox1";
+            this.mvpTextBox1.Size = new System.Drawing.Size(114, 20);
+            this.mvpTextBox1.TabIndex = 5;
+            this.mvpTextBox1.TextChanged += new System.EventHandler(this.mvpTextBox1_TextChanged);
+            // 
+            // contactBindingSource
+            // 
+            this.contactBindingSource.DataSource = typeof(MvpDemo.Model.Contact);
+            // 
+            // mvpComboBox1
+            // 
+            this.mvpComboBox1.FormattingEnabled = true;
+            this.mvpComboBox1.Location = new System.Drawing.Point(149, 154);
+            this.mvpComboBox1.Name = "mvpComboBox1";
+            this.mvpComboBox1.Size = new System.Drawing.Size(121, 21);
+            this.mvpComboBox1.TabIndex = 3;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 259);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(428, 278);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.uiNested);
             this.Controls.Add(this.uiAutoView);

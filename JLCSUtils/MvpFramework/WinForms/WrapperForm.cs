@@ -49,6 +49,21 @@ namespace MvpFramework.WinForms
                 //   ShowDialog();
                 //                ((IView)Child).ViewClosing += WrapperForm_ViewClosing;
             }
+
+            if(Child is IChildWindow)
+            {
+                ((IChildWindow)Child).WindowOptions.Changed += WindowOptions_Changed;
+            }
+        }
+
+        /// <summary>
+        /// Fired when a property of the <see cref="IChildWindow.WindowOptions"/> of the child changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void WindowOptions_Changed(object sender, EventArgs e)
+        {
+            ((IChildWindow)Child).WindowOptions.Apply(this);
         }
 
         /*
@@ -163,6 +178,29 @@ namespace MvpFramework.WinForms
         bool KeyPreview { get; }
 
         void NotifyKeyDown(KeyEventArgs args);
+
+        WindowOptions WindowOptions { get; }
+    }
+
+
+    public static class WindowOptionsExt
+    {
+        public static void Apply(this WindowOptions options, Form window)
+        {
+            if(options.Opacity.HasValue)
+                window.Opacity = Math.Round((double)options.Opacity.Value * 100);
+
+            window.ShowInTaskbar = options.ShowInTaskBar ?? window.ShowInTaskbar;
+            window.MinimizeBox = options.MinimizeButton ?? window.MinimizeBox;
+            window.MaximizeBox = options.MinimizeButton ?? window.MaximizeBox;
+
+            window.ControlBox = options.CloseButton ?? window.ControlBox;
+            //TODO: Handle CloseBox==true with MinimizeBox or MaximizeBox false (disable only the close box)
+
+            window.HelpButton = options.HelpButton ?? window.HelpButton;
+
+            window.TopMost = options.StayOnTop ?? window.TopMost;
+        }
     }
 
 }

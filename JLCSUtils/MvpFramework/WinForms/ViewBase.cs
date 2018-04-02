@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util.Types;
 using MvpFramework.Dialog;
 using DiExtension.Attributes;
+using MvpFramework;
 
 namespace MvpFramework.WinForms
 {
@@ -32,17 +33,24 @@ namespace MvpFramework.WinForms
         {
         }
 
-        public ViewBase(IMessageDialogService dialogService)  //TODO: Change parameter to IMvpFramework ?
+        private void WindowOptions_Changed(object sender, EventArgs e)
+        {
+            
+        }
+
+        public ViewBase(IMessageDialogService dialogService) : this() //TODO: Change parameter to IMvpFramework ?
         {
             this.DialogService = dialogService;
         }
 
-        public ViewBase(IMvpFrameworkDetails mvpFramework)
+        public ViewBase(IMvpFrameworkDetails mvpFramework) : this()
         {
             this.DialogService = mvpFramework.MessageDialogService;
         }
 
         private IMessageDialogService DialogService { get; set; }  //TODO: Make 'protected' ? Change to IMvpFramework ?
+
+        public WindowOptions WindowOptions { get; } = new WindowOptions();
 
         protected virtual void SetDialogService(IMessageDialogService dialogService)
         {

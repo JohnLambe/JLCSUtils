@@ -36,12 +36,14 @@ namespace MvpFramework.WinForms.Controls
         /// <inheritdoc cref="INestedView.ViewId"/>
         [Description("The ID of the view to be placed in this control.")]
         [Category(MvpUiComponentConsts.DesignerCategory)]
+        [DefaultValue(null)]
         public virtual string ViewId { get; set; }
 
         /// <summary>
         /// The view nested in this one.
         /// </summary>
         [Nullable("If there is no nested view.")]
+        [DefaultValue(null)]
         public virtual INestableView NestedView
         {
             get { return _nestedView; }
@@ -55,7 +57,8 @@ namespace MvpFramework.WinForms.Controls
                     NestedView = null;
                 }
 
-                value.ViewParent = this;
+                if(value != null)
+                    value.ViewParent = this;
                 if (value is Control)
                 {
                     //((Control)nestedView).Parent = this;

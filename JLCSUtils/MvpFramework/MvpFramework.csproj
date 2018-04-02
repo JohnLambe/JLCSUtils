@@ -90,6 +90,7 @@
     <Compile Include="Security\ISecurityManager.cs" />
     <Compile Include="Security\NullSecurityManager.cs" />
     <Compile Include="Security\UserAuthenticationFailedException.cs" />
+    <Compile Include="WindowOptions.cs" />
     <Compile Include="WinForms\!NamespaceDoc.cs" />
     <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
     <Compile Include="MvpUiComponentConsts.cs" />
