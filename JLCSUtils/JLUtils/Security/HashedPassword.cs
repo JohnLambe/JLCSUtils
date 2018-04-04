@@ -21,11 +21,14 @@ namespace JohnLambe.Util.Security
         /// Initialise with a blank password.
         /// </summary>
         /// <param name="algorithm">Hashing algorithm to use. null for default.</param>
-        public HashedPassword(PasswordHashingAlgorithm algorithm = null)
+        /// <param name="password">the initial password value (<see cref="Value"/>).</param>
+        public HashedPassword(PasswordHashingAlgorithm algorithm = null, [Nullable] string password = null)
         {
             this.Algorithm = algorithm ?? PasswordHashingAlgorithm.DefaultInstance;
             Encoding = Algorithm.DefaultEncoding;
-            Value = null;   // initialize to blank password
+            if(password != null)           // set if not null
+                Value = password;
+            // if password==null, the blank password is generated lazily.
         }
 
         /// <summary>
@@ -33,7 +36,7 @@ namespace JohnLambe.Util.Security
         /// </summary>
         public virtual string Value
         {
-            set // assign a new password:
+            set // assign the new password:
             {
                 SaltInternal = Algorithm.GenerateSalt();    // generate a new salt
                 HashInternal = HashPassword(value);         // hash with the new salt
@@ -113,8 +116,35 @@ namespace JohnLambe.Util.Security
         }
 
         protected virtual string Encoding { get; set; }
-        protected virtual byte[] HashInternal { get; set; }
-        protected virtual byte[] SaltInternal { get; set; }
+
+        protected virtual byte[] HashInternal
+        {
+            get
+            {
+                if (_hashInternal == null)
+                    EnsureInitialized();
+                return _hashInternal;
+            }
+            set { _hashInternal = value; }
+        }
+        private byte[] _hashInternal;
+
+        protected virtual byte[] SaltInternal
+        {
+            get
+            {
+                if(_saltInternal == null)
+                    EnsureInitialized();
+                return _saltInternal;
+            }
+            set { _saltInternal = value; }
+        }
+        private byte[] _saltInternal;
+
+        protected virtual void EnsureInitialized()
+        {
+            Value = null;
+        }
 
         /// <summary>
         /// The number of consecutive failed attempt to test a password.

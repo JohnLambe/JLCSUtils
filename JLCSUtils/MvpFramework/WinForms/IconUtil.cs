@@ -77,6 +77,14 @@ namespace MvpFramework.WinForms
                         if (icon != null)
                             ((ButtonBase)target).Image = icon;
                     }
+                    /*
+                    else if(target is Form)
+                    {
+                        convert repository.GetIcon(iconId) to Icon.
+                        IconConverter
+                        ((Form)target).Icon = ...
+                    }
+                    */
                 }
             }
         }

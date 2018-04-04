@@ -132,9 +132,12 @@ namespace MvpFramework.Menu
 
         /// <summary>
         /// True iff this is the default option.
-        /// Only one (or zero) option in a set should have this set to true.
+        /// Only one option (or none) in a set should have this set to true.
         /// </summary>
         public virtual bool IsDefault { get; set; }
+
+        /// <inheritdoc cref="Binding.MvpHandlerAttribute.IsCancel"/>
+        public virtual bool IsCancel { get; set; }
 
         /// <inheritdoc cref="Binding.MvpHandlerAttribute.CausesValidation"/>
         public virtual bool CausesValidation => Validation.CausesValidation();

@@ -40,6 +40,7 @@ namespace MvpFramework.Menu
                         ContextKey = handlerInfo.Attribute.ContextKey,
                         IconId = handlerInfo.Attribute.IconId,
                         IsDefault = handlerInfo.Attribute.IsDefault,
+                        IsCancel = handlerInfo.Attribute.IsCancel,
                         Visible = handlerInfo.Attribute.IsVisible,
                         Enabled = handlerInfo.Attribute.IsEnabled,
                         Validation = handlerInfo.Attribute.Validation,

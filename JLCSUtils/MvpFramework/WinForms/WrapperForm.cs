@@ -185,6 +185,11 @@ namespace MvpFramework.WinForms
 
     public static class WindowOptionsExt
     {
+        /// <summary>
+        /// Apply these options to the given form.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="window"></param>
         public static void Apply(this WindowOptions options, Form window)
         {
             if(options.Opacity.HasValue)
