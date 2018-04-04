@@ -78,7 +78,7 @@ namespace MvpDemo
 
         private string buttonContainer2_OnGetFilter(object sender, EventArgs args)
         {
-            return ButtonContainer.FilterAll;
+            return "";// ButtonContainer.FilterAll;
         }
 
         private void btnValidate_Click(object sender, EventArgs e)

@@ -237,6 +237,8 @@ namespace MvpFramework.Binding
                     if (binder is IKeyboardKeyHandler)
                     {
                         ((IKeyboardKeyHandler)binder).NotifyKeyDown(args);
+                        if (args.Cancel)
+                            break;
                     }
                 }
             }

@@ -14,6 +14,8 @@ namespace MvpFramework.Binding
     {
         public abstract EventHandler GetHandler(string handlerId, string filter = null, bool allowNull = false);
 
+        public abstract HandlerResolver.Handler GetHandlerInfo([NotNull] string handlerId, string filter = null);
+
         public abstract IOptionCollection GetOptionCollection(string filter);
     }
 
@@ -54,6 +56,11 @@ namespace MvpFramework.Binding
                 return null;
             return (sender, args) => handlerDelegate.Invoke(sender,args);
             */
+        }
+
+        public override HandlerResolver.Handler GetHandlerInfo([NotNull] string handlerId, string filter = null)
+        {
+            return _handlerResolver.GetHandlersInfo(Presenter, handlerId, filter).FirstOrDefault();
         }
 
         public virtual IEnumerable<EventHandler> GetHandlers(string filter = null)

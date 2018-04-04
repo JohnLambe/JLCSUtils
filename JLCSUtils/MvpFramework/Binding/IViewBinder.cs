@@ -69,6 +69,10 @@ namespace MvpFramework.Binding
     public class KeyboardKeyEventArgs : CancelEventArgs
     {
         public virtual KeyboardKey Key { get; set; }
+
+        //| 'Handled' might be a better name for the 'Cancelled' flag in this case.
+        //| We could use our own base class, and also make this property virtual.
+        //| Using CancelEventArgs may be conventient for interoperability (e.g. this event may be useful where WinForms already uses a CancelEventHandler).
     }
 
     /// <summary>

@@ -36,7 +36,7 @@ namespace MvpDemo
             // Equivalent to: System.Windows.Forms.MessageBox.Show("Ok\nName: " + Model.Name);
         }
 
-        [MvpHandler(Id = "Update")]
+        [MvpHandler(Id = "Update", HotKey = KeyboardKey.U | KeyboardKey.Control)]
         public void HandleUpdateClick()
         {
             Model.Address = Model.Address + "(modified)";

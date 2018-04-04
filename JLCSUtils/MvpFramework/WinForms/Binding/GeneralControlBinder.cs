@@ -166,13 +166,14 @@ namespace MvpFramework.Binding
                 }
 
                 // 'Click' event handler:
-                var handler = context.PresenterBinder.GetHandler(_modelPropertyName, null, true);
+                var handlerInfo = context.PresenterBinder.GetHandlerInfo(_modelPropertyName, null);
                 //var handler = presenterBinder.GetHandler(_modelPropertyName);
-                if (handler != null)
+                if (handlerInfo != null)
                 {
                     //                    _eventHandlerMethod = handler.Method;
-                    _eventHandlerDelegate = handler;
+                    _eventHandlerDelegate = handlerInfo.HandlerDelegate;
                     _boundControl.Click += BoundControl_Click;  //TODO: Could add `handler` directly to Click. 
+                    _hotKeys = handlerInfo.Attribute?.HotKeys;
                 }
 
                 //TODO: Other events. Map to handler name: <Name>_<Event>
@@ -257,6 +258,14 @@ namespace MvpFramework.Binding
         /// <param name="e"></param>
         protected virtual void BoundControl_Click(object sender, EventArgs e)
         {
+            Invoke();
+        }
+
+        /// <summary>
+        /// Invoke the behaviour (handler) of the bound control (e.g. for clicking a button or equivalent).
+        /// </summary>
+        protected virtual void Invoke()
+        {
             _eventHandlerDelegate?.Invoke(this, EventArgs.Empty);     //TODO populate any arguments of event handler
             //_eventHandlerMethod?.Invoke(Presenter, new object[] { this, EventArgs.Empty });     //TODO populate any arguments of event handler
         }
@@ -276,7 +285,12 @@ namespace MvpFramework.Binding
 
         public void NotifyKeyDown(KeyboardKeyEventArgs args)
         {
-            //TODO: Invoke certain controls, e.g. buttons, if the key matches their hotkey.
+            // Invoke certain controls, e.g. buttons, if the key matches their hotkey.
+            if (!args.Cancel && (_hotKeys?.Contains(args.Key) ?? false))  // if not already cancelled and the key matches any of the keys for this item
+            {
+                Invoke();
+                args.Cancel = true;
+            }
         }
 
         /// <summary>
@@ -295,6 +309,11 @@ namespace MvpFramework.Binding
         /// </summary>
 //        protected MethodInfo _eventHandlerMethod;
         protected EventHandler _eventHandlerDelegate;
+
+        /// <summary>
+        /// Hotkeys to invoke the bound handler.
+        /// </summary>
+        protected KeyboardKey[] _hotKeys;
 
         /// <summary>
         /// The bound Presenter.

@@ -24,6 +24,10 @@ namespace MvpFramework.WinForms
             Setup(child);
         }
 
+        private void WrapperForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+        }
+
         protected virtual void Setup(Control child)
         {
             Child = child;
@@ -151,6 +155,23 @@ namespace MvpFramework.WinForms
             if(!evt.Handled)
                 base.OnKeyDown(evt);
         }
+
+        /*
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+        }
+
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {            
+            base.OnPreviewKeyDown(e);
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            return base.ProcessDialogKey(keyData);
+        }
+        */
 
         /*
         protected override void OnShown(EventArgs e)

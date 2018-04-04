@@ -161,7 +161,10 @@ namespace MvpFramework.WinForms
 
         protected virtual void NotifyKeyDown(KeyEventArgs args)
         {
-            ViewBinder?.ProcessKey(new KeyboardKeyEventArgs() { Key = KeyboardKeyExtension.ToKeyboardKey(args.KeyData) });
+            var args2 = new KeyboardKeyEventArgs() { Key = KeyboardKeyExtension.ToKeyboardKey(args.KeyData) };
+            ViewBinder?.ProcessKey(args2);
+            if (args2.Cancel)
+                args.Handled = true;
         }
 
         #endregion
