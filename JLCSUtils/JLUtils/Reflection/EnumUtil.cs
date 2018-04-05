@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Misc;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -110,11 +111,15 @@ namespace JohnLambe.Util.Reflection
         /// Return the display name of a given enum value.
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="shortName">Iff true, a short version of the name is used, if available.</param>
         /// <returns></returns>
-        public static string GetDisplayName(this Enum value)
+        public static string GetDisplayName(this Enum value, bool shortName = false)
         {
             var field = GetField(value);
-            return field?.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName
+            var displayNameAttribute = field?.GetCustomAttribute<DisplayNameAttribute>();
+            return (shortName ? (displayNameAttribute as DisplayNameExtAttribute)?.ShortName : null)
+//                ?? (displayNameAttribute is DisplayNameExtAttribute ? ((DisplayNameExtAttribute)displayNameAttribute).DisplayNameNullable : displayNameAttribute?.DisplayName)
+                ?? displayNameAttribute?.DisplayName
                 ?? field?.GetCustomAttribute<DisplayAttribute>()?.Name
                 ?? CaptionUtil.PascalCaseToCaption(field?.Name)
                 ?? value.ToString();
@@ -194,6 +199,13 @@ namespace JohnLambe.Util.Reflection
                 return defaultValue;
             }
         }
+
+        /*
+        public static string FlagsEnumToString(Enum value, )
+        {
+
+        }
+        */
 
     }
 

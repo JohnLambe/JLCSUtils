@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MvpFramework;
+using JohnLambe.Tests.JLUtilsTest;
+using System.Diagnostics;
 
 namespace MvpFrameworkTest
 {
@@ -51,6 +53,17 @@ namespace MvpFrameworkTest
         public void AddModifier_InvalidModifier()
         {
             KeyboardKey.Shift.AddModifier(KeyboardKey.Control);
+        }
+
+        [TestMethod]
+        public void GetKeyDisplayName()
+        {
+            TestUtil.Multiple(
+                () => Assert.AreEqual("Space", KeyboardKey.Space.GetKeyDisplayName()),
+                () => Assert.AreEqual("PgDn", KeyboardKey.PageDown.GetKeyDisplayName(true)),
+                () => Assert.AreEqual(KeyboardKeyExtension.ShiftKeyName + KeyboardKeyExtension.AltKeyName + "Ins", (KeyboardKey.Insert | KeyboardKey.Shift | KeyboardKey.Alt).GetKeyDisplayName(true)),
+                () => Assert.AreEqual("Shift-Alt-Insert", (KeyboardKey.Insert | KeyboardKey.Shift | KeyboardKey.Alt).GetKeyDisplayName())
+                );
         }
 
         // Could compare to WinForms by reflection,

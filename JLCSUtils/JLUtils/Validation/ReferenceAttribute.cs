@@ -52,21 +52,32 @@ namespace JohnLambe.Util.Validation
         {
             base.IsValid(ref value, validationContext, results);
 
-            foreach(var attribute in _sourceMember.Value.GetCustomAttributes<ValidationAttribute>(true))
+            var sourceObject = _sourceMember.Value;
+            if (sourceObject != null)
             {
-                //TODO: Validate attribute
-                if (attribute is ValidationAttributeBase)
+                foreach (var attribute in sourceObject.GetCustomAttributes<ValidationAttribute>(true))
                 {
+                    //TODO: Validate attribute
+                    /*
+                    if (attribute is ValidationAttributeBase)
+                    {
+                        var att = attribute as ValidationAttributeBase;
+                        att.IsValid(ref value, validationContext, results);
 
-                }
-                else
-                {
-                    var result = attribute.GetValidationResult(value, validationContext);
-                    if(result != ValidationResult.Success)
-                        results.Add(result);
+                    }
+                    else
+                    */
+                    {
+                        var result = attribute.GetValidationResult(value, validationContext);
+                        if (result != ValidationResult.Success)
+                            results.Add(result);
+                    }
                 }
             }
-
+            else
+            {
+                results.Add("INTERNAL ERROR: Invalid property reference: " + (SourceType?.GetType()?.FullName ?? "<null>") + "." + SourcePropertyName + "; Value: " + value);
+            }
         }
 
         [NotNull]

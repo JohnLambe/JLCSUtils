@@ -169,6 +169,7 @@
     <Compile Include="ObjectUtilTest.cs" />
     <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\PostcodeValidationAttributeTest.cs" />
+    <Compile Include="Validation\ReferenceAttributeTest..cs" />
     <Compile Include="Validation\StringValidationAttributeTest.cs" />
     <Compile Include="Validation\TestModel.cs" />
     <Compile Include="Validation\TypeValidationAttributeTest.cs" />

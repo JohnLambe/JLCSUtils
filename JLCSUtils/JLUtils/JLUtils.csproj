@@ -82,6 +82,7 @@
     <Compile Include="Misc\ChangesStateAttribute.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\DefaultComparer.cs" />
+    <Compile Include="Misc\DisplayNameExtAttribute.cs" />
     <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />
     <Compile Include="Misc\NonReenter.cs" />

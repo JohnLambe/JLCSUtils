@@ -33,11 +33,13 @@ namespace MvpFramework
         //     The bitmask to extract modifiers from a key value.
         [EnumMask]
         Modifiers = -65536,
+
         //
         // Summary:
         //     No key pressed.
         [EnumNullValue]
         None = 0,
+
         //
         // Summary:
         //     The left mouse button.
@@ -109,7 +111,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The CTRL key.
-        [DisplayNameAny("Ctrl")]
+        [DisplayNameAny("Ctrl", ShortName = "^")]
         [Description("The Control key")]
         ControlKey = 17,
         //
@@ -181,7 +183,7 @@ namespace MvpFramework
         // Summary:
         //     The IME nonconvert key.
         [EnumDuplicate]
-        IMENonconvert = 29,  // Matches WinForms capitalisation
+//        IMENonconvert = 29,  // Matches WinForms capitalisation
         IMENonConvert = 29,
         //
         // Summary:
@@ -828,8 +830,8 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM comma key on any country/region keyboard (Windows 2000 or later).
-        [EnumDuplicate]
-        Oemcomma = 188,
+//        [EnumDuplicate]
+//        Oemcomma = 188,
         //| This corrects the capitalisation of the WinForms name.
         OemComma = 188,   
         //
@@ -975,7 +977,10 @@ namespace MvpFramework
         //     The CLEAR key.
         OemClear = 254,
 
-
+        /// <summary>
+        /// The bitmask to extract the modifier keys from a key value.
+        /// </summary>
+        [EnumMask]
         ModifierKeys = unchecked( (int)0xFFFF0000 ),
 
         // WinForms only:
@@ -985,25 +990,27 @@ namespace MvpFramework
         [EnumMask]
         [EnumHybridMember(DataType = typeof(KeyboardKey))]
         KeyCode = 65535,
+
         //
         // Summary:
         //     The SHIFT modifier key.
         [EnumHidden]
         [EnumFlag]
-        [DisplayNameAny("Shift", ShortName = "\u21E7")] // ⇧ https://www.fileformat.info/info/unicode/char/21e7/index.htm
+        [DisplayNameAny("Shift", ShortName = KeyboardKeyExtension.ShiftKeyName)] 
         Shift = 65536,
         //
         // Summary:
         //     The CTRL modifier key.
         [EnumHidden]
         [EnumFlag]
-        [DisplayNameAny("Ctrl", ShortName = "^")]
+        [DisplayNameAny("Ctrl", ShortName = KeyboardKeyExtension.ControlKeyName)]
         Control = 131072,
         //
         // Summary:
         //     The ALT modifier key.
         [EnumHidden]
         [EnumFlag]
+        [DisplayNameAny("Alt", ShortName = KeyboardKeyExtension.AltKeyName)]
         Alt = 262144
     }
 
@@ -1019,6 +1026,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [Pure]
         public static ConsoleModifiers ConsoleModifiers(this KeyboardKey value)
             => (value.HasFlag(KeyboardKey.Alt) ? System.ConsoleModifiers.Alt : 0)
             | (value.HasFlag(KeyboardKey.Shift) ? System.ConsoleModifiers.Shift : 0)
@@ -1029,6 +1037,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="modifiers"></param>
         /// <returns></returns>
+        [Pure]
         public static KeyboardKey FromConsoleModifiers(System.ConsoleModifiers modifiers)
             => (modifiers.HasFlag(System.ConsoleModifiers.Alt) ? KeyboardKey.Alt : 0)
             | (modifiers.HasFlag(System.ConsoleModifiers.Shift) ? KeyboardKey.Shift : 0)
@@ -1040,6 +1049,7 @@ namespace MvpFramework
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="InvalidCastException">If this key cannot be represented as a <see cref="System.ConsoleKey"/>.</exception>
+        [Pure]
         public static ConsoleKey ToConsoleKey(this KeyboardKey value)
         {
             ConsoleKey result = (ConsoleKey)(value & KeyboardKey.BaseKey);
@@ -1054,6 +1064,7 @@ namespace MvpFramework
         /// <param name="value"></param>
         /// <param name="modifiers"></param>
         /// <returns></returns>
+        [Pure]
         public static KeyboardKey ToKeyboardKey(ConsoleKey value, ConsoleModifiers modifiers = 0)
             => (KeyboardKey)value | FromConsoleModifiers(modifiers);
 
@@ -1098,5 +1109,48 @@ namespace MvpFramework
                 // weaker validation: Called on modifier, but parameter can be modifier or base key.
         */
 
+        [Pure]
+        public static KeyboardKey GetModifiers(this KeyboardKey key)
+        {
+            return key & KeyboardKey.ModifierKeys;
+        }
+
+        [Pure]
+        public static KeyboardKey GetBaseKey(this KeyboardKey key)
+        {
+            return key & KeyboardKey.BaseKey;
+        }
+
+        [Pure]
+        public static string GetKeyDisplayName(this KeyboardKey key, bool shortName = false)
+        {
+            var keyName = new StringBuilder(20);
+
+            // Modifier keys in order:
+            if (key.HasFlag(KeyboardKey.Control))
+                keyName.Append(shortName ? ControlKeyName : "Ctrl" + ModifierSeparator);
+            if (key.HasFlag(KeyboardKey.Shift))
+                keyName.Append(shortName ? ShiftKeyName : "Shift" + ModifierSeparator);
+            if (key.HasFlag(KeyboardKey.Alt))
+                keyName.Append(shortName ? AltKeyName : "Alt" + ModifierSeparator);
+
+            string baseKeyName = key.GetBaseKey().GetDisplayName(shortName);
+            if (baseKeyName == ModifierSeparator)
+                keyName.Append("'" + baseKeyName + "'");
+            else
+                keyName.Append(baseKeyName);
+
+            return keyName.ToString();
+        }
+
+        /// <summary>
+        /// Separates modifier key names from the base key name.
+        /// </summary>
+        public static string ModifierSeparator = "-";
+        //| Could use '+'. Either might look confusing when the modifier key is the same as the separator.
+
+        public const string ShiftKeyName = "\u21E7";  // ⇧ https://www.fileformat.info/info/unicode/char/21e7/index.htm
+        public const string ControlKeyName = "^";
+        public const string AltKeyName = "•";
     }
 }

@@ -312,7 +312,7 @@ namespace MvpFramework.Binding
     /// When testing for the presence of this in code, testing for <see cref="DisplayNameAttribute"/> is recommended.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class DisplayNameAnyAttribute : DisplayNameAttribute
+    public class DisplayNameAnyAttribute : DisplayNameExtAttribute
     {
         public DisplayNameAnyAttribute()
         {
@@ -323,16 +323,6 @@ namespace MvpFramework.Binding
         public DisplayNameAnyAttribute(string displayName) : base(displayName)
         {
         }
-
-        /// <summary>
-        /// A shorter version of the display name, for use when space is more limited.
-        /// <para>
-        /// If this is present, and <see cref="DisplayNameAttribute.DisplayName"/> is null, this should NOT be considered
-        /// a default for it (if there is another method of getting a default name (for example, using the code name of the attributed item),
-        /// it should be used).
-        /// </para>
-        /// </summary>
-        public virtual string ShortName { get; set; }
 
         /*TODO:
          * Or use MvpDisplayNameAny
@@ -346,11 +336,6 @@ namespace MvpFramework.Binding
         /// </summary>
         public virtual string NullText { get; set; }  // or object NullDisplay ?
         */
-
-        /// <summary>
-        /// The plural of the display name.
-        /// </summary>
-        public virtual string PluralName { get; set; }
     }
 
     /// <summary>
