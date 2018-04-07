@@ -87,6 +87,7 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Remove(TEntity entity)
         {
+            //TODO: If 'adding', detach.
             if (entity is IMarkDeleteEntity)
             {
                 ((IMarkDeleteEntity)entity).IsActive = false;
@@ -116,6 +117,7 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Attach(TEntity entity, bool modified = false)
         {
+            //TODO: If 'adding', do nothing.
             Data.Attach(entity);
             if(modified)
                 Context.Entry(entity).State = EntityState.Modified;

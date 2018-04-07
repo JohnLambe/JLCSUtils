@@ -12,6 +12,7 @@ using System.Xml;
 
 namespace JohnLambe.DataPopulater
 {
+    //TODO: Move to JLUtils
     public class XmlObjectLoader
     {
         /// <summary>

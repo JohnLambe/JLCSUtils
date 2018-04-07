@@ -56,7 +56,7 @@ namespace JohnLambe.Util.Db
     */
 
 
-    public interface IDatabaseExt<TEntity> : IDatabaseRepositoryBase<TEntity>
+    public interface IDatabaseRepositoryExt<TEntity> : IDatabaseRepositoryBase<TEntity>
     {
         /// <summary>
         /// Return the unmodified version of the given entity.
@@ -144,11 +144,11 @@ namespace JohnLambe.Util.Db
     [Obsolete("Interface not finalized")]
     public interface IDatabase
     {
-        IDatabaseRepositoryBase<T> GetRepositoryFor<T>(object entity);
+        IDatabaseRepositoryBase<T> GetRepositoryFor<T>(object entity) where T: class;
 
-        IDatabaseRepositoryBase<T> GetRepositoryForType<T>(Type entityType);
+        IDatabaseRepositoryBase<T> GetRepositoryForType<T>(Type entityType) where T: class;
 
-        bool SaveChanges(object entity);
+        int SaveChanges(object entity);
     }
 
 

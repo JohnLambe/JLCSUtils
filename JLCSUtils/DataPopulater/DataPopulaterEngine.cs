@@ -25,12 +25,12 @@ namespace JohnLambe.DataPopulater
         {
             var cls = clsConfig.TargetClass;
 
-            var newInstance = CreateInstance(clsConfig);
-
             int count = RandomService.Next(clsConfig.MinimumInstances, clsConfig.MaximumInstances);
 
             for (int i = 0; i < count; i++)
             {
+                var newInstance = CreateInstance(clsConfig);
+
                 foreach (var propConfig in clsConfig.Properties)
                 {
                     propConfig.Parent = clsConfig; //TODO: Assign once only
@@ -43,13 +43,19 @@ namespace JohnLambe.DataPopulater
 
         }
 
+        /// <summary>
+        /// Returns a new instance compatible with the given configuration.
+        /// </summary>
+        /// <param name="clsConfig"></param>
+        /// <returns></returns>
         protected virtual object CreateInstance(ClassConfig clsConfig)
         {
             return clsConfig.NewInstance();
         }
 
         /// <summary>
-        /// 
+        /// Called with each new instance, when it is fully populated.
+        /// This saves the instance to persistent storage, or whatever is to be done with the generated data.
         /// </summary>
         /// <param name="clsConfig"></param>
         /// <param name="instance">the instance to be saved.</param>
@@ -60,9 +66,19 @@ namespace JohnLambe.DataPopulater
 
         public virtual event EventHandler<SaveInstanceArgs> OnSaveInstnace;
 
+        /// <summary>
+        /// Arguments for the <see cref="OnSaveInstnace"/> event.
+        /// </summary>
         public class SaveInstanceArgs : EventArgs
         {
+            /// <summary>
+            /// The configuration that was generated from.
+            /// </summary>
             public ClassConfig Config { get; set; }
+
+            /// <summary>
+            /// The new instance to be saved.
+            /// </summary>
             public object Instance { get; set; }
         }
 
@@ -93,6 +109,9 @@ namespace JohnLambe.DataPopulater
             return new PropertyPopulaterContext();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual DataPopulaterConfig Config { get; set; }
         public virtual IRandomService RandomService { get; set; } = new RandomService();
 
@@ -100,6 +119,9 @@ namespace JohnLambe.DataPopulater
 
     public class PropertyPopulaterContext : IPropertyPopulaterContext
     {
+        /// <summary>
+        /// The type to be returned (generated).
+        /// </summary>
         public virtual Type RequiredType { get; set; }
 
         public virtual object GetRandomInstance(Type type)

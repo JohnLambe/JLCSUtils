@@ -34,7 +34,7 @@ namespace JohnLambe.Util.Db
 
         public override TEntity Remove<TEntity>(TEntity entity)
         {
-            return Attach(typeof(TEntity), entity);
+            return Attach(typeof(TEntity), entity); ////****BUG
         }
 
         public override TEntity Remove<TEntity>(Type EntityType, TEntity entity)
