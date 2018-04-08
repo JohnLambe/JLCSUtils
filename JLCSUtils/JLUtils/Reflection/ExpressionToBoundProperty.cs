@@ -14,15 +14,8 @@ namespace JohnLambe.Util.Reflection
     /// </summary>
     public static class ExpressionToBoundProperty
     {
-        /*
-        public static BoundProperty<TTarget, TProperty> FromExpression<TTarget, TProperty>(Expression<Func<TTarget, TProperty>> expr)
-        {
-            return FromExpression<TTarget, TProperty>(expr.Body);
-        }
-        */
-
         /// <summary>
-        /// 
+        /// Create a BoundProperty from a (root) target and an Expression to get a (possibly indirect) property value from it.
         /// </summary>
         /// <typeparam name="TTarget"></typeparam>
         /// <typeparam name="TProperty"></typeparam>
@@ -32,7 +25,7 @@ namespace JohnLambe.Util.Reflection
         public static BoundProperty<TTarget, TProperty> FromExpression<TTarget, TProperty>(LambdaExpression expr, TTarget target)
         {
             var e = expr.Body;
-            while(e is UnaryExpression)
+            while(e is UnaryExpression && (e.NodeType == ExpressionType.Convert || e.NodeType == ExpressionType.ConvertChecked))   // remove any cast/conversion
             {
                 e = ((UnaryExpression)e).Operand;
             }

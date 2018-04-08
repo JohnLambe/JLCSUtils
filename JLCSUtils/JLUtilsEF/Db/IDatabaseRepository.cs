@@ -141,14 +141,65 @@ namespace JohnLambe.Util.Db
     }
 
 
-    [Obsolete("Interface not finalized")]
+    /// <summary>
+    /// Abstraction of an object or ORM database.
+    /// This provides access to the repository for each type.
+    /// </summary>
+    /// <remarks>
+    /// In general, injecting repositories for the required types is recommended, so this is rarely needed.
+    /// It should be avoided when not needed, since it creates a dependency on the whole database rather than just the required types.
+    /// This may be needed for utilities or frameworks that can operate on any type in the database without having knowledge of it at compile time
+    /// (possibly by reflection). (e.g. 
+    /// </remarks>
     public interface IDatabase
     {
-        IDatabaseRepositoryBase<T> GetRepositoryFor<T>(object entity) where T: class;
+        /// <summary>
+        /// Same as <see cref="GetRepositoryFor{T}(Type, bool)"/> except that the type is the generic parameter.
+        /// </summary>
+        /// <param name="writeable">Iff true, the returned instance allows modifiying the data (it will implement <see cref="IMutableDatabaseRepository{TEntity}"/>.)
+        /// </param>
+        /// <typeparam name="T">The type of entity whose repository is requested.</typeparam>
+        /// <returns>the repository</returns>
+        IDatabaseRepositoryBase<T> GetRepository<T>(bool writeable = false) where T : class;
 
-        IDatabaseRepositoryBase<T> GetRepositoryForType<T>(Type entityType) where T: class;
+        /// <summary>
+        /// Get the repository for the given type in this database.
+        /// </summary>
+        /// <typeparam name="T">The return value is cast to a repository for this type.
+        /// This does not affect what repository is returned. <paramref name=""/>
+        /// </typeparam>
+        /// <param name="entityType"></param>
+        /// <param name="writeable">Iff true, the returned instance allows modifiying the data (it will implement <see cref="IMutableDatabaseRepository{TEntity}"/>.)
+        /// </param>
+        /// <returns>the repository</returns>
+        IDatabaseRepositoryBase<T> GetRepositoryForType<T>(Type entityType, bool writeable = false) where T : class;
 
-        int SaveChanges(object entity);
+        /// <summary>
+        /// Get the repository for the given instance in this database.
+        /// </summary>
+        /// <typeparam name="T">The return value is cast to a repository for this type.
+        /// This does not affect what repository is returned. <paramref name=""/>
+        /// </typeparam>
+        /// <param name="entity"></param>
+        /// <param name="writeable">Iff true, the returned instance allows modifiying the data (it will implement <see cref="IMutableDatabaseRepository{TEntity}"/>.)
+        /// </param>
+        /// <returns>the repository</returns>
+        IDatabaseRepositoryBase<T> GetRepositoryFor<T>(object entity, bool writeable = false) where T: class;
+
+        /// <summary>
+        /// Write all pending changes in this session/context to persistent storage.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        int SaveChanges();
+
+        /// <summary>
+        /// The base types (classes) of all entities in the database.
+        /// These are the types at the highest level in the type hierarchy at which a repository is available. (Each of these typically corresponds to a table in an ORM database.)
+        /// </summary>
+        IEnumerable<Type> EntityTypes { get; }
+
+        //| Could add a method to enumerate repositories.
     }
 
 
