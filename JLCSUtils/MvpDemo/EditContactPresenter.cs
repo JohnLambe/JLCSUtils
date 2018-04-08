@@ -112,10 +112,21 @@ namespace MvpDemo
         public void Test2EventHandler(object sender, EventArgs e)
         {
             UiController.ShowMessage(
-            new ConfirmationDialog()
+                new ConfirmationDialog()
+                {
+                    Title = "Test2EventHandler",
+                    Message = e.ToString()
+                });
+        }
+
+        [MvpHandler(HotKey = KeyboardKey.F9, SingleFilter = BindingConsts.Filter_Keys)]
+        public void KeyHandler_F9()
+        {
+            UiController.ShowMessage(
+            new InformationDialog()
             {
-                Title = "Test2EventHandler",
-                Message = e.ToString()
+                Title = "Key Handler",
+                Message = "F9 pressed"
             });
         }
 

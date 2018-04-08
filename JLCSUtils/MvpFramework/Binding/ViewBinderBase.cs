@@ -62,8 +62,6 @@ namespace MvpFramework.Binding
 
                 //TODO: var presenterBinder = new PresenterBinderWrapper(presenter);  then use presenterBinder where presenter is used after this.
                 BindControl(view, binderFactory, presenter);   // bind the root control recursively
-
-                //TODO: Attach event handler to view to receive key presses, and pass to ProcessKey.
             }
 
             /*TODO
@@ -200,8 +198,7 @@ namespace MvpFramework.Binding
                     {
                         if (control == null || ControlAdaptor.IsInControl((TControl)(binder as IControlBinderExt)?.BoundControl, control))      // if refreshing all controls, or this one is in the requested one
                         {
-//                            if (binder is IValidateableControl)
-                            if (!((IValidateableControl)binder).Validate(ControlValidationOptions.Enter))
+                            if (!((IValidateableControl)binder).Validate(ControlValidationOptions.Activate))
                                 break;
                         }
                     }
@@ -225,6 +222,10 @@ namespace MvpFramework.Binding
         /// Process a keystroke on the form. (Pass a keyboard event to relevant bound controls.)
         /// </summary>
         /// <param name="args"></param>
+        /// <remarks>
+        /// Views call this to pass on keystrokes not processed by the more specific controls.
+        /// </remarks>
+        //TODO: Attach event handler in Bind(...) instead of views calling this explicitly?
         public virtual void ProcessKey(KeyboardKeyEventArgs args)
         {
             if (Binders != null)

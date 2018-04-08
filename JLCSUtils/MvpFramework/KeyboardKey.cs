@@ -1109,18 +1109,34 @@ namespace MvpFramework
                 // weaker validation: Called on modifier, but parameter can be modifier or base key.
         */
 
+        /// <summary>
+        /// The modifiers only.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [Pure]
         public static KeyboardKey GetModifiers(this KeyboardKey key)
         {
             return key & KeyboardKey.ModifierKeys;
         }
 
+        /// <summary>
+        /// The key without modifiers.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [Pure]
         public static KeyboardKey GetBaseKey(this KeyboardKey key)
         {
             return key & KeyboardKey.BaseKey;
         }
 
+        /// <summary>
+        /// Returns the name of the keystroke (including modifiers) for display.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="shortName">true to return a short version of the key name, if available.</param>
+        /// <returns>the key name (human-readable).</returns>
         [Pure]
         public static string GetKeyDisplayName(this KeyboardKey key, bool shortName = false)
         {

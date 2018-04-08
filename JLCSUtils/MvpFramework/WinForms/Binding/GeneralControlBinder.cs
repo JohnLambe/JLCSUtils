@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 
 using System.Windows.Forms;
@@ -14,7 +13,6 @@ using System.ComponentModel;
 using JohnLambe.Util.Validation;
 using MvpFramework.Dialog;
 using MvpFramework.Dialog.Dialogs;
-using DiExtension.AutoFactory;
 using JohnLambe.Util.Misc;
 using DiExtension.Attributes;
 using System.Drawing;
@@ -283,7 +281,7 @@ namespace MvpFramework.Binding
             }
         }
 
-        public void NotifyKeyDown(KeyboardKeyEventArgs args)
+        public virtual void NotifyKeyDown(KeyboardKeyEventArgs args)
         {
             // Invoke certain controls, e.g. buttons, if the key matches their hotkey.
             if (!args.Cancel && (_hotKeys?.Contains(args.Key) ?? false))  // if not already cancelled and the key matches any of the keys for this item
@@ -342,11 +340,11 @@ namespace MvpFramework.Binding
         {
             get
             {
-                return ReflectionUtil.TryGetPropertyValue<bool>(BoundControl, "ReadOnly");
+                return ReflectionUtil.TryGetPropertyValue<bool>(BoundControl, nameof(ReadOnly));
             }
             set
             {
-                ReflectionUtil.TrySetPropertyValue(BoundControl, "ReadOnly", value);
+                ReflectionUtil.TrySetPropertyValue(BoundControl, nameof(ReadOnly), value);
             }
         }
 

@@ -66,7 +66,7 @@ namespace MvpFramework.Binding
         public ControlValidationFlags Flags { get; set; }
 
         public static ControlValidationOptions Highlight => new ControlValidationOptions() { Flags = ControlValidationFlags.Highlight };
-        public static ControlValidationOptions Enter => new ControlValidationOptions() { Flags = ControlValidationFlags.Enter };
+        public static ControlValidationOptions Activate => new ControlValidationOptions() { Flags = ControlValidationFlags.Highlight | ControlValidationFlags.Enter| ControlValidationFlags.Message };
     }
 
 
@@ -82,7 +82,12 @@ namespace MvpFramework.Binding
         /// <summary>
         /// If the value is invalid, focus the control, show a modal error, or otherwise get the user to correct the value.
         /// </summary>
-        Enter = 2
+        Enter = 2,
+
+        /// <summary>
+        /// Show an error message (possibly modally) if invalid.
+        /// </summary>
+        Message = 4
     }
 
 
