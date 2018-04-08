@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.TypeConversion;
 using System.ComponentModel;
+using JohnLambe.Util.Collections;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -29,7 +30,7 @@ namespace JohnLambe.Util.Reflection
     /// Metadata of a property (of a class, struct, interface, dictionary, etc.),
     /// and the object it is defined on.
     /// </summary>
-    /// <typeparam name="TTarget">The type of the object of the property.</typeparam>
+    /// <typeparam name="TTarget">The type of the object on which the property is defined.</typeparam>
     /// <typeparam name="TProperty">The type of the property.</typeparam>
     public class BoundProperty<TTarget, TProperty> : ICustomAttributeProvider
     {
@@ -43,7 +44,7 @@ namespace JohnLambe.Util.Reflection
         {
             object targetObject = target;
             Property = ReflectionUtil.GetProperty(ref targetObject, propertyName);
-//                .NotNull("Property not found: " + typeof(TTarget) + "." + propertyName, typeof(ArgumentException));
+            //                .NotNull("Property not found: " + typeof(TTarget) + "." + propertyName, typeof(ArgumentException));
             this.Target = (TTarget)targetObject;
         }
 
@@ -58,6 +59,12 @@ namespace JohnLambe.Util.Reflection
             this.Target = target;
             this.Property = property;
         }
+
+        protected BoundProperty(PropertyInfo property)
+        {
+            this.Property = property.ArgNotNull(nameof(property));
+        }
+
 
         /// <summary>
         /// True if the property is readable (not write-only).
@@ -185,7 +192,7 @@ namespace JohnLambe.Util.Reflection
         /// <returns></returns>
         public virtual object[] GetCustomAttributes(Type attributeType, bool inherit)
         {
-            return ((ICustomAttributeProvider)Property).GetCustomAttributes(attributeType, inherit);
+            return Property == null ? EmptyCollection<object>.EmptyArray : ((ICustomAttributeProvider)Property).GetCustomAttributes(attributeType, inherit);
         }
 
         /// <summary>
@@ -195,7 +202,7 @@ namespace JohnLambe.Util.Reflection
         /// <returns></returns>
         public virtual object[] GetCustomAttributes(bool inherit)
         {
-            return ((ICustomAttributeProvider)Property).GetCustomAttributes(inherit);
+            return Property == null ? EmptyCollection<object>.EmptyArray : ((ICustomAttributeProvider)Property).GetCustomAttributes(inherit);
         }
 
         /// <summary>
@@ -206,13 +213,15 @@ namespace JohnLambe.Util.Reflection
         /// <returns></returns>
         public virtual bool IsDefined(Type attributeType, bool inherit)
         {
-            return ((ICustomAttributeProvider)Property).IsDefined(attributeType, inherit);
+            return Property == null ? false : ((ICustomAttributeProvider)Property).IsDefined(attributeType, inherit);
         }
 
         #endregion
 
         //| Could, alternatively, subclass PropertyInfo.
         //| Most members would have to delegate to an underlying PropertyInfo (the Reflection calls can return any subclass; PropertInfo is abstract).
-        //| That could be broken by changes to PropertyInfo in future .NET framework versions.
+        //| That could be broken by changes to PropertyInfo in future .NET framework versions
+        //| and would not be suited to modelling an equivalent of a property that is not backed by an actual property.
     }
+
 }

@@ -78,6 +78,7 @@
     <Compile Include="Interfaces\CommonInterfaces.cs" />
     <Compile Include="Io\!NamespaceDoc.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
+    <Compile Include="Linq\SubExpressionUtil.cs" />
     <Compile Include="Math\!NamespaceDoc.cs" />
     <Compile Include="Misc\ChangesStateAttribute.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
@@ -86,6 +87,8 @@
     <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />
     <Compile Include="Misc\NonReenter.cs" />
+    <Compile Include="Reflection\DelegateBoundProperty.cs" />
+    <Compile Include="Reflection\ExpressionToBoundProperty.cs" />
     <Compile Include="StateMachine\StateTransitionValidator.cs" />
     <Compile Include="Text\PreprocessComparer.cs" />
     <Compile Include="Types\GuidUtil.cs" />

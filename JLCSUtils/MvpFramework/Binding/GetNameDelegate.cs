@@ -11,7 +11,7 @@ namespace MvpFramework.Binding
         /// Empty arguments for this event.
         /// (This may or may not return the same instance on each call.)
         /// </summary>
-        public new static GetNameEventArgs Empty { get; }  = new GetNameEventArgs();
+        public new static GetNameEventArgs Empty { get; } = new GetNameEventArgs();
         // Note: This implementation works only while this is immutable.
     }
 
