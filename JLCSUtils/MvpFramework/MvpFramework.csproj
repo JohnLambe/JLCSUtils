@@ -58,6 +58,7 @@
     <Compile Include="Binding\BindingConsts.cs" />
     <Compile Include="Binding\ControlBinderFactory.cs" />
     <Compile Include="Binding\GetNameDelegate.cs" />
+    <Compile Include="Binding\GetPropertyDelegate.cs" />
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
     <Compile Include="Binding\IViewBinder.cs" />
     <Compile Include="Binding\MvpContext.cs" />

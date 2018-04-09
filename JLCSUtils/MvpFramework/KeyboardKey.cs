@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MvpFramework
 {
@@ -129,12 +128,12 @@ namespace MvpFramework
         //
         // Summary:
         //     The CAPS LOCK key.
-        [DisplayNameAny("Caps Lock", ShortName = "CapsLock")]
         [EnumDuplicate]
         Capital = 20,
         //
         // Summary:
         //     The CAPS LOCK key.
+        [DisplayNameAny("Caps Lock", ShortName = "CapsLock")]
         CapsLock = 20,
         //
         // Summary:
@@ -534,7 +533,7 @@ namespace MvpFramework
         /// <summary>
         /// The '+' key on the numeric keypad.
         /// </summary>
-        [DisplayNameAny("+")]
+        [DisplayNameAny("+")]  // duplicate name
         Add = 107,
         //
         // Summary:
@@ -768,10 +767,12 @@ namespace MvpFramework
         //
         // Summary:
         //     The media Stop key (Windows 2000 or later).
+        [DisplayNameAny("Stop")]
         MediaStop = 178,
         //
         // Summary:
         //     The media play pause key (Windows 2000 or later).
+        [DisplayNameAny("Pause")]
         MediaPlayPause = 179,
         //
         // Summary:
@@ -814,6 +815,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM Semicolon key on a US standard keyboard (Windows 2000 or later).
+        [DisplayNameAny("Semicolon", ShortName = ";")]
         OemSemicolon = 186,
         //
         // Summary:
@@ -826,6 +828,7 @@ namespace MvpFramework
         [EnumDuplicate]
         Oemplus = 187,
         //| This corrects the capitalisation of the WinForms name.
+        [DisplayNameAny("+")]
         OemPlus = 187,
         //
         // Summary:
@@ -833,18 +836,22 @@ namespace MvpFramework
 //        [EnumDuplicate]
 //        Oemcomma = 188,
         //| This corrects the capitalisation of the WinForms name.
-        OemComma = 188,   
+        [DisplayNameAny("Comma", ShortName = ",")]
+        OemComma = 188,
         //
         // Summary:
         //     The OEM minus key on any country/region keyboard (Windows 2000 or later).
+        [DisplayNameAny("-")]  // duplicate name
         OemMinus = 189,
         //
         // Summary:
         //     The OEM period key on any country/region keyboard (Windows 2000 or later).
+        [DisplayNameAny(".")]  // duplicate name
         OemPeriod = 190,
         //
         // Summary:
         //     The OEM question mark key on a US standard keyboard (Windows 2000 or later).
+        [DisplayNameAny("?")]
         OemQuestion = 191,
         //
         // Summary:
@@ -857,6 +864,7 @@ namespace MvpFramework
         [EnumDuplicate]
         Oemtilde = 192,
         //| This corrects the capitalisation of the WinForms name.
+        [DisplayNameAny("Tilde", ShortName = "~")]
         OemTilde = 192,
         //
         // Summary:
@@ -866,6 +874,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM open bracket key on a US standard keyboard (Windows 2000 or later).
+        [DisplayNameAny("Open Bracket")]
         OemOpenBrackets = 219,
         //
         // Summary:
@@ -875,6 +884,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM pipe key on a US standard keyboard (Windows 2000 or later).
+        [DisplayNameAny("Pipe")]
         OemPipe = 220,
         //
         // Summary:
@@ -884,6 +894,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM close bracket key on a US standard keyboard (Windows 2000 or later).
+        [DisplayNameAny("Close Bracket")]
         OemCloseBrackets = 221,
         //
         // Summary:
@@ -893,6 +904,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM singled/double quote key on a US standard keyboard (Windows 2000 or later).
+        [DisplayNameAny("Quote")]
         OemQuotes = 222,
         //
         // Summary:
@@ -907,6 +919,7 @@ namespace MvpFramework
         // Summary:
         //     The OEM angle bracket or backslash key on the RT 102 key keyboard (Windows 2000
         //     or later).
+        [DisplayNameAny("Backslash")]
         OemBackslash = 226,
         //
         // Summary:
@@ -971,10 +984,12 @@ namespace MvpFramework
         //
         // Summary:
         //     The PA1 key.
+        [DisplayNameAny("PA1")]
         Pa1 = 253,
         //
         // Summary:
         //     The CLEAR key.
+        [DisplayNameAny("Clear", ShortName = "Clr")] // duplicate name
         OemClear = 254,
 
         /// <summary>
@@ -1162,11 +1177,16 @@ namespace MvpFramework
         /// <summary>
         /// Separates modifier key names from the base key name.
         /// </summary>
-        public static string ModifierSeparator = "-";
+        public static string ModifierSeparator = "+";
         //| Could use '+'. Either might look confusing when the modifier key is the same as the separator.
 
         public const string ShiftKeyName = "\u21E7";  // ⇧ https://www.fileformat.info/info/unicode/char/21e7/index.htm
         public const string ControlKeyName = "^";
         public const string AltKeyName = "•";
+
+        /// <summary>
+        /// Represents no modifiers.
+        /// </summary>
+        public const ConsoleModifiers NoConsoleModifiers = (ConsoleModifiers)0;
     }
 }

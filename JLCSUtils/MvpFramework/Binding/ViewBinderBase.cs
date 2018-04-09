@@ -153,8 +153,9 @@ namespace MvpFramework.Binding
         /// </summary>
         protected virtual PresenterBinderWrapperBase PresenterBinder { get; set; }
 
-        #region OptionUpdate
+        #region IOptionUpdate
 
+        /// <inheritdoc cref="IOptionUpdate.UpdateOption(OptionUpdateArgs)"/>
         public virtual void UpdateOption(OptionUpdateArgs args)
         {
             OptionUpdate?.Invoke(args);

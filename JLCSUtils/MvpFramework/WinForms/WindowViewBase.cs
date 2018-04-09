@@ -148,7 +148,7 @@ namespace MvpFramework.WinForms
         protected virtual object ModalResult { get; set; }
 
 
-        #region From key events
+        #region Form key events
 
         /// <inheritdoc cref="IChildWindow.KeyPreview"/>
         [DefaultValue(true)]

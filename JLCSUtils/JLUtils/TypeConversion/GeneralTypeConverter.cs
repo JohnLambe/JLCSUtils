@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using JohnLambe.Util.Reflection;
 
 namespace JohnLambe.Util.TypeConversion
@@ -13,6 +12,13 @@ namespace JohnLambe.Util.TypeConversion
     /// </summary>
     public static class GeneralTypeConverter
     {
+        /// <summary>
+        /// Try to convert <paramref name="source"/> to type <typeparamref name="T"/>.
+        /// May throw an exception if it cannot be converted.
+        /// </summary>
+        /// <typeparam name="T">The type to convert to.</typeparam>
+        /// <param name="source">the value to be converted.</param>
+        /// <returns>the converted value.</returns>
         public static T Convert<T>(object source)
         {
             return Convert<T>(source, typeof(T));
@@ -22,13 +28,20 @@ namespace JohnLambe.Util.TypeConversion
         /// Try to convert <paramref name="source"/> to type <paramref name="requiredType"/>.
         /// May throw an exception if it cannot be converted.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type to return, which must be assignable from <paramref name="requiredType"/>.</typeparam>
         /// <param name="source">the value to be converted.</param>
-        /// <param name="requiredType"></param>
-        /// <returns></returns>
+        /// <param name="requiredType">The type to convert to.</param>
+        /// <returns>the converted value.</returns>
         public static T Convert<T>(object source, Type requiredType)
         {
-            if (typeof(T).IsValueType && (source == null || source.ToString().Equals("")))   // converting null to a value type
+            /*
+            if(source == null && (!requiredType.IsValueType || requiredType.IsNullableValueType()))  // if nullable (either a reference type or a nullable value type)
+            {
+                return default(T);   // return the default. This will be null if `T` is requiredType.
+            }
+            */
+            if (source == null ||                                                      // converting null to anything,
+                (typeof(T).IsValueType && (source?.ToString()?.Equals("") ?? true)))   // converting null or "" (or ToString() returns null) to a value type
             {
                 return default(T);
             }
@@ -79,7 +92,7 @@ namespace JohnLambe.Util.TypeConversion
                 return (T)System.Convert.ChangeType(source, targetType);
                 // if nullable, try to convert to the underlying type. System.Convert fails on trying to convert to Nullable<T>.
             }
-            catch(InvalidCastException)   // if the cast failed, even if the target type is not a string (because the result of ToString() might be convertible to the required type)
+            catch(InvalidCastException) when (source != null)  // if the cast failed, even if the target type is not a string (because the result of ToString() might be convertible to the required type)
             //when(requiredType == typeof(string))  // if failed and a string is required
             {
                 return (T)System.Convert.ChangeType(source.ToString(), targetType);
@@ -89,9 +102,9 @@ namespace JohnLambe.Util.TypeConversion
         /// <summary>
         /// Same as Convert&lt;object&gt;.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="requiredType"></param>
-        /// <returns></returns>
+        /// <param name="source">the value to be converted.</param>
+        /// <param name="requiredType">The type to convert to.</param>
+        /// <returns>the converted value.</returns>
         public static object Convert(object source, Type requiredType)
         {
             return Convert<object>(source, requiredType);

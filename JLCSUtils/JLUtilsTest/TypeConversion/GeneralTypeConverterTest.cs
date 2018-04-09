@@ -21,6 +21,11 @@ namespace JohnLambe.Tests.JLUtilsTest.TypeConversion
             Assert.AreEqual(null, GeneralTypeConverter.Convert<int?>(null));
 
             Assert.AreEqual(null, GeneralTypeConverter.Convert<int?>(""));
+
+            int? x = null;
+            Assert.AreEqual(null, GeneralTypeConverter.Convert<decimal?>(x));
+
+            Assert.AreEqual(null, GeneralTypeConverter.Convert<DateTime?>(null, typeof(byte)));
         }
 
         [TestMethod]

@@ -68,6 +68,7 @@ namespace MvpFramework.Binding
             MvpBind(new MvpContext(modelBinder, new PresenterBinderWrapper(presenter), null));
         }
 
+        /// <inheritdoc cref="IControlBinderV2.MvpBind(MvpControlBindingContext)"/>
         public virtual void MvpBind(MvpContext context)  //ModelBinderWrapper modelBinder, PresenterBinderWrapperBase presenterBinder)
         {
             if (BindEvents(BoundControl, context.PresenterBinder))
@@ -124,17 +125,19 @@ namespace MvpFramework.Binding
         /// <returns></returns>
         public virtual bool BindKeys(object target, PresenterBinderWrapperBase presenterBinder)
         {
-            _keyHandlers = presenterBinder.GetOptionCollection(BindingConsts.Filter_Keys);
-            
-            if(!_keyHandlers.Children.Any())
+            _presenterKeyHandlers = presenterBinder.GetOptionCollection(BindingConsts.Filter_Keys);
+            if (!_presenterKeyHandlers.Children.Any())
             {
-                _keyHandlers = null;
-                return false;
+                _presenterKeyHandlers = null;
             }
-            else
+
+            _viewKeyHandlers = new OptionCollectionBuilder().Build(BoundControl, BindingConsts.Filter_Keys);
+            if (!_viewKeyHandlers.Children.Any())
             {
-                return true;
+                _viewKeyHandlers = null;
             }
+
+            return _presenterKeyHandlers != null || _viewKeyHandlers != null;
         }
 
         /// <summary>
@@ -178,7 +181,8 @@ namespace MvpFramework.Binding
 
         public virtual void NotifyKeyDown(KeyboardKeyEventArgs args)
         {
-            _keyHandlers?.ProcessKey(args.Key, KeyType.HotKey);
+            _presenterKeyHandlers?.ProcessKey(args.Key, KeyType.HotKey);
+            _viewKeyHandlers?.ProcessKey(args.Key, KeyType.HotKey);
         }
 
         /// <summary>
@@ -190,6 +194,12 @@ namespace MvpFramework.Binding
         /// Handlers for keystrokes.
         /// </summary>
         [Nullable]
-        protected IOptionCollection _keyHandlers;
+        protected IOptionCollection _presenterKeyHandlers;
+
+        /// <summary>
+        /// Handlers for keystrokes, on the View.
+        /// </summary>
+        [Nullable]
+        protected IOptionCollection _viewKeyHandlers;
     }
 }

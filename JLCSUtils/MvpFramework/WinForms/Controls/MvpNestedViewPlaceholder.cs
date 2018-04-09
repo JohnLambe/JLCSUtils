@@ -49,6 +49,9 @@ namespace MvpFramework.WinForms.Controls
             get { return _nestedView; }
             set
             {
+                if (value != _nestedView)
+                    NestedViewChanged.Invoke(this, EventArgs.Empty);
+
                 //if((NestedView as Control)?.Parent == this)
                 //    ((Control)NestedView).Parent = null;
                 if (NestedView != null)
@@ -75,6 +78,11 @@ namespace MvpFramework.WinForms.Controls
         /// </summary>
         [Nullable]
         public virtual Control ViewControl => NestedView as Control;
+
+        /// <summary>
+        /// When when <see cref="NestedView"/> changes.
+        /// </summary>
+        public virtual event EventHandler NestedViewChanged;
 
         #endregion
 

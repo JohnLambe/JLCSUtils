@@ -90,5 +90,11 @@ namespace MvpDemo
         {
 //            ViewBinder.ValidateControls();
         }
+
+        [MvpHandler(SingleFilter = BindingConsts.Filter_Keys, HotKey = KeyboardKey.F5)]
+        public virtual void HandleF5()
+        {
+            MessageBox.Show("F5");
+        }
     }
 }
