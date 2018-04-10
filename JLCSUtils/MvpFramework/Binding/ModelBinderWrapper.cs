@@ -390,12 +390,13 @@ namespace MvpFramework.Binding
         /// <param name="newValue">The value in the UI, to be updated to the model.</param>
         public virtual void Validated(object sender, EventArgs evt, object newValue)
         {
+            var oldValue = Value;
             if(CanWrite)
                 ValueConverted = newValue;
             //| We could set _boundControl.'Modified' (if it exists) to false:
             //                ReflectionUtil.TrySetPropertyValue(_boundControl, "Modified", false);  // control value is the same as the model
 
-            var eventArgs = new ValueChangedEventArgs<object, object>(ModelBinder.AsObject, Name, Value, newValue, ValidationStage.Validating, evt);
+            var eventArgs = new ValueChangedEventArgs<object, object>(ModelBinder.AsObject, Name, oldValue, newValue, ValidationStage.Validating, evt);
             OnValidated?.Invoke(this, eventArgs);
             DoInvalidateView(eventArgs);
 
