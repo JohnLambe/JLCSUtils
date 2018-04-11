@@ -126,6 +126,16 @@ namespace JohnLambe.Util.Validation
     /// </summary>
     public class EircodeValidationAttribute : PostcodeValidationAttribute
     {
+        /// <summary>
+        /// The maximum length of a valid Eircode, inclding the space after the third character.
+        /// </summary>
+        public const int MaximumValidEircodeLength = 8;
+
+        public EircodeValidationAttribute()
+        {
+            MaximumLength = MaximumValidEircodeLength;
+        }
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
@@ -174,11 +184,25 @@ namespace JohnLambe.Util.Validation
         public override string DefaultDescription => "An Eircode (Irish postcode)";
     }
 
+    //TODO-L: ZipCodeValidationAttribute
+
     /// <summary>
     /// The data item holds an email address.
     /// </summary>
     public class EmailValidationAttribute : StringValidationAttribute
     {
+        /// <summary>
+        /// The maximum length of valid email address is 254 (see https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address?rq=1).
+        /// This is the default for <see cref="StringValidationAttribute.MaximumLength"/> in this class.
+        /// In practice long addresses are rare. See https://stackoverflow.com/questions/1297272/how-long-should-sql-email-fields-be?noredirect=1&lq=1 .
+        /// </summary>
+        public const int MaximumValidEmailLength = 254;
+
+        public EmailValidationAttribute()
+        {
+            MaximumLength = MaximumValidEmailLength;
+        }
+
         public override string GeneralDescription => "An email address";
 
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
