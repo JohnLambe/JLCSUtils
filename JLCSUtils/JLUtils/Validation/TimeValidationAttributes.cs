@@ -32,6 +32,22 @@ namespace JohnLambe.Util.Validation
         /// and <see cref="SecondsDecimalPlaces"/>.
         /// </summary>
         public virtual bool Round { get; set; }
+
+        /// <summary>
+        /// true iff null is allowed.
+        /// </summary>
+        public virtual bool Nullable { get; set; } = true;
+
+
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+
+            if (!Nullable && value == null)
+            {
+                results.AddBlankError(validationContext);
+            }
+        }
     }
 
     /// <summary>
@@ -69,46 +85,43 @@ namespace JohnLambe.Util.Validation
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
-            DateTime timeValue = GeneralTypeConverter.Convert<DateTime>(value);
 
-            if (timeValue < Minimum || timeValue > Maximum)
-                results.Add("Date/time is outside the allowed range");  //TODO Show range
-
-            switch (TimePartOption)
+            if (value != null)
             {
-                case TimePartOption.EndOfDay:
-                    timeValue = timeValue.EndOfDay();
-                    value = timeValue;
-                    break;
-                case TimePartOption.StartOfDay:
-                    timeValue = timeValue.Date;
-                    value = timeValue;
-                    break;
-            }
+                DateTime timeValue = GeneralTypeConverter.Convert<DateTime>(value);
 
-            if (validationContext.GetState().HasFlag(ValidationState.LiveInput) && Options != TimeValidationOptions.Any)
-            {
-                var now = DateTime.Now;  //TODO use ITimeService
-                if (timeValue < now && !(Options.HasFlag(TimeValidationOptions.AllowPast)))
+                if (timeValue < Minimum || timeValue > Maximum)
+                    results.Add(validationContext?.DisplayName + " is outside the allowed range");  //TODO Show range
+
+                switch (TimePartOption)
                 {
-                    results.Add("Must not be in the past");
+                    case TimePartOption.EndOfDay:
+                        timeValue = timeValue.EndOfDay();
+                        value = timeValue;
+                        break;
+                    case TimePartOption.StartOfDay:
+                        timeValue = timeValue.Date;
+                        value = timeValue;
+                        break;
                 }
-                else if (timeValue > now && !(Options.HasFlag(TimeValidationOptions.AllowFuture)))
+
+                if (validationContext.GetState().HasFlag(ValidationState.LiveInput) && Options != TimeValidationOptions.Any)
                 {
-                    results.Add("Must not be in the future");
+                    var now = DateTime.Now;  //TODO use ITimeService
+                    if (timeValue < now && !(Options.HasFlag(TimeValidationOptions.AllowPast)))
+                    {
+                        results.Add(validationContext?.DisplayName + " must not be in the past");
+                    }
+                    else if (timeValue > now && !(Options.HasFlag(TimeValidationOptions.AllowFuture)))
+                    {
+                        results.Add(validationContext?.DisplayName + " must not be in the future");
+                    }
                 }
             }
 
             //TODO other properties
         }
     }
-
-    /*
-    [Obsolete("Use DateTimeValidationAttribute")]
-    public class DateTimeAttribute : DateTimeValidationAttribute
-    {
-    }
-    */
 
     /// <summary>
     /// Indicates that the data item is a time interval (duration).
@@ -143,7 +156,7 @@ namespace JohnLambe.Util.Validation
             TimeSpan timeValue = GeneralTypeConverter.Convert<TimeSpan>(value);
 
             if (timeValue < Minimum || timeValue > Maximum)
-                results.Add("Time is outside the allowed range");  //TODO Show range
+                results.Add(validationContext?.DisplayName + " is outside the allowed range");  //TODO Show range
 
             //TODO other properties
         }

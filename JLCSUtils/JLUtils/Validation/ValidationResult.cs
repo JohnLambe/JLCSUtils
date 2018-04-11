@@ -351,7 +351,19 @@ namespace JohnLambe.Util.Validation
                     return true;
             }
         }
-    }
 
+        /// <summary>
+        /// Add an error that the current field is required.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="context"></param>
+        public static void AddBlankError(this ValidationResults results, ValidationContext context = null)
+        {
+            if(context != null)
+                results.Add(context.DisplayName + " is required");
+            else
+                results.Add("This field is required");
+        }
+    }
 
 }

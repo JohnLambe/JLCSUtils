@@ -160,11 +160,10 @@ namespace JohnLambe.Util.Validation
             base.IsValid(ref value, validationContext, results);
 
             if (Minimum != null && _minimum.CompareTo(value) < 0)
-                results.Add("must be higher than or equal to " + _minimum);
+                results.Add(validationContext?.DisplayName + " must be higher than or equal to " + _minimum);
             if (Minimum != null && _maximum.CompareTo(value) > 0)
-                results.Add("must be less than or equal to " + _maximum);
+                results.Add(validationContext?.DisplayName + " must be less than or equal to " + _maximum);
         }
-
     }
 
 

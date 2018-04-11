@@ -191,6 +191,7 @@ namespace JohnLambe.Util
             return value;
         }
 
+        
         /// <summary>
         /// Compare two values, either (or both) of which may be null.
         /// If both are null, they are equal. Otherwise, they are compared with <see cref="object.Equals(object)"/>.
@@ -198,19 +199,24 @@ namespace JohnLambe.Util
         /// <param name="value1"></param>
         /// <param name="value2"></param>
         /// <returns>true if the values are equal.</returns>
+        [Obsolete("Use ObjectUtil.CompareEqual")]
         public static bool NullableEquals(object value1, object value2)
         {
             if (value1 == null && value2 == null)
                 return true;
             return value1?.Equals(value2) ?? false;
         }
-
+        
     }
 
 
     public static class ObjectUtil
     {
         /// <summary>
+        /// Compare two values, either (or both) of which may be null.
+        /// If both are null, they are equal. Otherwise, they are compared with <see cref="object.Equals(object)"/>.
+        /// If one is null, <see cref="object.Equals(object)"/> is called on the other.
+        /// If both are non-null, it is called on <paramref name="a"/>.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -219,8 +225,13 @@ namespace JohnLambe.Util
         {
             if (a == null && b == null)         // if both are null
                 return true;                    // they're equal
+            /*  Could return false if either one is null and the other is not.
+             *  We call object.Equals instead in case it returns true on comparing to null.
             else if (a == null || b == null)    // if one is null
                 return false;                   // not equal, because one is null, but not both
+            */
+            else if (a == null)
+                return b.Equals(a);
             else
                 return a.Equals(b);             // compare. a.Equals(b) should be the same as b.Equals(a).
         }

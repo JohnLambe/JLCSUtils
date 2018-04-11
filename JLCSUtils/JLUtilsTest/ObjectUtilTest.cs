@@ -26,8 +26,15 @@ namespace JohnLambe.Tests.JLUtilsTest
                    int? n = null;
                    char? c = null;
                    Assert.IsTrue(ObjectUtil.CompareEqual(c, n));
-               }
+               },
+
+               () => Assert.AreEqual(false, ObjectUtil.CompareEqual("", null)),
+               () => Assert.AreEqual(false, ObjectUtil.CompareEqual(this, null)),
+               () => Assert.AreEqual(false, ObjectUtil.CompareEqual(5m, 5)),
+               () => Assert.AreEqual(true, ObjectUtil.CompareEqual(9.7, 9.7))
+
             );
         }
+
     }
 }
