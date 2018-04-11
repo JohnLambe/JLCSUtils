@@ -109,7 +109,7 @@ namespace MvpFrameworkTest
             TestUtil.Multiple(
                 () => Assert.AreEqual(ConsoleKey.F14, (KeyboardKey.Alt | KeyboardKey.Control | KeyboardKey.F14).ToConsoleKey()),   // converts only the base key
                 () => Assert.AreEqual(ConsoleKey.D2, (KeyboardKey.Shift | KeyboardKey.D2).ToConsoleKey()),
-                () => Assert.AreEqual(KeyboardKey.D, KeyboardKey.D.ToConsoleKey())
+                () => Assert.AreEqual(ConsoleKey.D, KeyboardKey.D.ToConsoleKey())
                 );
         }
 
