@@ -22,7 +22,7 @@ namespace JohnLambe.Util.Validation
     /// For validation of string values.
     /// </summary>
     /// <remarks>
-    /// See https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields?noredirect=1&lq=1 for a discussion on maximum lengths for various string fields.
+    /// See https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields for a discussion on maximum lengths for various string fields.
     /// </remarks>
     /// <seealso cref="StringLengthAttribute"/>
     /// <seealso cref="MaxLengthAttribute"/>

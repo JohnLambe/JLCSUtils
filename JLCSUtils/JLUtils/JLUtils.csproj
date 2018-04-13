@@ -53,6 +53,7 @@
     <Compile Include="Collections\EnumeratorUtil.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Collections\KeyExistsException.cs" />
+    <Compile Include="Collections\Multiton.cs" />
     <Compile Include="Collections\TypeMap.cs" />
     <Compile Include="ConfigProvider\FileLoaderConfigProvider.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />

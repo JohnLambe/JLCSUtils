@@ -61,7 +61,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Db\Attributes.cs" />
     <Compile Include="Db\Ef\ClonerTest.cs" />
     <Compile Include="Db\Ef\CollectionInitializerTest.cs" />
     <Compile Include="Db\Ef\DbSetUtilTest.cs" />

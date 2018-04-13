@@ -52,17 +52,17 @@ namespace JohnLambe.Util.TimeUtilities
         }
 
         /// <summary>
-        /// Initializes from a DateTime? value. There must be no time part in this value.
+        /// Initializes from a DateTime value. There must be no time part in this value.
         /// </summary>
         /// <param name="value"></param>
         public Date(DateTime value)
         {
             if (!TimeUtil.IsDateOnly(value))
-                throw new OverflowException("Can't cast DateTime to Date because it has a time part");
+                throw new ArgumentException("Can't cast DateTime to Date because it has a time part");
             _value = value;
         }
 
-        /*  // Not needed becaues Date can be implicitly cast to DateTime:
+        /*  // Not needed because Date can be implicitly cast to DateTime:
         /// <summary>
         /// Copy an existing Date.
         /// </summary>

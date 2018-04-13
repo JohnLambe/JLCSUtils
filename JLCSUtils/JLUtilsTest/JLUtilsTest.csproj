@@ -80,6 +80,7 @@
     <Compile Include="AutoFactory\AutoFactoryTestBase.cs" />
     <Compile Include="ByteArrayTest.cs" />
     <Compile Include="Collections\CachedSimpleLookupTest.cs" />
+    <Compile Include="Collections\ClassMultitonTest.cs" />
     <Compile Include="Collections\CollectionUtilTest.cs" />
     <Compile Include="Collections\EnumerationUtilTest.cs" />
     <Compile Include="Collections\TypeMapTest.cs" />

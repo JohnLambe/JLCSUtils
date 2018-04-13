@@ -472,7 +472,7 @@ namespace JohnLambe.Util.Reflection
         }
 
         /// <summary>
-        /// Like <see cref="Create{T}(Type, object[])"/>, but the paramter types are specified explicitly.
+        /// Like <see cref="Create{T}(Type, object[])"/>, but the parameter types are specified explicitly.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>

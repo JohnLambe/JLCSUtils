@@ -86,14 +86,17 @@ namespace JohnLambe.Util.Validation
                     if (AdjustToRange)
                         value = MinimumValue;
                     else
-                        results.Add("Value too low");
+                        results.Add(validationContext.DisplayName + " must be " 
+                            + (MinimumValue < GreaterThan ? " at least " + MinimumValue : " higher then " + GreaterThan) + " " + Unit);
                 }
                 else if (numericValue > MaximumValue || numericValue >= LessThan)
                 {
                     if (AdjustToRange)
                         value = MaximumValue;
                     else
-                        results.Add("Value too high");
+                        results.Add(validationContext.DisplayName + " must be "
+                            + (MaximumValue < LessThan ? " at most " + MinimumValue : " less then " + LessThan) + " " + Unit);
+//                    results.Add(validationContext.DisplayName + "Value too high");
                 }
             }
         }
