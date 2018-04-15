@@ -181,12 +181,12 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// The character to use for padding if enabled by <see cref="Padding"/>.
         /// </summary>
-        public virtual char PaddingCharacter { get; set; }
+        public virtual char PaddingCharacter { get; set; } = ' ';
 
         /// <summary>
         /// True if the string may have multiple lines of text.
         /// </summary>
-        public virtual NullableBool MultiLine { get; set; }
+        public virtual NullableBool MultiLine { get; set; } = NullableBool.Null;
 
         //TODO: Conversion between null and "":
         // NullToBlank

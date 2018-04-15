@@ -235,6 +235,46 @@ namespace JohnLambe.Util
             else
                 return a.Equals(b);             // compare. a.Equals(b) should be the same as b.Equals(a).
         }
+
+        /// <summary>
+        /// Compares two objects.
+        /// If either is <see cref="IComparable"/>, it is used to do the comparison,
+        /// otherwise, if they are equal according to <see cref="CompareEqual(object, object)"/>, 0 is returned,
+        /// otherwise an exception is thrown.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>Same as <see cref="IComparable.CompareTo(object)"/>.</returns>
+        /// <exception cref="InvalidOperationException">If neither of the parameters implements <see cref="IComparable"/> and they are not equal according to <see cref="CompareEqual(object, object)"/>.</exception>
+        public static int Compare(object a, object b)
+        {
+            int? result = TryCompare(a,b);
+            if(result == null)
+                throw new InvalidOperationException("Can't compare " + (a?.GetType().FullName ?? "null") + " to " + (b?.GetType().FullName ?? "null"));
+            return result.Value;
+        }
+
+        /// <summary>
+        /// Same as <see cref="Compare(object, object)"/> except that this returns null if the parameters can't be compared.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>
+        /// If null, the parameters are not equal and can't be compared as higher or lower;
+        /// otherwise the same as <see cref="IComparable.CompareTo(object)"/>.
+        /// </returns>
+        public static int? TryCompare(object a, object b)
+        {
+            if (a is IComparable)
+                return ((IComparable)a).CompareTo(b);
+            else if (b is IComparable)
+                return -((IComparable)b).CompareTo(a);
+            else if (CompareEqual(a, b))
+                return 0;
+            else
+                return null;
+        }
+
     }
 
 }

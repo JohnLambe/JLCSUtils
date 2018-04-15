@@ -59,6 +59,7 @@ namespace MvpFramework
         ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext param, IView view)
             where TPresenter : IPresenter;
 
+        bool GetUseChildContext(Type targetClass, ResolverExtensionContext context);
     }
 
 
@@ -80,6 +81,11 @@ namespace MvpFramework
         /// See <see cref="INestedPresenterFactory"/>.
         /// </summary>
         public virtual bool Nested { get; set; }
+
+        /// <summary>
+        /// <see cref="PresenterFactory{TPresenter}.EffectiveUseChildContext"/>
+        /// </summary>
+        public virtual bool UseChildContext { get; set; }
     }
 
 
@@ -119,6 +125,11 @@ namespace MvpFramework
         public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext context, IView view) where TPresenter : IPresenter
         {
             return ResolverExtensionStatus.Default;
+        }
+
+        public virtual bool GetUseChildContext(Type targetClass, ResolverExtensionContext context)
+        {
+            return false;
         }
     }
 

@@ -127,6 +127,27 @@ namespace JohnLambe.Util.Collections
             }
             return dictionary;
         }
+
+        /// <summary>
+        /// Get the value for a given key, and create a value for that key if it does not exist.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="key">The key to try to get.</param>
+        /// <param name="create">Delegate to return the value for <paramref name="key"/> if it does not exist.</param>
+        /// <returns></returns>
+        public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey,TValue> dictionary, TKey key, Func<TValue> create)
+        {
+            TValue value;
+            if (!dictionary.TryGetValue(key, out value))
+            {
+                value = create.Invoke();
+                dictionary.Add(key, value);
+            }
+            return value;
+        }
+
     }
 
 }

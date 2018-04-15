@@ -739,12 +739,12 @@ namespace JohnLambe.Util.Reflection
         /// <summary>
         /// Parse a property name with an optional suffix for a modifier, into the name and modifier.
         /// </summary>
-        /// <param name="propertyReferece"></param>
+        /// <param name="propertyReference"></param>
         /// <param name="modifier">The modifier of the property reference.</param>
         /// <returns></returns>
-        private static string ParsePropertyReference([NotNull] string propertyReferece, out PropertyNullabilityModifier modifier)
+        private static string ParsePropertyReference([NotNull] string propertyReference, out PropertyNullabilityModifier modifier)
         {
-            var modifierCharacter = propertyReferece.CharAt(propertyReferece.Length - 1);  // get the last character
+            var modifierCharacter = propertyReference.CharAt(propertyReference.Length - 1);  // get the last character
             switch (modifierCharacter)   //TODO: Use attribute
             {
                 case '?':
@@ -758,9 +758,9 @@ namespace JohnLambe.Util.Reflection
                     break;
                 default:
                     modifier = PropertyNullabilityModifier.None;
-                    return propertyReferece;
+                    return propertyReference;
             }
-            return propertyReferece.Substring(0, propertyReferece.Length - 1);
+            return propertyReference.Substring(0, propertyReference.Length - 1);
         }
 
         public static bool IsNullable([NotNull] this PropertyNullabilityModifier modifier)
@@ -771,9 +771,8 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="target">The object on which to evaluate the property.
         /// For nested properties, this is the innermost object on exit.</param>
-        /// <param name="propertyName">Property name. Can be a nested property.
-        /// Each property name in the chain can be suffixed with a symbol to specify nullability - see <see cref="PropertyNullabilityModifier"/>.
-        /// <para>The format is (ABNF): *( name [modifier] ".") name [modifier] .</para>
+        /// <param name="propertyName">
+        /// <inheritdoc cref="PropertyNameAttribute"/>
         /// </param>
         /// <param name="action">What to do - see <see cref="PropertyAction"/>.</param>
         /// <param name="value">The value to set; or a reference to receive the value (on Get).
@@ -785,7 +784,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
         /// <returns>The details of the innermost property. null if <paramref name="target"/> or the property (or any property in the chain) does not exist, or an item that the requested property is on, is null.</returns>
         //TODO: If there is a null in part of the property name string ("X.Y" where X evaluates to null), try to get the metadata from the compile-time type of X. And update BoundProperty to use this.
-        private static PropertyInfo GetSetProperty(ref object target, [NotNull] string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        private static PropertyInfo GetSetProperty(ref object target, [NotNull,PropertyName] string propertyName, PropertyAction action, ref object value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             PropertyInfo property = null;
             string[] levels = propertyName.Split('.');
@@ -886,7 +885,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target"></param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <returns>The requested property, or null if it does not exist (if any property in the chain doesn't exist).</returns>
-        public static PropertyInfo GetProperty(ref object target, [NotNull] string propertyName)
+        public static PropertyInfo GetProperty(ref object target, [NotNull,PropertyName] string propertyName)
         {
             object dummy = null;
             return GetSetProperty(ref target, propertyName, PropertyAction.GetProperty, ref dummy);
@@ -899,13 +898,34 @@ namespace JohnLambe.Util.Reflection
         /// <param name="target">The object from which to read the property.</param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
-        /// <returns>The property value.</returns>
+        /// <returns>The property value, or null if nullable and the property name is not valid.</returns>
         //| Could call this "ReadProperty".
-        public static T TryGetPropertyValue<T>([NotNull] object target, [NotNull] string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        [return: Nullable]
+        public static T TryGetPropertyValue<T>([NotNull] object target, [NotNull,PropertyName] string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object value = null;
             GetSetProperty(ref target, propertyName, PropertyAction.GetValue, ref value, defaultNullability);
             // Note: target is passed by value to this method. Any change to it is ignored.
+            return (T)value;
+        }
+
+        /// <summary>
+        /// Same as <see cref="TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/>
+        /// except that this throws an exception if the property name is not valid.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="defaultNullability"></param>
+        /// <returns></returns>
+        [return: Nullable]
+        public static T GetPropertyValue<T>([NotNull] object target, [NotNull,PropertyName] string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        {
+            object value = null;
+            var property = GetSetProperty(ref target, propertyName, PropertyAction.GetValue, ref value, defaultNullability);
+            // Note: target is passed by value to this method. Any change to it is ignored.
+            if (property == null)
+                throw new ArgumentException("Property does not exist: " + propertyName);
             return (T)value;
         }
 
@@ -918,7 +938,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <param name="value">The value to set.</param>
         /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
-        public static void TrySetPropertyValue<T>([NotNull] object target, [NotNull] string propertyName, [Nullable] T value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
+        public static void TrySetPropertyValue<T>([NotNull] object target, [NotNull,PropertyName] string propertyName, [Nullable] T value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object valueObject = value;
             GetSetProperty(ref target, propertyName, PropertyAction.SetValue, ref valueObject, defaultNullability);

@@ -194,7 +194,7 @@ namespace JohnLambe.Util.Validation
         /// <summary>
         /// The maximum length of valid email address is 254 (see https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address?rq=1).
         /// This is the default for <see cref="StringValidationAttribute.MaximumLength"/> in this class.
-        /// In practice long addresses are rare. See https://stackoverflow.com/questions/1297272/how-long-should-sql-email-fields-be?noredirect=1&lq=1 .
+        /// In practice long addresses are rare. See https://stackoverflow.com/questions/1297272/how-long-should-sql-email-fields-be?noredirect=1&amp;lq=1 .
         /// </summary>
         public const int MaximumValidEmailLength = 254;
 
@@ -428,6 +428,19 @@ namespace JohnLambe.Util.Validation
     /// Specifies that the attributed item identifies an image acquisition device (document scanner or equivalent).
     /// </summary>
     public class ScannerValidationAttribute : DeviceNameValidationAttribute
+    {
+    }
+
+
+    // The attributed item contains a property name in the format used by <see cref="ReflectionUtil.TryGetPropertyValue{T}(object, string, PropertyNullabilityModifier)"/> etc.
+    /// <summary>
+    /// <para>
+    /// Property name. Can be a nested property.
+    /// Each property name in the chain can be suffixed with a symbol to specify nullability - see <see cref="PropertyNullabilityModifier"/>.
+    /// The format is (ABNF): *( name [modifier] ".") name [modifier] .
+    /// </para>
+    /// </summary>
+    public class PropertyNameAttribute : ValidationAttributeBase
     {
     }
 }

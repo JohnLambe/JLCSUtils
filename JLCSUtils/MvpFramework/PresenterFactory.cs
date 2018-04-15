@@ -102,14 +102,17 @@ namespace MvpFramework
                 IDiResolver currentDiResolver = DiResolver;
                 var resolverContext = new ResolverExtensionContext(createArguments)
                 {
-                    Nested = ContainingView != null
+                    Nested = ContainingView != null,
+                    UseChildContext = EffectiveUseChildContext
                 };
 
-                //UiManager.GetUseChildContext(TargetClass, resolverContext);
-                if (EffectiveUseChildContext && DiResolver is IChainableDiResolver)
-                    currentDiResolver = ((IChainableDiResolver)DiResolver).CreateChildContext();
-
-//                resolverContext.DiResolver = currentDiResolver ?
+                if (DiResolver is IChainableDiResolver)
+                {
+                    var childContext = UiManager.GetUseChildContext(TargetClass, resolverContext);
+                    if (childContext)
+                        currentDiResolver = ((IChainableDiResolver)DiResolver).CreateChildContext();
+                }
+//                resolverContext.DiResolver = currentDiResolver;
 
                 var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
                 if (existingPresenter != null)
@@ -162,7 +165,7 @@ namespace MvpFramework
                                         + view + " in " + viewParent
                                         + NL + "(View must implement " + nameof(INestableView) + ")");
                                     //| Alternativelty, if view is of the control class for its UI framework and it has a Parent property, we could use it.
-                                    //| This would require a UI-framework-specific handler to provide the way of assigning controls to parents in the UI framework.
+                                    //| This would require a UI-framework-specific handler to provide the way of assigning controls to parents in the UI framework.  See Binding.IControlAdaptor.
                                     //| But implementing ViewParent on a base class basically provides the similar functionality for this purpose, and is simpler.
                                 }
                             }
@@ -232,7 +235,7 @@ namespace MvpFramework
                 {
                     currentDiResolver.BuildUp(presenter);                                 // inject properties
                 }
-                catch(Exception)        //TODO: catch only errors that imply that `presenter` doesn't support property injection
+                catch(Exception)        //TODO: catch only errors that imply that `presenter` doesn't support property injection: MvpException
                 {
                 }
 
