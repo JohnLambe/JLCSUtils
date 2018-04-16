@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JohnLambe.Util.Services;
 using JohnLambe.Util.Types;
-using JohnLambe.Util.Math;
+using JohnLambe.Util.MathUtilities;
 
 namespace JohnLambe.Tests.JLUtilsTest.Services
 {

@@ -402,10 +402,12 @@ namespace MvpFramework.Generator
         /// <param name="assemblies">The list of assemblies to scan. If empty, this does nothing.</param>
         public virtual void ScanAssemblies(IEnumerable<Assembly> assemblies)
         {
-            foreach (var attrib in assemblies.SelectMany(a => a.GetTypes()).SelectMany(t => t.GetAttributesWithMember<MvpControlMappingAttribute, Type>()))
-                // restrict to concrete classes?
+            foreach (var attrib in assemblies.SelectMany(a => a.GetTypes())
+                .Where(t => t.IsClass && !t.IsAbstract)   // restrict to concrete classes
+                .SelectMany(t => t.GetAttributesWithMember<MvpControlMappingAttribute, Type>()))   //TODO: Handle overriding or disabled (Enabled==false) attributes
             {
-                AddMapping(attrib.Attribute.ForType, attrib.DeclaringMember);
+                foreach(var t in attrib.Attribute.ForTypes)
+                    AddMapping(t, attrib.DeclaringMember);
             }
         }
 

@@ -16,5 +16,14 @@ namespace JohnLambe.Tests.JLUtilsTest
 
         //TODO
 
+        [TestMethod]
+        public void AssertEqualWithPrecision()
+        {
+            TestUtil.Multiple(
+                () => TestUtil.AssertThrows<AssertFailedException>( () => TestUtil.AssertEqualWithPrecision(10.1236m, 10.1234m, 3) ),
+                () => TestUtil.AssertEqualWithPrecision(-5.728m, -5.734m, 2)
+            );
+        }
+
     }
 }

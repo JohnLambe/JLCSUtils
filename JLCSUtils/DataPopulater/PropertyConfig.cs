@@ -1,5 +1,5 @@
 ﻿using JohnLambe.Util.Collections;
-using JohnLambe.Util.Math;
+using JohnLambe.Util.MathUtilities;
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Services;
 using System;

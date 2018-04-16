@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using JohnLambe.Util.Math;
+using JohnLambe.Util.MathUtilities;
 
 using static JohnLambe.Tests.JLUtilsTest.TestUtil;
 

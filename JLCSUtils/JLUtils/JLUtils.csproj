@@ -53,7 +53,7 @@
     <Compile Include="Collections\EnumeratorUtil.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Collections\KeyExistsException.cs" />
-    <Compile Include="Collections\Multiton.cs" />
+    <Compile Include="Collections\ClassMultiton.cs" />
     <Compile Include="Collections\TypeMap.cs" />
     <Compile Include="ConfigProvider\FileLoaderConfigProvider.cs" />
     <Compile Include="Diagnostic\Diagnostics.cs" />
@@ -80,7 +80,7 @@
     <Compile Include="Io\!NamespaceDoc.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
     <Compile Include="Linq\SubExpressionUtil.cs" />
-    <Compile Include="Math\!NamespaceDoc.cs" />
+    <Compile Include="MathUtilities\!NamespaceDoc.cs" />
     <Compile Include="Misc\ChangesStateAttribute.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
     <Compile Include="Misc\DefaultComparer.cs" />
@@ -125,7 +125,6 @@
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Types\NullableBooleanExtension.cs" />
     <Compile Include="Validation\!NamespaceDoc.cs" />
-    <Compile Include="Validation\Attributes.cs" />
     <Compile Include="Validation\CollectionValidationAttribute.cs" />
     <Compile Include="Validation\ComparePropertyValidationAttribute.cs" />
     <Compile Include="Validation\NestedValidationAttribute.cs" />
@@ -166,12 +165,12 @@
     <Compile Include="Encoding\HexConverter.cs" />
     <Compile Include="Misc\DynamicProxyBase.cs" />
     <Compile Include="Encoding\SortStringCalculator.cs" />
-    <Compile Include="Math\RandomUtil.cs" />
+    <Compile Include="MathUtilities\RandomUtil.cs" />
     <Compile Include="Reflection\EnumUtil.cs" />
     <Compile Include="Io\FilingUtil.cs" />
     <Compile Include="Io\PathUtil.cs" />
-    <Compile Include="Math\MathUtil.cs" />
-    <Compile Include="Math\OrdinalUtil.cs" />
+    <Compile Include="MathUtilities\MathUtil.cs" />
+    <Compile Include="MathUtilities\OrdinalUtil.cs" />
     <Compile Include="Misc\ReferenceCountedObject.cs" />
     <Compile Include="Reflection\TypeUtil.cs" />
     <Compile Include="Text\StringBuilderExtension.cs" />
@@ -185,7 +184,7 @@
     <Compile Include="Delegates.cs" />
     <Compile Include="FilterDelegates\BooleanExpression.cs" />
     <Compile Include="FilterDelegates\FilterDelegate.cs" />
-    <Compile Include="Math\BitUtil.cs" />
+    <Compile Include="MathUtilities\BitUtil.cs" />
     <Compile Include="MiscUtil.cs" />
     <Compile Include="NotifyOnDispose.cs" />
     <Compile Include="ObjectExtension.cs" />

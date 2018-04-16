@@ -24,7 +24,7 @@ namespace MvpFramework
         where TPresenter : IPresenter
     {
         public PresenterFactory(MvpResolver resolver, IDiResolver diResolver,
-            IResolverExtension uiManager = null
+            IResolverExtension resolverExtension = null
             )
         // To remove service locators:
         //   MvpResolver:
@@ -49,7 +49,7 @@ namespace MvpFramework
         {
             this.DiResolver = diResolver;
             this.Resolver = resolver;
-            this.UiManager = uiManager ?? new NullResolverExtension();
+            this.ResolverExtension = resolverExtension ?? new NullResolverExtension();
         }
 
         protected virtual void Init()
@@ -106,15 +106,15 @@ namespace MvpFramework
                     UseChildContext = EffectiveUseChildContext
                 };
 
-                if (DiResolver is IChainableDiResolver)
+                if (currentDiResolver is IChainableDiResolver)
                 {
-                    var childContext = UiManager.GetUseChildContext(TargetClass, resolverContext);
+                    var childContext = ResolverExtension.GetUseChildContext(TargetClass, resolverContext);
                     if (childContext)
-                        currentDiResolver = ((IChainableDiResolver)DiResolver).CreateChildContext();
+                        currentDiResolver = ((IChainableDiResolver)currentDiResolver).CreateChildContext();
                 }
-//                resolverContext.DiResolver = currentDiResolver;
+                resolverContext.DiResolver = currentDiResolver;
 
-                var existingPresenter = UiManager.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
+                var existingPresenter = ResolverExtension.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
                 if (existingPresenter != null)
                     return existingPresenter;
 
@@ -145,9 +145,9 @@ namespace MvpFramework
                                 // This is important for KnownPresenterFactory, where TPresenter may be a base interface (even IPresenter),
                                 // but still relevant for other cases (for exmaple, a particular Presenter implementation may have its own View that overrides
                                 // the usual one for the presenter's interface - Views are often specific to Presenter implementations).
-                                view = Resolver.GetViewForPresenterType<IView>(TargetClass);
+                                view = Resolver.GetViewForPresenterType<IView>(TargetClass);  //TODO: Resolver has a reference to the wrong (parent) DiResolver
                             }
-                            catch (Exception)   //TODO: Restrict exception type
+                            catch (Exception)   //TODO: Restrict exception type: MvpException?  Currently, may throw SimpleInjector.ActivationException.
                             {   // if resolving the view for the concrete presenter type fails, try for the declared type (usually an interface; possibly a base class) of presenter being created:
                                 view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
                             }
@@ -174,7 +174,7 @@ namespace MvpFramework
                     //| Could provide parameters for context-based injection of View.
                     try
                     {
-                        UiManager.AfterCreateView(TargetClass, resolverContext, ref view);
+                        ResolverExtension.AfterCreateView(TargetClass, resolverContext, ref view);
                     }
                     catch (Exception)
                     {
@@ -241,9 +241,9 @@ namespace MvpFramework
 
                 try
                 {
-                    UiManager.AfterCreatePresenter<TPresenter>(ref presenter, resolverContext, view);
+                    ResolverExtension.AfterCreatePresenter<TPresenter>(ref presenter, resolverContext, view);
                 }
-                catch (Exception)
+                catch (Exception)  // clean up after any exception, and re-throw:
                 {
                     MiscUtil.TryDispose(presenter);
                     MiscUtil.TryDispose(view);
@@ -252,7 +252,7 @@ namespace MvpFramework
 
                 return presenter;
             }
-            catch(Exception ex)
+            catch(Exception ex)   // provide more information on any exception
             {
                 throw new MvpResolutionException("Error on creating presenter: Type: " + typeof(TPresenter) + NL
                     + (TargetClass != null ? "Presenter class: " + TargetClass + NL : "")
@@ -358,7 +358,7 @@ namespace MvpFramework
         /// Non null. May be a null object.
         /// </summary>
         [NotNull]
-        protected readonly IResolverExtension UiManager;
+        protected readonly IResolverExtension ResolverExtension;
 
         /// <summary>
         /// Line separator used in error messages.
@@ -380,7 +380,7 @@ namespace MvpFramework
         /// </summary>
         /// <param name="resolver"><see cref="PresenterFactory{TPresenter}.Resolver"/></param>
         /// <param name="diResolver"><see cref="PresenterFactory{TPresenter}.DiResolver"/></param>
-        /// <param name="uiManager"><see cref="PresenterFactory{TPresenter}.UiManager"/></param>
+        /// <param name="uiManager"><see cref="PresenterFactory{TPresenter}.ResolverExtension"/></param>
         /// <param name="targetClass">The concrete class of the presenter created by this factory - <see cref="PresenterFactory{TPresenter}.TargetClass"/>.</param>
         public KnownPresenterFactory(MvpResolver resolver, IDiResolver diResolver,
             IResolverExtension uiManager,

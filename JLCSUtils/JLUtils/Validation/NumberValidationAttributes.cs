@@ -1,4 +1,4 @@
-﻿using JohnLambe.Util.Math;
+﻿using JohnLambe.Util.MathUtilities;
 using JohnLambe.Util.TypeConversion;
 using JohnLambe.Util.Types;
 using System;

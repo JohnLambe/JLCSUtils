@@ -1,5 +1,5 @@
 ﻿using JohnLambe.Util.Encoding;
-using JohnLambe.Util.Math;
+using JohnLambe.Util.MathUtilities;
 using JohnLambe.Util.Types;
 using System;
 using System.Collections.Generic;

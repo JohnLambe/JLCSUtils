@@ -1,4 +1,5 @@
 ﻿using System;
+using DiExtension;
 
 namespace MvpFramework
 {
@@ -6,10 +7,27 @@ namespace MvpFramework
     /// For extension - provides extension points for <see cref="MvpResolver"/>:
     /// Can be used to handle placement of views in the user interface,
     /// finding existing presenters (and determining when an existing presenter should be used instead of creating a new one).
+    /// <para>
+    /// On creating a presenter, the methods are fired in this order:<br/>
+    /// - GetUseChildContext<br/>
+    /// - BeforeCreatePresenter<br/>
+    /// - AfterCreateView<br/>
+    /// - AfterCreatePresenter
+    /// </para>
     /// </summary>
     public interface IResolverExtension
     {
         // These methods are declared in the order in which they are called:
+
+        /// <summary>
+        /// Determine whether a child DI context should be created for the new presenter and view.
+        /// Called before <see cref="BeforeCreatePresenter"/>.
+        /// </summary>
+        /// <param name="targetClass"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <seealso cref="ResolverExtensionContext.UseChildContext"/>
+        bool GetUseChildContext(Type targetClass, ResolverExtensionContext context);
 
         /// <summary>
         /// Called before creating a presenter (and view).
@@ -23,8 +41,6 @@ namespace MvpFramework
         /// <param name="param">The parameters to the IPresenterFactory.Create method.</param>
         /// <returns>The presenter to be used, or <code>default(TPresenter)</code> to cause it to be created in the normal way.</returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the presenter/view, and the presenter and view are not created.</exception>
-//        TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, params object[] param)
-//            where TPresenter : IPresenter;
         TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, ResolverExtensionContext param)
             where TPresenter : IPresenter;
 
@@ -58,8 +74,6 @@ namespace MvpFramework
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the p</exception>
         ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext param, IView view)
             where TPresenter : IPresenter;
-
-        bool GetUseChildContext(Type targetClass, ResolverExtensionContext context);
     }
 
 
@@ -83,9 +97,15 @@ namespace MvpFramework
         public virtual bool Nested { get; set; }
 
         /// <summary>
+        /// Whether a child DI context should be created for the new presenter and view.
+        /// This is set to the value that is about to be used before calling <see cref="IResolverExtension.GetUseChildContext(Type, ResolverExtensionContext)"/>,
+        /// and can be modified in that method.
         /// <see cref="PresenterFactory{TPresenter}.EffectiveUseChildContext"/>
         /// </summary>
         public virtual bool UseChildContext { get; set; }
+
+        [Obsolete("Don't use this yet.")]
+        public virtual IDiResolver DiResolver { get; set; }
     }
 
 
@@ -105,13 +125,6 @@ namespace MvpFramework
     /// </summary>
     public abstract class ResolverExtensionBase : IResolverExtension
     {
-        /*
-        public TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, params object[] param)
-            where TPresenter : IPresenter
-        {
-            return BeforeCreatePresenter(presenterType, new ResolverExtensionContext(param));
-        }
-        */
         public TPresenter BeforeCreatePresenter<TPresenter>(Type presenterType, ResolverExtensionContext param) where TPresenter : IPresenter
         {
             return default(TPresenter);

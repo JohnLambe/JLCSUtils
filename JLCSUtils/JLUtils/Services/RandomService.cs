@@ -1,4 +1,4 @@
-﻿using JohnLambe.Util.Math;
+﻿using JohnLambe.Util.MathUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

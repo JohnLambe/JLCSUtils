@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MvpFramework.Generator
 {
@@ -36,7 +35,7 @@ namespace MvpFramework.Generator
     /// <summary>
     /// Flags a static method to be called by the form generator engine (<see cref="Generator.FormGeneratorBase{TControl}"/>)
     /// to create the control.
-    /// The method must be called <see cref="GenerateControlMethod"/>.
+    /// The method must be called (the value of) <see cref="GenerateControlMethod"/>.
     /// <para>For use on static methods of controls only.</para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
@@ -117,9 +116,28 @@ namespace MvpFramework.Generator
     #region For Menu
 
     /// <summary>
+    /// Flags that certain UI elements should be generated for the attributed (model) class.
+    /// </summary>
+    public class GenerateUiAttribute : MenuItemAttributeBase
+    {
+        /// <summary>
+        /// Use when not generating a menu item.
+        /// </summary>
+        public GenerateUiAttribute()
+        {
+        }
+
+        /// <summary>
+        /// Specifies which Views/Presenters should also be generated (these may be invoked - directly or indirectly - from
+        /// the generated menu item, or otherwise).
+        /// </summary>
+        public GeneratedForms GeneratedForms { get; set; } = GeneratedForms.Edit | GeneratedForms.List | GeneratedForms.Custom;
+    }
+
+    /// <summary>
     /// Placed on a model class to specify that a menu item should be generated for it.
     /// </summary>
-    public class GenerateMenuItemAttribute : MenuItemAttributeBase
+    public class GenerateMenuItemAttribute : GenerateUiAttribute
     {
         /// <summary>
         /// </summary>
@@ -129,13 +147,8 @@ namespace MvpFramework.Generator
         {
             ParentId = parentId;
             DisplayName = displayName;
+            this.GeneratedForms = GeneratedForms.All;
         }
-
-        /// <summary>
-        /// Specifies which Views/Presenters should also be generated (these may be invoked - directly or indirectly - from
-        /// the generated menu item, or otherwise).
-        /// </summary>
-        public GeneratedForms GeneratedForms { get; set; } = GeneratedForms.All;
     }
 
     #endregion
@@ -147,10 +160,23 @@ namespace MvpFramework.Generator
     public enum GeneratedForms
     {
         None = 0,
-        Search = 1,
-        Edit = 2,
-        MenuItem = 4,
+        /// <summary>
+        /// An item in a menu.
+        /// </summary>
+        MenuItem = 1,
+        /// <summary>
+        /// Form to show a list of items and/or search for one.
+        /// </summary>
+        List = 2,
+        /// <summary>
+        /// Form to view/add/edit an item.
+        /// </summary>
+        Edit = 4,
+        /// <summary>
+        /// For use by consumers of this library. Not used by the framework itself.
+        /// </summary>
+        Custom = 8,
 
-        All = Search | Edit
+        All = List | Edit | MenuItem | Custom
     }
 }
