@@ -76,5 +76,49 @@ namespace MvpFramework.WinForms.Util
             }
         }
 
+        /// <summary>
+        /// Focus the control and bring it into view.
+        /// If the control cannot be focussed, this still tries to bring it into view.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns>true on success; false if the control is invisible or disabled or in an invisible or disabled container.</returns>
+        public static bool FocusControl(Control control)
+        {
+            IList<Control> ancestors = new List<Control>();
+            var control1 = control;
+            while(control1 != null)
+            {
+                ancestors.Insert(0, control1);
+                control1 = control1.Parent;
+            }
+
+            Form form = control.FindForm();
+            bool success = true;
+            foreach(var ancestor in ancestors)
+            {
+                if (!ancestor.Visible || !ancestor.Enabled)
+                    success = false;   // can't focus it
+
+                // if the control is a tab page, switch to it:
+                if(ancestor is TabPage)
+                {
+                    TabPage page = (TabPage)ancestor;
+                    page.Select();
+                    TabControl tabcontrol = page.Parent as TabControl;
+                    if(tabcontrol != null)
+                        tabcontrol.SelectedTab = page;
+                }
+                // This supports only the WinForms TabControl. We could provide an extension mechanism to support other similar controls.
+
+                if (!ancestor.CanFocus)
+                    success = false;
+
+                ancestor.Focus();
+                if(ancestor != form)
+                    form.ScrollControlIntoView(ancestor);
+            }
+            return success;
+        }
+
     }
 }

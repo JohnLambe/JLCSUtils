@@ -96,7 +96,6 @@ namespace JohnLambe.Util.Validation
                     else
                         results.Add(validationContext.DisplayName + " must be "
                             + (MaximumValue < LessThan ? " at most " + MinimumValue : " less then " + LessThan) + " " + Unit);
-//                    results.Add(validationContext.DisplayName + "Value too high");
                 }
             }
         }

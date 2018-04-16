@@ -177,8 +177,6 @@ namespace JohnLambe.Util.Validation
         Minute = 0x08,
         Second = 0x04,
         SecondFraction = 0x02,
-        [Obsolete]
-        SecondsFraction = SecondFraction,
 
         Date = Year | Month | Day,
         TimeOfDay = Hour | Minute | Second | SecondFraction,

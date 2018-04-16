@@ -128,5 +128,11 @@ namespace MvpDemo
         {
             new TestForm().Show();
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            MvpFramework.WinForms.Util.WinFormsUtil.FocusControl(textBox1);
+//            ScrollControlIntoView(textBox1);
+        }
     }
 }
