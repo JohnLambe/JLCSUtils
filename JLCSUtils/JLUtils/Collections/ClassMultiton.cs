@@ -37,6 +37,11 @@ namespace JohnLambe.Util.Collections
         }
 
         protected IDictionary<TKey,TValue> _values = new Dictionary<TKey,TValue>();
+
+        /// <summary>
+        /// Enumerator over the keys and values.
+        /// </summary>
+        public virtual IEnumerable<KeyValuePair<TKey, TValue>> GetEnumerator() => _values.AsEnumerable();
     }
 
     public class IdClassMultiton<TKey, TValue> : ClassMultiton<TKey,TValue>
