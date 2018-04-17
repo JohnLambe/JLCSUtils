@@ -64,7 +64,10 @@ namespace JohnLambe.Util.Validation
         public virtual TimePartOption TimePartOption { get; set; }
         //TODO: Set the time part on validation.
 
-        public virtual TimeValidationOptions Options { get; set; }
+        /// <summary>
+        /// Whether the time can be in the past or future.
+        /// </summary>
+        public virtual TimeValidationOptions Options { get; set; }  = TimeValidationOptions.Any;
 
         /// <summary>
         /// Minimum (earliest) allowed value.
@@ -216,6 +219,11 @@ namespace JohnLambe.Util.Validation
     [Flags]
     public enum TimeValidationOptions
     {
+        /// <summary>
+        /// Valoidation against this would always yield invalid.
+        /// </summary>
+        None = 0,
+
         /// <summary>
         /// Time values in the past are allowed.
         /// </summary>

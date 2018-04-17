@@ -74,6 +74,8 @@ namespace JohnLambe.Util.Validation
 
         protected override void IsValid([Nullable] ref object value, ValidationContext validationContext, ValidationResults results)
         {
+            base.IsValid(ref value, validationContext, results);
+
             if (value != null)
             {
                 if (RoundTo != NoRounding)

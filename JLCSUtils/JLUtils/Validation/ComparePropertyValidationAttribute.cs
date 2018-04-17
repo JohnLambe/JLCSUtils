@@ -34,7 +34,7 @@ namespace JohnLambe.Util.Validation
             var instance = validationContext.ObjectInstance;
             var property = ReflectionUtil.GetProperty(ref instance, PropertyName);  // get the property to compare to
 
-            if(property != null)
+            if(property == null)
             {
                 results.Add("Invalid property name: " + PropertyName);
             }
@@ -48,7 +48,6 @@ namespace JohnLambe.Util.Validation
                     results.Add(validationContext.DisplayName + " must be " + Operator.DisplayName() + " " + CaptionUtil.GetDisplayName(property));
                 }
             }
-
         }
     }
 

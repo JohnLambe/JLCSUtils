@@ -109,9 +109,10 @@
     <Compile Include="GraphicUtil\ImageExtensionTest.cs" />
     <Compile Include="Io\FilingUtilsTest.cs" />
     <Compile Include="LazyInitializeTest.cs" />
-    <Compile Include="BitUtilTest.cs" />
+    <Compile Include="MathUtilities\BitUtilTest.cs" />
     <Compile Include="Encoding\HexConverterTest.cs" />
-    <Compile Include="MathTest\MathUtilTest.cs" />
+    <Compile Include="MathUtilities\MathUtilTest.cs" />
+    <Compile Include="MathUtilities\OrdinalUtilTest.cs" />
     <Compile Include="Misc\FlowControlUtilTest.cs" />
     <Compile Include="Misc\GeneralUtilTest.cs" />
     <Compile Include="Misc\ObservableTest.cs" />
@@ -119,7 +120,6 @@
     <Compile Include="Misc\VersionUtilTest.cs" />
     <Compile Include="ObjectConfigProviderTest.cs" />
     <Compile Include="ObjectExtensionTest.cs" />
-    <Compile Include="OrdinalUtilsTest.cs" />
     <Compile Include="Io\PathUtilsTest.cs" />
     <Compile Include="PluginFramework\PluginHostTest.cs" />
     <Compile Include="PluginFramework\TestPlugins.cs" />
@@ -169,11 +169,13 @@
     <Compile Include="Types\NotNullAttributeTest.cs" />
     <Compile Include="Types\PersonNameTest.cs" />
     <Compile Include="ObjectUtilTest.cs" />
+    <Compile Include="Validation\ComparePropertyValidationAttributeTest.cs" />
     <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\PostcodeValidationAttributeTest.cs" />
     <Compile Include="Validation\ReferenceAttributeTest..cs" />
     <Compile Include="Validation\StringValidationAttributeTest.cs" />
     <Compile Include="Validation\TestModel.cs" />
+    <Compile Include="Validation\TimeValidationAttributeTest.cs" />
     <Compile Include="Validation\TypeValidationAttributeTest.cs" />
     <Compile Include="Validation\ValidationContextExtensionTest.cs" />
     <Compile Include="Validation\ValidatorExTest.cs" />
