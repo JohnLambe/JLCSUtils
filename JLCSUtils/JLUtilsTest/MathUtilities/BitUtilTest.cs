@@ -46,7 +46,7 @@ namespace JohnLambe.Tests.JLUtilsTest.MathUtilities
                 },
 
                 () => Assert.AreEqual(8, BitUtil.LowSetBit(0xFF00)),
-                () => Assert.AreEqual(2, BitUtil.LowSetBit(0xAAAAAAAA)),
+                () => Assert.AreEqual(1, BitUtil.LowSetBit(0xAAAAAAAA)),
                 () => Assert.AreEqual(31, BitUtil.LowSetBit(0x80000000))
             );
         }

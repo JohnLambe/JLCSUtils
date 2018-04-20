@@ -15,6 +15,7 @@ namespace JLUtilsEFTest.Db.Ef
     {
         [TestMethod]
         [TestCategory("Failing")]
+        [Timeout(5000)]
         public void AddIfNotExists()
         {
             // Arrange:
@@ -30,6 +31,7 @@ namespace JLUtilsEFTest.Db.Ef
 
         [TestMethod]
         [TestCategory("Db")]
+        [Timeout(5000)]
         public void AddIfNotExists1()
         {
             // Arrange:

@@ -137,11 +137,14 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             );
         }
 
+
         public struct TestStruct
         {
 #pragma warning disable CS0169
             int Field1;
 #pragma warning restore CS0169
+
+            public int Field2;
         }
     }
 }

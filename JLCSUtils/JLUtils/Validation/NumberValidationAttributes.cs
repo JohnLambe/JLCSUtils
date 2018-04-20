@@ -88,7 +88,7 @@ namespace JohnLambe.Util.Validation
                     if (AdjustToRange)
                         value = MinimumValue;
                     else
-                        results.Add(validationContext.DisplayName + " must be " 
+                        results.Add(validationContext?.DisplayName + " must be " 
                             + (MinimumValue < GreaterThan ? " at least " + MinimumValue : " higher then " + GreaterThan) + " " + Unit);
                 }
                 else if (numericValue > MaximumValue || numericValue >= LessThan)
@@ -96,7 +96,7 @@ namespace JohnLambe.Util.Validation
                     if (AdjustToRange)
                         value = MaximumValue;
                     else
-                        results.Add(validationContext.DisplayName + " must be "
+                        results.Add(validationContext?.DisplayName + " must be "
                             + (MaximumValue < LessThan ? " at most " + MinimumValue : " less then " + LessThan) + " " + Unit);
                 }
             }

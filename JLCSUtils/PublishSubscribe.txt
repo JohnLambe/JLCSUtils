@@ -1,0 +1,68 @@
+DiExtension Publish-Subscribe Injection (Draft)
+
+V.1:
+
+INTERFACE:
+
+
+Publisher:
+	[Publisher]
+	public IMessageSender Broker { get; set; }
+	
+
+Subscriber:
+
+	public AnySubscriber : ISubscriber
+	{
+		[Subscriber(MessageType = typeof(IMessage))]  // MessageType would default to parameter type. Redundant in this example.
+		public void ReceiveMessage(IMessage message);
+			// Later version: Spring-like parameter injection (declare parameters for message object and/or just the properties required).
+			// Parameter to identify the publisher?? Details could be inlcuded in message if necessary.
+		
+		event ISubscriber.Unsubscribe;
+	}
+
+	public interface IMessageSender<TMessage>
+	{
+		void Send(TMessage message);
+	}
+	
+	
+IMPLEMENTATION:
+
+Message Broker:
+	DI singleton.
+	
+	public class MessageBroker
+	{
+		public void Send(object Message);
+			// Parameter to identify sender??
+			// Implementation (from caller's perspective) may be asynchronous or synchronous. Initial implementation will be synchronous.
+		
+		public void RegisterSubscriber( ... );
+			// Could pass it as delegate to send message, filter criteria, and ID.
+		
+		public void DeregisterSubscriber(...);
+			// Pass ID?
+		
+		protected ... Subscribers;
+	}
+
+Publisher:
+	On BuildUp:
+		Create and inject IMessageSender.
+		
+	MessageSender delegates to MessageBroker.
+	MessageSender is not IDisposable.
+
+Subscriber:
+	On BuildUp:
+		Call MessageBroker.RegisterSubscriber for each handler method.
+		The subscriber must implement ISubscriber or INotifyOnDispose. (The latter is not used if the former is implemented).
+				Could also use a 'Disposed' event even if interface is not implemented.
+		Attach handler to event fired to unsubscribe (Unsubscribe/Disposed) (handler calls MessageBroker.DeregisterSubscriber).
+	
+	
+ALTERNATIVES:
+	Subscriber method could use the same attributes as for auto-wired event handlers.
+

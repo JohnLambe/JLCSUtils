@@ -36,6 +36,7 @@ namespace JLUtilsEFTest.Db.Ef
         /// </summary>
         [TestMethod]
         [TestCategory("Db")]
+        [Timeout(5000)]
         public void AssignKey()
         {
             // Arrange:

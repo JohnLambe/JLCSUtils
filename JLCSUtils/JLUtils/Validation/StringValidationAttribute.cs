@@ -20,6 +20,7 @@ namespace JohnLambe.Util.Validation
 {
     /// <summary>
     /// For validation of string values.
+    /// User interfaces may use this to modify the behaviour of the control, for example, rejecting invalid characters as they are typed.
     /// </summary>
     /// <remarks>
     /// See https://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields for a discussion on maximum lengths for various string fields.
@@ -214,9 +215,12 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual bool Correction { get; set; } = true;
 
+        public virtual NullConversionOption NullConversion { get; set; }
+
         protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
         {
             base.IsValid(ref value, validationContext, results);
+
             if (value != null)
             {
                 var stringValue = value.ToString();
@@ -288,31 +292,52 @@ namespace JohnLambe.Util.Validation
                     }
                 }
 
+                if ((NullConversion == NullConversionOption.BlankToNull) && (string.Empty.Equals(value)))
+                {
+                    stringValue = null;
+                }
+                else if ((NullConversion == NullConversionOption.NullToBlank) && (value == null))
+                {
+                    stringValue = "";
+                }
+                /* General version:
+                if((NullConversion == NullConversionOption.BlankToNull) && (TypeUtil.IsDefault(value)))
+                {
+                    value = null;
+                }
+                else if((NullConversion == NullConversionOption.NullToBlank) && (value == null))
+                {
+                    value = TypeUtil.GetTypeDefaultValue( ... );
+                }
+                */
+
 
                 // Validate character set:
 
                 if (AllowedCharactersString != null)
                 {
                     if (!StrUtil.ContainsOnlyCharacters(stringValue.ToString(), AllowedCharactersSet))
-                        results.Add(ErrorMessage ?? "Contains an invalid character: Only the following characters are allowed: " + AllowedCharactersString);
+                        results.Add(ErrorMessage ?? validationContext?.DisplayName + " contains an invalid character: Only the following characters are allowed: " + AllowedCharactersString);
                 }
                 if (DisallowedCharactersString != null)
                 {
                     if (StrUtil.ContainsAnyCharacters(stringValue.ToString(), DisallowedCharactersSet))
-                        results.Add(ErrorMessage ?? "Contains an invalid character: The following characters are invalid: " + DisallowedCharactersString);
+                        results.Add(ErrorMessage ?? validationContext?.DisplayName + " contains an invalid character: The following characters are invalid: " + DisallowedCharactersString);
                 }
 
                 // Validate length:
 
                 if (stringValue.ToString().Length < MinimumLength)
-                    results.Add(ErrorMessage ?? "Too short");
+                    results.Add(ErrorMessage ??
+                        ( MinimumLength == 1 ? validationContext?.DisplayName + " is required."
+                        : "The " + validationContext?.DisplayName + " must be at least " + MinimumLength + " characters.") );
                 if (MaximumLength >= 0 && stringValue.ToString().Length > MaximumLength)
-                    results.Add(ErrorMessage ?? "Too long");
+                    results.Add(ErrorMessage ?? validationContext?.DisplayName + " can not be more than " + MaximumLength + " characters.");
 
                 if (!string.IsNullOrEmpty(Prefix) && !stringValue.StartsWith(Prefix))
-                    results.Add(ErrorMessage ?? "Must begin with " + Prefix);
+                    results.Add(ErrorMessage ?? validationContext?.DisplayName + " must begin with " + Prefix);
                 if (!string.IsNullOrEmpty(Prefix) && !stringValue.EndsWith(Suffix))
-                    results.Add(ErrorMessage ?? "Must end with " + Suffix);
+                    results.Add(ErrorMessage ?? validationContext?.DisplayName + " must end with " + Suffix);
 
                 if (!value.Equals(stringValue))         // only if the value is changed
                     value = stringValue;                // update it (so that the type is preserved if the value doesn't have to change)
@@ -320,6 +345,21 @@ namespace JohnLambe.Util.Validation
         }
     }
 
+
+    public enum NullConversionOption
+    {
+        None = 0,
+
+        /// <summary>
+        /// If the value is null, it should be converted to default value for the type.
+        /// </summary>
+        NullToBlank = 1,
+
+        /// <summary>
+        /// If the value is the default value for the type, it should be converted to null.
+        /// </summary>
+        BlankToNull = 2
+    }
 
     /// <summary>
     /// Option for padding strings.

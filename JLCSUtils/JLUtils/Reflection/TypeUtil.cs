@@ -248,7 +248,7 @@ namespace JohnLambe.Util.Reflection
             // Validate:
             type.ArgNotNull(nameof(type));
             if (type == typeof(void))
-                throw new ArgumentException();
+                throw new ArgumentException("void does not have a default value");
 
             if (type.IsValueType)
                 return Activator.CreateInstance(type);    // this returns null for nullable value types
@@ -319,5 +319,6 @@ namespace JohnLambe.Util.Reflection
             }
             return false;
         }
+
     }
 }

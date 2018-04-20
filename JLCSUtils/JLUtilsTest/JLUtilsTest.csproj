@@ -170,6 +170,7 @@
     <Compile Include="Types\PersonNameTest.cs" />
     <Compile Include="ObjectUtilTest.cs" />
     <Compile Include="Validation\ComparePropertyValidationAttributeTest.cs" />
+    <Compile Include="Validation\EnumValidationAttribute.cs" />
     <Compile Include="Validation\NumberValidationAttributeTest.cs" />
     <Compile Include="Validation\PostcodeValidationAttributeTest.cs" />
     <Compile Include="Validation\ReferenceAttributeTest..cs" />

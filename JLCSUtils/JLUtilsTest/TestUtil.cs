@@ -105,7 +105,7 @@ namespace JohnLambe.Tests.JLUtilsTest
         {
             decimal expectedRounded = Math.Round(expected, decimalPlaces);
             decimal actualRounded = Math.Round(actual, decimalPlaces);
-            if (expected != actual)
+            if (expectedRounded != actualRounded)
             {
                 OutputAndThrowException(
                     new AssertFailedException("Values do not match: Expected " + expectedRounded + " (rounded from " + expected + ")\n"

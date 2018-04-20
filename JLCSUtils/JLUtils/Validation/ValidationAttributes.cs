@@ -49,7 +49,7 @@ namespace JohnLambe.Util.Validation
             if ((value == null && InvalidValue == null)
                 || (value != null && value.Equals(InvalidValue)))
             {
-                results.Add("The value '" + InvalidValue + "' is invalid");
+                results.Add(ErrorMessage ?? "The value '" + InvalidValue + "' is invalid for " + validationContext.DisplayName);
             }
         }
 

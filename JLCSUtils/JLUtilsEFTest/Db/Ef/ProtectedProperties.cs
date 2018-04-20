@@ -36,6 +36,7 @@ namespace JohnLambe.Util.Db.Ef
 
         [TestMethod]
         [TestCategory("Db")]
+        [Timeout(5000)]
         public void ProtectedSetter()
         {
             // Arrange:

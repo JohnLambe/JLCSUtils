@@ -50,7 +50,7 @@ namespace MvpFramework.WinForms.Controls
             set
             {
                 if (value != _nestedView)
-                    NestedViewChanged.Invoke(this, EventArgs.Empty);
+                    NestedViewChanged?.Invoke(this, EventArgs.Empty);
 
                 //if((NestedView as Control)?.Parent == this)
                 //    ((Control)NestedView).Parent = null;

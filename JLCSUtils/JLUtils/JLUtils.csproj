@@ -127,6 +127,7 @@
     <Compile Include="Validation\!NamespaceDoc.cs" />
     <Compile Include="Validation\CollectionValidationAttribute.cs" />
     <Compile Include="Validation\ComparePropertyValidationAttribute.cs" />
+    <Compile Include="Validation\EnumValidationAttribute.cs" />
     <Compile Include="Validation\NestedValidationAttribute.cs" />
     <Compile Include="Validation\NumberValidationAttributes.cs" />
     <Compile Include="Validation\ReferenceAttribute.cs" />

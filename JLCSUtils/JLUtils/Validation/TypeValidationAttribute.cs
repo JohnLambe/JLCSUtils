@@ -158,7 +158,8 @@ namespace JohnLambe.Util.Validation
 
                 if (!valid)
                 {
-                    results.Add(ErrorMessage ?? "Type is not valid in this context (" + typeValue.FullName + ")");
+                    results.Add(ErrorMessage ?? "The given type (" + typeValue.FullName + ") is not valid" 
+                        + (validationContext?.DisplayName != null ? " for " + validationContext?.DisplayName : "" ) );
                 }
             }
         }

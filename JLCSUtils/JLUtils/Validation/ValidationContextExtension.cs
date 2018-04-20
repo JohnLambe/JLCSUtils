@@ -74,8 +74,9 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// Value of the <see cref="ValidationContext.ObjectInstance"/> when validating .
+        /// Value of the <see cref="ValidationContext.ObjectInstance"/> when validating a (property) value without providing the object instance that the property is on.
         /// </summary>
+        /// <seealso cref="ValidationFeatures.ValidateWithoutObject"/>
         public static readonly object NoObject = new object();
     }
 

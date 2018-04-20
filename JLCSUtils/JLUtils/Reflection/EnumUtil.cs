@@ -70,16 +70,49 @@ namespace JohnLambe.Util.Reflection
             return (value.GetIntegerValue() & mask) != 0;
         }
 
+        /// <summary>
+        /// Tests whether the given value is valid for its enum type.
+        /// If the enum type is attibuted with <see cref="FlagsAttribute"/>,
+        /// it is validated with <see cref="ValidateFlagsValue(Enum)"/>,
+        /// otherwise with <see cref="ValidateSingleValue(Enum)"/>.
+        /// </summary>
+        /// <param name="value">the value to be validated.</param>
+        /// <returns>true iff valid.</returns>
+        public static bool ValidateEnumValue(this Enum value)
+        {
+            return value.GetType().IsDefined<FlagsAttribute>()
+                ? ValidateFlagsValue(value)
+                : ValidateSingleValue(value);
+        }
 
         /// <summary>
         /// Tests that the value of the enum is defined as a single enum constant.
         /// This does NOT check for a combination of flags that could match the value.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">the value to be validated.</param>
         /// <returns>true iff valid.</returns>
-        public static bool ValidateEnumValue(this Enum value)
+        public static bool ValidateSingleValue(Enum value)
         {
             return value.GetType().IsEnumDefined(value);
+        }
+
+        /// <summary>
+        /// Validates a Flags Enum (in a format corresponding to <see cref="FlagsAttribute"/>, whether it has the attribute or not) value,
+        /// i.e. enusres that each bit that is set in the value is set in one of the enum members.
+        /// </summary>
+        /// <param name="value">the value to be validated.</param>
+        /// <returns>true iff valid.</returns>
+        public static bool ValidateFlagsValue(Enum value)
+        {
+            long longValue = value.GetIntegerValue();
+            long bits = 0;
+            foreach(var v in Enum.GetValues(value.GetType()))
+            {
+                bits = bits | ((Enum)v).GetIntegerValue();
+                if ((longValue & ~bits) != 0)
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -212,6 +245,10 @@ namespace JohnLambe.Util.Reflection
 
     /// <summary>
     /// Base class for enum-related attributes.
+    /// <para>
+    /// Subclasses of this can be used to define the interpretation of a bitfield value, consisting of integers, enums and/or flags occupying
+    /// bit ranges of the same value.
+    /// </para>
     /// </summary>
     public abstract class EnumAttribute : Attribute
     {
