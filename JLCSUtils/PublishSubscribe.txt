@@ -1,6 +1,6 @@
 DiExtension Publish-Subscribe Injection (Draft)
 
-V.1:
+V.1.1:
 
 INTERFACE:
 
@@ -39,14 +39,36 @@ Message Broker:
 			// Parameter to identify sender??
 			// Implementation (from caller's perspective) may be asynchronous or synchronous. Initial implementation will be synchronous.
 		
-		public void RegisterSubscriber( ... );
-			// Could pass it as delegate to send message, filter criteria, and ID.
+		public {SubscriberHandle} RegisterSubscriber( Subscriber subscriber );
+			
+		// Could have overloads with parameters convertible to Subscriber, e.g.
+		public void RegisterSubscriber<T>( Action<T> deliver );   // T is Subscribe.MessageType; no Filter.
 		
-		public void DeregisterSubscriber(...);
-			// Pass ID?
 		
-		protected ... Subscribers;
+		public void DeregisterSubscriber({SubscriberHandle});
+		
+		protected Subscriber Subscribers;
+		
+		// {SubscriberHandle} is an opaque object to the consumer of MessageBroker.
+		// It could be `object` and be implemented by returning Subscriber.
+		// It could be a nested class not visible outside MessageBroker, or internal to its assembly.
+		// The `subscriber` parameter to RegisterSubscriber could be of a subclass of the type held in `Subscribers`. The latter, and {SubscriberHandle} could be non-visible outside MessageBroker (or its assembly).
+		// Alternatively, the consumer could provide an ID on registration (RegisterSubscriber would not return anything), that it uses on deregistration. Subscriber could hold it in an ID property.
+		//   But an ID seems unnecessary, and this {SubscriberHandle} is probably just as convenient for the consumer (or more convenient since it doesn't have to create it).
+		//   Alternative 2: The consumer could provide any object as a handle. Hence, it could be the consuming class itself (which doesn't have to implement any defined interface).
+		
+		// When the handle is `Subscriber`, this could hold weak references to it, so that consumer doesn't have to deregister?
+		// In the DI system, the DI extension would have to hold the handle or embed it in a delegate added to the 'unsubscribe' event.
 	}
+	
+	class Subscriber
+	{
+	    /// <summary>Type of message handled. The delegates in this class must not be called with messages that are not of this type.</summary>
+		public Type MessageType;
+		public Func<object,bool> Filter;   // pass message; returns true if it should be delivered. Always deliver if this is null and message is correct type.
+		public Action<object> Deliver;     // deliver the message. Must be of type MessageType.
+	}
+		
 
 Publisher:
 	On BuildUp:
