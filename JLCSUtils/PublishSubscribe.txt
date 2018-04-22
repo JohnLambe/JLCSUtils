@@ -1,30 +1,31 @@
 DiExtension Publish-Subscribe Injection (Draft)
 
-V.1.1:
+V.1.2:
 
 INTERFACE:
 
 
 Publisher:
 	[Publisher]
-	public IMessageSender Broker { get; set; }
+	public IMessageSender<MessageType> Sender { get; set; }		// object for publishing messages is injected.
 	
+	public interface IMessageSender<TMessage>
+	{
+		void Send(TMessage message);
+	}
 
+	
 Subscriber:
 
 	public AnySubscriber : ISubscriber
 	{
+		// Declares a method to be called when a relevant message is published:
 		[Subscriber(MessageType = typeof(IMessage))]  // MessageType would default to parameter type. Redundant in this example.
 		public void ReceiveMessage(IMessage message);
 			// Later version: Spring-like parameter injection (declare parameters for message object and/or just the properties required).
-			// Parameter to identify the publisher?? Details could be inlcuded in message if necessary.
+			// Parameter to identify the publisher?? Details could be included in message if necessary.
 		
 		event ISubscriber.Unsubscribe;
-	}
-
-	public interface IMessageSender<TMessage>
-	{
-		void Send(TMessage message);
 	}
 	
 	
@@ -35,19 +36,27 @@ Message Broker:
 	
 	public class MessageBroker
 	{
-		public void Send(object Message);
+		public void Publish(object Message);
 			// Parameter to identify sender??
 			// Implementation (from caller's perspective) may be asynchronous or synchronous. Initial implementation will be synchronous.
+			// Sends to all relevant subscribers.
+			// Can remove subscribers where Owner is found to be freed.
 		
-		public {SubscriberHandle} RegisterSubscriber( Subscriber subscriber );
+		public ISubscriptionHandle RegisterSubscriber( Subscriber subscriber );
 			
 		// Could have overloads with parameters convertible to Subscriber, e.g.
-		public void RegisterSubscriber<T>( Action<T> deliver );   // T is Subscribe.MessageType; no Filter.
+		public ISubscriptionHandle RegisterSubscriber<T>(object subscriberHandle, Action<T> deliver, Func<oject, bool> filter = null );   // T is Subscribe.MessageType.
 		
+		public ISubscriptionHandle RegisterSubscriber<T>( Expression<Action<T>> );   // T is Subscribe.MessageType; no Filter.
+			// Must be a method call. Owner is the instance that the method is called on.
 		
-		public void DeregisterSubscriber({SubscriberHandle});
+				
+		public void DeregisterSubscriber(object SubscriberHandle);  // Deregisters all subscriptions with a given SubscriberBase.Owner.
+		public void DeregisterSubscription(ISubscriptionHandle});
 		
-		protected Subscriber Subscribers;
+		public void GarbageCollect();  // remove subscribers whose Owner has been freed.
+		
+		protected ICollection<SubscriberBase> Subscribers;  // Subscriptions
 		
 		// {SubscriberHandle} is an opaque object to the consumer of MessageBroker.
 		// It could be `object` and be implemented by returning Subscriber.
@@ -57,16 +66,29 @@ Message Broker:
 		//   But an ID seems unnecessary, and this {SubscriberHandle} is probably just as convenient for the consumer (or more convenient since it doesn't have to create it).
 		//   Alternative 2: The consumer could provide any object as a handle. Hence, it could be the consuming class itself (which doesn't have to implement any defined interface).
 		
-		// When the handle is `Subscriber`, this could hold weak references to it, so that consumer doesn't have to deregister?
-		// In the DI system, the DI extension would have to hold the handle or embed it in a delegate added to the 'unsubscribe' event.
+		// When SubscriberBase.Owner (or Subscriber Handle) is a string references, both the SubscriberBase instance and the Owner itself would be leaked 
+		// if it was never deregistered.
+		
+		// When the handle is `Subscriber`, this could hold a weak references to it, so that the consumer doesn't have to deregister?
+		//   Messages could still be delivered after the Owner was no longer reachable until a garbage collection.
+		// In the DI system, the DI extension could have to hold the handle, embed it in a delegate added to the 'unsubscribe' event. The latter is convenient when the handle is the subscriber instance itself.
 	}
 	
-	class Subscriber
+	class SubscriberBase
 	{
+		public object Owner;  // subscriber handle; typically the instance on which a method is called to deliver a message.    // WeakReference<object> ?
+	
 	    /// <summary>Type of message handled. The delegates in this class must not be called with messages that are not of this type.</summary>
 		public Type MessageType;
 		public Func<object,bool> Filter;   // pass message; returns true if it should be delivered. Always deliver if this is null and message is correct type.
 		public Action<object> Deliver;     // deliver the message. Must be of type MessageType.
+
+		public bool TrySend(object message);
+		public bool IsCurrent { get; }   // true iff Owner is not freed.
+	}
+	
+	public class Subscriber : SubscriberBase
+	{
 	}
 		
 
