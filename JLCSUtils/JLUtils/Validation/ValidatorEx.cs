@@ -29,6 +29,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         /// <param name="instance">The object to be validated. null is treated as valid.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
         public virtual bool TryValidateObject(object instance, ValidationResults results)
         {
             if (instance == null)
@@ -408,6 +409,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="value">The value to be validated (as valid to be assigned to <paramref name="member"/>).</param>
         /// <param name="member">The member (usually a property) to be validated.</param>
         /// <param name="results">This is populated with validation errors and warnings.</param>
+        /// <returns>true iff valid.</returns>
         public override bool TryValidateValue<TValue>(object instance, TValue value, MemberInfo member, ValidationResults results)
         {
             return true;
@@ -422,6 +424,7 @@ namespace JohnLambe.Util.Validation
         /// <param name="results">This is populated with validation errors and warnings.</param>
         /// <param name="memberName">The name of the member being validated.</param>
         /// <param name="displayName">The display name of the member being validated (it may appear in error messages).</param>
+        /// <returns>true iff valid.</returns>
         public override bool TryValidateValue(object instance, object value, IEnumerable<ValidationAttribute> attributes, ValidationResults results = null, string memberName = null, string displayName = null)
         {
             return true;
