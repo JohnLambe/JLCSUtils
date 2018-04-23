@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 namespace MvpFramework
 {
+    //TODO: Move to WinForms namespace.  Remove references from outside the WinForms namespace, maybe with a base class or interface.
+
     /// <summary>
     /// Utility for working with WinForms accelerator characters in captions (letters prefixed with &apos;&amp;&apos; to indicate the shortcut key, using <see cref="KeyboardKey.Alt"/>).
     /// <para>

@@ -105,11 +105,11 @@ namespace JohnLambe.Util.Reflection
         public static bool ValidateFlagsValue(Enum value)
         {
             long longValue = value.GetIntegerValue();
-            long bits = 0;
+            long bits = 0;   // known valid bits
             foreach(var v in Enum.GetValues(value.GetType()))
             {
                 bits = bits | ((Enum)v).GetIntegerValue();
-                if ((longValue & ~bits) != 0)
+                if ((longValue & ~bits) == 0)
                     return true;
             }
             return false;

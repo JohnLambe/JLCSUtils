@@ -30,8 +30,7 @@ namespace MvpFramework.Generator
         protected FormGeneratorBase(ControlMappings<TControl> mappings, IDiContext diContext = null)
         {
             this.DiContext = diContext;
-            _mappings = mappings
-                ?? DefaultMappings;
+            _mappings = mappings ?? DefaultMappings;
 //            CachedDataTypeToControlTypeMap = new CachedSimpleLookup<Type,Type>(DataTypeToControlTypeMap);
         }
 
@@ -161,7 +160,7 @@ namespace MvpFramework.Generator
         /// Creates a control and adds it to the target container.
         /// </summary>
         /// <param name="context"></param>
-        public virtual TControl CreateControl([NotNull] ControlGeneratorContext<TControl> context)
+        public virtual void CreateControl([NotNull] ControlGeneratorContext<TControl> context)
         {
             BeforeCreateControl(context);
 
@@ -170,7 +169,7 @@ namespace MvpFramework.Generator
             if(context.NewControl != null)
                 AfterCreateControl(context);
 
-            return context.NewControl;
+            //return context.NewControl;
         }
 
         /// <summary>
@@ -299,7 +298,7 @@ namespace MvpFramework.Generator
         /// </summary>
         protected ControlMappings<TControl> _mappings;
 
-        public static ControlMappings<TControl> DefaultMappings = new ControlMappings<TControl>(); //TODO: Remove
+        public static ControlMappings<TControl> DefaultMappings = new ControlMappings<TControl>(); //TODO: Remove?
     }
 
     /// <summary>

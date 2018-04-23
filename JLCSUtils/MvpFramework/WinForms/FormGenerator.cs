@@ -62,12 +62,14 @@ namespace MvpFramework.WinForms
             return uiGroup;
         }
 
+        /*
         public override Control CreateControl(ControlGeneratorContext<Control> context)
         {
             base.CreateControl(context);
 
             return null;
-        }
+        }*/
+
 
         protected override void AfterCreateControl(ControlGeneratorContext<Control> context)
         {
