@@ -25,9 +25,9 @@ namespace JohnLambe.Util.Db
         public virtual IQueryable<TEntity> AsQueryable(bool includeDeleted = false)
         {
             if (includeDeleted || !_hasDeletedFlag)
-                return Data.AsQueryable<TEntity>();
+                return Data.AsQueryable();
             else
-                return Data.AsQueryable<TEntity>().Where(x => ((IHasActiveFlag)x).IsActive);
+                return Data.AsQueryable().Cast<IHasActiveFlag>().Where(x => x.IsActive).Cast<TEntity>();
         }
 
         public virtual TEntity Find(params object[] keyValues)
@@ -37,7 +37,7 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Detach(TEntity entity)
         {
-            Context.Entry<TEntity>(entity).State = EntityState.Detached;
+            Context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
 

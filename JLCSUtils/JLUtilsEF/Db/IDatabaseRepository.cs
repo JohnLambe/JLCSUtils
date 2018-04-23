@@ -47,6 +47,8 @@ namespace JohnLambe.Util.Db
 
         //| We could provide this, for iterating through original values:
         // IPropertyCollection GetOriginalValues(TEntity entity);
+
+        //TODO: AsNoTracking ?
     }
 
     /*

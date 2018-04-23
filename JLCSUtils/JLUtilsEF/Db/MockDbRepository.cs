@@ -18,6 +18,8 @@ namespace JohnLambe.Util.Db
 
         public MockDatabaseRepository(ICollection<TEntity> initialData)
         {
+            _hasDeletedFlag = Reflection.ReflectionUtil.Implements(typeof(TEntity), typeof(IHasActiveFlag));
+
             if (initialData != null)
             {
                 foreach(var item in initialData)
@@ -31,7 +33,11 @@ namespace JohnLambe.Util.Db
 
         public virtual IQueryable<TEntity> AsQueryable(bool includeDeleted = false)
         {
-            return Data.Values.AsQueryable<TEntity>();
+            if (includeDeleted || !_hasDeletedFlag)
+                return Data.Values.AsQueryable();
+            else
+                return Data.Values.AsQueryable().Cast<IHasActiveFlag>().Where(x => x.IsActive).Cast<TEntity>();
+//            return Data.Values.AsQueryable<TEntity>();
         }
 
         public virtual TEntity Find(params object[] keyValues)
@@ -179,5 +185,9 @@ namespace JohnLambe.Util.Db
 
         #endregion
 
+        /// <summary>
+        /// true iff the entity implements <see cref="IHasActiveFlag"/>.
+        /// </summary>
+        protected readonly bool _hasDeletedFlag;
     }
 }
