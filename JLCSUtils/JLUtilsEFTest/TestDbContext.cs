@@ -10,6 +10,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Db;
 
 namespace JLUtilsEFTest
 {
@@ -28,7 +29,9 @@ namespace JLUtilsEFTest
         public virtual DbSet<CollectionEntityInit> CollectionEntityInits { get; set; }
         public virtual DbSet<EbCollectionEntity> EbCollectionEntitys { get; set; }
         public virtual DbSet<ProtectedPropertyEntity> ProtectedPropertyEntitys { get; set; }
-        
+
+        public virtual DbSet<FlagDeleted1Entity> FlagDeleted1Entities { get; set; }
+        public virtual DbSet<FlagDeletedEntityBase> FlagDeletedEntities { get; set; }
     }
 
 
@@ -48,5 +51,12 @@ namespace JLUtilsEFTest
         {
             return base.ToString() + " Id=" + Id + "; Name=" + Name;
         }
+    }
+
+    public class FlagDeleted1Entity : JohnLambe.Util.Db.FlagDeletedEntityBase
+    {
+
+        public string Value { get; set; }
+
     }
 }

@@ -434,7 +434,6 @@ namespace JohnLambe.Util.Validation
             return true;
         }
 
-
         #endregion
 
     }

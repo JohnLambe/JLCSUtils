@@ -157,6 +157,7 @@
     <Compile Include="Text\PreprocessComparerTest.cs" />
     <Compile Include="Text\StringBuilderExtensionTest.cs" />
     <Compile Include="Text\StringCharacterSetTest.cs" />
+    <Compile Include="Text\StringComparisonOperator.cs" />
     <Compile Include="Threading\ThreadBaseTest.cs" />
     <Compile Include="MiscUtilTest.cs" />
     <Compile Include="TimeUtilities\DateTest.cs" />

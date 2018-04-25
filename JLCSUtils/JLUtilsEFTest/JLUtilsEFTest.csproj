@@ -67,6 +67,7 @@
     <Compile Include="Db\Ef\EfCollectionsTest.cs" />
     <Compile Include="Db\Ef\EfInitializedCollection.cs" />
     <Compile Include="Db\Ef\EfTest.cs" />
+    <Compile Include="Db\Ef\FlagDeletedTest.cs" />
     <Compile Include="Db\Ef\ProtectedProperties.cs" />
     <Compile Include="TestDbContext.cs" />
     <Compile Include="EntityEventsTest.cs" />

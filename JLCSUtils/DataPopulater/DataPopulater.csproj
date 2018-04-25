@@ -46,7 +46,6 @@
     <Compile Include="PropertyConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlNameAttribute.cs" />
-    <Compile Include="XmlObjectLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JLUtils\JLUtils.csproj">

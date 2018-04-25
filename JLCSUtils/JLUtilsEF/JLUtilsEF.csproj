@@ -61,6 +61,7 @@
     <Compile Include="Db\Ef\EntityEvents.cs" />
     <Compile Include="Db\Ef\EventArgs.cs" />
     <Compile Include="Db\Ef\ExtendedContext.cs" />
+    <Compile Include="Db\FlagDeletedEntity.cs" />
     <Compile Include="Db\IDatabaseRepository.cs" />
     <Compile Include="Db\IOrmDatabaseContext.cs" />
     <Compile Include="Db\MockDbRepository.cs" />
