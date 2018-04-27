@@ -88,6 +88,7 @@
     <Compile Include="Misc\FlowControlUtil.cs" />
     <Compile Include="Misc\GeneralUtil.cs" />
     <Compile Include="Misc\NonReenter.cs" />
+    <Compile Include="Reflection\Cloner.cs" />
     <Compile Include="Reflection\DelegateBoundProperty.cs" />
     <Compile Include="Reflection\ExpressionToBoundProperty.cs" />
     <Compile Include="StateMachine\StateTransitionValidator.cs" />

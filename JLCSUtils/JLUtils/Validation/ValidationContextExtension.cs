@@ -136,12 +136,29 @@ namespace JohnLambe.Util.Validation
 
     public enum ValidationStage
     { 
+        /// <summary>
+        /// No validating event is in progress.
+        /// </summary>
         NotValidating = 0,
 
+        /// <summary>
+        /// The 'Validating' event is in progress - a change is being validated.
+        /// </summary>
         Validating,
+
+        /// <summary>
+        /// The 'Validating' event has been processed.
+        /// </summary>
         AfterValidating,
 
+        /// <summary>
+        /// The 'Validated' event is in progress - a change has been validated successfully.
+        /// </summary>
         Validated,
+
+        /// <summary>
+        /// The 'Validated' event has been processed.
+        /// </summary>
         AfterValidated,
 
         /// <summary>

@@ -53,10 +53,10 @@
     <Compile Include="Db\EfDatabaseContext.cs" />
     <Compile Include="Db\EfDbRepository.cs" />
     <Compile Include="Db\CollectionInitializer.cs" />
-    <Compile Include="Db\Ef\Cloner.cs" />
     <Compile Include="Db\Ef\DbSetUtil.cs" />
     <Compile Include="Db\Ef\EfDatabase.cs" />
     <Compile Include="Db\Ef\EfUtil.cs" />
+    <Compile Include="Db\Ef\EntityCloner.cs" />
     <Compile Include="Db\EntityBase.cs" />
     <Compile Include="Db\Ef\EntityEvents.cs" />
     <Compile Include="Db\Ef\EventArgs.cs" />

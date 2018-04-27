@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JohnLambe.Util.Db.Ef;
+using JohnLambe.Util.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JLUtilsEFTest.Db.Ef
 {
@@ -115,6 +117,17 @@ namespace JLUtilsEFTest.Db.Ef
             public override string GetState() => A.ToString() + "; " + B.ToString() + "; " + C.ToString() + "; " + D.ToString() + "; " + E.ToString() + "; " + Reference.ToString();
         }
 
+        public class D3 : D2
+        {
+            public Complex1 C { get; set; } = new Complex1();
+        }
+
+        [ComplexType]
+        public class Complex1
+        {
+            public string Value { get; set; } = "A";
+        }
+
 
         /// <summary>
         /// Test that only a shallow copy is made.
@@ -129,6 +142,19 @@ namespace JLUtilsEFTest.Db.Ef
 
             Assert.AreEqual(((D2)src).Reference, ((D2)copy).Reference);
             Assert.AreEqual("initial modified", ((D2)copy).Reference.ToString());
+        }
+
+        [TestMethod]
+        public void ComplexType()
+        {
+            D3 src = new D3();
+            D3 copy = (D3)Test(src);
+
+            Assert.AreEqual(src.C.Value, copy.C.Value);
+
+            src.C.Value = "modified";   // modify the original after copying
+
+            Assert.AreEqual(src.C.Value, copy.C.Value, "shallow copy");   // test that this is a deep copy
         }
 
     }
