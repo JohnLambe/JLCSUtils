@@ -138,7 +138,7 @@ namespace JohnLambe.Util.Validation
 
         /// <summary>
         /// The maximum length of the string (after any trimming).
-        /// -1 for no maximum.
+        /// <see cref="Na"/> for no maximum.
         /// </summary>
         /// <remarks>
         /// <see cref="MaxLengthAttribute"/> can also define a maximum length, but it may have other effects with other frameworks,
