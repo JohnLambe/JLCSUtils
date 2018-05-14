@@ -236,6 +236,38 @@ namespace JohnLambe.Util.Misc
 
         #endregion
 
+        #region ErrorBlocks
+
+        /// <summary>
+        /// Returns the return value of the first delegate in <paramref name="delegates"/>
+        /// that does not throw an exception of type <typeparamref name="TException"/>.
+        /// Any exceptions of other types thrown by a delegate, and any exeption thrown by the last delegate are not caught.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception to catch.</typeparam>
+        /// <typeparam name="TReturn">The type of the return value.</typeparam>
+        /// <param name="delegates">The delegates to be tried.
+        /// If any are null, they are skipped.
+        /// If the last one is null, and all previous ones fail, default(<typeparamref name="TReturn"/>) is returned.
+        /// </param>
+        /// <returns></returns>
+        public static TReturn ErrorBlock<TException,TReturn>(params Func<TReturn>[] delegates)
+        {
+            int count = delegates.Count();
+            for(int index = 0; index < count; index++)
+            {
+                try
+                {
+                    if(delegates[index] != null)
+                        return delegates[index].Invoke();
+                }
+                catch(Exception ex) when (ex is TException && index < count-1)     // expected exception type and not last delegate
+                {   // ignore and try the next one
+                }
+            }
+            return default(TReturn);
+        }
+
+        #endregion
     }
 
 }
