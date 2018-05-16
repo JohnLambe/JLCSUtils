@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using JohnLambe.Util;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MvpFramework.Generator
 {
@@ -301,6 +302,7 @@ namespace MvpFramework.Generator
         public static ControlMappings<TControl> DefaultMappings = new ControlMappings<TControl>(); //TODO: Remove?
     }
 
+
     /// <summary>
     /// Details provided when creating a control.
     /// </summary>
@@ -452,5 +454,13 @@ namespace MvpFramework.Generator
         protected virtual ISimpleLookup<Type, Type> CachedDataTypeToControlTypeMap { get; }
     }
     //TODO: Ability to map to a different control type based on an attribute of the property (or other member) that the control displays/enters.
+
+
+    public static class PropertyFilters
+    {
+        public static readonly FilterDelegate<ModelPropertyBinder> ExcludeIds
+            = p => !(p.Name?.Length > 2 && p.Name.EndsWith("Id")
+            && (p.Target.GetType().GetProperty(p.Name.Substring(0,p.Name.Length-2)).GetCustomAttribute<ForeignKeyAttribute>()?.Name.Equals(p.Name) ?? false));
+    }
 
 }
