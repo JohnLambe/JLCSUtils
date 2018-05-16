@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace MvpFramework
 {
@@ -81,7 +82,7 @@ namespace MvpFramework
             if (caption == null)
                 return null;
             int acceleratorPosition = caption.IndexOf(AcceleratorIndicator);
-            if(acceleratorPosition > -1 && acceleratorPosition < caption.Length -1)   // if '&' found and not the last character
+            if (acceleratorPosition > -1 && acceleratorPosition < caption.Length - 1)   // if '&' found and not the last character
             {
                 return caption[acceleratorPosition + 1];                     // return the character after it
             }
@@ -113,12 +114,12 @@ namespace MvpFramework
                 accelerator = ChooseAccelerator(caption, out position);
 
             char? existing = GetAccelerator(caption);       // the existing accelerator character, if any
-            if(existing.HasValue)
+            if (existing.HasValue)
             {
-                switch(existingAction ?? ExistingAction)
+                switch (existingAction ?? ExistingAction)
                 {
                     case ExistingAccelerartorAction.Remove:
-//                        caption = caption.RemoveCharacter(AcceleratorIndicator);
+                        //                        caption = caption.RemoveCharacter(AcceleratorIndicator);
                         caption = RemoveAccelerator(caption);
                         break;
                     case ExistingAccelerartorAction.ConvertToWord:
@@ -135,7 +136,7 @@ namespace MvpFramework
 
             if (IsUsed(accelerator))   // if the given character is already used
             {
-                switch(DuplicateAction)
+                switch (DuplicateAction)
                 {
                     case DuplicateAcceleratorAction.Exception:
                         throw new KeyExistsException("Duplicate accelerator key: " + accelerator + " (Trying to assign to '" + caption + "')");
@@ -158,7 +159,7 @@ namespace MvpFramework
                         */
                         break;
                     case DuplicateAcceleratorAction.Change:
-                        accelerator = ChooseAccelerator(caption,out position);
+                        accelerator = ChooseAccelerator(caption, out position);
                         break;
                     default:
                         Diagnostics.UnhandledEnum(DuplicateAction);
@@ -170,7 +171,7 @@ namespace MvpFramework
 
             if (accelerator != null)
             {
-                if(position < 0)                  // if the position is not already determined
+                if (position < 0)                  // if the position is not already determined
                     position = ChooseAcceleratorPosition(caption, accelerator.Value);   // choose the best instance of this character in the caption
                 caption = AddAccelerator(caption, accelerator.Value, position);         // modify the caption - add the accelerator character
 
@@ -204,7 +205,7 @@ namespace MvpFramework
         [return: Nullable]
         protected virtual char? ChooseAccelerator([NotNull]string caption, out int chosenPosition)
         {
-            foreach(var func in AllowedAcceleratorCharacters)
+            foreach (var func in AllowedAcceleratorCharacters)
             {
                 if (func == null)               // if the delegate is null
                 {                               // choose a character to add
@@ -217,7 +218,7 @@ namespace MvpFramework
                         }
                     }
                 }
-                else   
+                else
                 {   // evaluate the characters in the caption according the delegate:
                     int bestScore = 0;
                     int bestPosition = -1;
@@ -231,7 +232,7 @@ namespace MvpFramework
                             {
                                 // we have a usable character. Evaluate it and compare to the best so far.
                                 int score = ScoreAcceleratorCharacter(caption, position);
-                                if(score > bestScore)      // if best so far
+                                if (score > bestScore)      // if best so far
                                 {
                                     best = c;
                                     bestScore = score;
@@ -241,8 +242,8 @@ namespace MvpFramework
                         }
                         position++;
                     }
-                    
-                    if(best != null)
+
+                    if (best != null)
                     {
                         chosenPosition = bestPosition;
                         return best;
@@ -356,7 +357,7 @@ namespace MvpFramework
         {
             if (caption == null)
                 return null;
-            if(position >= 0)
+            if (position >= 0)
                 return caption.Insert(position, "" + AcceleratorIndicator);   // insert the '&'
             else
                 return string.Format(AddedAcceleratorFormat, caption.Trim(), accelerator);   // add the character to the string as an accelerator character
@@ -381,7 +382,7 @@ namespace MvpFramework
                 if (acceleratorPosition > -1)   // if '&' found
                 {
                     if (acceleratorPosition > 0 && acceleratorPosition < caption.Length - 1
-                        && (AddedAcceleratorPrefix.HasValue && caption[acceleratorPosition-1] == AddedAcceleratorPrefix)          // if a prefix is defined and mathces (a suffix without a prefix is not supported)
+                        && (AddedAcceleratorPrefix.HasValue && caption[acceleratorPosition - 1] == AddedAcceleratorPrefix)          // if a prefix is defined and mathces (a suffix without a prefix is not supported)
                         && (!AddedAcceleratorSuffix.HasValue || caption.CharAt(acceleratorPosition + 2) == AddedAcceleratorSuffix)       // if the suffix is NOT defined OR matches (because it is optional)
                         )
                     {
@@ -418,7 +419,7 @@ namespace MvpFramework
         /// <returns>true iff <paramref name="acceleratorChar"/> is not null and is used (in <see cref="AcceleratorsUsed"/>.</returns>
         public virtual bool IsUsed(char? acceleratorChar)
         {
-            return acceleratorChar==null ? false : AcceleratorsUsed?.Contains(Char.ToUpper(acceleratorChar.Value)) ?? false;
+            return acceleratorChar == null ? false : AcceleratorsUsed?.Contains(Char.ToUpper(acceleratorChar.Value)) ?? false;
         }
 
         /// <summary>
@@ -516,8 +517,8 @@ namespace MvpFramework
         /// Characters that may be chosen as accelerator characters, in ascending order of preference.
         /// A null means that a character will be added if a valid one can be found in <see cref="AllowedAddedAcceleratorCharacters"/>.
         /// </summary>
-        public virtual IEnumerable<Func<char,bool>> AllowedAcceleratorCharacters { get; set; }
-            = new List<Func<char,bool>>(
+        public virtual IEnumerable<Func<char, bool>> AllowedAcceleratorCharacters { get; set; }
+            = new List<Func<char, bool>>(
                 new Func<char, bool>[]
                 {
                     c => Char.IsLetter(c),
@@ -564,9 +565,8 @@ namespace MvpFramework
         /// </summary>
         public virtual bool CheckForDuplicates { get; set; }
         */
-        
-        #endregion
 
+        #endregion
 
         /// <summary>
         /// Actions when a caption already has an accelerator character.
@@ -615,5 +615,25 @@ namespace MvpFramework
             /// </summary>
             Exception
         }
+    }
+
+
+    /// <summary>
+    /// Combines features of <see cref="CaptionUtil"/> and <see cref="AcceleratorCaptionUtil"/>.
+    /// </summary>
+    public class CaptionAndAcceleratorUtil : AcceleratorCaptionUtil
+    {
+        public virtual string CaptionForMember([Nullable] MemberInfo member, [Nullable] string prefix = null, [Nullable] string suffix = null, char? acceleratorCharacter = null)
+        {
+            return DisplayNameToCaption(CaptionUtil.GetDisplayName(member, prefix, suffix), acceleratorCharacter);
+        }
+
+        public static string GetCaptionForMember([Nullable] MemberInfo member, [Nullable] string prefix = null, [Nullable] string suffix = null, char? acceleratorCharacter = null)
+        {
+            Instance.Clear();
+            return Instance.CaptionForMember(member, prefix, suffix, acceleratorCharacter);
+        }
+
+        private static CaptionAndAcceleratorUtil Instance = new CaptionAndAcceleratorUtil();
     }
 }

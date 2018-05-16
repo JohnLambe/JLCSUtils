@@ -74,7 +74,7 @@ namespace JohnLambe.Util.Text
         }
 
         /// <summary>
-        /// Get a caption (for display to a user) for the given type member ().
+        /// Get a caption (for display to a user) for the given type member.
         /// This uses an attribute (simlarly to <see cref="GetDisplayNameFromAttribute(ICustomAttributeProvider)"/>) if there is one, otherwise the member/property name.
         /// </summary>
         /// <param name="member">An item (usually a property or method) that may have a name or attribute that can
@@ -96,7 +96,7 @@ namespace JohnLambe.Util.Text
         static string PreprocessTypeName([Nullable] MemberInfo cls)
         {
             string className = (cls as TypeInfo)?.FullName;
-            if (className?.StartsWith("System.Data.Entity.DynamicProxies.") ?? false)    // if in the namespace for Entity Framework generated proxy classes
+            if (className?.StartsWith(EfProxyNamespace + ".") ?? false)    // if in the namespace for Entity Framework generated proxy classes
             {   // name are in the format '<Original Name> "_" <added unique ID>' in this namespace.
                 className = cls.Name;
                 return className.Substring(0, className.LastIndexOf('_'));    // everything before last '_' - remove the added part
@@ -106,6 +106,11 @@ namespace JohnLambe.Util.Text
                 return cls.Name;
             }
         }
+
+        /// <summary>
+        /// The namespace for Entity Framework generated proxy classes.
+        /// </summary>
+        private const string EfProxyNamespace = "System.Data.Entity.DynamicProxies";
 
         /// <summary>
         /// Returns a display name for the type of <paramref name="instance"/>.
@@ -172,11 +177,13 @@ namespace JohnLambe.Util.Text
                 ?? ReflectionUtil.TryGetPropertyValue<string>(instance, "Description");
         }
 
+        /*
         [Obsolete("Use GetDisplayName")]
         public static string PropertyToCaption(PropertyInfo property)
         {
             return GetDisplayName(property);
         }
+        */
 
         /// <summary>
         /// Returns a display name (for display to a user) for the attributed item
