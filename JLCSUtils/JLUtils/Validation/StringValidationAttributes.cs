@@ -66,7 +66,7 @@ namespace JohnLambe.Util.Validation
             if (value == null || value.ToString() == "")            // blank or null is valid
                 return;   // valid
 
-            if (!ValidatePhoneNumber(value))                    // validate using PhoneAttribute
+            if (!ValidatePhoneNumber(value, true))                    // validate using PhoneAttribute
                 results.Fail();
 
             if (GetIsInternational().HasValue)
@@ -86,12 +86,17 @@ namespace JohnLambe.Util.Validation
         }
 
         /// <summary>
-        /// Validates a phone number in the same way as <see cref="PhoneAttribute"/>.
+        /// Validates a phone number in the same way as <see cref="PhoneAttribute"/>, exept .
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="ignoreSpace">Iff true, the value is validated as if all space characters in it were removed (looser validation).</param>
         /// <returns></returns>
-        public static bool ValidatePhoneNumber(object value)
-            => _phoneAttribute.IsValid(value);
+        public static bool ValidatePhoneNumber(object value, bool ignoreSpace = false)
+        { 
+            if(ignoreSpace)
+                value = value?.ToString().Replace(" ", "");
+            return _phoneAttribute.IsValid(value);
+        }
 
         /// <summary>
         /// Instance to use for validating values passed to instances of this class.
