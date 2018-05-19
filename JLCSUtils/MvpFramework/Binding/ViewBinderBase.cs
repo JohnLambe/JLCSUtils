@@ -274,7 +274,9 @@ namespace MvpFramework.Binding
 
         public virtual void NotifyValidationStage(ValidationStage stage)
         {
-            if(stage == ValidationStage.NotValidating || stage == ValidationStage.AfterValidated)
+            if(stage == ValidationStage.NotValidating || stage == ValidationStage.AfterValidated
+                || stage == ValidationStage.AfterValidating  // TEMPORARY
+                )
             {
                 _ValidationStage = ValidationStage.NotValidating;
                 RefreshIfInvalidated();
