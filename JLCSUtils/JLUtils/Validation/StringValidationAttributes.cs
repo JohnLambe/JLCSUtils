@@ -67,7 +67,9 @@ namespace JohnLambe.Util.Validation
                 return;   // valid
 
             if (!ValidatePhoneNumber(value, true))                    // validate using PhoneAttribute
-                results.Fail();
+            {
+                results.Add("The " + GetDisplayName(validationContext) + " field is invalid");
+            }
 
             if (GetIsInternational().HasValue)
             {
@@ -76,13 +78,23 @@ namespace JohnLambe.Util.Validation
                 if (international != GetIsInternational())
                 {
                     if (international)
-                        results.Add("Phone number must not be in international format");
+                        results.Add("The " + GetDisplayName(validationContext) + " must not be in international format");
                     else
-                        results.Add("Phone number must be in international format");
+                        results.Add("The " + GetDisplayName(validationContext) + " must be in international format");
                 }
             }
 
             base.IsValid(ref value, validationContext, results);
+        }
+
+        /// <summary>
+        /// Human-readable string to refer to the property being validated.
+        /// </summary>
+        /// <param name="validationContext"></param>
+        /// <returns></returns>
+        protected virtual string GetDisplayName(ValidationContext validationContext)
+        {
+            return (validationContext?.DisplayName ?? " phone number") + " field";
         }
 
         /// <summary>
