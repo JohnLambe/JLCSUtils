@@ -77,6 +77,16 @@ namespace MvpFramework.Dialog
         // Note: These are referenced from the 'Standard Dialog Types' region, so must be declared first.
 
         /// <summary>
+        /// Default options of a Confirmation dialog, as an array.
+        /// </summary>
+        private static readonly MenuItemModel[] _options_confirm = new[]
+            {
+                new MenuItemModel(MessageDialogResponse.Yes) { DisplayName = "Yes", AcceleratorChar = 'Y' },
+                new MenuItemModel(MessageDialogResponse.No) { DisplayName = "No", AcceleratorChar = 'N' },
+                new MenuItemModel(MessageDialogResponse.Cancel) { DisplayName = "Cancel", AcceleratorChar = 'C', HotKey = KeyboardKey.Escape },
+            };
+
+        /// <summary>
         /// An 'Ok' button.
         /// </summary>
         public static readonly IOptionCollection Options_Ok = new OptionCollection(
@@ -89,18 +99,12 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// 'Yes', 'No' and 'Cancel' buttons.
         /// </summary>
-        public static readonly IOptionCollection Options_Confirm = new OptionCollection(
-            new MenuItemModel[]
-            {
-                new MenuItemModel(MessageDialogResponse.Yes) { DisplayName = "Yes", AcceleratorChar = 'Y' },
-                new MenuItemModel(MessageDialogResponse.No) { DisplayName = "No", AcceleratorChar = 'N' },
-                new MenuItemModel(MessageDialogResponse.Cancel) { DisplayName = "Cancel", AcceleratorChar = 'C', HotKey = KeyboardKey.Escape },
-            }
-        );
+        public static readonly IOptionCollection Options_Confirm = new OptionCollection(_options_confirm);
 
-        public static readonly IOptionCollection Options_YesNo = new OptionCollection(
-            Options_Confirm.Children.Take(2).ToArray()
-            );
+        /// <summary>
+        /// 'Yes' and 'No' buttons.
+        /// </summary>
+        public static readonly IOptionCollection Options_YesNo = new OptionCollection(_options_confirm.Take(2).ToArray());
 
         #endregion
 
