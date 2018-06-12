@@ -18,9 +18,9 @@ namespace JLUtilsEFTest
     {
         public TestDbContext()
             : base(@"Data Source=localhost\SQLEXPRESS; Integrated Security=True; MultipleActiveResultSets=True;Initial Catalog=JLUtilsEFTest")
-//            : base(System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ToString())
+        //            : base(System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ToString())
         {
-//            Database.SetInitializer<TestDbContext>(new TestInitializer());
+            //            Database.SetInitializer<TestDbContext>(new TestInitializer());
         }
 
         public virtual DbSet<TestEntity> TestEntities { get; set; }
@@ -32,8 +32,29 @@ namespace JLUtilsEFTest
 
         public virtual DbSet<FlagDeleted1Entity> FlagDeleted1Entities { get; set; }
         public virtual DbSet<FlagDeletedEntityBase> FlagDeletedEntities { get; set; }
-    }
 
+
+        public override int SaveChanges()
+        {
+            EfUtil.UndoUnmodified(ChangeTracker);
+            /*
+            foreach(var entry in ChangeTracker.Entries().Where( x => x.State == EntityState.Modified ))
+            {
+                bool modified = false;
+                foreach (var propertyName in entry.OriginalValues.PropertyNames)
+                {
+                    var oldValue = entry.OriginalValues.GetValue<object>(propertyName);
+                    var newValue = entry.OriginalValues.GetValue<object>(propertyName);
+                    modified = modified || !JohnLambe.Util.ObjectUtil.CompareEqual(oldValue, newValue);
+                }
+                if (!modified)
+                    entry.State = EntityState.Unchanged;
+            }
+            */
+
+            return base.SaveChanges();
+        }
+    }
 
     public class TestEntity : IEntityBeforeSaveChanges
     {
@@ -41,6 +62,9 @@ namespace JLUtilsEFTest
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public void BeforeSaveChanges()
         {

@@ -48,7 +48,7 @@ namespace MvpFramework.Generator
 
         /// <summary>
         /// Parent property of the properties that generated controls are bound to.
-        /// (null or "" for the modl itself (root)).
+        /// (null or "" for the model itself (root)).
         /// </summary>
         public virtual string ModelProperty { get; set; }
 
@@ -58,7 +58,7 @@ namespace MvpFramework.Generator
         /// <summary>
         /// Coordinates (top left) of first control caption.
         /// </summary>
-                public virtual Point Coords { get; set; }
+        public virtual Point Coords { get; set; }
         */
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace MvpFramework.Generator
         }
 
         #endregion
-*/
+        */
         //TODO: Remove
         /// <summary>
         /// Define a mapping from a data type to a control type that handles it.

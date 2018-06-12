@@ -66,7 +66,7 @@ namespace MvpFramework.Dialog
         public virtual Color DefaultColor { get; private set; } = Color.Empty;
 
         /// <summary>
-        /// Usually a less satured version of <see cref="DefaultColor"/>,
+        /// Usually a less saturated version of <see cref="DefaultColor"/>,
         /// intended for use as a background of larger areas, or for a UI with less saturated color.
         /// </summary>
         public virtual Color DefaultColorMuted => DefaultColor;

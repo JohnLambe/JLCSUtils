@@ -26,6 +26,9 @@ namespace JohnLambe.Util.Validation
 
         //public virtual bool Not { get; set; }
 
+        /// <summary>
+        /// The comparison operator to be applied to the attributed property and the referenced one.
+        /// </summary>
         public virtual ComparisonOperator Operator { get; set; } = ComparisonOperator.Any;
 
         //public virtual StringComparisonOperator StringOperator { get; set; }

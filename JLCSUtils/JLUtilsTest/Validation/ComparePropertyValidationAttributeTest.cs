@@ -98,6 +98,26 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation.CompareProperty
         }
 
 
+        [TestMethod]
+        public void IsValid_Null()
+        {
+            var validator = new ValidatorEx(ValidationFeatures.All);
+
+            Multiple(
+                () =>
+                {
+                    var instance = new ClassForTest3();
+                    instance.X = 100;
+                    validator.ValidateObject(instance);
+                },
+                () =>
+                {
+                    var instance = new ClassForTest4();
+                    validator.ValidateObject(instance);
+                }
+            );
+        }
+
         /*
         [TestMethod]
         public void IsValid_Options_NonLive()
@@ -137,4 +157,19 @@ namespace JohnLambe.Tests.JLUtilsTest.Validation.CompareProperty
         public int Maximum { get; set; }
     }
 
+    public class ClassForTest3
+    {
+        [ComparePropertyValidation(PropertyName = nameof(Y), Operator = ComparisonOperator.LessThanOrEqual)]
+        public int X { get; set; }
+
+        public int? Y { get; set; }
+    }
+
+    public class ClassForTest4
+    {
+        public int X { get; set; }
+
+        [ComparePropertyValidation(PropertyName = nameof(X), Operator = ComparisonOperator.LessThanOrEqual)]
+        public int? Y { get; set; }
+    }
 }
