@@ -71,8 +71,9 @@
     <Compile Include="Db\MockDbRepository.cs" />
     <Compile Include="Db\OrmAttributes.cs" />
     <Compile Include="Logging\Log4n\Log4nExtension.cs" />
-    <Compile Include="Logging\Log4n\Log4nWrapper.cs" />
-    <Compile Include="Logging\Log4n\LoggerInjector.cs" />
+    <Compile Include="Logging\Log4n\Log4nAdapter.cs" />
+    <Compile Include="Logging\Log4n\Log4nInjector.cs" />
+    <Compile Include="Logging\LoggerInjector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
