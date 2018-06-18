@@ -1,4 +1,5 @@
 ﻿using System;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Logging
 {
@@ -101,22 +102,31 @@ namespace JohnLambe.Util.Logging
         public const int None = int.MaxValue;
     }
 
+    /// <summary>
+    /// Extension methods of <see cref="IGeneralLogger"/>.
+    /// </summary>
     public static class LoggerExtension
     {
         /// <summary>
         /// Log a message provided by a delegate.
         /// The delegate is evaluated only if the logger is configured to log at the given level.
         /// </summary>
-        /// <param name="logger"></param>
+        /// <param name="logger">The logger to use. This does nothing if this is null.</param>
         /// <param name="level"></param>
-        /// <param name="message">Delegate to return the message. Can be null to make the message null.</param>
-        /// <param name="ex"></param>
-        public static void Log<T>(this IGeneralLogger logger, int level, Func<T> message, Exception ex = null)
+        /// <param name="message">Delegate to return the message. Can be or return null to make the message null.
+        /// If both this (or its return value) and <paramref name="ex"/> are null, nothing is logged.
+        /// </param>
+        /// <param name="ex">Exception to be logged. When </param>
+        public static void Log<T>([Nullable] this IGeneralLogger logger, int level, [Nullable] Func<T> message, [Nullable] Exception ex = null)
         {
-            if (logger != null && message != null || ex != null)
+            if (logger != null && (message != null || ex != null))
             {
                 if (logger.LogLevel > level)
-                    logger.Log(level, message == null ? null : (object)message.Invoke(), ex);
+                {
+                    var messageValue = message == null ? null : (object)message.Invoke();
+                    if(messageValue != null || ex != null)
+                        logger.Log(level, messageValue, ex);
+                }
             }
         }
     }

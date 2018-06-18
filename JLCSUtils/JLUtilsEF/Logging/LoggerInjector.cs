@@ -24,7 +24,6 @@ namespace JohnLambe.Util.Logging
             }
         }
 
-
         /// <summary>
         /// Inject static logger(s) in the given type, based on attributes.
         /// </summary>
@@ -42,13 +41,14 @@ namespace JohnLambe.Util.Logging
         }
 
         /// <summary>
-        /// Inject a logger into the given instance, using the interface, and the <see cref="InjectLoggerAttribute"/> if present.
+        /// Inject a logger into the given instance, using the interface (<see cref="IHasLogger"/>), and the <see cref="InjectLoggerAttribute"/> on the 'Logger' property if present.
+        /// (Note: It always uses the property called "Logger", even if <see cref="IHasLogger"/> is implemented explicitly.)
         /// </summary>
         /// <param name="receiver"></param>
         public void InjectInstanceLogger(IHasLogger receiver)
         {
             string name = null;
-            var property = receiver.GetType().GetProperty(nameof(IHasLogger.Logger));
+            var property = receiver.GetType().GetProperty(nameof(IHasLogger.Logger));  // may not be what's expected with explicit implementation of IHasLogger (see XML comment on this method).
             if (property != null)
             {
                 var attribute = property.GetCustomAttribute<InjectLoggerAttribute>();
@@ -71,13 +71,4 @@ namespace JohnLambe.Util.Logging
         public abstract IGeneralLogger GetLogger(Type type, string name = null);
     }
 
-
-    /// <summary>
-    /// Indicates that logger should be injected.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class InjectLoggerAttribute : Attribute
-    {
-        public virtual string Name { get; set; }
-    }
 }

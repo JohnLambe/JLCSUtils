@@ -82,6 +82,7 @@
     <Compile Include="Linq\SubExpressionUtil.cs" />
     <Compile Include="Logging\IGeneralLogger.cs" />
     <Compile Include="Logging\ILoggerFactory.cs" />
+    <Compile Include="Logging\InjectLoggerAttribute.cs" />
     <Compile Include="MathUtilities\!NamespaceDoc.cs" />
     <Compile Include="Misc\ChangesStateAttribute.cs" />
     <Compile Include="Misc\CriticalityAttribute.cs" />
