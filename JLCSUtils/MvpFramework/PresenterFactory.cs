@@ -309,7 +309,7 @@ namespace MvpFramework
         /// </summary>
         /// <seealso cref="UseChildContext"/>
         public virtual bool EffectiveUseChildContext => UseChildContext ?? ContainingView == null;
-        // By default, nested views share the context of their container.
+        // By default, nested views share the context of their container, and non-nested views get a new context.
 
         /// <summary>
         /// True iff views created by this factory are modal.
