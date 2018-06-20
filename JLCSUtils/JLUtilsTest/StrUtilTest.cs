@@ -52,6 +52,22 @@ namespace JohnLambe.Tests.JLUtilsTest
             );
         }
 
+        [TestMethod]
+        public void CompareSubstringAt()
+        {
+            Multiple(
+                () => Assert.AreEqual(true, StrUtil.CompareSubstringAt("one two three", 4, "two")),
+                () => Assert.AreEqual(false, StrUtil.CompareSubstringAt("one two three", 4, "Two"), "case sensitive"),
+                () => Assert.AreEqual(true, StrUtil.CompareSubstringAt("one two three", 4, "TWo", StringComparison.InvariantCultureIgnoreCase), "non case sensitive"),
+                () => Assert.AreEqual(false, StrUtil.CompareSubstringAt("one two three", 4, null, StringComparison.InvariantCultureIgnoreCase), "null"),
+                () => Assert.AreEqual(true, StrUtil.CompareSubstringAt("one two three", 4, "", StringComparison.InvariantCultureIgnoreCase)),  // there's a "" between every two characters
+                () => Assert.AreEqual(false, StrUtil.CompareSubstringAt("", 10, "A", StringComparison.InvariantCultureIgnoreCase), "out of range position"),
+                () => Assert.AreEqual(false, StrUtil.CompareSubstringAt("abcd", -1, "A", StringComparison.InvariantCultureIgnoreCase), "negative position"),
+                () => Assert.AreEqual(false, StrUtil.CompareSubstringAt("abcd", 2, "cde", StringComparison.InvariantCultureIgnoreCase), "past end"),  // past end
+                () => Assert.AreEqual(true, StrUtil.CompareSubstringAt("abcde", 0, "a", StringComparison.InvariantCulture), "past end")
+            );
+        }
+
         #region SplitToVars
 
         [TestMethod]

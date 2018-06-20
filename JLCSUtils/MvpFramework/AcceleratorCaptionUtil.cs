@@ -79,6 +79,13 @@ namespace MvpFramework
         [return: Nullable]
         public virtual char? GetAccelerator([Nullable] string caption)
         {
+            return StringGetAccelerator(caption);
+        }
+
+        /// <inheritdoc cref="GetAccelerator(string)"/>
+        [return: Nullable]
+        public static char? StringGetAccelerator([Nullable] string caption)
+        {
             if (caption == null)
                 return null;
             int acceleratorPosition = caption.IndexOf(AcceleratorIndicator);
@@ -340,10 +347,24 @@ namespace MvpFramework
             if (PreferStartOfWord && StrUtil.IsStartOfWord(caption, position))
             {
                 score += 20;
-                //TODO: Reduce score if at the start of a common conjunction and not the start of the string.
+                // Reduce score if at the start of a common conjunction and not the start of the string:
+                foreach (string word in MinorWords)
+                {
+                    if (StrUtil.CompareSubstringAt(caption, position, word, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        score -= 2;
+                        break;
+                    }
+                }
             }
             return score;
         }
+
+        /// <summary>
+        /// Words that are non-preferred - the first letter of other words is preferred to the first letter of any of these.
+        /// </summary>
+        static private string[] MinorWords = new string[] { "and ", "or ", "in ", "on ", "at ", "the ", "a ", "an " };
+        // Each must end with " ". Currently, we don't recognise any other characters as separating words for this purpose.
 
         /// <summary>
         /// Modify a caption to make a character at a given position (or an added character) the accelerator character.
@@ -423,7 +444,7 @@ namespace MvpFramework
         }
 
         /// <summary>
-        /// Add a character to the list of used acclerator characters.
+        /// Add a character to the list of used accelerator characters.
         /// Does nothing if it already exists, or is null.
         /// </summary>
         /// <param name="accelerator"></param>
@@ -577,11 +598,13 @@ namespace MvpFramework
             /// Remove the <see cref="AcceleratorIndicator"/> character.
             /// </summary>
             Remove = 1,
+
             //            Escape,   // it couldn't be escaped in all cases
             /// <summary>
             /// Replace the <see cref="AcceleratorIndicator"/> with "and" (spaces and/or capitalisation may be applied heuristically).
             /// </summary>
             ConvertToWord,
+            
             /// <summary>
             /// Keep the existing one.
             /// </summary>
@@ -597,19 +620,23 @@ namespace MvpFramework
             /// Ignore the error and assign it.
             /// </summary>
             Allow = 1,
+
             /// <summary>
             /// Silently fail and leave the accelerator character unchanged
             /// (same a <see cref="NoAccelerator"/> if there isn't one already).
             /// </summary>
             NoChange,
+            
             /// <summary>
             /// Silently fail and set no accelerator character.
             /// </summary>
             NoAccelerator,
+            
             /// <summary>
             /// Silently choose a different accelerator character.
             /// </summary>
             Change,
+            
             /// <summary>
             /// Throw an exception.
             /// </summary>

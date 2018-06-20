@@ -421,6 +421,27 @@ namespace JohnLambe.Util
             return s != "" && s[s.Length - 1] == suffix;
         }
 
+        /// <summary>
+        /// Test whether the string contains a given string at a given position.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="startIndex">the 0-based index of the character position in the <paramref name="s"/> to compare to <paramref name="substring"/>.
+        /// If out of range, false is returned.
+        /// </param>
+        /// <param name="substring">the string to be compared.
+        /// If null, false is returned.
+        /// </param>
+        /// <param name="comparison">How to compare the string.</param>
+        /// <returns>true iff the substring is matched at the given position.</returns>
+        public static bool CompareSubstringAt([NotNull] this string s, int startIndex, [Nullable] string substring, StringComparison comparison = StringComparison.CurrentCulture)
+        {
+            if (substring == null)
+                return false;
+            if (startIndex < 0 || startIndex + substring.Length > s.Length)    // out of range or doesn't fit
+                return false;
+            return substring.Equals(s.Substring(startIndex, substring.Length), comparison);
+        }
+
         #region SplitToVars
 
         /// <summary>

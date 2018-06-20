@@ -97,7 +97,7 @@ namespace JohnLambe.Util.Reflection
         {
             return provider.GetCustomAttributes(inherit).Where(
                 a => a is T
-                    && ( (a as IFilteredAttribute)?.Enabled ?? true )
+                    && ( (a as IEnabledAttribute)?.Enabled ?? true )
                 ).Cast<T>();
         }
 
