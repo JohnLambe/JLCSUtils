@@ -75,7 +75,7 @@ namespace JohnLambe.Util.Exceptions
             {
                 return func();
             }
-            catch(TargetInvocationException ex) when (ex.InnerException is TException)
+            catch (Exception ex) when (ex is TException || (ex is TargetInvocationException && ex.InnerException is TException))
             {
                 if (onError != null)
                     return onError.Invoke(ex.InnerException as TException);
@@ -83,6 +83,7 @@ namespace JohnLambe.Util.Exceptions
                     return default(T);
             }
         }
+        //TODO: params list of delegates.
 
         /// <summary>
         /// <inheritdoc cref="TryEvaluate{T}(Func{T}, Func{Exception, T})"/>
@@ -110,7 +111,7 @@ namespace JohnLambe.Util.Exceptions
             {
                 return func();
             }
-            catch (TargetInvocationException ex) when(ex.InnerException is TException)
+            catch (Exception ex) when(ex is TException || (ex is TargetInvocationException && ex.InnerException is TException))
             {
                 return defaultValue;
             }
