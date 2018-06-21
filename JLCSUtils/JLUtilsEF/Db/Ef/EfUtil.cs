@@ -5,6 +5,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Db.Ef
 {
@@ -57,10 +58,55 @@ namespace JohnLambe.Util.Db.Ef
             foreach (var propertyName in entry.OriginalValues.PropertyNames)
             {
                 var oldValue = entry.OriginalValues.GetValue<object>(propertyName);
-                var newValue = entry.OriginalValues.GetValue<object>(propertyName);
-                modified = modified || !JohnLambe.Util.ObjectUtil.CompareEqual(oldValue, newValue);
+                var newValue = entry.CurrentValues.GetValue<object>(propertyName);
+
+                if (!Compare(oldValue, newValue))
+                {
+                    modified = true;
+                    break;
+                }
             }
             return modified;
+        }
+
+        /// <summary>
+        /// Compare two values of a type compatible with the same property in a <see cref="DbPropertyValues"/>.
+        /// If both values are <see cref="DbPropertyValues"/>, their contents are compared.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>true if the parameters are equal.</returns>
+        private static bool Compare([Nullable] object a, [Nullable] object b)
+        {
+            if (a is DbPropertyValues && b is DbPropertyValues)
+            {
+                return ComparePropertyValues((DbPropertyValues)a, (DbPropertyValues)b);
+            }
+            else
+            {
+                return JohnLambe.Util.ObjectUtil.CompareEqual(a, b);
+            }
+        }
+
+        /// <summary>
+        /// Compare the contents of two <see cref="DbPropertyValues"/> instances.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b">A DbPropertyValues with the same properties as <paramref name="a"/>.</param>
+        /// <returns>true if the parameters are equal.</returns>
+        private static bool ComparePropertyValues([NotNull] DbPropertyValues a, [NotNull] DbPropertyValues b)
+        {
+            foreach (var propertyName in a.PropertyNames)
+            {
+                var oldValue = a.GetValue<object>(propertyName);
+                var newValue = b.GetValue<object>(propertyName);
+
+                if (!Compare(oldValue, newValue))
+                {   // difference found
+                    return true;    // different
+                }
+            }
+            return true;   // equal
         }
 
         /// <summary>

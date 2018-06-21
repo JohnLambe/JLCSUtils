@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{57DD0BFC-5A06-48D2-8E49-57D191E00D4A}</ProjectGuid>
+    <ProjectGuid>{5C7B9CC0-8E11-4F19-B78F-0F7AB2EE9A76}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JohnLambe.Util</RootNamespace>
-    <AssemblyName>JLUtilsEF</AssemblyName>
+    <AssemblyName>JLUtilsL4n</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,18 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,26 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Db\EfDatabaseContext.cs" />
-    <Compile Include="Db\EfDbRepository.cs" />
-    <Compile Include="Db\CollectionInitializer.cs" />
-    <Compile Include="Db\Ef\DbSetUtil.cs" />
-    <Compile Include="Db\Ef\EfDatabase.cs" />
-    <Compile Include="Db\Ef\EfUtil.cs" />
-    <Compile Include="Db\Ef\EntityCloner.cs" />
-    <Compile Include="Db\EntityBase.cs" />
-    <Compile Include="Db\Ef\EntityEvents.cs" />
-    <Compile Include="Db\Ef\EventArgs.cs" />
-    <Compile Include="Db\Ef\ExtendedContext.cs" />
-    <Compile Include="Db\FlagDeletedEntity.cs" />
-    <Compile Include="Db\IDatabaseRepository.cs" />
-    <Compile Include="Db\IOrmDatabaseContext.cs" />
-    <Compile Include="Db\MockDbRepository.cs" />
-    <Compile Include="Db\OrmAttributes.cs" />
+    <Compile Include="Logging\Log4n\Log4nAdapter.cs" />
+    <Compile Include="Logging\Log4n\Log4nExtension.cs" />
+    <Compile Include="Logging\Log4n\Log4nInjector.cs" />
+    <Compile Include="Logging\LoggerInjector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +60,6 @@
       <Name>JLUtils</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
