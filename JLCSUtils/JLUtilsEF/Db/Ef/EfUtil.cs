@@ -52,21 +52,9 @@ namespace JohnLambe.Util.Db.Ef
         /// <param name="entry"></param>
         /// <returns>true iff the entity is modified.</returns>
         /// <seealso cref="IsEntityModified(DbContext, object)"/>
-        public static bool IsModified(DbEntityEntry entry)
+        public static bool IsModified([NotNull] DbEntityEntry entry)
         {
-            bool modified = false;
-            foreach (var propertyName in entry.OriginalValues.PropertyNames)
-            {
-                var oldValue = entry.OriginalValues.GetValue<object>(propertyName);
-                var newValue = entry.CurrentValues.GetValue<object>(propertyName);
-
-                if (!Compare(oldValue, newValue))
-                {
-                    modified = true;
-                    break;
-                }
-            }
-            return modified;
+            return ComparePropertyValues(entry.OriginalValues, entry.CurrentValues);
         }
 
         /// <summary>
@@ -103,7 +91,7 @@ namespace JohnLambe.Util.Db.Ef
 
                 if (!Compare(oldValue, newValue))
                 {   // difference found
-                    return true;    // different
+                    return false;    // different
                 }
             }
             return true;   // equal
