@@ -12,7 +12,6 @@ namespace DiExtension.SimpleInject
     public class ChainableContext : SiExtendedDiContext, IChainableDiResolver
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentContext">Parent context, or null if this is the root.
         /// If this is not a <see cref="ChainableContext"/> and doesn't implement chaining behaviour itself,
@@ -93,9 +92,12 @@ namespace DiExtension.SimpleInject
             if (base.GetValue<T>(key, type, out value))
                 return true;
             else
-                return _parentContext.GetValue<T>(key, type, out value);
+                return _parentContext?.GetValue<T>(key, type, out value) ?? false;
         }
 
+        /// <summary>
+        /// The parent context. null if this is the root.
+        /// </summary>
         protected readonly SiExtendedDiContext _parentContext;
     }
 }
