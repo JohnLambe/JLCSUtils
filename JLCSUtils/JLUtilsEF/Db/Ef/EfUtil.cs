@@ -54,7 +54,7 @@ namespace JohnLambe.Util.Db.Ef
         /// <seealso cref="IsEntityModified(DbContext, object)"/>
         public static bool IsModified([NotNull] DbEntityEntry entry)
         {
-            return ComparePropertyValues(entry.OriginalValues, entry.CurrentValues);
+            return !ComparePropertyValues(entry.OriginalValues, entry.CurrentValues);
         }
 
         /// <summary>

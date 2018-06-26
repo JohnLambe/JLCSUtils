@@ -27,12 +27,15 @@ namespace JohnLambe.Util.Reflection
 
         public static T GetCustomAttribute<T>(this ICustomAttributeProvider provider)
         {
+            return provider.GetCustomAttributes(true).OfType<T>().FirstOrDefault();
+            /*
             foreach (var attribute in provider.GetCustomAttributes(true))
             {
                 if (attribute is T)
                     return (T)attribute;
             }
             return default(T);
+            */
         }
 
         public static IEnumerable<T> GetCustomAttributes<T>(this ICustomAttributeProvider type, bool inherit = true)
