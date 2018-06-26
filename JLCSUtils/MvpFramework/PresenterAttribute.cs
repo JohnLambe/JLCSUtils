@@ -62,7 +62,25 @@ namespace MvpFramework
         /// null to use the default resolution.
         /// </summary>
         [TypeValidation(Implements = typeof(IView)), Nullable]
-        public Type ViewInterface { get; set; }
+        public virtual Type ViewInterface { get; set; }
+
+        /// <summary>
+        /// Whether this presenter should use a new DI context.
+        /// (<see cref="NullableBool.True"/> to use a new context; <see cref="NullableBool.False"/> to use the same context as the caller; ).
+        /// </summary>
+        public virtual NullableBool UseChildContext { get; set; }
+
+        /// <summary>
+        /// <see cref="UseChildContext"/> as a bool?.
+        /// </summary>
+        /// <remarks>
+        /// Use <see cref="UseChildContext"/> in attributes.
+        /// </remarks>
+        public virtual bool? UseChildContextBool
+        {
+            get { return UseChildContext.ToBool(); }
+            set { UseChildContext = NullableBoolExtension.ToNullableBool(value); }
+        }
     }
 
     /// <summary>

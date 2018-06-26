@@ -1,5 +1,6 @@
 ﻿using System;
 using DiExtension;
+using JohnLambe.Util.Reflection;
 
 namespace MvpFramework
 {
@@ -23,9 +24,9 @@ namespace MvpFramework
         /// Determine whether a child DI context should be created for the new presenter and view.
         /// Called before <see cref="BeforeCreatePresenter"/>.
         /// </summary>
-        /// <param name="targetClass"></param>
+        /// <param name="targetClass">The class of the Presenter that is about to be created.</param>
         /// <param name="context"></param>
-        /// <returns></returns>
+        /// <returns>true to use a </returns>
         /// <seealso cref="ResolverExtensionContext.UseChildContext"/>
         bool GetUseChildContext(Type targetClass, ResolverExtensionContext context);
 
@@ -140,9 +141,10 @@ namespace MvpFramework
             return ResolverExtensionStatus.Default;
         }
 
+        /// <inheritdoc cref="IResolverExtension.GetUseChildContext(Type, ResolverExtensionContext)"/>
         public virtual bool GetUseChildContext(Type targetClass, ResolverExtensionContext context)
         {
-            return false;
+            return targetClass.GetCustomAttribute<PresenterAttribute>()?.UseChildContextBool ?? context.UseChildContext;
         }
     }
 
