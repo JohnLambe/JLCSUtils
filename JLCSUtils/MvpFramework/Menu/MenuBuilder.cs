@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using MvpFramework.Security;
 
 namespace MvpFramework.Menu
 {
@@ -24,8 +25,13 @@ namespace MvpFramework.Menu
         /// <summary>
         /// Create without an MVP resolver. Presenters will not be invoked automatically.
         /// </summary>
-        public MenuBuilder()
+        public MenuBuilder() : this(null)
         {
+        }
+
+        public MenuBuilder(ISecurityManager securityManager)
+        {
+            this.SecurityManager = securityManager ?? new NullSecurityManager();
         }
 
         /// <summary>
@@ -102,8 +108,7 @@ namespace MvpFramework.Menu
         protected virtual MenuItemModel BuildItem(Dictionary<string,MenuItemModel> allItems, MenuAttributeBase attribute, Type handlerType)
         {
             string id = attribute.Id ?? Guid.NewGuid().ToString("N");   // generate a GUID ID if no ID is given
-            var item = new MenuItemModel(allItems,
-                id)       // create a menu item from the attribute
+            var item = new MenuItemModel(allItems,id)       // create a menu item from the attribute
             {
                 ParentId = attribute.ParentId,
                 AcceleratorChar = attribute.AcceleratorChar,
@@ -136,7 +141,6 @@ namespace MvpFramework.Menu
         /// <param name="args"></param>
         protected virtual void GeneratedItem_Invoked(MenuItemModel item, MenuItemModel.InvokedEventArgs args)
         {
-            
         }
         */
 
@@ -201,7 +205,6 @@ namespace MvpFramework.Menu
                 {
                     item.Invoked += instanceExecute;               // call instance method directly
                 }
-
             }
 
             //TODO: Other types: If instance method "Execute" exists, get instance from DI, and call it.
@@ -258,5 +261,10 @@ namespace MvpFramework.Menu
         /// Assemblies to scan.
         /// </summary>
         public virtual IEnumerable<Assembly> Assemblies { get; set; }
+
+        /// <summary>
+        /// The security manager that validates access to the menu items.
+        /// </summary>
+        protected virtual ISecurityManager SecurityManager { get; }
     }
 }

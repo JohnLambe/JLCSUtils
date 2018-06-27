@@ -10,6 +10,7 @@ using JohnLambe.Util.Diagnostic;
 using JohnLambe.Util.Types;
 using JohnLambe.Util.Misc;
 using MvpFramework.Binding;
+using MvpFramework.Security;
 
 namespace MvpFramework.Menu
 {
@@ -159,17 +160,36 @@ namespace MvpFramework.Menu
         protected IDictionary<string, MenuItemModel> _allItems;
 
         /// <summary>
+        /// The security manager that validates access to the menu item.
+        /// </summary>
+        protected virtual ISecurityManager SecurityManager { get; set; }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>true iff the current session has the necessary rights to invoke this item.</returns>
+        public virtual bool IsAccessible()
+            => SecurityManager?.ValidateRights(Rights) ?? true;
+
+        /// <summary>
+        /// Throws an exception if the session does not have the necessary rights to invoke this item.
+        /// </summary>
+        public virtual void AssertRights()
+        {
+            SecurityManager?.AssertRights(Rights);
+        }
+
+        /// <summary>
         /// Do the action of this menu item.
         /// </summary>
         public virtual void Invoke(InvokedEventArgs args = null)
         {
+            AssertRights();
             Invoked?.Invoke(this, args ?? InvokedEventArgs.EmptyInvokedEventArgs);
         }
 
         /// <summary>
         /// Name of this item for display to developers (e.g. in error messages).
         /// </summary>
-        /// <returns></returns>
         public virtual string CodeDescription
             => DisplayName + " (" + Id + ")";
 
