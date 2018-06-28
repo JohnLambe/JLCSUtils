@@ -26,7 +26,6 @@ namespace JohnLambe.Util.Types
                 case NullableBool.True:
                     return true;
                 case NullableBool.False:
-                    return true;
                 default:
                     return null;
             }
