@@ -29,21 +29,18 @@ namespace MvpFramework.Menu
         {
         }
 
-        public MenuBuilder(ISecurityManager securityManager)
-        {
-            this.SecurityManager = securityManager ?? new NullSecurityManager();
-        }
-
         /// <summary>
         /// Create, with a resolver for invoking Presenters.
         /// </summary>
         /// <param name="resolver"></param>
         /// <param name="diResolver">The <see cref="IDiResolver"/> to be used to inject presenter or other handlers created when an item is invoked.</param>
+        /// <param name="securityManager"><see cref="SecurityManager"/></param>
         [Inject]
-        public MenuBuilder(MvpResolver resolver, IDiResolver diResolver = null)
+        public MenuBuilder(MvpResolver resolver, IDiResolver diResolver = null, ISecurityManager securityManager = null)
         {
             this.Resolver = resolver;
             this.DiResolver = diResolver;
+            this.SecurityManager = securityManager ?? NullSecurityManager.AcceptAll;
         }
 
         /// <summary>
@@ -108,7 +105,7 @@ namespace MvpFramework.Menu
         protected virtual MenuItemModel BuildItem(Dictionary<string,MenuItemModel> allItems, MenuAttributeBase attribute, Type handlerType)
         {
             string id = attribute.Id ?? Guid.NewGuid().ToString("N");   // generate a GUID ID if no ID is given
-            var item = new MenuItemModel(allItems,id)       // create a menu item from the attribute
+            var item = new MenuItemModel(allItems, id, SecurityManager)       // create a menu item from the attribute
             {
                 ParentId = attribute.ParentId,
                 AcceleratorChar = attribute.AcceleratorChar,

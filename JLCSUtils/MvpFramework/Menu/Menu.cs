@@ -24,7 +24,7 @@ namespace MvpFramework.Menu
         {
         }
 
-        public MenuItemModel(MenuItemModel[] items, string id = "") : this((IDictionary < string, MenuItemModel > )null,id)
+        public MenuItemModel(MenuItemModel[] items, string id = "") : this((IDictionary<string, MenuItemModel>)null,id)
         {
             foreach(var item in items)
             {
@@ -34,13 +34,14 @@ namespace MvpFramework.Menu
             }
         }
 
-        public MenuItemModel(IDictionary<string, MenuItemModel> allItems, string id)
+        public MenuItemModel(IDictionary<string, MenuItemModel> allItems, string id, ISecurityManager securityManager = null)
         {
             if (allItems == null)
                 allItems = new Dictionary<string, MenuItemModel>();
 
             _allItems = allItems;
-            Id = id;
+            this.Id = id;
+            this.SecurityManager = securityManager;
         }
 
         /// <summary>
@@ -162,7 +163,7 @@ namespace MvpFramework.Menu
         /// <summary>
         /// The security manager that validates access to the menu item.
         /// </summary>
-        protected virtual ISecurityManager SecurityManager { get; set; }
+        protected virtual ISecurityManager SecurityManager { get; }
 
         /// <summary>
         /// </summary>
