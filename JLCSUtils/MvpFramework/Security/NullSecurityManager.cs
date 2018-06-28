@@ -20,7 +20,7 @@ namespace MvpFramework.Security
         }
 
         /// <summary>
-        /// True to accept all requests. False to reject all requests.
+        /// true to accept all requests. false to reject all requests.
         /// </summary>
         public virtual bool Allow { get; private set; }
 
@@ -32,6 +32,11 @@ namespace MvpFramework.Security
 
         /// <inheritdoc cref="ISecurityManager.DescribeRight(string)" />
         public string DescribeRight(string right) => null;  // no description available.
+
+        /// <summary>
+        /// Immutable security manager that accepts all requests.
+        /// </summary>
+        public static NullSecurityManager AcceptAll { get; } = new NullSecurityManager(true);
     }
 
 }

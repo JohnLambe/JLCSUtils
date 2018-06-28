@@ -230,7 +230,7 @@ namespace MvpFramework
                     args[0] = view;   // assign the view (determined before creating the `args` array)
                 }
 
-                var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor
+                var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor of the presenter
                 try
                 {
                     currentDiResolver.BuildUp(presenter);                                 // inject properties

@@ -113,7 +113,8 @@ namespace MvpFramework
         /// <param name="presenterType">The concrete presenter type to be returned. Must be assignable to <typeparamref name="TPresenter"/>.</param>
         /// <param name="param">The parameters to the 'Create' method of the factory for the required presenter.</param>
         /// <returns>The requested Presenter.</returns>
-        public abstract TPresenter GetPresenterByType<TPresenter>(Type presenterType, params object[] param);
+        [return: NotNull]
+        public abstract TPresenter GetPresenterByType<TPresenter>([NotNull] Type presenterType, params object[] param);
 
         /// <summary>
         /// Get the Presenter for a given action on a given model.
@@ -121,7 +122,8 @@ namespace MvpFramework
         /// <typeparam name="TPresenter">A Presenter interface for the action to be done with the model.</typeparam>
         /// <typeparam name="TModel">The type of the Model.</typeparam>
         /// <param name="model"></param>
-        /// <returns></returns>
+        /// <returns>The requested Presenter.</returns>
+        [return: NotNull]
         public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(TModel model)
             where TPresenter : class, IPresenter
         {
@@ -137,7 +139,8 @@ namespace MvpFramework
         /// <param name="presenterActionType"></param>
         /// <param name="modelType">The type of the model.</param>
         /// <param name="model">The model instance (must be assignable to <paramref name="modelType"/>).</param>
-        /// <returns></returns>
+        /// <returns>The requested Presenter.</returns>
+        [return: NotNull]
         public virtual TPresenter GetPresenterForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model = default(TModel))
             where TPresenter : class, IPresenter
         {
@@ -260,6 +263,21 @@ namespace MvpFramework
                 .Select(at1 => at1.DeclaringMember)
                 .FirstOrDefault()
             ;
+        }
+
+        /// <summary>
+        /// Called after getting the presenter factory and before invoking it.
+        /// This may alter the state of the presenter factory, or provide a presenter to use instead of invoking the given facotry.
+        /// </summary>
+        /// <typeparam name="TPresenter"></typeparam>
+        /// <param name="presenterFactory">The presenter factory to be used.</param>
+        /// <param name="presenterType">The type of the presenter.</param>
+        /// <param name="args">The arguments to the presenter factory's Create method.</param>
+        /// <param name="context">Always null in this version. Must be ignored by overriding implementations.</param>
+        /// <returns>If not null, this is used as the presenter. If this is null, this presenter factory is invoked to create the presenter.</returns>
+        protected virtual TPresenter AfterCreatePresenterFactory<TPresenter>([NotNull] object presenterFactory, [NotNull] Type presenterType, object[] args, object context = null)
+        {
+            return default(TPresenter);
         }
 
         #endregion
@@ -621,6 +639,10 @@ namespace MvpFramework
 
             // Get the factory method:
             var createMethod = factoryType.GetMethod(CreateMethodName, paramTypes);
+
+            var presenter = AfterCreatePresenterFactory<TPresenter>(factory, presenterType, param);
+            if (presenter != null)
+                return presenter;
 
             // Invoke the factory method to get the instance:
             return (TPresenter)createMethod.Invoke(factory, param);
