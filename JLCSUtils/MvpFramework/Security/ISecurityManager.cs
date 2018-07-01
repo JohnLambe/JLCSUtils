@@ -102,7 +102,7 @@ namespace MvpFramework.Security
         public SecurityResult(bool allowed, string message = null)
         {
             this.Allowed = allowed;
-            this.Message = message ?? (allowed ? "Access allwoed" : "Access denied");
+            this.Message = message ?? (allowed ? "Access allowed" : "Access denied");
         }
 
         /// <summary>
