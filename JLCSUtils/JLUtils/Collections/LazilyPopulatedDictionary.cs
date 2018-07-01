@@ -38,16 +38,6 @@ namespace JohnLambe.Util.Collections
         bool TryGetValue(K key, out V value);
     }
 
-    /// <summary>
-    /// Like <see cref="ISimpleLookup{K, V}"/> but enumerable.
-    /// Like <see cref="ILookup{TKey, TElement}"/> except that each key is mapped to exactly one value.
-    /// </summary>
-    /// <typeparam name="K"></typeparam>
-    /// <typeparam name="V"></typeparam>
-    public interface IUniqueLookup<K,V> : ISimpleLookup<K,V>, IEnumerable<KeyValuePair<K,V>>
-    {
-    }
-
     public static class SimpleLookupExtension
     {
         /// <summary>

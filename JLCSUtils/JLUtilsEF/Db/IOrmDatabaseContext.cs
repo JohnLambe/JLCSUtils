@@ -10,7 +10,7 @@ namespace JohnLambe.Util.Db
     // This is based on Entity Framework, with most parameters and return values matching its methods.
 
     /// <summary>
-    /// Abstraction of a minimal interface to an ORM framework context.
+    /// Abtraction of a minimal interface to an ORM framework context.
     /// </summary>
     public interface IOrmDatabaseContext
     {
