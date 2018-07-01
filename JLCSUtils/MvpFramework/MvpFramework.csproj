@@ -88,8 +88,10 @@
     <Compile Include="Generator\QueryGenerator.cs" />
     <Compile Include="MvpFramework.cs" />
     <Compile Include="Security\!NamespaceDoc.cs" />
+    <Compile Include="Security\IPrincipal.cs" />
     <Compile Include="Security\ISecurityManager.cs" />
     <Compile Include="Security\NullSecurityManager.cs" />
+    <Compile Include="Security\SecurityManager.cs" />
     <Compile Include="Security\UserAuthenticationFailedException.cs" />
     <Compile Include="WindowOptions.cs" />
     <Compile Include="WinForms\!NamespaceDoc.cs" />
