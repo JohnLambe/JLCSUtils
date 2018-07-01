@@ -99,16 +99,29 @@ namespace MvpFramework.Security
     /// </summary>
     public class SecurityResult
     {
+        public SecurityResult(bool allowed, string message = null)
+        {
+            this.Allowed = allowed;
+            this.Message = message ?? (allowed ? "Access allwoed" : "Access denied");
+        }
+
         /// <summary>
         /// True iff access is granted.
         /// </summary>
-        public virtual bool Allowed { get; set; }
+        public virtual bool Allowed { get; }
 
         /// <summary>
         /// A message for display to a user.
         /// This can be used to provide information on why access was denied.
         /// </summary>
-        public virtual string Message { get; set; }
+        public virtual string Message { get; }
+
+        /// <summary>
+        /// Immutable instance for a successful validation.
+        /// </summary>
+        public static SecurityResult Success = new SecurityResult(true);
+
+        public static SecurityResult Denied = new SecurityResult(false); 
     }
 
 }

@@ -27,7 +27,7 @@ namespace MvpFramework.Security
         /// <inheritdoc cref="ISecurityManager.ValidateRights(SecurityRequirement, out SecurityResult)" />
         public void ValidateRights(SecurityRequirement r, out SecurityResult result)
         {
-            result = new SecurityResult() { Allowed = Allow };
+            result = Allow ? SecurityResult.Success : SecurityResult.Denied;
         }
 
         /// <inheritdoc cref="ISecurityManager.DescribeRight(string)" />
