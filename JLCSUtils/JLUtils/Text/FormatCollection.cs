@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Text
 {
-    public static class FormatCollectionExt
+    public static class FormatCollectionExtension
     {
         /// <summary>
         /// Format all items in <parmref name="enumerable"/> into a single string.
