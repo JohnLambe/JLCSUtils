@@ -21,6 +21,7 @@ namespace JohnLambe.Util.Reflection
     /// </remarks>
     /// <seealso cref="GenericTypeUtil">For reflection-related utilities relating to generic types (including conversion between generic and non-generic).</seealso>
     /// <seealso cref="TypeUtil"/>
+    /// <seealso cref="PropertyInfoExtension"/>
     public static class ReflectionUtil
     {
 
@@ -31,7 +32,8 @@ namespace JohnLambe.Util.Reflection
         /// and ending with (and including) <paramref name="target"/> itself.
         /// </summary>
         /// <param name="target"></param>
-        /// <returns></returns>
+        /// <returns>The list of types. Empty iff <paramref name="target"/> is null.</returns>
+        [return: NotNull]
         public static IEnumerable<Type> GetTypeHeirarchy([Nullable] Type target)
         {
             LinkedList<Type> heirarchy = new LinkedList<Type>();
@@ -45,15 +47,27 @@ namespace JohnLambe.Util.Reflection
 
         // end AutoConfig
 
-        public static Type GetLowestNonAbstractAncestor(Type type)
+        /// <summary>
+        /// Get the nearest (lowest in the type hierarchy) ancestor of the given type that is not abstract (even if there is an abstract type lower than it).
+        /// </summary>
+        /// <param name="type">Class or interface type.</param>
+        /// <returns>The ancestor type, or null if <paramref name="type"/> is null or not a type that has a base type.</returns>
+        /// <remarks>This cannot currently return null unless passed null or a type that does not have a base type, because all types have the concrete ancestor <seealso cref="object"/>.</remarks>
+        [return: Nullable]
+        public static Type GetLowestNonAbstractAncestor([Nullable] Type type)
         {
-            Type nextType = type;
-            do
+            if (type != null)
             {
-                type = nextType;
-                nextType = nextType.BaseType;
-            } while (nextType != null && !nextType.IsAbstract);
-            return type;
+                Type nextType = type.BaseType;
+                do
+                {
+                    type = nextType;
+                    if (!type.IsAbstract)
+                        return type;
+                    nextType = nextType.BaseType;
+                } while (nextType != null);
+            }
+            return null;
         }
 
 
@@ -884,11 +898,12 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <param name="target"></param>
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
+        /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
         /// <returns>The requested property, or null if it does not exist (if any property in the chain doesn't exist).</returns>
-        public static PropertyInfo GetProperty(ref object target, [NotNull,PropertyName] string propertyName)
+        public static PropertyInfo GetProperty(ref object target, [NotNull,PropertyName] string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object dummy = null;
-            return GetSetProperty(ref target, propertyName, PropertyAction.GetProperty, ref dummy);
+            return GetSetProperty(ref target, propertyName, PropertyAction.GetProperty, ref dummy, defaultNullability);
         }
 
         /// <summary>
@@ -915,9 +930,10 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="target"></param>
-        /// <param name="propertyName"></param>
-        /// <param name="defaultNullability"></param>
+        /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
+        /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
         /// <returns></returns>
+        /// <seealso cref="PropertyInfoExtension.GetValueConverted{T}(PropertyInfo, object, object[], Type)"/>
         [return: Nullable]
         public static T GetPropertyValue<T>([NotNull] object target, [NotNull,PropertyName] string propertyName, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
@@ -938,6 +954,7 @@ namespace JohnLambe.Util.Reflection
         /// <param name="propertyName">The property name, or nested property expression (property names separated by ".").</param>
         /// <param name="value">The value to set.</param>
         /// <param name="defaultNullability">The nullability of parts of the path that don't have one explicitly specified.</param>
+        /// <seealso cref="PropertyInfoExtension.SetValueConverted(PropertyInfo, object, object, object[])"/>
         public static void TrySetPropertyValue<T>([NotNull] object target, [NotNull,PropertyName] string propertyName, [Nullable] T value, PropertyNullabilityModifier defaultNullability = PropertyNullabilityModifier.Nullable)
         {
             object valueObject = value;
@@ -1257,7 +1274,7 @@ namespace JohnLambe.Util.Reflection
     //| =	assignment (e.g. C) / equality (e.g. BASIC, Pascal); name/value separator
     //| `	quote; Maths: decorator; separator (.NET generic type names); too different to '?' and '!' ?
     //| ~	approximate; bitwise NOT; BBC BASIC: display in hex.
-    //| \	Windows (and Registry) path separator; escaping next character
+    //| \	Windows (and Registry) path separator; escaping next character (e.g. Regex)
     //| 'A'-'Z','a'-'z','0'-'9','_'	identifier characters
     //| ' '
 

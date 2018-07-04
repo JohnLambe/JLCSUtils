@@ -152,6 +152,7 @@
     <Compile Include="TestUtil.cs" />
     <Compile Include="TestUtilTest.cs" />
     <Compile Include="Text\CaptionUtilTest.cs" />
+    <Compile Include="Text\FormatUtilTest.cs" />
     <Compile Include="Text\LetterCapitalizationOptionTest.cs" />
     <Compile Include="Text\MultiPartEntry.cs" />
     <Compile Include="Text\PreprocessComparerTest.cs" />

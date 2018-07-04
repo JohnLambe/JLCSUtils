@@ -95,6 +95,7 @@
     <Compile Include="Reflection\DelegateBoundProperty.cs" />
     <Compile Include="Reflection\ExpressionToBoundProperty.cs" />
     <Compile Include="StateMachine\StateTransitionValidator.cs" />
+    <Compile Include="Text\FormatUtil.cs" />
     <Compile Include="Text\PreprocessComparer.cs" />
     <Compile Include="TimeUtilities\DaysOfWeek.cs" />
     <Compile Include="Types\GuidUtil.cs" />

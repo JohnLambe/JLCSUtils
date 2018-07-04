@@ -232,6 +232,8 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
 
         #region Hierarchy
 
+        #region GetTypeHierarchy
+
         [TestMethod]
         public void GetTypeHierarchy()
         {
@@ -241,22 +243,55 @@ namespace JohnLambe.Tests.JLUtilsTest.Reflection
             
             // Assert:
             Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object), typeof(ClassForTestBase), typeof(ClassForTest) }));
+
+            Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object), typeof(ClassForTestBase), typeof(ClassForTest) }));
         }
+
+        [TestMethod]
+        public void GetTypeHierarchy_Object()
+        {
+            // Act:
+            var result = ReflectionUtil.GetTypeHeirarchy(typeof(object));
+            Console.WriteLine(result.Count());
+
+            // Assert:
+            Assert.IsTrue(result.SequenceEqual(new Type[] { typeof(object) }));
+        }
+
+        [TestMethod]
+        public void GetTypeHierarchy_Null()
+        {
+            // Act:
+            var result = ReflectionUtil.GetTypeHeirarchy(null);
+            Console.WriteLine(result.Count());
+
+            // Assert:
+            Assert.IsTrue(result.SequenceEqual(new Type[] { }));
+        }
+
+        #endregion
 
         [TestMethod]
         public void GetLowestNonAbstractAncestor()
         {
             Multiple(
-                () => Assert.AreEqual(typeof(TestClass3), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass5)))
+                () => Assert.AreEqual(typeof(TestClass5), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass6))),
+                () => Assert.AreEqual(typeof(TestClass4), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass5))),
+                () => Assert.AreEqual(typeof(TestClass2), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass4))),
+                () => Assert.AreEqual(typeof(TestClass2), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass3))),
+                () => Assert.AreEqual(typeof(object), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass2))),
+                () => Assert.AreEqual(typeof(object), ReflectionUtil.GetLowestNonAbstractAncestor(typeof(TestClass1))),
+                () => Assert.AreEqual(null, ReflectionUtil.GetLowestNonAbstractAncestor(null))
             );
         }
 
         public abstract class TestClass1 { }
-        public abstract class TestClass2 : TestClass1 { }
-        public class TestClass3 : TestClass2 { }
+        public class TestClass2 { }
+        public abstract class TestClass3 : TestClass2 { }
         public class TestClass4 : TestClass3 { }
         public class TestClass5 : TestClass4 { }
         public class TestClass6 : TestClass5 { }
+//        public class TestClass7 : TestClass6 { }
 
         #endregion
 

@@ -71,7 +71,7 @@ namespace MvpFramework
         public virtual NullableBool UseChildContext { get; set; }
 
         /// <summary>
-        /// <see cref="UseChildContext"/> as a bool?.
+        /// <see cref="UseChildContext"/> as a Nullable&lt;bool&gt;.
         /// </summary>
         /// <remarks>
         /// Use <see cref="UseChildContext"/> in attributes.
