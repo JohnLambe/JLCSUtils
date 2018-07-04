@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Text;
 
 namespace JohnLambe.Util.Validation
 {
@@ -139,6 +140,30 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual string GeneralDescription 
             => GetType().GetCustomAttribute<DescriptionAttribute>().Description;   // defaults to DescriptionAttribute on the class
+
+        #endregion
+
+        #region Formatting
+
+        /// <summary>
+        /// Provides a formatter for values of members to which this attribute is applied.
+        /// Can implement <see cref="IFormatProvider.GetFormat(Type)"/>.
+        /// </summary>
+        /// <param name="formatType"></param>
+        /// <returns></returns>
+        public virtual object GetFormat(Type formatType) => null;
+
+        /// <summary>
+        /// Format a value of a member to which this attribute is applied (for display).
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="arg"></param>
+        /// <param name="formatProvider"></param>
+        /// <returns></returns>
+        public virtual string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            return FormatUtil.FormatObject(format, arg, formatProvider);
+        }
 
         #endregion
     }

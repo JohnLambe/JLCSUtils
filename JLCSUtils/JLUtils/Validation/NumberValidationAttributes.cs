@@ -14,7 +14,7 @@ namespace JohnLambe.Util.Validation
     /// <summary>
     /// Metadata or validation and display information for numeric values.
     /// </summary>
-    public class NumberValidationAttribute : ValidationAttributeBase
+    public class NumberValidationAttribute : ValidationAttributeBase, IFormatProvider, ICustomFormatter
     {
         /// <summary>
         /// Value of some properties to indicate that the number should not be rounded.
@@ -38,7 +38,7 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual DigitGroupingOption DigitGrouping { get; set; } = DigitGroupingOption.Default;
 
-//TODO:        public virtual int[] DigitGroups { get; set; }
+        //TODO:        public virtual int[] DigitGroups { get; set; }
 
         /// <summary>
         /// The lowest valid value (inclusive).
@@ -88,8 +88,8 @@ namespace JohnLambe.Util.Validation
                     if (AdjustToRange)
                         value = MinimumValue;
                     else
-                        results.Add(ErrorMessage ?? 
-                            ( validationContext?.DisplayName + " must be " 
+                        results.Add(ErrorMessage ??
+                            (validationContext?.DisplayName + " must be "
                               + (numericValue <= GreaterThan ? "higher than " + GreaterThan : "at least " + MinimumValue) + " " + Unit)
                              );
                 }
@@ -99,17 +99,20 @@ namespace JohnLambe.Util.Validation
                         value = MaximumValue;
                     else
                         results.Add(ErrorMessage ??
-                            ( validationContext?.DisplayName + " must be "
+                            (validationContext?.DisplayName + " must be "
                               + (numericValue >= LessThan ? "less than " + LessThan : "at most " + MaximumValue) + " " + Unit)
                              );
                 }
             }
         }
+
+        public override object GetFormat(Type formatType) => this;
+
     }
 
-    /// <summary>
-    /// Specifies how digits in a number are grouped (for groups separated by commas or spaces, etc.).
-    /// </summary>
+        /// <summary>
+        /// Specifies how digits in a number are grouped (for groups separated by commas or spaces, etc.).
+        /// </summary>
     public enum DigitGroupingOption  // refactor to objects ?
     {
         /// <summary>
@@ -163,6 +166,12 @@ namespace JohnLambe.Util.Validation
             {
                 value = GeneralTypeConverter.Convert<decimal>(value) / 100m;
             }
+        }
+
+        public override string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            PreProcessForDisplay(true, ref arg, null);
+            return base.Format(format,arg, formatProvider) + "%";
         }
     }
 
