@@ -17,6 +17,9 @@ namespace JohnLambe.Util.Types
         False = 2
     }
 
+    /// <summary>
+    /// Extension methods and utilities related to <see cref="NullableBool"/>.
+    /// </summary>
     public static class NullableBoolExtension
     {
         public static bool? ToBool(this NullableBool value)
@@ -44,7 +47,7 @@ namespace JohnLambe.Util.Types
                 case NullableBool.True:
                     return true;
                 case NullableBool.False:
-                    return true;
+                    return false;
                 default:
                     throw new ArgumentNullException(nameof(value), typeof(NullableBool).Name + " value is null");
             }
