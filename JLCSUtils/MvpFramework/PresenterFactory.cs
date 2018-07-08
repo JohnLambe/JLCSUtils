@@ -43,7 +43,7 @@ namespace MvpFramework
         //     That would be more complex and less flexible (for example, the presenter constructor parameters could not potentially depend
         //     on parameters to the 'Create' method).
         //     (It may not be possible or desirable to create these in advance.)
-        //     That still doesn't handle property injection of the created presenter. (We could provide a map from propery name to Expression, but that's similar to a service locator.)
+        //     That still doesn't handle property injection of the created presenter. (We could provide a map from property name to Expression, but that's similar to a service locator.)
         //     We could move the work of actually populating the parameters to the DI system:
         //       Instead of calling GetInstance and BuildUp, we would call a single method, providing the View, and the Model and/or other parameters.
         {
@@ -97,162 +97,164 @@ namespace MvpFramework
         {
             try
             {
+                TPresenter presenter;
+
                 Init();
 
-                IDiResolver currentDiResolver = DiResolver;
-                var resolverContext = new ResolverExtensionContext(createArguments)
+                var resolverContext = new ResolverExtensionContext(createArguments, TargetClass, ContainingView != null)
                 {
-                    Nested = ContainingView != null,
-                    UseChildContext = EffectiveUseChildContext
+                    UseChildContext = EffectiveUseChildContext,
+                    DiResolver = DiResolver
                 };
 
-                if (currentDiResolver is IChainableDiResolver)
+                StartPresenterInjection(resolverContext);
+                IDiResolver currentDiResolver = resolverContext.DiResolver;
+                try  // to guarantee that EndPresenterInjection is called if StartPresenterInjection is called.
                 {
-                    var childContext = ResolverExtension.GetUseChildContext(TargetClass, resolverContext);
-                    if (childContext)
-                        currentDiResolver = ((IChainableDiResolver)currentDiResolver).CreateChildContext();
-                }
-                resolverContext.DiResolver = currentDiResolver;
+                    var existingPresenter = ResolverExtension.BeforeCreatePresenter<TPresenter>(resolverContext);
+                    if (existingPresenter != null)
+                        return existingPresenter;
 
-                var existingPresenter = ResolverExtension.BeforeCreatePresenter<TPresenter>(TargetClass, resolverContext);
-                if (existingPresenter != null)
-                    return existingPresenter;
+                    var constructorParameters = TargetConstructor.GetParameters();   // constructor parameters
 
-                var constructorParameters = TargetConstructor.GetParameters();   // constructor parameters
-
-                // Populate the view:
-                IView view = null;
-                if (constructorParameters.Any())            // if the Presenter constructor has at least one parameter
-                {
-                    if (SuppliedView != null)     // if a View is supplied
+                    // Populate the view:
+                    IView view = null;
+                    if (constructorParameters.Any())            // if the Presenter constructor has at least one parameter
                     {
-                        view = SuppliedView;      // use it
-                    }
-                    else
-                    {
-                        INestedViewPlaceholder viewParent = null;
-                        if (ContainingView != null)
+                        if (SuppliedView != null)     // if a View is supplied
                         {
-                            view = GetNestedView(ContainingView, NestedViewId, out viewParent);
+                            view = SuppliedView;      // use it
                         }
-
-                        if (view == null)
+                        else
                         {
-                            // Determine the view to be injected (if there are no parameters, the View is not injected):
-                            try
+                            INestedViewPlaceholder viewParent = null;
+                            if (ContainingView != null)
                             {
-                                // Try resolving for the concrete type first.
-                                // This is important for KnownPresenterFactory, where TPresenter may be a base interface (even IPresenter),
-                                // but still relevant for other cases (for exmaple, a particular Presenter implementation may have its own View that overrides
-                                // the usual one for the presenter's interface - Views are often specific to Presenter implementations).
-                                view = Resolver.GetViewForPresenterType<IView>(TargetClass);  //TODO: Resolver has a reference to the wrong (parent) DiResolver
-                            }
-                            catch (Exception)   //TODO: Restrict exception type: MvpException?  Currently, may throw SimpleInjector.ActivationException.
-                            {   // if resolving the view for the concrete presenter type fails, try for the declared type (usually an interface; possibly a base class) of presenter being created:
-                                view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                                view = GetNestedView(ContainingView, NestedViewId, out viewParent);
                             }
 
-                            if (viewParent != null)      // if the view has to be placed in a specifc parent
+                            if (view == null)
                             {
-                                if (view is INestableView)    // if it has the ability to have its parent assigned
+                                // Determine the view to be injected (if there are no parameters, the View is not injected):
+                                try
                                 {
-                                    viewParent.NestedView = (INestableView)view;
-                                    //((INestableView)view).ViewParent = viewParent;
+                                    // Try resolving for the concrete type first.
+                                    // This is important for KnownPresenterFactory, where TPresenter may be a base interface (even IPresenter),
+                                    // but still relevant for other cases (for exmaple, a particular Presenter implementation may have its own View that overrides
+                                    // the usual one for the presenter's interface - Views are often specific to Presenter implementations).
+                                    view = Resolver.GetViewForPresenterType<IView>(TargetClass);  //TODO: Resolver has a reference to the wrong (parent) DiResolver
                                 }
-                                else   // Exception if viewParent != null && !(view is INestableView)
+                                catch (Exception)   //TODO: Restrict exception type: MvpException?  Currently, may throw SimpleInjector.ActivationException.
+                                {   // if resolving the view for the concrete presenter type fails, try for the declared type (usually an interface; possibly a base class) of presenter being created:
+                                    view = Resolver.GetViewForPresenterType<IView>(typeof(TPresenter));
+                                }
+
+                                if (viewParent != null)      // if the view has to be placed in a specifc parent
                                 {
-                                    throw new MvpResolutionException("Attempt to nest non-nestable View: "
-                                        + view + " in " + viewParent
-                                        + NL + "(View must implement " + nameof(INestableView) + ")");
-                                    //| Alternativelty, if view is of the control class for its UI framework and it has a Parent property, we could use it.
-                                    //| This would require a UI-framework-specific handler to provide the way of assigning controls to parents in the UI framework.  See Binding.IControlAdaptor.
-                                    //| But implementing ViewParent on a base class basically provides the similar functionality for this purpose, and is simpler.
+                                    if (view is INestableView)    // if it has the ability to have its parent assigned
+                                    {
+                                        viewParent.NestedView = (INestableView)view;
+                                        //((INestableView)view).ViewParent = viewParent;
+                                    }
+                                    else   // Exception if viewParent != null && !(view is INestableView)
+                                    {
+                                        throw new MvpResolutionException("Attempt to nest non-nestable View: "
+                                            + view + " in " + viewParent
+                                            + NL + "(View must implement " + nameof(INestableView) + ")");
+                                        //| Alternativelty, if view is of the control class for its UI framework and it has a Parent property, we could use it.
+                                        //| This would require a UI-framework-specific handler to provide the way of assigning controls to parents in the UI framework.  See Binding.IControlAdaptor.
+                                        //| But implementing ViewParent on a base class basically provides the similar functionality for this purpose, and is simpler.
+                                    }
                                 }
                             }
                         }
+                        //| Could provide parameters for context-based injection of View.
+                        try
+                        {
+                            ResolverExtension.AfterCreateView(resolverContext, ref view);
+                        }
+                        catch (Exception)
+                        {
+                            MiscUtil.TryDispose(view);
+                            throw;
+                        }
                     }
-                    //| Could provide parameters for context-based injection of View.
+
+                    var args = currentDiResolver.PopulateArgs(constructorParameters, createArguments,
+                        DiMvpResolver.AttributeSourceSelector,
+                        1    // skip the first parameter (it's for the View)
+                        );
+
+                    int paramIndex = 0;
+                    foreach (var arg in args)   // for each of the (now populated) arguments
+                    {
+                        if (paramIndex > 0)     // ignore the first parameter - the View
+                        {
+                            var attribute = constructorParameters[paramIndex].GetCustomAttribute<MvpNestedAttribute>();
+                            if (attribute != null)    // if flagged as nested
+                            {                         // nested presenter factories are created as regular presenter factories above (by DiResolver.PopulateArgs), but have additional properties configured here.
+                                if (arg is INestedPresenterFactory)                        // and the argument supports this
+                                {
+                                    ((INestedPresenterFactory)arg).ContainingView = view;            // provide the View of the Presenter being created
+                                    ((INestedPresenterFactory)arg).NestedViewId = attribute.NestedViewId ?? ReflectionUtil.CamelCaseToPascalCase(constructorParameters[paramIndex].Name);     // provide the View of the Presenter being created
+                                }
+                                else
+                                {
+                                    throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute)
+                                        + ": This can be used only on Presenter Factories implementing " + nameof(INestedPresenterFactory));
+                                }
+                            }
+
+                            var sharedConextAttribute = constructorParameters[paramIndex].GetCustomAttribute<MvpSharedContextAttribute>();
+                            if (sharedConextAttribute != null)    // if flagged as shared context
+                            {
+                                if (arg is ISharedContextPresenterFactory)                        // and the argument supports this
+                                {
+                                    ((ISharedContextPresenterFactory)arg).UseChildContext = false;
+                                }
+                                else
+                                {
+                                    throw new MvpResolutionException("Invalid use of " + typeof(MvpSharedContextAttribute)
+                                        + ": This can be used only on Presenter Factories implementing " + nameof(ISharedContextPresenterFactory));
+                                }
+                            }
+                        }
+                        paramIndex++;
+                    }
+
+                    if (args.Length > 0)
+                    {
+                        args[0] = view;   // assign the view (determined before creating the `args` array)
+                    }
+
+                    presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor of the presenter
                     try
                     {
-                        ResolverExtension.AfterCreateView(TargetClass, resolverContext, ref view);
+                        currentDiResolver.BuildUp(presenter);                                 // inject properties
                     }
-                    catch (Exception)
+                    catch (Exception)        //TODO: catch only errors that imply that `presenter` doesn't support property injection: MvpException
                     {
+                    }
+
+                    try
+                    {
+                        ResolverExtension.AfterCreatePresenter<TPresenter>(ref presenter, resolverContext, view);
+                    }
+                    catch (Exception)  // clean up after any exception, and re-throw:
+                    {
+                        MiscUtil.TryDispose(presenter);
                         MiscUtil.TryDispose(view);
                         throw;
                     }
                 }
-
-                var args = currentDiResolver.PopulateArgs(constructorParameters, createArguments,
-                    DiMvpResolver.AttributeSourceSelector,
-                    1    // skip the first parameter (it's for the View)
-                    );
-
-                int paramIndex = 0;
-                foreach (var arg in args)   // for each of the (now populated) arguments
+                finally
                 {
-                    if (paramIndex > 0)     // ignore the first parameter - the View
-                    {
-                        var attribute = constructorParameters[paramIndex].GetCustomAttribute<MvpNestedAttribute>();
-                        if (attribute != null)    // if flagged as nested
-                        {                         // nested presenter factories are created as regular presenter factories above (by DiResolver.PopulateArgs), but have additional properties configured here.
-                            if (arg is INestedPresenterFactory)                        // and the argument supports this
-                            {
-                                ((INestedPresenterFactory)arg).ContainingView = view;            // provide the View of the Presenter being created
-                                ((INestedPresenterFactory)arg).NestedViewId = attribute.NestedViewId ?? ReflectionUtil.CamelCaseToPascalCase(constructorParameters[paramIndex].Name);     // provide the View of the Presenter being created
-                            }
-                            else
-                            {
-                                throw new MvpResolutionException("Invalid use of " + typeof(MvpNestedAttribute)
-                                    + ": This can be used only on Presenter Factories implementing " + nameof(INestedPresenterFactory));
-                            }
-                        }
-                        
-                        var sharedConextAttribute = constructorParameters[paramIndex].GetCustomAttribute<MvpSharedContextAttribute>();
-                        if (sharedConextAttribute != null)    // if flagged as shared context
-                        {
-                            if (arg is ISharedContextPresenterFactory)                        // and the argument supports this
-                            {
-                                ((ISharedContextPresenterFactory)arg).UseChildContext = false;
-                            }
-                            else
-                            {
-                                throw new MvpResolutionException("Invalid use of " + typeof(MvpSharedContextAttribute) 
-                                    + ": This can be used only on Presenter Factories implementing " + nameof(ISharedContextPresenterFactory));
-                            }
-                        }
-                    }
-                    paramIndex++;
-                }
-
-                if (args.Length > 0)
-                {
-                    args[0] = view;   // assign the view (determined before creating the `args` array)
-                }
-
-                var presenter = (TPresenter)TargetConstructor.Invoke(args);    // invoke the constructor of the presenter
-                try
-                {
-                    currentDiResolver.BuildUp(presenter);                                 // inject properties
-                }
-                catch(Exception)        //TODO: catch only errors that imply that `presenter` doesn't support property injection: MvpException
-                {
-                }
-
-                try
-                {
-                    ResolverExtension.AfterCreatePresenter<TPresenter>(ref presenter, resolverContext, view);
-                }
-                catch (Exception)  // clean up after any exception, and re-throw:
-                {
-                    MiscUtil.TryDispose(presenter);
-                    MiscUtil.TryDispose(view);
-                    throw;
+                    EndPresenterInjection(resolverContext);
                 }
 
                 return presenter;
             }
-            catch(Exception ex)   // provide more information on any exception
+            catch (Exception ex)   // provide more information on any exception
             {
                 throw new MvpResolutionException("Error on creating presenter: Type: " + typeof(TPresenter) + NL
                     + (TargetClass != null ? "Presenter class: " + TargetClass + NL : "")
@@ -262,6 +264,26 @@ namespace MvpFramework
                     , ex);
                 //TODO: Include more information in error message
             }
+        }
+
+        /// <summary>
+        /// Called before starting injection of the presenter.
+        /// Calls <see cref="IResolverExtension.EndInjection"/> unless it throws an exception (causing the presenter to not be created).
+        /// </summary>
+        /// <param name="resolverContext"></param>
+        protected virtual void StartPresenterInjection(ResolverExtensionContext resolverContext)
+        {
+            ResolverExtension.StartInjection(resolverContext);
+        }
+
+        /// <summary>
+        /// Called when injection of the presenter is finished.
+        /// Must call <see cref="IResolverExtension.EndInjection"/> (regardless of any error).
+        /// </summary>
+        /// <param name="resolverContext"></param>
+        protected virtual void EndPresenterInjection(ResolverExtensionContext resolverContext)
+        {
+            ResolverExtension.EndInjection(resolverContext);
         }
 
         /// <summary>

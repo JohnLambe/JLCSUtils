@@ -9,6 +9,15 @@ namespace DiExtension.SimpleInject
     /// <summary>
     /// A dependency injection context that (optionally) delegates to a parent context for anything that it cannot resolve.
     /// </summary>
+    /// <remarks>
+    /// - When something is resolved from the parent context,
+    /// its dependencies will also be resolved from the parent context(even if overridden in the child context).
+    /// - When resolving returns something implicitly registered by SimpleInjector, this will be done in the root context
+    ///   (so its dependencies will be resolved from the root).
+    ///
+    /// This is not recommended. Use ExplicitScopeLifestyleManager instead where possible.
+    /// </remarks>
+    //[Obsolete("See the Remarks on this.")]
     public class ChainableContext : SiExtendedDiContext, IChainableDiResolver
     {
         /// <summary>

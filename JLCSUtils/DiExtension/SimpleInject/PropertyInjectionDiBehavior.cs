@@ -32,7 +32,7 @@ namespace DiExtension.SimpleInject
         }
 
         /// <summary>
-        /// Returns the key to be used to lookup a value for the given item in the DI container.
+        /// Returns the key to be used to look up a value for the given item in the DI container.
         /// </summary>
         /// <param name="member">The item to be injected. (Can be a property or a constructor parameter.)</param>
         /// <param name="attribute">
@@ -82,7 +82,7 @@ namespace DiExtension.SimpleInject
         /// <returns>The key to use.</returns>
         public static string GetKeyForConsumer([NotNull] InjectionConsumerInfo consumer, [Nullable] InjectAttribute attribute = null, bool propertyName = false)
         {
-            //TODO: Call GetKeyForMember
+            //TODO: refactor to call GetKeyForMember
 
             attribute = attribute ?? GetAttributeForConsumer(consumer);
             var key = propertyName ? attribute?.Property : attribute?.Key;
@@ -138,7 +138,7 @@ namespace DiExtension.SimpleInject
                 if (resolved)
                 {
                     if (!CacheValues)
-                    {   // return an Expression to lookup the key each time it is required:
+                    {   // return an Expression to look up the key each time it is required:
                         expression =  Expression.Convert(         // convert to the required type
                             Expression.Call(
                                 Expression.Constant(this), GetType().GetMethod(nameof(GetValue), new Type[] { typeof(string), typeof(Type) }),  // GetValue method of this instance
