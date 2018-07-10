@@ -19,12 +19,12 @@ namespace JLUtilsEFTest.Db
             // Arrange:
             EntityEvents.RegisterWith(_dbContext);
 
-            var dbSet = _dbContext.Set<TestEntity>();
+            var dbSet = _dbContext.Set<Entity2>();
 
             var obj = dbSet.Find(123456);
             if (obj == null)
             {
-                var b = new TestEntity() { Id = 123456, Name = "No Changes Test" };
+                var b = new Entity2() { Id = 123456, Name = "No Changes Test" };
                 //byte[] rowVersion1 = b.RowVersion;
                 dbSet.Add(b);
                 _dbContext.SaveChanges();

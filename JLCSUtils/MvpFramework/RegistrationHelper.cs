@@ -35,6 +35,7 @@ using JohnLambe.Util;
 
 //TODO: Presenter Action and Model interface registration. (IPresenterAction<Model>)
 
+//TODO: When using SimpleInjector, provide a way to supply a LifeStyle. Not here. Could be Proxy implementation of IDiTypeRegistrar.
 
 namespace MvpFramework
 {

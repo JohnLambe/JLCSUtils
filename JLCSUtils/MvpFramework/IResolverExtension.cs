@@ -125,11 +125,17 @@ namespace MvpFramework
         public virtual bool Nested { get; }
 
         /// <summary>
-        /// Whether a child DI context (or eqiuvalent) should be used for the new presenter and view.
+        /// Whether a child dependency injection context (or equivalent) should be used for the new presenter and view.
         /// This is set to the value that is about to be used before calling <see cref="IResolverExtension.StartInjection(ResolverExtensionContext)"/>,
         /// and can be modified in that method.
-        /// <see cref="PresenterFactory{TPresenter}.EffectiveUseChildContext"/>
+        /// <para>
+        /// This can be assigned in <see cref="IResolverExtension.StartInjection(ResolverExtensionContext)"/>, but not after it.
+        /// </para>
         /// </summary>
+        /// <exception cref="InvalidOperationException">An attempt was made to modify this after <see cref="IResolverExtension.StartInjection(ResolverExtensionContext)"/>.
+        /// (NOT IMPLEMENTED YET).
+        /// </exception>
+        /// <seealso cref="PresenterFactory{TPresenter}.EffectiveUseChildContext"/>
         public virtual bool UseChildContext { get; set; }
 
         /// <summary>

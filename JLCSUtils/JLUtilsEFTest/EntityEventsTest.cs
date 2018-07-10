@@ -18,8 +18,8 @@ namespace JLUtilsEFTest
             // Arrange:
             EntityEvents.RegisterWith(_dbContext);
 
-            var b = new TestEntity() { Name = "Test" };
-            _dbContext.Set<TestEntity>().Add(b);
+            var b = new Entity2() { Name = "Test" };
+            _dbContext.Set<Entity2>().Add(b);
 
             // Act:
             _dbContext.SaveChanges();

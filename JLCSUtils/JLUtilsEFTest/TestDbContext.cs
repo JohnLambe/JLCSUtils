@@ -20,10 +20,14 @@ namespace JLUtilsEFTest
             : base(@"Data Source=localhost\SQLEXPRESS; Integrated Security=True; MultipleActiveResultSets=True;Initial Catalog=JLUtilsEFTest")
         //            : base(System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ToString())
         {
+            this.Configuration.LazyLoadingEnabled = true;
+            this.Configuration.ProxyCreationEnabled = true;
+            this.Configuration.AutoDetectChangesEnabled = true;
+
             //            Database.SetInitializer<TestDbContext>(new TestInitializer());
         }
 
-        public virtual DbSet<TestEntity> TestEntities { get; set; }
+        public virtual DbSet<Entity2> TestEntities { get; set; }
         public virtual DbSet<Entity1> Entity1s { get; set; }
         public virtual DbSet<CollectionEntity> CollectionEntities { get; set; }
         public virtual DbSet<CollectionEntityInit> CollectionEntityInits { get; set; }
@@ -56,7 +60,7 @@ namespace JLUtilsEFTest
         }
     }
 
-    public class TestEntity : IEntityBeforeSaveChanges
+    public class Entity2 : IEntityBeforeSaveChanges
     {
         [Key]
         public int Id { get; set; }

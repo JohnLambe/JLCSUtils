@@ -62,6 +62,7 @@ namespace DiExtension.SimpleInject
                 }
             };
         }
+        //| We could put the delegate returned above in a separate virtual method, to facilitate overriding.
 
         /// <summary>
         /// Stack of scopes.

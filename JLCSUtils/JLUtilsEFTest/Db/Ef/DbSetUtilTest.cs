@@ -22,9 +22,9 @@ namespace JLUtilsEFTest.Db.Ef
 
 
             // Act:
-            _dbContext.Set<TestEntity>().AddIfNotExists(x => x.Name,
-                new TestEntity() { Name = "Test1" },
-                new TestEntity() { Name = "Test2" }
+            _dbContext.Set<Entity2>().AddIfNotExists(x => x.Name,
+                new Entity2() { Name = "Test1" },
+                new Entity2() { Name = "Test2" }
                 );
 
         }
@@ -38,9 +38,9 @@ namespace JLUtilsEFTest.Db.Ef
 
 
             // Act:
-            _dbContext.Set<TestEntity>().AddIfNotExists((set,item) => set.Where(x => x.Name == item.Name).Any(),
-                new TestEntity() { Name = "Test1" },
-                new TestEntity() { Name = "Test2" }
+            _dbContext.Set<Entity2>().AddIfNotExists((set,item) => set.Where(x => x.Name == item.Name).Any(),
+                new Entity2() { Name = "Test1" },
+                new Entity2() { Name = "Test2" }
                 );
 
         }

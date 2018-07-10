@@ -26,7 +26,7 @@ namespace JLUtilsEFTest.Db.Ef
         [TestCategory("Db")]
         public virtual void QueryNoActiveFlag()
         {
-            var repository = new EfMutableDatabaseRepository<TestEntity>(new TestDbContext());
+            var repository = new EfMutableDatabaseRepository<JLUtilsEFTest.Entity2>(new TestDbContext());
 
             Console.Out.WriteLine(repository.AsQueryable().FirstOrDefault());
 

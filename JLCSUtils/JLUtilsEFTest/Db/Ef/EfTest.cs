@@ -14,15 +14,22 @@ namespace JLUtilsEFTest.Db.Ef
         [Key]
         public virtual int Id { get; set; }
 
+        public virtual string Name { get; set; }
+
         [ForeignKey(nameof(ReferenceId))]
-        public virtual Entity2 Reference { get; set; }
+        public virtual Entity3 Reference { get; set; }
         public virtual int? ReferenceId { get; set; }
     }
 
-    public class Entity2
+    public class Entity3
     {
         [Key]
         public virtual int Id { get; set; }
+
+        public string Name { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 
 
@@ -68,7 +75,7 @@ namespace JLUtilsEFTest.Db.Ef
         public void ReferenceIdPopulationTest()
         {
             // Arrange:
-            var e2 = new Entity2();
+            var e2 = new Entity3();
             var e1 = new Entity1()
             {
                 Reference = e2    // assign reference but not ID
@@ -99,7 +106,7 @@ namespace JLUtilsEFTest.Db.Ef
             // Arrange:
             const int WrongId = 1000000000;
 
-            var e2 = new Entity2();
+            var e2 = new Entity3();
             var e1 = new Entity1()
             {
                 Reference = e2,
@@ -131,11 +138,11 @@ namespace JLUtilsEFTest.Db.Ef
             // Arrange:
             const int ReferencedId = 1;
 
-            var e2 = new Entity2()
+            var e2 = new Entity3()
             {
                 Id = ReferencedId
             };
-            _dbContext.Set<Entity2>().Add(e2);
+            _dbContext.Set<Entity3>().Add(e2);
             _dbContext.SaveChanges();
 
             var e1 = new Entity1()
@@ -169,18 +176,18 @@ namespace JLUtilsEFTest.Db.Ef
             const int ReferencedId = 1;
             const int WrongId = 2000000000;
 
-            var e2 = new Entity2()
+            var e2 = new Entity3()
             {
                 Id = ReferencedId
             };
-            _dbContext.Set<Entity2>().Add(e2);
+            _dbContext.Set<Entity3>().Add(e2);
             _dbContext.SaveChanges();
 
-            var e2b = new Entity2()
+            var e2b = new Entity3()
             {
                 Id = WrongId
             };
-            _dbContext.Set<Entity2>().Add(e2b);
+            _dbContext.Set<Entity3>().Add(e2b);
             _dbContext.SaveChanges();
 
 //            Assert.AreEqual(WrongId,e2b.Id);
