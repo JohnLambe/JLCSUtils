@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Misc;
 
 namespace MvpFramework.Menu
 {
@@ -87,6 +88,9 @@ namespace MvpFramework.Menu
         /// Expression or value to filter on.
         /// </summary>
         public virtual string Filter { get; set; }
+
+        [IconId]
+        public virtual string IconId { get; set; }
     }
 
     /// <summary>

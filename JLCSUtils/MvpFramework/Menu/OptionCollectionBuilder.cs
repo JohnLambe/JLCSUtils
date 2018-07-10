@@ -14,6 +14,11 @@ namespace MvpFramework.Menu
     /// </summary>
     public class OptionCollectionBuilder
     {
+        public OptionCollectionBuilder(IMenuPreprocessor preprocessor = null)
+        {
+            this.Preprocessor = preprocessor;
+        }
+
         /// <summary>
         /// Build a list of options from handlers on a given object.
         /// </summary>
@@ -49,7 +54,8 @@ namespace MvpFramework.Menu
                         Filter = filter,    // handlerInfo.Attribute.Filter
                     };
                     option.Invoked += handlerInfo.HandlerWithArgsDelegate; // CreateInvokeDelegate(handlerInfo, target);
-                        //(item, args) => handlerInfo.Method.Invoke(target, new object[] { });
+                                                                           //(item, args) => handlerInfo.Method.Invoke(target, new object[] { });
+                    Preprocessor?.Apply(option);
                     options[id] = option;
                 }
             }
@@ -70,6 +76,8 @@ namespace MvpFramework.Menu
         public const string HandlerNameSuffix = "Clicked";
 
         protected readonly HandlerResolver _handlerResolver = new HandlerResolver();
+
+        protected readonly IMenuPreprocessor Preprocessor;
     }
 
 }
