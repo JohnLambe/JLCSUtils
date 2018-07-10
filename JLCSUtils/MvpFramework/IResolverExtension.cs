@@ -6,9 +6,10 @@ using JohnLambe.Util.Types;
 namespace MvpFramework
 {
     /// <summary>
-    /// For extension - provides extension points for <see cref="MvpResolver"/>:
+    /// Provides extension points for <see cref="MvpResolver"/>:
     /// Can be used to handle placement of views in the user interface,
-    /// finding existing presenters (and determining when an existing presenter should be used instead of creating a new one).
+    /// finding existing presenters (and determining when an existing presenter should be used instead of creating a new one),
+    /// and modifying the depndency injection context.
     /// <para>
     /// On creating a presenter, the methods are fired in this order:<br/>
     /// - StartInjection<br/>
@@ -24,17 +25,6 @@ namespace MvpFramework
 
         //| Some items are passed as parameters separate from the ResolverExtensionContext to make it clear when they are available or modifiable.
 
-        /*
-        /// <summary>
-        /// Determine whether a child DI context should be created for the new presenter and view.
-        /// Called before <see cref="BeforeCreatePresenter"/>.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns>true to use a </returns>
-        /// <seealso cref="ResolverExtensionContext.UseChildContext"/>
-        bool GetUseChildContext(ResolverExtensionContext context);
-        */
-
         /// <summary>
         /// Called before injection of any parameters (and creating values to be injected) to the presenter.
         /// This can be used to change the DI context (<see cref="ResolverExtensionContext.DiResolver"/>), either by assigning a new one
@@ -44,7 +34,7 @@ namespace MvpFramework
         /// </para>
         /// </summary>
         /// <param name="context"></param>
-        ResolverExtensionStatus StartInjection(ResolverExtensionContext context);
+        ResolverExtensionStatus StartInjection([NotNull] ResolverExtensionContext context);
 
         /// <summary>
         /// Called before creating a presenter (and view).
@@ -58,7 +48,7 @@ namespace MvpFramework
         /// <param name="param">The parameters to the IPresenterFactory.Create method.</param>
         /// <returns>The presenter to be used, or <code>default(TPresenter)</code> to cause it to be created in the normal way.</returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the presenter/view, and the presenter and view are not created.</exception>
-        TPresenter BeforeCreatePresenter<TPresenter>(ResolverExtensionContext param)
+        TPresenter BeforeCreatePresenter<TPresenter>([NotNull] ResolverExtensionContext param)
             where TPresenter : IPresenter;
 
         /// <summary>
@@ -69,11 +59,12 @@ namespace MvpFramework
         /// <typeparam name="TView">The type of the view.</typeparam>
         /// <param name="param">Parameters to the 'Create' method.</param>
         /// <param name="view">The new view.                                                                                                          s
-        /// This can modify or replace (assign) this. If this is assigned, the implementor is responsible for disposing the original one if it impleemnts <see cref="IDisposable"/>, unless it is keeping a reference to it.
+        /// The implementation can modify or replace (assign) this. If this is assigned, the implementor is responsible for disposing the original one if it impleemnts <see cref="IDisposable"/>,
+        /// unless it is keeping a reference to it.
         /// </param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the presenter/view, and the presenter is not created.</exception>
-        ResolverExtensionStatus AfterCreateView<TView>(ResolverExtensionContext param, ref TView view)
+        ResolverExtensionStatus AfterCreateView<TView>([NotNull] ResolverExtensionContext param, ref TView view)
             where TView : IView;
 
         /// <summary>
@@ -88,7 +79,7 @@ namespace MvpFramework
         /// <param name="view">The View of the new presenter (which will have already been given to the presenter).</param>
         /// <returns></returns>
         /// <exception>If this throws an exception, it is thrown to the code that tried to create the p</exception>
-        ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext param, IView view)
+        ResolverExtensionStatus AfterCreatePresenter<TPresenter>([NotNull] ref TPresenter presenter, [NotNull] ResolverExtensionContext param, IView view)
             where TPresenter : IPresenter;
 
         /// <summary>
@@ -97,7 +88,7 @@ namespace MvpFramework
         /// (If <see cref="ResolverExtensionContext.DiResolver"/> is assigned a new value, it does not have to be restored. It is not used after this call.)
         /// </summary>
         /// <param name="context"></param>
-        ResolverExtensionStatus EndInjection(ResolverExtensionContext context);
+        ResolverExtensionStatus EndInjection([NotNull] ResolverExtensionContext context);
     }
 
 
@@ -111,10 +102,10 @@ namespace MvpFramework
     //| There is a case for providing TargetConstructor (read-only) and making CreateParameters writeable. (To be considered for a later version.)
     public class ResolverExtensionContext
     {
-        public ResolverExtensionContext(object[] createParameters, Type targetClass, bool nested)
+        public ResolverExtensionContext(object[] createParameters, Type presenterType = null, bool nested = false)
         {
             this.CreateParameters = createParameters;
-            this.PresenterType = targetClass;
+            this.PresenterType = presenterType;
             this.Nested = nested;
         }
 
@@ -135,7 +126,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Whether a child DI context (or eqiuvalent) should be used for the new presenter and view.
-        /// This is set to the value that is about to be used before calling <see cref="IResolverExtension.GetUseChildContext(ResolverExtensionContext)"/>,
+        /// This is set to the value that is about to be used before calling <see cref="IResolverExtension.StartInjection(ResolverExtensionContext)"/>,
         /// and can be modified in that method.
         /// <see cref="PresenterFactory{TPresenter}.EffectiveUseChildContext"/>
         /// </summary>
@@ -145,6 +136,7 @@ namespace MvpFramework
         /// DI context used for injecting the presenter.
         /// Can be assigned in <see cref="IResolverExtension"/> implementations.
         /// </summary>
+        [Nullable]
         public virtual IDiResolver DiResolver { get; set; }
 
         /// <summary>
@@ -153,6 +145,7 @@ namespace MvpFramework
         /// Since the same instance of this class is used on all calls to <see cref="IResolverExtension"/> for creation of the same presenter instance,
         /// it can use this to hold state between calls.
         /// </summary>
+        [Nullable]
         public virtual object ExtensionData { get; set; }
     }
 
@@ -173,22 +166,27 @@ namespace MvpFramework
     /// </summary>
     public abstract class ResolverExtensionBase : IResolverExtension
     {
-        public virtual ResolverExtensionStatus StartInjection(ResolverExtensionContext context)
+        /// <inheritdoc cref="IResolverExtension.StartInjection(ResolverExtensionContext)"/>
+        public virtual ResolverExtensionStatus StartInjection([NotNull] ResolverExtensionContext context)
         {
             return ResolverExtensionStatus.Default;
         }
 
-        public virtual TPresenter BeforeCreatePresenter<TPresenter>(ResolverExtensionContext param) where TPresenter : IPresenter
+        /// <inheritdoc cref="IResolverExtension.BeforeCreatePresenter{TPresenter}(ResolverExtensionContext)"/>
+        public virtual TPresenter BeforeCreatePresenter<TPresenter>([NotNull] ResolverExtensionContext param) where TPresenter : IPresenter
         {
             return default(TPresenter);
         }
 
-        public virtual ResolverExtensionStatus AfterCreateView<TView>(ResolverExtensionContext context, ref TView view) where TView : IView
+        /// <inheritdoc cref="IResolverExtension.AfterCreateView{TView}(ResolverExtensionContext, ref TView)"/>
+        public virtual ResolverExtensionStatus AfterCreateView<TView>([NotNull] ResolverExtensionContext context, ref TView view) where TView : IView
         {
             return ResolverExtensionStatus.Default;
         }
 
-        public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>(ref TPresenter presenter, ResolverExtensionContext context, IView view) where TPresenter : IPresenter
+        /// <inheritdoc cref="IResolverExtension.BeforeCreatePresenter{TPresenter}(ResolverExtensionContext)"/>
+        public virtual ResolverExtensionStatus AfterCreatePresenter<TPresenter>([NotNull] ref TPresenter presenter, [NotNull] ResolverExtensionContext context, IView view)
+            where TPresenter : IPresenter
         {
             return ResolverExtensionStatus.Default;
         }
@@ -200,12 +198,13 @@ namespace MvpFramework
         /// <param name="context"></param>
         /// <returns>true to use a </returns>
         /// <seealso cref="ResolverExtensionContext.UseChildContext"/>
-        public virtual bool GetUseChildContext(ResolverExtensionContext context)
+        public virtual bool GetUseChildContext([NotNull] ResolverExtensionContext context)
         {
             return context.PresenterType.GetCustomAttribute<PresenterAttribute>()?.UseChildContextBool ?? context.UseChildContext;
         }
 
-        public virtual ResolverExtensionStatus EndInjection(ResolverExtensionContext context)
+        /// <inheritdoc cref="IResolverExtension.EndInjection(ResolverExtensionContext)"/>
+        public virtual ResolverExtensionStatus EndInjection([NotNull] ResolverExtensionContext context)
         {
             return ResolverExtensionStatus.Default;
         }
