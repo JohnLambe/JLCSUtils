@@ -41,7 +41,7 @@ TODO:
 		- the validation message for a specified property.
 		- all validation messages.
 	Label control to show the caption for the property of the linked input control.
-	Labelled edit control that maps the caption, and includes (optionally) a validation message and/or other validaity indication (colour or icon ('!' to right)).
+	Labelled edit control that maps the caption, and includes (optionally) a validation message and/or other validaity indication (color or icon ('!' to right)).
 	Auto generation:
 		*Auto generate controls (at runtime; Rejected: could alternatively/also have a source code generator, for developers to edit afterwards).
 		Auto generate IQueryable.

@@ -74,6 +74,7 @@
     <Compile Include="ConfigProvider\IconReposityConfigProvider.cs" />
     <Compile Include="GraphicUtil\!NamespaceDoc.cs" />
     <Compile Include="GraphicUtil\Alignment.cs" />
+    <Compile Include="GraphicUtil\ColorUtil.cs" />
     <Compile Include="GraphicUtil\CoordinateUtil.cs" />
     <Compile Include="GraphicUtil\ImageUtil.cs" />
     <Compile Include="Interfaces\CommonInterfaces.cs" />

@@ -210,7 +210,7 @@ namespace MvpFramework
 
         /// <summary>
         /// Refresh data - update to the latest version or from a live source.
-        /// <para>Common icon: Two or more arrows going in a circle, often coloured green.
+        /// <para>Common icon: Two or more arrows going in a circle, often colored green.
         /// The icon must be easily distinguishable from that of <see cref="Undo"/> / <see cref="Redo"/>.</para>
         /// </summary>
         public const string Refresh = "Refresh";

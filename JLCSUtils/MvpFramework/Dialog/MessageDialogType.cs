@@ -227,7 +227,7 @@ namespace MvpFramework.Dialog
 
         public override Color DefaultColor => Color.Red;
 
-        // Suggested icon: Like 'Warning' but with the yellow colour replaced wih red
+        // Suggested icon: Like 'Warning' but with the yellow color replaced wih red
     }
 
     /// <summary>
