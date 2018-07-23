@@ -108,5 +108,21 @@ namespace JohnLambe.Util.Db.Ef
         {
             return IsModified(context.Entry(entity));
         }
+
+        /// <summary>
+        /// Corrects the state of 'Added' entities in the context that are not actually new entities.
+        /// Used because adding an entity which references a detached entity causes the detached entity's state to be set to 'added', but it could be a detached copy of an existing entity in the database.
+        /// A delegate is provided to test whether an item should already be in the database. If keys are assigned on saving (e.g. autoincrement keys), this could test for the key being assigned.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="isNewDelegate">Delegate to return true if the given object is new (not yet added).</param>
+        public static void AdjustStates(DbContext context, Func<object,bool> isNewDelegate)
+        {
+            foreach (var e in context.ChangeTracker.Entries())
+            {
+                if (e.State == System.Data.Entity.EntityState.Added && !isNewDelegate(e.Entity))
+                    e.State = System.Data.Entity.EntityState.Unchanged;
+            }
+        }
     }
 }
