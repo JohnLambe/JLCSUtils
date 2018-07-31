@@ -137,6 +137,15 @@ namespace JohnLambe.Util.Db.Ef
             }
         }
 
+        /// <summary>
+        /// Make a clone of the given entity that is attached to the given context.
+        /// The entity must not already be in the given context.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="destinationContext"></param>
+        /// <param name="entity"></param>
+        /// <param name="newState"></param>
+        /// <returns></returns>
         [return: Nullable]
         public static T CopyToContext<T>(DbContext destinationContext, T entity, EntityState newState = EntityState.Unchanged)
             where T: class
@@ -153,6 +162,15 @@ namespace JohnLambe.Util.Db.Ef
             }
         }
 
+        /// <summary>
+        /// Clone the given entity and attach it to the given context, unless the same entity already exists in that context.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="destinationContext"></param>
+        /// <param name="entity"></param>
+        /// <param name="getKeyDelegate"></param>
+        /// <param name="newState"></param>
+        /// <returns></returns>
         [return: Nullable]
         public static T CopyOrFindInContext<T>(DbContext destinationContext, T entity, GetKeyDelegate getKeyDelegate, EntityState newState = EntityState.Unchanged)
             where T : class
@@ -186,6 +204,33 @@ namespace JohnLambe.Util.Db.Ef
                 return context.ChangeTracker.Entries<T>().Where( e => getKeyDelegate(e) == key).FirstOrDefault()?.Entity;
         }
 
+        /// <summary>
+        /// Load the given entity from the given context (or return it from the cache of the given context).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <param name="entity"></param>
+        /// <param name="getKeyDelegate"></param>
+        /// <returns></returns>
+        public static T LoadFromContext<T>(DbContext context, T entity, GetKeyDelegate getKeyDelegate)
+        {
+            var keyValues = getKeyDelegate(entity);
+            object result;
+            if(keyValues is object[])
+                result = context.Set(typeof(T)).Find((object[])keyValues);
+            else
+                result = context.Set(typeof(T)).Find(keyValues);   // one key
+            return (T)result;
+        }
+
+        /// <summary>
+        /// Returns a key of a given entity.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public delegate object GetKeyDelegate(object key);
+
+        //| Could make these extension methods.
+        //| Some methods could take ChangeTracker instead of DbContext.
     }
 }
