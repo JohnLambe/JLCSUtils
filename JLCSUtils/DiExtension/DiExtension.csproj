@@ -80,12 +80,14 @@
     <Compile Include="IExtendedDiContext.cs" />
     <Compile Include="Attributes\AutoEventHandlerAttribute.cs" />
     <Compile Include="SimpleInject\ChainableContext.cs" />
+    <Compile Include="SimpleInject\ChainableScopedContext.cs" />
     <Compile Include="SimpleInject\ConstructorInjectionBehavior.cs" />
     <Compile Include="SimpleInject\ConstructorResolutionBehavior.cs" />
     <Compile Include="SimpleInject\DiSimpleInjectorExtension.cs" />
     <Compile Include="SimpleInject\EventAutoWirer.cs" />
     <Compile Include="SimpleInject\ExplicitScopeLifestyle.cs" />
     <Compile Include="SimpleInject\InjectPropertySelectionBehavior.cs" />
+    <Compile Include="SimpleInject\ManagedScopeLifestyle.cs" />
     <Compile Include="SimpleInject\PropertyInjectionDiBehavior.cs" />
     <Compile Include="SimpleInject\SiDiContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

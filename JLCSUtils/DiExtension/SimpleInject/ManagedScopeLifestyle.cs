@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Types;
 using SimpleInjector;
 
 
 namespace DiExtension.SimpleInject
 {
+    ////**** TO BE REFACTORED: This is copied-and-modified from ExplicitScopeLifestyleManager
+
     /// <summary>
     /// Lifestyle for SimpleInjector with scopes started and ended by explicit calls.
     /// </summary>
-    public class ExplicitScopeLifestyleManager
+    public class ManagedScopeLifestyleManager
     {
-        public ExplicitScopeLifestyleManager()
+        public ManagedScopeLifestyleManager()
         {
             StartScope();  // create the root scope
         }
@@ -23,9 +26,14 @@ namespace DiExtension.SimpleInject
         /// Anything resolved between this call and the next call to <see cref="EndScope"/> is resolved in the this scope.
         /// Each calls to this must be matched by a call to <see cref="EndScope"/>.
         /// </summary>
-        public virtual void StartScope()
+        /// <param name="scope">null to create a new scope. Otherwise, the scope to be used.</param>
+        /// <returns>The scope now being used. If <paramref name="scope"/> is not null, it is returned, otherwise, the new scope is returned.</returns>
+        public virtual DiScope StartScope([Nullable] DiScope scope = null)
         {
-            Scopes.Push(new Dictionary<object, object>());
+            scope = scope ?? new DiScope();
+            Scopes.Push(scope);
+            CurrentScope = scope;
+            return scope;
         }
 
         /// <summary>
@@ -36,6 +44,7 @@ namespace DiExtension.SimpleInject
             if (Scopes.Count <= 1)       // if in the root scope
                 throw new InvalidOperationException(nameof(ExplicitScopeLifestyleManager) + ": No open scope");   // throw exception and don't close it
             Scopes.Pop();
+            CurrentScope = Scopes.Peek();
         }
 
         public virtual Func<object> Invoke(Func<object> instanceCreator)
@@ -50,14 +59,14 @@ namespace DiExtension.SimpleInject
                 {
                     if (CurrentScope != instanceScope)  // if the scope has changed
                     {   // get the instance from the current scope (if there is one):
-                        CurrentScope.TryGetValue(key, out instance);
+                        CurrentScope.Resolved.TryGetValue(key, out instance);
                         instanceScope = CurrentScope;
                     }
                     if (instance == null)
                     {
                         instance = instanceCreator.Invoke();
                         instanceScope = CurrentScope;
-                        CurrentScope.Add(key, instance);
+                        CurrentScope.Resolved.Add(key, instance);
                     }
                     return instance;
                 }
@@ -73,9 +82,9 @@ namespace DiExtension.SimpleInject
         /// The dictionary in each scope holds all instances resolved in the scope. The key of the dictionary is the `key` variable in the <see cref="Invoke(Func{object})"/> method.
         /// </para>
         /// </summary>
-        protected Stack<Dictionary<object, object>> Scopes { get; } = new Stack<Dictionary<object, object>>();
+        protected Stack<DiScope> Scopes { get; } = new Stack<DiScope>();
 
-        protected Dictionary<object, object> CurrentScope => Scopes.Peek();
+        public virtual DiScope CurrentScope { get; protected set; }
     }
 
 
@@ -83,14 +92,14 @@ namespace DiExtension.SimpleInject
     /// Lifestyle for SimpleInjector with scopes started and ended by explicit calls,
     /// with .
     /// </summary>
-    public class SiExplicitScopeLifestyleManager : ExplicitScopeLifestyleManager
+    public class SiManagedScopeLifestyleManager : ManagedScopeLifestyleManager
     {
         /// <summary>
         /// Create this and the <see cref="SimepleInjector.Lifestyle"/>.
         /// </summary>
         /// <param name="container"></param>
         /// <param name="name"></param>
-        public SiExplicitScopeLifestyleManager(Container container, string name = null)
+        public SiManagedScopeLifestyleManager(Container container, string name = null)
         {
             this.Container = container;
 
@@ -105,7 +114,7 @@ namespace DiExtension.SimpleInject
         /// <summary>
         /// Create an instance without a <see cref="SimepleInjector.Lifestyle"/>.
         /// </summary>
-        public SiExplicitScopeLifestyleManager()
+        public SiManagedScopeLifestyleManager()
         {
         }
 
@@ -113,7 +122,7 @@ namespace DiExtension.SimpleInject
         /// Casts to the <see cref="SimpleInjector.Lifestyle"/>.
         /// </summary>
         /// <param name="manager"></param>
-        public static implicit operator Lifestyle(SiExplicitScopeLifestyleManager manager)
+        public static implicit operator Lifestyle(SiManagedScopeLifestyleManager manager)
         {
             return manager.Lifestyle;
         }
@@ -124,5 +133,14 @@ namespace DiExtension.SimpleInject
         public virtual Lifestyle Lifestyle { get; }
 
         protected virtual Container Container { get; }
+    }
+
+
+    /// <summary>
+    /// A scope in which items can be resolved in a <see cref="ManagedScopeLifestyleManager"/>.
+    /// </summary>
+    public class DiScope
+    {
+        public Dictionary<object, object> Resolved { get; } = new Dictionary<object, object>();
     }
 }

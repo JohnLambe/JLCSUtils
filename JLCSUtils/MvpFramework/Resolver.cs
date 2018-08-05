@@ -116,6 +116,10 @@ namespace MvpFramework
         [return: NotNull]
         public abstract TPresenter GetPresenterByType<TPresenter>([NotNull] Type presenterType, params object[] param);
 
+        /*
+        public abstract TPresenter GetPresenterFactoryByType<TPresenter>([NotNull] Type presenterType, params object[] param);   ?
+        */
+
         /// <summary>
         /// Get the Presenter for a given action on a given model.
         /// </summary>
@@ -159,6 +163,12 @@ namespace MvpFramework
                         //TODO: Get from DI container?
                         */
         }
+
+        /*
+        public virtual IPresenterFactory<TPresenter,TModel> GetPresenterFactoryForModel<TPresenter, TModel>(Type presenterActionType, Type modelType, TModel model = default(TModel))
+        {
+        }
+        */
 
         /// <summary>
         /// Create a Presenter of a known type.
@@ -640,6 +650,7 @@ namespace MvpFramework
             // Get the factory method:
             var createMethod = factoryType.GetMethod(CreateMethodName, paramTypes);
 
+            // Extension point:
             var presenter = AfterCreatePresenterFactory<TPresenter>(factory, presenterType, param);
             if (presenter != null)
                 return presenter;
@@ -671,6 +682,11 @@ namespace MvpFramework
         {
             // Create a factory to create the required Presenter type:
             IPresenterFactory<TPresenter, TModel> factory = new KnownPresenterFactory<TPresenter, TModel>(this, Context, GetInstance<IResolverExtension>(typeof(IResolverExtension)), presenterType);
+
+            // Extension point:
+            var presenter = AfterCreatePresenterFactory<TPresenter>(factory, presenterType, new object[] { model });
+            if (presenter != null)
+                return presenter;
 
             // Create the Presenter:
             return factory.Create(model);
