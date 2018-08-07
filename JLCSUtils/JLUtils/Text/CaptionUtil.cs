@@ -173,8 +173,8 @@ namespace JohnLambe.Util.Text
                 return null;
             if (instance is Enum)
                 return EnumUtil.GetDisplayName((Enum)instance);
-            return ReflectionUtil.TryGetPropertyValue<string>(instance, "Name")
-                ?? ReflectionUtil.TryGetPropertyValue<string>(instance, "Description");
+            return ReflectionUtil.TryGetPropertyValue<object>(instance, "Name")?.ToString()
+                ?? ReflectionUtil.TryGetPropertyValue<object>(instance, "Description")?.ToString();
         }
 
         /*

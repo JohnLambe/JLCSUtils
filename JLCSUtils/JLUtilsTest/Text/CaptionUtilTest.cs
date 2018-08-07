@@ -86,6 +86,27 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
             Assert.AreEqual("the description", CaptionUtil.GetDisplayNameForObject(testObject));
         }
 
+        [TestMethod]
+        public void GetDisplayNameForObject_Name()
+        {
+            TestUtil.Multiple(
+                () =>
+                {
+                    var testObject = new TestClassWithName()
+                    {
+                        Name = 10
+                    };
+                    Assert.AreEqual("10", CaptionUtil.GetDisplayNameForObject(testObject));
+                },
+                () =>
+                {
+                    var testObject1 = new TestClassWithName();
+                    Assert.AreEqual("Description", CaptionUtil.GetDisplayNameForObject(testObject1));
+                }
+            );
+        }
+
+
         /* TODO: GetDisplayNameForObject doesn't support dynamic properties yet.
         [TestMethod]
         public void GetDisplayNameForObject_Dynamic()
@@ -115,6 +136,13 @@ namespace JohnLambe.Tests.JLUtilsTest.Text
         public string TestProperty1 { get; set; }
 
         public virtual int TestProperty2 { get; }
+
+
+        public class TestClassWithName
+        {
+            public int? Name { get; set; }
+            public string Description => "Description";
+        }
 
     }
 }
