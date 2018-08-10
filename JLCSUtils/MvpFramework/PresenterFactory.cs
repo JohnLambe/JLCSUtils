@@ -50,7 +50,14 @@ namespace MvpFramework
             this.DiResolver = diResolver;
             this.Resolver = resolver;
             this.ResolverExtension = resolverExtension ?? new NullResolverExtension();
+
+            ExtensionContext = new ResolverExtensionPresenterFactoryContext(this,DiResolver);
+            ResolverExtension.PresenterFactoryCreated(ExtensionContext);
+
+            this.DiResolver = ExtensionContext.DiResolver;
         }
+
+        protected ResolverExtensionPresenterFactoryContext ExtensionContext { get; set; }
 
         protected virtual void Init()
         {   // This is separate from the constructor since it involves resolving items which may come from a DI container,
@@ -101,7 +108,8 @@ namespace MvpFramework
 
                 Init();
 
-                var resolverContext = new ResolverExtensionContext(createArguments, TargetClass, ContainingView != null)
+                var resolverContext = new ResolverExtensionContext(createArguments, TargetClass, ContainingView != null,
+                    ExtensionContext)
                 {
                     UseChildContext = EffectiveUseChildContext,
                     DiResolver = DiResolver
@@ -205,8 +213,8 @@ namespace MvpFramework
                                 }
                             }
 
-                            var sharedConextAttribute = constructorParameters[paramIndex].GetCustomAttribute<MvpSharedContextAttribute>();
-                            if (sharedConextAttribute != null)    // if flagged as shared context
+                            var sharedContextAttribute = constructorParameters[paramIndex].GetCustomAttribute<MvpSharedContextAttribute>();
+                            if (sharedContextAttribute != null)    // if flagged as shared context
                             {
                                 if (arg is ISharedContextPresenterFactory)                        // and the argument supports this
                                 {

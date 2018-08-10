@@ -21,6 +21,17 @@ namespace MvpFramework
     /// </summary>
     public interface IResolverExtension
     {
+        /// <summary>
+        /// Called when a presenter factory is created.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This may capture information about the context in which the factoryis created, to be passed on to presenter(s) created from it.
+        /// If using <see cref="DiExtension.SimpleInject.ManagedScopeLifestyleManager"/>, this could keep the Scope in which the factory is created (in <see cref="ResolverExtensionPresenterFactoryContext.ExtensionData"/>, and create the presenter(s) in the same scope.
+        /// </remarks>
+        ResolverExtensionStatus PresenterFactoryCreated(ResolverExtensionPresenterFactoryContext context);
+
         // These methods are declared in the order in which they are called:
 
         //| Some items are passed as parameters separate from the ResolverExtensionContext to make it clear when they are available or modifiable.
@@ -102,12 +113,15 @@ namespace MvpFramework
     //| There is a case for providing TargetConstructor (read-only) and making CreateParameters writeable. (To be considered for a later version.)
     public class ResolverExtensionContext
     {
-        public ResolverExtensionContext(object[] createParameters, Type presenterType = null, bool nested = false)
+        public ResolverExtensionContext(object[] createParameters, Type presenterType = null, bool nested = false, ResolverExtensionPresenterFactoryContext factoryExtensionContext = null)
         {
             this.CreateParameters = createParameters;
             this.PresenterType = presenterType;
             this.Nested = nested;
+            this.FactoryExtensionContext = factoryExtensionContext;
         }
+
+        public virtual ResolverExtensionPresenterFactoryContext FactoryExtensionContext { get; }
 
         /// <summary>
         /// The class of the Presenter that is about to be created.
@@ -156,6 +170,33 @@ namespace MvpFramework
     }
 
 
+    public class ResolverExtensionPresenterFactoryContext
+    {
+        public ResolverExtensionPresenterFactoryContext(object presenterFactory, IDiResolver diResolver)
+        {
+            this.PresenterFactory = presenterFactory;
+            this.DiResolver = diResolver;
+        }
+
+        public virtual object PresenterFactory { get; }
+
+        /// <summary>
+        /// DI context used for injecting the presenter.
+        /// Can be assigned in <see cref="IResolverExtension"/> implementations.
+        /// </summary>
+        [Nullable]
+        public virtual IDiResolver DiResolver { get; set; }
+
+        /// <summary>
+        /// For use by <see cref="IResolverExtension"/> implementations.
+        /// This is null when the factory is created and is not assigned nor used by the Presenter Factory.
+        /// This is available from the <see cref="ResolverExtensionContext"/>, so can be used to hold state between calls.
+        /// </summary>
+        [Nullable]
+        public virtual object ExtensionData { get; set; }
+    }
+
+
     /// <summary>
     /// To support extension in future versions.
     /// Currently instances of this always have the value `Default`.
@@ -172,6 +213,12 @@ namespace MvpFramework
     /// </summary>
     public abstract class ResolverExtensionBase : IResolverExtension
     {
+        /// <inheritdoc cref="IResolverExtension.PresenterFactoryCreated(ResolverExtensionPresenterFactoryContext)"/>
+        public virtual ResolverExtensionStatus PresenterFactoryCreated(ResolverExtensionPresenterFactoryContext context)
+        {
+            return ResolverExtensionStatus.Default;
+        }
+
         /// <inheritdoc cref="IResolverExtension.StartInjection(ResolverExtensionContext)"/>
         public virtual ResolverExtensionStatus StartInjection([NotNull] ResolverExtensionContext context)
         {
