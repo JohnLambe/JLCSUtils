@@ -123,6 +123,23 @@ namespace JohnLambe.Util.Db
             throw new NotImplementedException("GetOriginalValue not implemented in MockDatabaseRepository");
         }
 
+        /// <summary>
+        /// <see cref="IDatabaseRepositoryBase{TEntity}.ToContext(TEntity)"/>.
+        /// THIS DOES NOT MATCH THE ENTITY FRAMEWORK IMPLEMENTATION.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public virtual TEntity ToContext(TEntity source)
+        {
+            return source;
+        }
+
+        public virtual IDatabaseConnection Database
+        {
+            get { return new MockDatabaseConnection(); }
+            //| TODO: Return the same instance for multiple calls, and make repositories of the same database return the same instance ?
+        }
+
         #endregion
 
         #region Mock features
@@ -189,5 +206,32 @@ namespace JohnLambe.Util.Db
         /// true iff the entity implements <see cref="IHasActiveFlag"/>.
         /// </summary>
         protected readonly bool _hasDeletedFlag;
+    }
+
+
+    public class MockDatabaseConnection : IDatabaseConnection
+    {
+        public IDatabaseTransaction StartTransaction(TransactionIsolationLevel isolationLevel)
+        {
+            return new MockDatabaseTransaction(this);
+        }
+    }
+
+    // DOES NOTHING:
+    public class MockDatabaseTransaction : IDatabaseTransaction
+    {
+        public MockDatabaseTransaction(MockDatabaseConnection connection)
+        {
+        }
+
+        public bool Commit()
+        {
+            return true;
+        }
+
+        public bool Rollback()
+        {
+            return true;
+        }
     }
 }

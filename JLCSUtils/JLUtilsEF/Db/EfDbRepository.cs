@@ -5,10 +5,11 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Db.Ef;
 
 namespace JohnLambe.Util.Db
 {
-    //TODO: Take a type implementing IHasActiveFlag as a parameter (probably a generic type parameter) and build an Linq Expression, in AsQueryableNonDeleted,
+    //TODO: Take a type implementing IHasActiveFlag as a parameter (probably a generic type parameter) and build a Linq Expression, in AsQueryableNonDeleted,
     // using this type.
 
     [Obsolete("likely to change")]
@@ -60,6 +61,18 @@ namespace JohnLambe.Util.Db
             return Context.Entry(entity).OriginalValues[propertyName];
         }
 
+        public virtual TEntity ToContext(TEntity source)
+        {
+            return EfUtil.CopyOrFindInContext<TEntity>(Context, source);
+        }
+
+        public virtual IDatabaseConnection Database
+        {
+            get { return new EfDatabaseConnection(Context); }
+            //| TODO: Return the same instance for multiple calls, and make repositories of the same database return the same instance ?
+        }
+
+
         /// <summary>
         /// true iff the entity implements <see cref="IHasActiveFlag"/>.
         /// </summary>
@@ -67,6 +80,22 @@ namespace JohnLambe.Util.Db
 
         protected readonly DbContext Context;
         protected readonly IDbSet<TEntity> Data;
+    }
+
+
+    public class EfDatabaseConnection : IDatabaseConnection
+    {
+        public EfDatabaseConnection(DbContext context)
+        {
+            _context = context;
+        }
+
+        public virtual IDatabaseTransaction StartTransaction(TransactionIsolationLevel isolationLevel)
+        {
+            return new EfDatabaseTransaction(_context.Database.BeginTransaction(isolationLevel.ToIsolationLevel()));
+        }
+
+        protected readonly DbContext _context;
     }
 
 

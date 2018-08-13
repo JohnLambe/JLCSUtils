@@ -141,10 +141,10 @@ namespace JohnLambe.Util.Db.Ef
         /// Make a clone of the given entity that is attached to the given context.
         /// The entity must not already be in the given context.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="destinationContext"></param>
         /// <param name="entity"></param>
-        /// <param name="newState"></param>
+        /// <param name="newState">The state that the returned object should be in.</param>
         /// <returns></returns>
         [return: Nullable]
         public static T CopyToContext<T>(DbContext destinationContext, T entity, EntityState newState = EntityState.Unchanged)
@@ -164,17 +164,19 @@ namespace JohnLambe.Util.Db.Ef
 
         /// <summary>
         /// Clone the given entity and attach it to the given context, unless the same entity already exists in that context.
+        /// This may return the same instance passed, if it is already usable in the required context.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="destinationContext"></param>
         /// <param name="entity"></param>
         /// <param name="getKeyDelegate"></param>
-        /// <param name="newState"></param>
+        /// <param name="newState">The state that the returned object should be in if it is copied to the context. This does not apply if the returned object was already in the context.</param>
         /// <returns></returns>
         [return: Nullable]
-        public static T CopyOrFindInContext<T>(DbContext destinationContext, T entity, GetKeyDelegate getKeyDelegate, EntityState newState = EntityState.Unchanged)
+        public static T CopyOrFindInContext<T>(DbContext destinationContext, T entity, GetKeyDelegate getKeyDelegate = null, EntityState newState = EntityState.Unchanged)
             where T : class
         {
+            getKeyDelegate = getKeyDelegate ?? GetEntityKey;
             if (entity == null)
             {
                 return null;
@@ -195,9 +197,10 @@ namespace JohnLambe.Util.Db.Ef
         /// <param name="getKeyDelegate"></param>
         /// <returns>The matching entity, or null if it is not found in the context.</returns>
         [return: Nullable]
-        public static T FindInContext<T>(DbContext context, object key, GetKeyDelegate getKeyDelegate)
+        public static T FindInContext<T>(DbContext context, object key, GetKeyDelegate getKeyDelegate = null)
             where T: class
         {
+            getKeyDelegate = getKeyDelegate ?? GetEntityKey;
             if (key == null)
                 return null;
             else
@@ -211,9 +214,10 @@ namespace JohnLambe.Util.Db.Ef
         /// <param name="context"></param>
         /// <param name="entity"></param>
         /// <param name="getKeyDelegate"></param>
-        /// <returns></returns>
-        public static T LoadFromContext<T>(DbContext context, T entity, GetKeyDelegate getKeyDelegate)
+        /// <returns>An instance of the given entity in the required context.</returns>
+        public static T LoadFromContext<T>(DbContext context, T entity, GetKeyDelegate getKeyDelegate = null)
         {
+            getKeyDelegate = getKeyDelegate ?? GetEntityKey;
             var keyValues = getKeyDelegate(entity);
             object result;
             if(keyValues is object[])
@@ -226,9 +230,38 @@ namespace JohnLambe.Util.Db.Ef
         /// <summary>
         /// Returns a key of a given entity.
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="entity">The entity whose key is to be returned.
+        /// </param>
+        /// <returns>If this is an object[], it is the list of key values, as could be passed to <see cref="DbSet.Find(object[])"/>.
+        /// Otherwise, it is a single value that is a unique key of the object, which could be passed to <see cref="DbSet.Find(object[])"/> as a single element in an array.
+        /// </returns>
+        public delegate object GetKeyDelegate(object entity);
+
+        /// <summary>
+        /// Default implementation of <see cref="GetKeyDelegate"/>.
+        /// </summary>
+        /// <param name="entity"></param>
         /// <returns></returns>
-        public delegate object GetKeyDelegate(object key);
+        public static object GetEntityKey(object entity)
+        {
+            if (entity == null)
+                return null;
+
+            var properties = entity.GetType().GetProperties();
+            object[] keyValues = new object[properties.Length];
+            int index = 0;
+            foreach (var property in properties)
+            {
+                keyValues[index] = property.GetValue(entity);
+                index++;
+            }
+
+            if (keyValues.Length == 1)
+                return keyValues[0];
+            else
+                return keyValues;
+        }
+
 
         //| Could make these extension methods.
         //| Some methods could take ChangeTracker instead of DbContext.

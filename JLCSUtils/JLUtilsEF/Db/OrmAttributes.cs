@@ -13,6 +13,7 @@ namespace JLUtilsEFTest.Db
     {
     }
 
+
     /// <summary>
     /// Defines an association with another entity, where the attribute property is one side of the association.
     /// Only one side should be attributed.
@@ -60,12 +61,13 @@ namespace JLUtilsEFTest.Db
         public virtual bool IsRight { get; set; } = false;
     }
 
+
     /// <summary>
     /// Specifies that the attributed property is mapped to a database column.
     /// </summary>
     /// <remarks>
     /// This can be used to map a protected property with Entity Framework.
-    /// <see cref="System.ComponentModel.DataAnnotations.Schema.ColumnAttribute"/> allows mapping a property with protected setter, but requires a public getter.
+    /// <see cref="System.ComponentModel.DataAnnotations.Schema.ColumnAttribute"/> allows mapping a property with a protected setter, but requires a public getter.
     /// </remarks>
     public class ColumnMappingAttribute : OrmMappingAttribute
     {

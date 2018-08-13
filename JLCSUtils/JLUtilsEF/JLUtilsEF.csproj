@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db\EfDatabaseContext.cs" />
+    <Compile Include="Db\EfDatabaseTransaction.cs" />
     <Compile Include="Db\EfDbRepository.cs" />
     <Compile Include="Db\CollectionInitializer.cs" />
     <Compile Include="Db\Ef\DbSetUtil.cs" />

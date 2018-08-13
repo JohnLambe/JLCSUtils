@@ -141,6 +141,16 @@ namespace DiExtension.SimpleInject
     /// </summary>
     public class DiScope
     {
+        /// <summary>
+        /// Unique ID of this scope.
+        /// <para>The current implementation is a an incremental ID, starting at 1.</para>
+        /// </summary>
+        public long Id { get; } = ++_id;
+        protected static long _id = 0;
+
+        /// <summary>
+        /// All instances resolved in in this scope, using the relevant scope manager (this does not include instances resolved using other "Lifestyles" or equivalent).
+        /// </summary>
         public Dictionary<object, object> Resolved { get; } = new Dictionary<object, object>();
     }
 }

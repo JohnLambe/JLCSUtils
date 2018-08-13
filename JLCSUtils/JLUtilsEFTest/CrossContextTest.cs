@@ -275,7 +275,7 @@ namespace JLUtilsEFTest
             var x3 = x2.Where(e => e == null || e.Id == 1);
             */
 
-            var q = _dbContext.Entity1s.ToList();// .Where(e => true) ;//.Where(e => e != null && e.Id == 1);//.SingleOrDefault();
+            var q = _dbContext.Entity1s.Where(e => e != null && e.Id == 1);//.SingleOrDefault();
             var a = q.SingleOrDefault();
             _dbContext.Entry(a).State = System.Data.Entity.EntityState.Modified;
 
