@@ -1,5 +1,6 @@
 ﻿using System;
 using DiExtension;
+using JohnLambe.Util.Collections;
 using JohnLambe.Util.Reflection;
 using JohnLambe.Util.Types;
 
@@ -194,6 +195,16 @@ namespace MvpFramework
         /// </summary>
         [Nullable]
         public virtual object ExtensionData { get; set; }
+
+        public virtual void SetData(string key, object value)
+        {
+            ExtensionData = DictionaryUtil.ObjectTrySetValue<string, object>(ExtensionData, key, value);
+        }
+
+        public virtual T GetData<T>(string key)
+        {
+            return (T) DictionaryUtil.ObjectTryGetValue<string,object>(ExtensionData,key);
+        }
     }
 
 

@@ -82,6 +82,7 @@
     <Compile Include="Collections\CachedSimpleLookupTest.cs" />
     <Compile Include="Collections\ClassMultitonTest.cs" />
     <Compile Include="Collections\CollectionUtilTest.cs" />
+    <Compile Include="Collections\DictionaryUtilTest.cs" />
     <Compile Include="Collections\EnumerationUtilTest.cs" />
     <Compile Include="Collections\TypeMapTest.cs" />
     <Compile Include="ConfigProvider\IconRepositoryTest.cs" />

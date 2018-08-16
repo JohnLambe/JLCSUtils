@@ -49,6 +49,45 @@ namespace JohnLambe.Util.Collections
         }
 
         /// <summary>
+        /// Try to read a value from a dictionary, returning null if the dictionary is null.
+        /// <para>Later versions may support other equivalents of a dictionary.</para>
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException"><paramref name="dictionary"/> is not null and not a compatible type.</exception>
+        public static V ObjectTryGetValue<K, V>(object dictionary, K key)
+        {
+            if (dictionary == null)
+                return default(V);
+            return ((Dictionary<K, V>)dictionary).TryGetValue(key);
+        }
+
+        /// <summary>
+        /// Set a value in a given dictionary.
+        /// If the dictionary is null, it is created.
+        /// <para>Later versions may support other equivalents of a dictionary.</para>
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns><paramref name="dictionary"/></returns>
+        public static object ObjectTrySetValue<K, V>(object dictionary, K key, V value)
+        {
+            Dictionary<K, V> dict;
+            if (dictionary == null)
+                dict = new Dictionary<K, V>();
+            else
+                dict = (Dictionary<K, V>)dictionary;
+            dict.SetValue(key, value);
+            return dict;
+        }
+
+        /// <summary>
         /// Delegate that takes a dictionary entry as two parameters.
         /// (Passing entries to this avoid the consumer having to cast them).
         /// </summary>

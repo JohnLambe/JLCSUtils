@@ -20,7 +20,8 @@ namespace MvpFramework
     /// <typeparam name="TPresenter"></typeparam>
     public class PresenterFactory<TPresenter> :
         IPresenterFactory<TPresenter>,
-        INestedPresenterFactory
+        INestedPresenterFactory,
+        ISharedContextPresenterFactory
         where TPresenter : IPresenter
     {
         public PresenterFactory(MvpResolver resolver, IDiResolver diResolver,

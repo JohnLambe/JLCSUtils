@@ -13,8 +13,7 @@ using System.Diagnostics.Contracts;
 using JohnLambe.Util.Types;
 using JohnLambe.Util;
 
-/* TODO: Done.
- * 
+/*
  * Presenter Factory creation and registration:
  *   Each parameter of the Presenter class's constructor that does not have an [Inject] attribute becomes a parameter to the factory method.
  *   The others are injected from the DI container.
@@ -51,7 +50,7 @@ namespace MvpFramework
         public RegistrationHelper([NotNull] MvpResolver resolver, [NotNull] IDiTypeRegistrar diContext)
         {
             this._resolver = resolver.ArgNotNull(nameof(resolver), "RegistrationHelper: resolver cannot be null");
-            this._diContext = diContext.ArgNotNull(nameof(diContext), "RegistrationHelper: diContexxt cannot be null");
+            this._diContext = diContext.ArgNotNull(nameof(diContext), "RegistrationHelper: diContext cannot be null");
         }
 
         /// <summary>

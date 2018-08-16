@@ -79,6 +79,7 @@
     <Compile Include="Dialog\MessageDialogViewModel.cs" />
     <Compile Include="Extension\ResolverExtensionForChildContext.cs" />
     <Compile Include="Extension\ResolverExtensionForExplicitScopeContext.cs" />
+    <Compile Include="Extension\ResolverExtensionForManagedScopeContext.cs" />
     <Compile Include="Generator\Attributes.cs" />
     <Compile Include="Generator\AutoPresenter.cs" />
     <Compile Include="Generator\FormGeneratorBase.cs" />
