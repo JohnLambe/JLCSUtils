@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using MvpFramework;
 using MvpDemo.Model;
 using MvpFramework.Generator;
+using JohnLambe.Util.Exceptions;
 
 namespace MvpDemo
 {
@@ -87,7 +88,7 @@ namespace MvpDemo
 
         private void button2_Click(object sender, EventArgs e)
         {
-            throw new Exception("Test");
+            throw new UserErrorException("Test");
         }
 
         private void button3_Click(object sender, EventArgs e)

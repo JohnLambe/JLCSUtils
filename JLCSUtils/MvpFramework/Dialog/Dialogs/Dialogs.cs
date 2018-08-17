@@ -19,7 +19,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public InformationDialog()
         {
-            base.MessageType = MessageDialogType.Informational;
+            MessageType = MessageDialogType.Informational;
         }
     }
 
@@ -30,9 +30,12 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public ErrorDialog()
         {
-            base.MessageType = MessageDialogType.Error;
+            MessageType = MessageDialogType.Error;
         }
 
+        /// <summary>
+        /// true iff this causes a task/process/application to exit.
+        /// </summary>
         public virtual bool IsFatal { get; protected set; }
 
         /// <summary>
@@ -64,7 +67,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public ConfirmationDialog()
         {
-            base.MessageType = MessageDialogType.Confirmation;
+            MessageType = MessageDialogType.Confirmation;
         }
     }
 
@@ -75,7 +78,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public WarningDialog()
         {
-            base.MessageType = MessageDialogType.Warning;
+            MessageType = MessageDialogType.Warning;
         }
     }
 
@@ -86,7 +89,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public SevereWarningDialog()
         {
-            base.MessageType = MessageDialogType.SevereWarning;
+            MessageType = MessageDialogType.SevereWarning;
         }
     }
 
@@ -97,7 +100,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public UserErrorDialog()
         {
-            base.MessageType = MessageDialogType.UserError;
+            MessageType = MessageDialogType.UserError;
         }
 
         /// <summary>
@@ -137,7 +140,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public SystemErrorDialog()
         {
-            base.MessageType = MessageDialogType.SystemError;
+            MessageType = MessageDialogType.SystemError;
         }
     }
 
@@ -148,7 +151,7 @@ namespace MvpFramework.Dialog.Dialogs
     {
         public InternalErrorDialog()
         {
-            base.MessageType = MessageDialogType.InternalError;
+            MessageType = MessageDialogType.InternalError;
         }
     }
 }
