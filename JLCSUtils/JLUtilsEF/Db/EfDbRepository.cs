@@ -66,6 +66,16 @@ namespace JohnLambe.Util.Db
             return EfUtil.CopyOrFindInContext<TEntity>(Context, source);
         }
 
+        public virtual TEntity Reload(TEntity entity, bool ifAttached = false)
+        {
+            if (entity != null)
+            {
+                if (!ifAttached || Context.Entry(entity).State != EntityState.Deleted)
+                    Context.Entry(entity).Reload();
+            }
+            return entity;
+        }
+
         public virtual IDatabaseConnection Database
         {
             get { return new EfDatabaseConnection(Context); }

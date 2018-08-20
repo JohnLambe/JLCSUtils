@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Db
 {
@@ -25,7 +26,7 @@ namespace JohnLambe.Util.Db
         /// Find a single instance by its key.
         /// </summary>
         /// <param name="keyValues"></param>
-        /// <returns></returns>
+        /// <returns>the entity found.</returns>
         TEntity Find(params object[] keyValues);
 
         /// <summary>
@@ -33,11 +34,11 @@ namespace JohnLambe.Util.Db
         /// Does nothing if there is no actual ORM context.
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>the given entity (<paramref name="entity"/>).</returns>
         TEntity Detach(TEntity entity);
 
         /// <summary>
-        /// Get the original value of 
+        /// Get the original value of a property.
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="propertyName"></param>
@@ -50,7 +51,22 @@ namespace JohnLambe.Util.Db
         /// </summary>
         /// <param name="source">The entity, possibly in a different context.</param>
         /// <returns>the entity in the context of this repository.</returns>
-        TEntity ToContext(TEntity source); 
+        TEntity ToContext(TEntity source);
+
+        /// <summary>
+        /// Reload the given entity from the database.
+        /// Any pending changes to the object (including any pending deletion or insertion) are discarded.
+        /// </summary>
+        /// <param name="entity">
+        /// An entity from this repository, or an unattached object.
+        /// If null, null is returned.
+        /// </param>
+        /// <param name="ifAttached">Iff true, the entity is reloaded only if it is attached.</param>
+        /// <returns>the given entity (<paramref name="entity"/>).</returns>
+        TEntity Reload([Nullable] TEntity entity, bool ifAttached = false);  // Rename to "Revert" ?
+
+
+        //TODO: Drop an entity from the cache?
 
 
         //| We could provide this, for iterating through original values:
