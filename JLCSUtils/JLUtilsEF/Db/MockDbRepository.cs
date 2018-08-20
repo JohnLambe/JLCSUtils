@@ -7,6 +7,7 @@ using JohnLambe.Util.Collections;
 using JohnLambe.Util.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Db
 {
@@ -138,6 +139,11 @@ namespace JohnLambe.Util.Db
         {
             get { return new MockDatabaseConnection(); }
             //| TODO: Return the same instance for multiple calls, and make repositories of the same database return the same instance ?
+        }
+
+        public TEntity Reload([Nullable(null)] TEntity entity, bool ifAttached = false)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
