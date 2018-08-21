@@ -58,8 +58,10 @@ namespace MvpFramework
             this.DiResolver = ExtensionContext.DiResolver;
         }
 
-        protected ResolverExtensionPresenterFactoryContext ExtensionContext { get; set; }
-
+        /// <summary>
+        /// Called before creating a presenter.
+        /// This is mainly for items that may be lazily populated and are persisted between calls to create a presenter.
+        /// </summary>
         protected virtual void Init()
         {   // This is separate from the constructor since it involves resolving items which may come from a DI container,
             // and SimpleInjector cannot register items after any resolve (so this should be called only after everything is registered).
@@ -76,11 +78,20 @@ namespace MvpFramework
                     TargetConstructor = TargetClass.GetConstructors().First();
                     //TODO: if multiple constructors, choose one.
                     //   Evaluate which are compatible? Use Attribute.
+
+                    if (!_attributeProcessed)
+                    {
+                        UseChildContext = UseChildContext ?? TargetClass.GetCustomAttribute<PresenterAttribute>()?.UseChildContextBool;
+                        // Use the attribute if no value has been assigned already.
+                        // IResolverExtension.PresenterFactoryCreated could have assigned it.
+
+                        _attributeProcessed = true;
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Resolver.ThrowException("Failed to resolve Presenter "
-                        + (stage == 1 ? "type" : "constructor") + ": " + ex.Message, ex);
+                    Resolver.ThrowException("Failed to resolve Presenter " + (stage == 1 ? "type" : "constructor") 
+                        + ": " + ex.Message, ex);
                 }
             }
         }
@@ -316,6 +327,17 @@ namespace MvpFramework
         }
 
         /// <summary>
+        /// Data passed to an <see cref="IResolverExtension"/>.
+        /// This persists between calls to create a presenter.
+        /// </summary>
+        protected ResolverExtensionPresenterFactoryContext ExtensionContext { get; set; }
+
+        /// <summary>
+        /// true iff this instance has read and handled any attributes (currently just <see cref="PresenterAttribute"/>) on the target class.
+        /// </summary>
+        protected bool _attributeProcessed = false;
+
+        /// <summary>
         /// The View to be used for any presenter created by this class.
         /// null (the default and usual case) to have a View created on each Create call.
         /// </summary>
@@ -333,14 +355,14 @@ namespace MvpFramework
         /// <inheritdoc cref="ISharedContextPresenterFactory.UseChildContext"/>
         /// </summary>
         /// <seealso cref="EffectiveUseChildContext"/>
-        public virtual bool? UseChildContext { get; set; } = false;
+        public virtual bool? UseChildContext { get; set; }
 
         /// <summary>
         /// Whether a child context is to be created (the effective value of <see cref="UseChildContext"/>, applying a default if it is null).
         /// </summary>
         /// <seealso cref="UseChildContext"/>
         public virtual bool EffectiveUseChildContext => UseChildContext ?? ContainingView == null;
-        // By default, nested views share the context of their container, and non-nested views get a new context.
+        // By default, if UseChildContext is null, nested views share the context of their container, and non-nested views get a new context.
 
         /// <summary>
         /// True iff views created by this factory are modal.
