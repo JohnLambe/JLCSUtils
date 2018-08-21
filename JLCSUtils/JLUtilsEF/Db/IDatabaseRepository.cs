@@ -63,10 +63,7 @@ namespace JohnLambe.Util.Db
         /// </param>
         /// <param name="ifAttached">Iff true, the entity is reloaded only if it is attached.</param>
         /// <returns>the given entity (<paramref name="entity"/>).</returns>
-        TEntity Reload([Nullable] TEntity entity, bool ifAttached = false);  // Rename to "Revert" ?
-
-
-        //TODO: Drop an entity from the cache?
+        TEntity Reload([Nullable] TEntity entity, OrmLoadFlags flags = OrmLoadFlags.Default);  // Rename to "Revert" ?
 
 
         //| We could provide this, for iterating through original values:

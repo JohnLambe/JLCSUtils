@@ -67,6 +67,7 @@
     <Compile Include="Db\IOrmDatabaseContext.cs" />
     <Compile Include="Db\MockDbRepository.cs" />
     <Compile Include="Db\OrmAttributes.cs" />
+    <Compile Include="Db\OrmLoadFlags.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

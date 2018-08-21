@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using JohnLambe.Util.Db.Ef;
@@ -66,12 +68,23 @@ namespace JohnLambe.Util.Db
             return EfUtil.CopyOrFindInContext<TEntity>(Context, source);
         }
 
-        public virtual TEntity Reload(TEntity entity, bool ifAttached = false)
+        public virtual TEntity Reload(TEntity entity, OrmLoadFlags flags = OrmLoadFlags.Default)
         {
             if (entity != null)
             {
-                if (!ifAttached || Context.Entry(entity).State != EntityState.Deleted)
-                    Context.Entry(entity).Reload();
+                if (!flags.HasFlag(OrmLoadFlags.IfAttached) || Context.Entry(entity).State != EntityState.Deleted)
+                {
+                    var entry = Context.Entry(entity);
+                    entry.Reload();
+
+                    if (flags.HasFlag(OrmLoadFlags.References))
+                    {
+                        foreach (var property in entity.GetType().GetProperties().Where(p => p.GetCustomAttribute<ForeignKeyAttribute>() != null))
+                        {
+                            entry.Reference(property.Name).Load();
+                        }
+                    }
+                }
             }
             return entity;
         }

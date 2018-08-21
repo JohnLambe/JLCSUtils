@@ -141,7 +141,7 @@ namespace JohnLambe.Util.Db
             //| TODO: Return the same instance for multiple calls, and make repositories of the same database return the same instance ?
         }
 
-        public TEntity Reload([Nullable(null)] TEntity entity, bool ifAttached = false)
+        public TEntity Reload([Nullable(null)] TEntity entity, OrmLoadFlags flags = OrmLoadFlags.Default)
         {
             throw new NotImplementedException();
         }
