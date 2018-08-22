@@ -34,7 +34,9 @@ namespace MvpFramework.WinForms
             //TODO: Handle key press events and delegate to ButtonContainer (so that buttons can be invoked by typing a character) ?
             //      Make form the Associated control?
             uiButtons.AssociatedControl = this;
-            //uiButtons.SetupLinkedControl();
+            //uiButtons.SetUpLinkedControl();
+
+            WindowOptions.CloseButton = false;
         }
 
         protected int ExpandedHeight { get; }
@@ -84,7 +86,6 @@ namespace MvpFramework.WinForms
                     + Model.Dialog?.Exception?.ToString();
 
                 uiDetails.Visible = Model.DetailMessage != null;
-
             }
         }
 

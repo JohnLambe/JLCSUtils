@@ -33,11 +33,6 @@ namespace MvpFramework.WinForms
         {
         }
 
-        private void WindowOptions_Changed(object sender, EventArgs e)
-        {
-            
-        }
-
         public ViewBase(IMessageDialogService dialogService) : this() //TODO: Change parameter to IMvpFramework ?
         {
             this.DialogService = dialogService;

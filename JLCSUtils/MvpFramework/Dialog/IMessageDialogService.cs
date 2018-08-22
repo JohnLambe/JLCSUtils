@@ -30,7 +30,7 @@ namespace MvpFramework.Dialog
         /// <para>A hierarchical ID (parts separated by "/") is recommended.</para>
         /// <para>This can be used in analysing log files for occurrences of the same error condition, etc.,
         /// or potentially for applying UI styles, changing the default button,
-        /// or hiding the dialog and returning as if the default option had been chosen.</para>
+        /// or suppressing the dialog and returning as if the default option had been chosen.</para>
         /// </summary>
         [Nullable]
         string InstanceId { get; }

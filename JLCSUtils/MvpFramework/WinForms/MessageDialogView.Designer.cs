@@ -105,7 +105,6 @@
             // 
             // uiButtons
             // 
-            this.uiButtons.AssociatedControl = null;
             this.uiButtons.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
             this.uiButtons.Buttons = null;
             this.uiButtons.ButtonsLayout = System.Windows.Forms.TabAlignment.Right;
@@ -118,7 +117,6 @@
             // 
             // uiFullDetails
             // 
-            this.uiFullDetails.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.uiFullDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.uiFullDetails.Location = new System.Drawing.Point(0, 160);
             this.uiFullDetails.Multiline = true;
@@ -134,6 +132,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ControlBox = false;
             this.Controls.Add(this.uiDetails);
             this.Controls.Add(this.uiMainPanel);
             this.Controls.Add(this.uiButtons);

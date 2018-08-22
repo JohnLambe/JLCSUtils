@@ -558,7 +558,7 @@ namespace MvpFramework.WinForms
 
         #endregion
 
-        public virtual void SetupLinkedControl()
+        public virtual void SetUpLinkedControl()
         {
             AssociatedControl.KeyPress += AssociatedControl_KeyPress;
             AssociatedControl.KeyDown += AssociatedControl_KeyDown;

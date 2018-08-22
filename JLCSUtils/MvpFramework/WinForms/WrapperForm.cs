@@ -57,6 +57,7 @@ namespace MvpFramework.WinForms
             if(Child is IChildWindow)
             {
                 ((IChildWindow)Child).WindowOptions.Changed += WindowOptions_Changed;
+                ((IChildWindow)Child).WindowOptions.Apply(this);
             }
         }
 

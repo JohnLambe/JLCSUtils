@@ -81,7 +81,7 @@ namespace MvpFramework.Dialog
         public virtual IOptionCollection Options { get; set; }
 
         /// <summary>
-        /// The minimum log detail level that at which this message should be logged.
+        /// The minimum log detail level at which this message should be logged.
         /// </summary>
         public virtual int LogLevel { get; set; }
 
