@@ -130,6 +130,7 @@
     <Compile Include="TimeUtilities\!NamespaceDoc.cs" />
     <Compile Include="Types\NullabilityAttribute.cs" />
     <Compile Include="Types\NullableBooleanExtension.cs" />
+    <Compile Include="Types\OneArgumentEventArgs.cs" />
     <Compile Include="Validation\!NamespaceDoc.cs" />
     <Compile Include="Validation\CollectionValidationAttribute.cs" />
     <Compile Include="Validation\ComparePropertyValidationAttribute.cs" />
