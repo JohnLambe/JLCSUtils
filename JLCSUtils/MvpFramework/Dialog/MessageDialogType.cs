@@ -104,7 +104,13 @@ namespace MvpFramework.Dialog
         /// <summary>
         /// 'Yes' and 'No' buttons.
         /// </summary>
-        public static readonly IOptionCollection Options_YesNo = new OptionCollection(_options_confirm.Take(2).ToArray());
+        public static readonly IOptionCollection Options_YesNo = new OptionCollection(
+            new[]
+            {
+                new MenuItemModel(MessageDialogResponse.Yes) { DisplayName = "Yes", AcceleratorChar = 'Y' },
+                new MenuItemModel(MessageDialogResponse.No) { DisplayName = "No", AcceleratorChar = 'N' },
+            });
+        //        new OptionCollection(_options_confirm.Take(2).ToArray());
 
         #endregion
 
@@ -337,6 +343,7 @@ namespace MvpFramework.Dialog
         /// Cancels an action.
         /// </summary>
         public const string Cancel = "Cancel";
+
         /// <summary>
         /// An 'Ok' button:
         /// Commonly used when there is only one button,
@@ -345,6 +352,15 @@ namespace MvpFramework.Dialog
         public const string Ok = "Ok";
         public const string Abort = "Abort";
         public const string Retry = "Retry";
+
+        /// <summary>
+        /// Answer 'Yes' for all items (in a context where each could otherwise be asked individually).
+        /// </summary>
+        public const string YesAll = "YesAll";
+        /// <summary>
+        /// Answer 'No' for all items (in a context where each could otherwise be asked individually).
+        /// </summary>
+        public const string NoAll = "NoAll";
 
         //| Could use instances of a custom class instead.
         //| That would be more type-safe and avoid the possibility of two instances unintentionally being defined with the same value.
