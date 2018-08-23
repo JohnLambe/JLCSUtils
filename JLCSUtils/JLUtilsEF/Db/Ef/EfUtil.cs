@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Exceptions;
+using JohnLambe.Util.Reflection;
+using JohnLambe.Util.Text;
 using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Db.Ef
@@ -55,6 +60,27 @@ namespace JohnLambe.Util.Db.Ef
         public static bool IsModified([NotNull] DbEntityEntry entry)
         {
             return !ComparePropertyValues(entry.OriginalValues, entry.CurrentValues);
+        }
+
+        public static TEntity Reload<TEntity>(DbContext context, TEntity entity, OrmLoadFlags flags) where TEntity : class
+        {
+            if (entity != null)
+            {
+                if (!flags.HasFlag(OrmLoadFlags.IfAttached) || context.Entry(entity).State != EntityState.Deleted)
+                {
+                    var entry = context.Entry(entity);
+                    entry.Reload();
+
+                    if (flags.HasFlag(OrmLoadFlags.References))
+                    {
+                        foreach (var property in entity.GetType().GetProperties().Where(p => p.GetCustomAttribute<ForeignKeyAttribute>() != null))
+                        {
+                            entry.Reference(property.Name).Load();
+                        }
+                    }
+                }
+            }
+            return entity;
         }
 
         /// <summary>
@@ -260,6 +286,58 @@ namespace JohnLambe.Util.Db.Ef
                 return keyValues[0];
             else
                 return keyValues;
+        }
+
+        /// <summary>
+        /// Return a human-readable string representation of the list of errors in the given exception,
+        /// for use by IT people.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        public static string FormatErrors(this DbEntityValidationException ex)
+        {
+            var builder = new StringBuilder();
+            foreach(var result in ex.EntityValidationErrors)
+            {
+                builder.AppendLine("Entity Type: " + result.Entry.Entity.GetType().FullName);
+                
+                foreach(var error in result.ValidationErrors)
+                {
+                    builder.AppendLine("  " + error.PropertyName + ": " + error.ErrorMessage);
+                }
+            }
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Like <see cref="FormatErrors(DbEntityValidationException)"/>, but formats errors for reading 
+        /// by end users.
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        public static string FormatErrorsForUser(this DbEntityValidationException ex)
+        {
+            var builder = new StringBuilder();
+            foreach (var result in ex.EntityValidationErrors)
+            {
+                builder.AppendLine(CaptionUtil.GetDisplayName(result.Entry.Entity.GetType()));
+                //TODO: include description of instance
+
+                foreach (var error in result.ValidationErrors)
+                {
+                    builder.AppendLine("  " + CaptionUtil.PascalCaseToCaption(error.PropertyName) + ": " + error.ErrorMessage);
+                }
+            }
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Returns an exception with a human-readable description of the validation errors,
+        /// with the given exception as <see cref="Exception.InnerException"/>.
+        /// </summary>
+        public static Exception FormatErrorsException(DbEntityValidationException ex)
+        {
+            return new UserErrorException("There is something invalid in the information being saved is not valid. The following errors are reported:\r\n" + FormatErrorsForUser(ex), ex);
         }
 
 

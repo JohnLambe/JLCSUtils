@@ -70,23 +70,7 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Reload(TEntity entity, OrmLoadFlags flags = OrmLoadFlags.Default)
         {
-            if (entity != null)
-            {
-                if (!flags.HasFlag(OrmLoadFlags.IfAttached) || Context.Entry(entity).State != EntityState.Deleted)
-                {
-                    var entry = Context.Entry(entity);
-                    entry.Reload();
-
-                    if (flags.HasFlag(OrmLoadFlags.References))
-                    {
-                        foreach (var property in entity.GetType().GetProperties().Where(p => p.GetCustomAttribute<ForeignKeyAttribute>() != null))
-                        {
-                            entry.Reference(property.Name).Load();
-                        }
-                    }
-                }
-            }
-            return entity;
+            return EfUtil.Reload(Context,entity,flags);
         }
 
         public virtual IDatabaseConnection Database

@@ -14,7 +14,11 @@ namespace JLUtilsEFTest.Db.Ef
         [Key]
         public virtual int Id { get; set; }
 
+        [MaxLength(100)]
         public virtual string Name { get; set; }
+
+        [Range(0,10)]
+        public virtual int IntField { get; set; }
 
         [ForeignKey(nameof(ReferenceId))]
         public virtual Entity3 Reference { get; set; }
