@@ -44,4 +44,14 @@ namespace JohnLambe.Util.Db.Ef
 
         public DbModelBuilder ModelBuilder { get; set; }
     }
+
+    public class ErrorEventArgs : InterceptableEfEventArgs
+    {
+        public ErrorEventArgs(DbContext context, Exception ex) : base(context)
+        {
+        }
+
+        public virtual Exception Exception { get; }
+    }
+
 }

@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -109,7 +110,22 @@ namespace JohnLambe.Util.Db.Ef
             if (args.Intercept)
                 return 0;
 
-            var result = base.SaveChanges();
+            int result = 0;
+            try
+            {
+                result = base.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                /*
+                if(ex is DbEntityValidationException)
+                {
+                    throw EfUtil.FormatErrorsException((DbEntityValidationException)ex);
+                }
+                */
+
+                OnError?.Invoke(this, new ErrorEventArgs(this,ex));
+            }
 
             AfterSaveChanges?.Invoke(this, args);
 
@@ -131,6 +147,7 @@ namespace JohnLambe.Util.Db.Ef
 
         public event EventHandler<SaveChangesEventArgs> BeforeSaveChanges;
         public event EventHandler<SaveChangesEventArgs> AfterSaveChanges;
+        public event EventHandler<ErrorEventArgs> OnError;
 
         public event EventHandler<ModelCreatingEventArgs> BeforeModelCreating;
         public event EventHandler<ModelCreatingEventArgs> AfterModelCreating;
