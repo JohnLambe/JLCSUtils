@@ -8,6 +8,7 @@ using JohnLambe.Util.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using JohnLambe.Util.Types;
+using System.Data.Entity;
 
 namespace JohnLambe.Util.Db
 {
@@ -196,6 +197,21 @@ namespace JohnLambe.Util.Db
         {
             Log.AddLast(new LogEntry() { Action = Action.Remove, Entity = entity.ToString() });
             OnChange?.Invoke(action, entity);
+        }
+
+        public EntityState GetState(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetState(TEntity entity, EntityState state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TEntity UpdateEntity(TEntity entity, OrmLoadFlags options = OrmLoadFlags.Default)
+        {
+            throw new NotImplementedException();
         }
 
         public delegate void RepositoryEvent(Action action, TEntity entity);

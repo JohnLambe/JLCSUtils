@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Db
 {
+    //TODO: Drop this and use System.Data.IsolationLevel
+
     public class EfDatabaseTransaction : IDatabaseTransaction
     {
         public EfDatabaseTransaction(DbContextTransaction transaction)

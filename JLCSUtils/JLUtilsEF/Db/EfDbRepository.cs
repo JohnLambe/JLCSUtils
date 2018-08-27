@@ -73,6 +73,28 @@ namespace JohnLambe.Util.Db
             return EfUtil.Reload(Context,entity,flags);
         }
 
+        public virtual System.Data.Entity.EntityState GetState(TEntity entity)
+        {
+            return Context.Entry(entity).State;
+        }
+
+        public virtual void SetState(TEntity entity, System.Data.Entity.EntityState state)
+        {
+            Context.Entry(entity).State = state;
+        }
+
+        /// <summary>
+        /// Update the entity in the context with the values of the given entity.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public virtual TEntity UpdateEntity(TEntity entity, OrmLoadFlags options = OrmLoadFlags.Default)
+        {
+            throw new NotImplementedException();
+        }
+        //TODO: Option for what happens when the entity doesn't exist: Create or Ignore.
+
         public virtual IDatabaseConnection Database
         {
             get { return new EfDatabaseConnection(Context); }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,9 @@ namespace JohnLambe.Util.Db
         /// <returns></returns>
         object GetOriginalValue(TEntity entity, string propertyName);
 
+        //| We could provide this, for iterating through original values:
+        // IPropertyCollection GetOriginalValues(TEntity entity);
+
         /// <summary>
         /// Given an entity that may be in a different ORM context, return an instance of that entity that is usable in the ORM context of this repository.
         /// The returned instance may the same instance as the given one (if the instance is already in this context, or the ORM system allows the same instance to be used).
@@ -65,12 +69,16 @@ namespace JohnLambe.Util.Db
         /// <returns>the given entity (<paramref name="entity"/>).</returns>
         TEntity Reload([Nullable] TEntity entity, OrmLoadFlags flags = OrmLoadFlags.Default);  // Rename to "Revert" ?
 
+        System.Data.Entity.EntityState GetState(TEntity entity);
 
-        //| We could provide this, for iterating through original values:
-        // IPropertyCollection GetOriginalValues(TEntity entity);
+        void SetState(TEntity entity, System.Data.Entity.EntityState state);
+
+        TEntity UpdateEntity(TEntity entity, OrmLoadFlags options = OrmLoadFlags.Default);
+
 
         //TODO: AsNoTracking ?
     }
+
 
     /*
     public interface IPropertyCollection : IReadOnlyDictionary<string,object>

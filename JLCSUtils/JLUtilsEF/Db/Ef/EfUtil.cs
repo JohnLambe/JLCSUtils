@@ -337,7 +337,15 @@ namespace JohnLambe.Util.Db.Ef
         /// </summary>
         public static Exception FormatErrorsException(DbEntityValidationException ex)
         {
-            return new UserErrorException("There is something invalid in the information being saved is not valid. The following errors are reported:\r\n" + FormatErrorsForUser(ex), ex);
+            return new UserErrorException("There is something invalid in the information being saved. The following errors are reported:\r\n" + FormatErrorsForUser(ex), ex);
+        }
+
+        public static Exception ToUserException(Exception ex)
+        {
+            return ex;
+            //TODO: Extract SqlException from Exception, and convert to user-friendly error based on error number.
+            // Look up field names in error message against entity class and convert to display names.
+            // Look up index names by the IndexAttribute and report the display names of the fields.
         }
 
 
