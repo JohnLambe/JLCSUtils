@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using JohnLambe.Util.Types;
 using System.Data.Entity;
+using System.Data;
 
 namespace JohnLambe.Util.Db
 {
@@ -199,12 +200,12 @@ namespace JohnLambe.Util.Db
             OnChange?.Invoke(action, entity);
         }
 
-        public EntityState GetState(TEntity entity)
+        public System.Data.Entity.EntityState GetState(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public void SetState(TEntity entity, EntityState state)
+        public void SetState(TEntity entity, System.Data.Entity.EntityState state)
         {
             throw new NotImplementedException();
         }
@@ -233,7 +234,7 @@ namespace JohnLambe.Util.Db
 
     public class MockDatabaseConnection : IDatabaseConnection
     {
-        public IDatabaseTransaction StartTransaction(TransactionIsolationLevel isolationLevel)
+        public IDatabaseTransaction StartTransaction(IsolationLevel isolationLevel)
         {
             return new MockDatabaseTransaction(this);
         }

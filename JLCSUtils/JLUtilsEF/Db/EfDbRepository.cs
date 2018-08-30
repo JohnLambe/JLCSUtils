@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace JohnLambe.Util.Db
     // using this type.
 
     [Obsolete("likely to change")]
-    public class EfDatabaseRepositoryBase<TEntity> : IDatabaseRepositoryBase<TEntity>
+    public class EfDatabaseRepositoryBase<TEntity> : IDatabaseRepositoryBase<TEntity>, IDisposable
         where TEntity : class
 //        where TFlagDeletedEntity : class, IHasActiveFlag //, TEntity
     {
@@ -46,7 +47,6 @@ namespace JohnLambe.Util.Db
         }
 
 
-
         public virtual TEntity Find(params object[] keyValues)
         {
             return Data.Find(keyValues);
@@ -54,7 +54,7 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Detach(TEntity entity)
         {
-            Context.Entry(entity).State = EntityState.Detached;
+            Context.Entry(entity).State = System.Data.Entity.EntityState.Detached;
             return entity;
         }
 
@@ -91,8 +91,34 @@ namespace JohnLambe.Util.Db
         /// <returns></returns>
         public virtual TEntity UpdateEntity(TEntity entity, OrmLoadFlags options = OrmLoadFlags.Default)
         {
+
             throw new NotImplementedException();
+/*
+            System.Data.Entity.Core.Objects.ObjectStateEntry stateEntry;
+
+
+            var osm = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)Context)
+                .ObjectContext.ObjectStateManager;
+
+
+            osm.TryGetObjectStateEntry(((System.Data.Entity.Core.Objects.DataClasses.IEntityWithKey)entity).EntityKey, out stateEntry);
+//            osm.TryGetObjectStateEntry(entity, out stateEntry);
+            if (stateEntry != null)
+            {
+                Console.Out.WriteLine(stateEntry.State);
+            }
+
+
+
+            Context.Entry( ? ).CurrentValues.SetValues(entity);
+*/
         }
+
+        public virtual void Dispose()
+        {
+            Context.Dispose();
+        }
+
         //TODO: Option for what happens when the entity doesn't exist: Create or Ignore.
 
         public virtual IDatabaseConnection Database
@@ -119,9 +145,9 @@ namespace JohnLambe.Util.Db
             _context = context;
         }
 
-        public virtual IDatabaseTransaction StartTransaction(TransactionIsolationLevel isolationLevel)
+        public virtual IDatabaseTransaction StartTransaction(IsolationLevel isolationLevel)
         {
-            return new EfDatabaseTransaction(_context.Database.BeginTransaction(isolationLevel.ToIsolationLevel()));
+            return new EfDatabaseTransaction(_context.Database.BeginTransaction(isolationLevel));
         }
 
         protected readonly DbContext _context;
@@ -168,9 +194,9 @@ namespace JohnLambe.Util.Db
             }
             else
             {
-                if (Context.Entry(entity).State != EntityState.Added)   // If 'adding', detach.
+                if (Context.Entry(entity).State != System.Data.Entity.EntityState.Added)   // If 'adding', detach.
                 {
-                    Context.Entry(entity).State = EntityState.Detached;
+                    Context.Entry(entity).State = System.Data.Entity.EntityState.Detached;
                     return entity;
                 }
                 else
@@ -198,11 +224,11 @@ namespace JohnLambe.Util.Db
 
         public virtual TEntity Attach(TEntity entity, bool modified = false)
         {
-            if (Context.Entry(entity).State != EntityState.Added)             // If 'adding', do nothing.
+            if (Context.Entry(entity).State != System.Data.Entity.EntityState.Added)             // If 'adding', do nothing.
             {
                 Data.Attach(entity);
                 if (modified)
-                    Context.Entry(entity).State = EntityState.Modified;
+                    Context.Entry(entity).State = System.Data.Entity.EntityState.Modified;
             }
             return entity;
         }

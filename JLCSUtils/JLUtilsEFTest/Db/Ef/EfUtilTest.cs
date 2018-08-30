@@ -43,7 +43,7 @@ namespace JLUtilsEFTest.Db.Ef
             Console.WriteLine(result.Message);
 
             // Assert:
-            Assert.AreEqual(@"There is something invalid in the information being saved is not valid. The following errors are reported:
+            Assert.AreEqual(@"There is something invalid in the information being saved. The following errors are reported:
 Entity 1
   Name: The field Name must be a string or array type with a maximum length of '100'.
   Int Field: The field IntField must be between 0 and 10.

@@ -27,7 +27,10 @@ namespace JohnLambe.Util.Reflection
 
         public static T GetCustomAttribute<T>(this ICustomAttributeProvider provider)
         {
-            return provider.GetCustomAttributes(true).OfType<T>().FirstOrDefault();
+//            return System.Reflection.CustomAttributeExtensions.GetCustomAttribute<T>(provider);  // the bool parameter defaults to true
+
+            return (T) provider.GetCustomAttributes(typeof(T),true).FirstOrDefault();
+//            return provider.GetCustomAttributes(true).OfType<T>().FirstOrDefault();
             /*
             foreach (var attribute in provider.GetCustomAttributes(true))
             {
@@ -73,11 +76,13 @@ namespace JohnLambe.Util.Reflection
             // The above could only return IEnumerable<object> .
         }
 
+        /*
         [Obsolete("Use ICustomAttributeProvider.IsDefined")]
         public static bool HasCustomAttribute<T>(this ICustomAttributeProvider provider)
         {
             return provider.IsDefined(typeof(T), true);
         }
+        */
         
         public static bool IsDefined<T>(this ICustomAttributeProvider provider, bool inherited = true)
         {

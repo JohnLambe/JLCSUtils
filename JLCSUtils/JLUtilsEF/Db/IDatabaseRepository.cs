@@ -69,10 +69,29 @@ namespace JohnLambe.Util.Db
         /// <returns>the given entity (<paramref name="entity"/>).</returns>
         TEntity Reload([Nullable] TEntity entity, OrmLoadFlags flags = OrmLoadFlags.Default);  // Rename to "Revert" ?
 
+        /// <summary>
+        /// Get the state of the entity in the current ORM context.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         System.Data.Entity.EntityState GetState(TEntity entity);
 
+        /// <summary>
+        /// Set the state of the entity in the ORM context.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="state"></param>
         void SetState(TEntity entity, System.Data.Entity.EntityState state);
 
+        /// <summary>
+        /// If an instance of the same entity as the given object (i.e. having the same type and key) exists in the context,
+        /// the properties of this one are copied to it.
+        /// If it does not exist, this is attached to the context.
+        /// If this is already attached to the context, this does nothing.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="options"></param>
+        /// <returns>The entity in the context.</returns>
         TEntity UpdateEntity(TEntity entity, OrmLoadFlags options = OrmLoadFlags.Default);
 
 
@@ -244,11 +263,11 @@ namespace JohnLambe.Util.Db
     /// </summary>
     public interface IDatabaseConnection
     {
-        IDatabaseTransaction StartTransaction(TransactionIsolationLevel isolationLevel);
+        IDatabaseTransaction StartTransaction(IsolationLevel isolationLevel);
         //TODO: Provide default value for isolationLevel
     }
 
-
+    /*
     /// <summary>
     /// Database independent abstraction of an isolation level.
     /// </summary>
@@ -292,6 +311,7 @@ namespace JohnLambe.Util.Db
         //     see changes made in other transactions, even if you requery.
         Snapshot = 16777216
     }
+    */
 
 
     /// <summary>

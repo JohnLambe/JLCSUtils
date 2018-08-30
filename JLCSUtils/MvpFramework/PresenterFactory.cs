@@ -230,7 +230,7 @@ namespace MvpFramework
                             {
                                 if (arg is ISharedContextPresenterFactory)                        // and the argument supports this
                                 {
-                                    ((ISharedContextPresenterFactory)arg).UseChildContext = false;
+                                    ((ISharedContextPresenterFactory)arg).UseChildContext = sharedContextAttribute.UseChildContext;
                                 }
                                 else
                                 {
