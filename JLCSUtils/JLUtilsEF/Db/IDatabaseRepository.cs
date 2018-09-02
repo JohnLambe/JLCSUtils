@@ -73,7 +73,7 @@ namespace JohnLambe.Util.Db
         /// Get the state of the entity in the current ORM context.
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>The state of <paramref name="entity"/>.</returns>
         System.Data.Entity.EntityState GetState(TEntity entity);
 
         /// <summary>
@@ -93,6 +93,8 @@ namespace JohnLambe.Util.Db
         /// <param name="options"></param>
         /// <returns>The entity in the context.</returns>
         TEntity UpdateEntity(TEntity entity, OrmLoadFlags options = OrmLoadFlags.Default);
+
+        //TODO: Populate navigation properties.
 
 
         //TODO: AsNoTracking ?
@@ -184,15 +186,6 @@ namespace JohnLambe.Util.Db
         /// The database connection of this repository.
         /// </summary>
         IDatabaseConnection Database { get; }
-
-
-        /*  These could be added, replacing the EntityState type with one not specific to Entity Framework.
-         *  Currently, separate methods are used for each state transition instead.
-           
-                void SetState<TEntity>(TEntity entity, EntityState state) where TEntity : class;
-
-                EntityState GetState<TEntity>(TEntity entity) where TEntity : class;
-        */
     }
 
 

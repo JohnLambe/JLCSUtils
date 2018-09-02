@@ -607,6 +607,26 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         [TestMethod]
+        public void Contains()
+        {
+            Multiple(
+                () => Assert.AreEqual(true, StrUtil.Contains("ZXCVBNM", "Cv", StringComparison.InvariantCultureIgnoreCase)),
+
+                () => Assert.AreEqual(false, StrUtil.Contains("ZXCVBNM", "Cv", StringComparison.InvariantCulture)),
+
+                () => Assert.AreEqual(true, StrUtil.Contains("éqwertyBuiop", "éqwertyBuiop", StringComparison.InvariantCultureIgnoreCase), "Same"),
+                () => Assert.AreEqual(true, StrUtil.Contains("éqwertyBuiop", "éqwertyBuiop", StringComparison.InvariantCulture), "Same"),
+
+                () => Assert.AreEqual(true, StrUtil.Contains("éqwertyBuiop..", "ÉqwertyBuiop", StringComparison.InvariantCultureIgnoreCase), "Starts with value. Accent."),
+
+                () => Assert.AreEqual(false, StrUtil.Contains("qwerty", "qwérty", StringComparison.InvariantCulture), "Differs by accent.")
+
+            //TODO: Culture where toLower() would not work, e.g. Hungarian "i".
+            // Other StringComparison values
+            );
+        }
+
+        [TestMethod]
         public void Pad()
         {
             Multiple(

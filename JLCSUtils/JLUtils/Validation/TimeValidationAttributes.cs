@@ -111,6 +111,12 @@ namespace JohnLambe.Util.Validation
                 if (validationContext.GetState().HasFlag(ValidationState.LiveInput) && Options != TimeValidationOptions.Any)
                 {
                     var now = DateTime.Now;  //TODO use ITimeService
+                    /*  Should TimeValidationOptions.None mean always invalid, or only exactly the current time is valid ?
+                    if(Options == TimeValidationOptions.None)
+                    {
+                        results.Fail();
+                    }
+                    */
                     if (timeValue < now && !(Options.HasFlag(TimeValidationOptions.AllowPast)))
                     {
                         results.Add(validationContext?.DisplayName + " must not be in the past");

@@ -982,6 +982,26 @@ namespace JohnLambe.Util
         */
 
         /// <summary>
+        /// Returns a value indicating whether a specified substring occurs within this string.
+        /// </summary>
+        /// <param name="s">To string to search in.</param>
+        /// <param name="value">The string to seek.</param>
+        /// <param name="comparisonType">One of the enumeration values that specifies the rules for the comparison.</param>
+        /// <returns>
+        /// true if the <paramref name="value"/> parameter occurs within this string, or if <paramref name="value"/> is the empty
+        ///     string (""); otherwise, false.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">value is null.</exception>
+        public static bool Contains(this string s, string value, StringComparison comparisonType)
+            => s.ArgNotNull(nameof(value)).IndexOf(value, comparisonType) >= 0;
+        //| See https://stackoverflow.com/questions/444798/case-insensitive-containsstring?rq=1 .
+        //| Converting both strings to capitals or lowercase and comparing is not the same in some locales.
+        //| The wording of the XML comments is from string.Contains and string.Equals.
+        //| Throwing an ArgumentNullException exception instead of using a default is consistent with other string methods.
+        //| (Some methods of this class use defaults instead of exceptions, but since this is effectively an overload of an existing method,
+        //| its semantics should be as consistent as possible with that method.)
+
+        /// <summary>
         /// Repeat this string <paramref name="count"/> times.
         /// </summary>
         /// <param name="s">The string to repeat. If null, null is returned.</param>
