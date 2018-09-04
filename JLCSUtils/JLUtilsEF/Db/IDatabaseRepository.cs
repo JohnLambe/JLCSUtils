@@ -15,7 +15,7 @@ namespace JohnLambe.Util.Db
     /// Base interface for a repository, which may or may not be modifiable.
     /// </summary>
     /// <typeparam name="TEntity">The type of object held in the repository.</typeparam>
-    public interface IDatabaseRepositoryBase<TEntity>
+    public interface IDatabaseRepositoryBase<TEntity> : IDisposable
     {
         /// <summary>
         /// Get the whole contents of the repository.
@@ -310,10 +310,12 @@ namespace JohnLambe.Util.Db
     /// <summary>
     /// Database-independent abstraction of a transaction.
     /// </summary>
-    public interface IDatabaseTransaction
+    public interface IDatabaseTransaction : IDisposable
     {
         bool Commit();
         bool Rollback();
+
+        //bool InProgress ?
     }
 
 

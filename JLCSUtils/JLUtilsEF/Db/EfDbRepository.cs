@@ -116,7 +116,7 @@ namespace JohnLambe.Util.Db
 
         public virtual void Dispose()
         {
-            Context.Dispose();
+            Context?.Dispose();
         }
 
         //TODO: Option for what happens when the entity doesn't exist: Create or Ignore.

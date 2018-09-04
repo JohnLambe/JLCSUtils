@@ -215,6 +215,10 @@ namespace JohnLambe.Util.Db
             throw new NotImplementedException();
         }
 
+        public virtual void Dispose()
+        {
+        }
+
         public delegate void RepositoryEvent(Action action, TEntity entity);
         //| We could add a parameter to indicate whether an item was found.
 
@@ -255,6 +259,10 @@ namespace JohnLambe.Util.Db
         public bool Rollback()
         {
             return true;
+        }
+
+        public virtual void Dispose()
+        {
         }
     }
 }

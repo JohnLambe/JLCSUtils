@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.Data.Objects.DataClasses;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using JohnLambe.Util.Exceptions;
@@ -348,8 +351,49 @@ namespace JohnLambe.Util.Db.Ef
             // Look up index names by the IndexAttribute and report the display names of the fields.
         }
 
+        public static ObjectContext GetObjectContext(EntityObject entity)
+        {
+            // from https://stackoverflow.com/questions/6869640/why-cant-we-get-objectcontext-from-an-entityobject
+            var relationshipManager = ((IEntityWithRelationships)entity).RelationshipManager;
+            var wrappedOwnerProperty = relationshipManager.GetType().GetProperty("WrappedOwner", BindingFlags.Instance | BindingFlags.NonPublic);
+            var wrappedOwner = wrappedOwnerProperty.GetValue(relationshipManager);
+            var contextProperty = wrappedOwner.GetType().GetProperty("Context");
+            return (ObjectContext)contextProperty.GetValue(wrappedOwner);
+        }
 
         //| Could make these extension methods.
         //| Some methods could take ChangeTracker instead of DbContext.
+    }
+
+
+    public static class EfDiagnosticsUtil
+    {
+        public static string ListContextObjects(DbContext context)
+        {
+            StringBuilder result = new StringBuilder();
+
+            var osm = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)context)
+                .ObjectContext.ObjectStateManager;
+
+            result.AppendLine("Context: " + osm);
+
+            foreach (EntityState s in Enum.GetValues(typeof(EntityState)))
+            {
+                if (s != EntityState.Detached)
+                {
+                    result.AppendLine("State: " + s);
+
+                    foreach (var e in osm.GetObjectStateEntries(s))
+                    {
+                        result.AppendLine("  " + context.Entry(e)?.Entity
+                            + ": " + JohnLambe.Util.Diagnostic.DiagnosticStringUtil.GetDebugDisplay(context.Entry(e)?.Entity));
+                        Console.Out.WriteLine(context.Entry(e)?.Entity);
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
     }
 }

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Db
 {
+    /// <summary>
+    /// Implementation of <see cref="IDatabaseTransaction"/> for Entity Framework.
+    /// </summary>
     public class EfDatabaseTransaction : IDatabaseTransaction
     {
         public EfDatabaseTransaction(DbContextTransaction transaction)
@@ -28,6 +31,11 @@ namespace JohnLambe.Util.Db
             _transaction.Rollback();
             _inProgress = false;
             return true;
+        }
+
+        public virtual void Dispose()
+        {
+            _transaction?.Dispose();
         }
 
         protected readonly DbContextTransaction _transaction;

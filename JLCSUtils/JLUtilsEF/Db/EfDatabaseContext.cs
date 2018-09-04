@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace JohnLambe.Util.Db
 {
+    /*
     public class EfDatabaseContext : OrmDatabaseContextBase
     {
         public EfDatabaseContext(DbContext efContext)
@@ -57,5 +58,5 @@ namespace JohnLambe.Util.Db
             return EfDbContext.Entry<TEntity>(entity).State;
         }
     }
-
+    */
 }
