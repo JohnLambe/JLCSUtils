@@ -131,7 +131,7 @@ namespace JohnLambe.Util
         /// <returns>The chosen option, or the default for the return type if <paramref name="selector"/> is out of range.</returns>
         public static T Choose<T>(int selector, params T[] options)
         {
-            if(selector < 0 || selector > options.Length)
+            if (selector < 0 || selector > options.Length)
             {
                 return default(T);
             }
@@ -150,7 +150,7 @@ namespace JohnLambe.Util
         /// <returns>The chosen option, or the default for the return type if <paramref name="selector"/> is out of range.</returns>
         public static T Choose1Based<T>(int selector, params T[] options)
         {
-            if(selector <= 0 || selector > options.Length)
+            if (selector <= 0 || selector > options.Length)
             {
                 return default(T);
             }
@@ -162,7 +162,7 @@ namespace JohnLambe.Util
 
         public static T ChooseWithDefault<T>(int selector, T defaultValue, params T[] options)
         {
-            if(selector < 0 || selector > options.Length)
+            if (selector < 0 || selector > options.Length)
             {
                 return defaultValue;
             }
@@ -174,11 +174,11 @@ namespace JohnLambe.Util
 
         public static T ChooseValidated<T>(int selector, params T[] options)
         {
-            if(selector <= 0 || selector > options.Length)
+            if (selector <= 0 || selector > options.Length)
             {
                 throw new IndexOutOfRangeException("Invalid selector for Choose: "
-                    + selector.ToString() + 
-                    + options.Length + " options");
+                    + selector.ToString() +
+                    +options.Length + " options");
             }
             else
             {
@@ -195,11 +195,12 @@ namespace JohnLambe.Util
         /// <param name="obj"></param>
         /// <param name="compareTo"></param>
         /// <returns></returns>
-        public static bool In<T>(this T obj, params T[] compareTo) where T: class
+        public static bool In<T>(this T obj, params T[] compareTo) //where T : class
         {
-            foreach(var x in compareTo)
+            foreach (var x in compareTo)
             {
-                if (obj == x)
+                if (ObjectUtil.CompareEqual(obj, x))
+//                    if (obj == x)
                     return true;
             }
             return false;
@@ -211,7 +212,7 @@ namespace JohnLambe.Util
         /// </summary>
         /// <param name="value">An object reference to be disposed and set to null.</param>
         public static void DisposeAndNull<T>(ref T value)
-            where T: class
+            where T : class
         {
             TryDispose(value);
             value = null;
@@ -246,7 +247,7 @@ namespace JohnLambe.Util
         /// If the value is not of the required type, and <paramref name="notMatchedDelegate"/> is null,
         /// the default value for <typeparamref name="TReturn"/> is returned.
         /// </returns>
-        public static TReturn Cast<TRequired,TReturn>(object value, Func<TRequired, TReturn> matchedDelegate, Func<TReturn> notMatchedDelegate = null)
+        public static TReturn Cast<TRequired, TReturn>(object value, Func<TRequired, TReturn> matchedDelegate, Func<TReturn> notMatchedDelegate = null)
         {
             if (value is TRequired)
                 return matchedDelegate((TRequired)value);
@@ -282,6 +283,21 @@ namespace JohnLambe.Util
             }
         }
     }
+
+    /*
+    public static class MiscUtil2
+    {
+        public static bool In<T>(this T obj, params T[] compareTo) where T : struct
+        {
+            foreach (var x in compareTo)
+            {
+                if (ObjectUtil.CompareEqual(obj, x))
+                    return true;
+            }
+            return false;
+        }
+    }
+    */
 
 
 

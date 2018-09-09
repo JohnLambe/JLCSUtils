@@ -8,7 +8,6 @@ namespace JohnLambe.Util.Misc
 {
     public static class FlowControlUtil
     {
-
         #region TypeSwitch
 
         public static TypeSwitchContext<TSelector, TReturn> TypeSwitch<TSelector, TReturn>(TSelector selector)

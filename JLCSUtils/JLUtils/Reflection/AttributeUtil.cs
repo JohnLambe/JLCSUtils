@@ -11,38 +11,61 @@ namespace JohnLambe.Util.Reflection
     /// </summary>
     public static class AttributeUtil
     {
-        /*
+        public static T GetCustomAttribute<T>(this ICustomAttributeProvider provider)
+            where T: Attribute
+        {
+            //return System.Reflection.CustomAttributeExtensions.GetCustomAttribute<T>(provider);  // the bool parameter defaults to true
+
+            //            return (T) provider.GetCustomAttributes(typeof(T),true).FirstOrDefault();
+
+//            return Attribute.GetCustomAttributes(provider,true).OfType<T>().FirstOrDefault();
+//            return provider.GetCustomAttributes(true).OfType<T>().FirstOrDefault();
+
+            return GetAttributes<T>(provider, true).FirstOrDefault();
+        }
+
         /// <summary>
-        /// Returns all attributes of types assignable to <typeparamref name="T"/> (which may be an interface).
+        /// Returns attributes of <paramref name="provider"/> of type <typeparamref name="T"/>,
+        /// supporting the <paramref name="inherit"/> parameter if <paramref name="provider"/> is one the types
+        /// supported by the static methods of <see cref="Attribute"/>.
+        /// Otherwise, it throws an exception if <paramref name="inherit"/> is true.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="provider"></param>
-        /// <param name="inherited"></param>
+        /// <param name="inherit">false to not include attributes from inherited members; true to include them (and throws an exception if this is not supported for the given type of provider);
+        /// null to include them if supported.
+        /// </param>
         /// <returns></returns>
-        public static IEnumerable<T> GetAttributes<T>(this ICustomAttributeProvider provider, bool inherited = true)
+        public static IEnumerable<T> GetAttributes<T>(this ICustomAttributeProvider provider, bool inherit = true)
+                where T: Attribute
         {
-            return provider.GetCustomAttributes(inherited).OfType<T>();
-        }
-        */
-
-        public static T GetCustomAttribute<T>(this ICustomAttributeProvider provider)
-        {
-//            return System.Reflection.CustomAttributeExtensions.GetCustomAttribute<T>(provider);  // the bool parameter defaults to true
-
-            return (T) provider.GetCustomAttributes(typeof(T),true).FirstOrDefault();
-//            return provider.GetCustomAttributes(true).OfType<T>().FirstOrDefault();
+            // If there is a method that supports the `inherit` parameter, use it:
+            if (provider is MemberInfo)
+                return (IEnumerable<T>) Attribute.GetCustomAttributes((MemberInfo)provider, inherit).OfType<T>();
             /*
-            foreach (var attribute in provider.GetCustomAttributes(true))
-            {
-                if (attribute is T)
-                    return (T)attribute;
-            }
-            return default(T);
+            else if (provider is ParameterInfo)
+                return (IEnumerable<T>) Attribute.GetCustomAttributes((ParameterInfo)provider, inherit.ToBool());
+            else if (provider is Module)
+                return (IEnumerable<T>) Attribute.GetCustomAttributes((Module)provider, inherit.ToBool());
+            else if (provider is Assembly)
+                return (IEnumerable<T>) Attribute.GetCustomAttributes((Assembly)provider, inherit.ToBool());
+            else if (provider == null)
+                throw new ArgumentNullException(nameof(provider));
             */
+            else //if (!(inherit == InheritOption.False))    // otherwise, use this if `inherit` is null or false (doesn't supprt inherited)
+                //                return provider.GetCustomAttributes(inherit).OfType<T>().ToArray();
+                return provider.GetCustomAttributes(inherit).OfType<T>();      // if not getting inherited attributes, this can be used
+//            else
+//                throw new InvalidOperationException("Can't get inherited attributes from " + provider.GetType());
+
+            // see https://github.com/dotnet/corefx/issues/8220
         }
 
-        public static IEnumerable<T> GetCustomAttributes<T>(this ICustomAttributeProvider type, bool inherit = true)
+        public static IEnumerable<T> GetCustomAttributes<T>(this ICustomAttributeProvider provider, bool inherit = true)
+            where T: Attribute
         {
+            return GetAttributes<T>(provider, inherit);
+
             /*
             // Allocate a temporary array for the filtered collection of attributes, then copy to an array of the correct type.
             // Three arrays allocated.
@@ -52,8 +75,9 @@ namespace JohnLambe.Util.Reflection
             return result;
             */
 
+            /*
             // The extra call to Count may cause Type.GetCustomAttributes(bool) to be called twice.
-            var attribs = type.GetCustomAttributes(inherit).Where(a => a is T);
+            var attribs = provider.GetCustomAttributes(inherit).Where(a => a is T);
             T[] result = new T[attribs.Count()];
             int index = 0;
             foreach (object a in attribs)
@@ -61,6 +85,7 @@ namespace JohnLambe.Util.Reflection
                 result[index++] = (T)a;
             }
             return result;
+            */
 
             /* Alternative implementation:
             // Evaluates only once, but uses a list.
@@ -76,19 +101,30 @@ namespace JohnLambe.Util.Reflection
             // The above could only return IEnumerable<object> .
         }
 
-        /*
-        [Obsolete("Use ICustomAttributeProvider.IsDefined")]
-        public static bool HasCustomAttribute<T>(this ICustomAttributeProvider provider)
-        {
-            return provider.IsDefined(typeof(T), true);
-        }
-        */
         
-        public static bool IsDefined<T>(this ICustomAttributeProvider provider, bool inherited = true)
+        public static bool IsDefined<T>(this ICustomAttributeProvider provider, bool inherit = true)
         {
-            return provider.IsDefined(typeof(T), inherited);
+            if (provider is MemberInfo)
+                Attribute.IsDefined((MemberInfo)provider, typeof(T), inherit);
+
+            return provider.IsDefined(typeof(T), inherit);
             //return provider.GetCustomAttribute<T>() != null;
         }
+
+        /*
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="provider"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttribute<T>(this ICustomAttributeProvider provider, bool inherit = true)
+            where T: Attribute
+        {
+            return GetAttributes<T>(provider, inherit).Any();
+        }
+        */
 
         /// <summary>
         /// Same as <see cref="GetCustomAttributes{T}(ICustomAttributeProvider, bool)"/> except that if
@@ -103,10 +139,13 @@ namespace JohnLambe.Util.Reflection
         public static IEnumerable<T> GetAttributesEnabled<T>(this ICustomAttributeProvider provider, bool inherit = true)
             where T : Attribute
         {
+            return GetAttributes<T>(provider,inherit).Where(a => (a as IEnabledAttribute)?.Enabled ?? true);
+            /*
             return provider.GetCustomAttributes(inherit).Where(
                 a => a is T
                     && ( (a as IEnabledAttribute)?.Enabled ?? true )
                 ).Cast<T>();
+            */
         }
 
         /*
@@ -161,7 +200,7 @@ namespace JohnLambe.Util.Reflection
             where TMember : MemberInfo
             where TAttribute : Attribute
         {
-            return provider.GetCustomAttributes<TAttribute>().Select(
+            return GetAttributes<TAttribute>(provider).Select(
                 a => new AttributeAndMember<TAttribute, TMember>() { DeclaringMember = provider, Attribute = a }
                 );
         }
@@ -195,10 +234,10 @@ namespace JohnLambe.Util.Reflection
 
         public static bool Matches(this IFilteredAttribute attribute, string filter)
         {
-            return true;
+            return true;  //TODO
         }
-
     }
+
 
     public interface IEnabledAttribute
     {
