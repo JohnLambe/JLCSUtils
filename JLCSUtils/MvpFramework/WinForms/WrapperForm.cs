@@ -144,35 +144,21 @@ namespace MvpFramework.WinForms
             Visible = Child.Visible;
         }
 
-        protected override void OnKeyDown(KeyEventArgs evt)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if(Child is IChildWindow)
+            if (((IChildWindow)Child).KeyPreview)
             {
-                if(((IChildWindow)Child).KeyPreview)
+                var args = new KeyEventArgs(keyData);
+                if (Child is IChildWindow)
                 {
-                    ((IChildWindow)Child).NotifyKeyDown(evt);
+                    ((IChildWindow)Child).NotifyKeyDown(args);
                 }
+                if (args.Handled)                                
+                    return true;         // handled
             }
-            if(!evt.Handled)
-                base.OnKeyDown(evt);
+            return base.ProcessCmdKey(ref msg, keyData);  // not handled, so it's processed in the usual way by WinForms
         }
-
-        /*
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-        }
-
-        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
-        {            
-            base.OnPreviewKeyDown(e);
-        }
-
-        protected override bool ProcessDialogKey(Keys keyData)
-        {
-            return base.ProcessDialogKey(keyData);
-        }
-        */
+        //| Is this needed? If the wrapped window is ViewBase, it passes Command Keys to the View Binder before they get passed up to here.
 
         /*
         protected override void OnShown(EventArgs e)
@@ -185,6 +171,9 @@ namespace MvpFramework.WinForms
         }
         */
 
+        /// <summary>
+        /// The wrapped control.
+        /// </summary>
         protected Control Child { get; private set; }
     }
 

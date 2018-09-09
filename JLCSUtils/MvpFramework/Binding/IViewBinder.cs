@@ -65,12 +65,32 @@ namespace MvpFramework.Binding
         }
     */
 
-
+    /// <summary>
+    /// Event that notifies that a key (or keystroke) was pressed.
+    /// </summary>
     public class KeyboardKeyEventArgs : CancelEventArgs
     {
+        public KeyboardKeyEventArgs()
+        {
+        }
+
+        public KeyboardKeyEventArgs(KeyboardKey key)
+        {
+            this.Key = key;
+        }
+
+        /// <summary>
+        /// The keystroke pressed.
+        /// </summary>
         public virtual KeyboardKey Key { get; set; }
 
-        //| 'Handled' might be a better name for the 'Cancelled' flag in this case.
+        /// <summary>
+        /// Handlers set this to true if they handle this event.
+        /// <para>Same as <see cref="CancelEventArgs.Cancel"/>.</para>
+        /// </summary>
+        public bool Handled { get { return Cancel; } set { Cancel = value; } }
+        //| Not virtual because overriding this would make it inconsistent wih 'Cancel'.
+        //| 'Handled' is a better name for the 'Cancelled' flag in this case.
         //| We could use our own base class, and also make this property virtual.
         //| Using CancelEventArgs may be conventient for interoperability (e.g. this event may be useful where WinForms already uses a CancelEventHandler).
     }

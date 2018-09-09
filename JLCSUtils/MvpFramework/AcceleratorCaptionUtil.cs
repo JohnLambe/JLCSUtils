@@ -24,7 +24,7 @@ namespace MvpFramework
     public class AcceleratorCaptionUtil
     {
         /// <summary>
-        /// The character that indicates that the character immediately following it is the accelerator character.
+        /// The character (in captions) that indicates that the character immediately following it is the accelerator character.
         /// </summary>
         public const char AcceleratorIndicator = '&';
 

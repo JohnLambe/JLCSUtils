@@ -28,28 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.uiOk = new System.Windows.Forms.Button();
             this.uiName = new System.Windows.Forms.TextBox();
             this.uiAddress = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.uiUpdate = new System.Windows.Forms.Button();
             this.uiRightPanel = new MvpFramework.WinForms.ButtonContainer();
             this.uiButtonContainer2 = new MvpFramework.WinForms.ButtonContainer();
             this.button3 = new System.Windows.Forms.Button();
-            this.btnValidate = new System.Windows.Forms.Button();
+            this.uiValidate = new System.Windows.Forms.Button();
             this.uiValidateControls = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // uiOk
             // 
-            this.button1.Location = new System.Drawing.Point(110, 86);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Tag = "[Ok]";
-            this.button1.Text = "&Ok";
-            this.button1.UseVisualStyleBackColor = true;
+            this.uiOk.Location = new System.Drawing.Point(110, 86);
+            this.uiOk.Name = "uiOk";
+            this.uiOk.Size = new System.Drawing.Size(75, 23);
+            this.uiOk.TabIndex = 0;
+            this.uiOk.Tag = "[Ok]";
+            this.uiOk.Text = "&Ok";
+            this.uiOk.UseVisualStyleBackColor = true;
             // 
             // uiName
             // 
@@ -90,15 +90,15 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "Address:";
             // 
-            // button2
+            // uiUpdate
             // 
-            this.button2.Location = new System.Drawing.Point(191, 86);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Tag = "[Update]";
-            this.button2.Text = "&Update";
-            this.button2.UseVisualStyleBackColor = true;
+            this.uiUpdate.Location = new System.Drawing.Point(191, 86);
+            this.uiUpdate.Name = "uiUpdate";
+            this.uiUpdate.Size = new System.Drawing.Size(75, 23);
+            this.uiUpdate.TabIndex = 5;
+            this.uiUpdate.Tag = "[Update]";
+            this.uiUpdate.Text = "&Update";
+            this.uiUpdate.UseVisualStyleBackColor = true;
             // 
             // uiRightPanel
             // 
@@ -138,16 +138,16 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // btnValidate
+            // uiValidate
             // 
-            this.btnValidate.CausesValidation = false;
-            this.btnValidate.Location = new System.Drawing.Point(110, 115);
-            this.btnValidate.Name = "btnValidate";
-            this.btnValidate.Size = new System.Drawing.Size(101, 23);
-            this.btnValidate.TabIndex = 9;
-            this.btnValidate.Text = "&Validate";
-            this.btnValidate.UseVisualStyleBackColor = true;
-            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
+            this.uiValidate.CausesValidation = false;
+            this.uiValidate.Location = new System.Drawing.Point(110, 115);
+            this.uiValidate.Name = "uiValidate";
+            this.uiValidate.Size = new System.Drawing.Size(101, 23);
+            this.uiValidate.TabIndex = 9;
+            this.uiValidate.Text = "&Validate";
+            this.uiValidate.UseVisualStyleBackColor = true;
+            this.uiValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // uiValidateControls
             // 
@@ -166,20 +166,22 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.uiValidateControls);
-            this.Controls.Add(this.btnValidate);
+            this.Controls.Add(this.uiValidate);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.uiButtonContainer2);
             this.Controls.Add(this.uiRightPanel);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.uiUpdate);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.uiAddress);
             this.Controls.Add(this.uiName);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.uiOk);
             this.Name = "EditContactView";
             this.Size = new System.Drawing.Size(505, 262);
             this.Title = "Edit Contact";
             this.ViewVisibilityChanged += new MvpFramework.ViewVisibilityChangedDelegate(this.EditContactView_ViewVisibilityChanged);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EditContactView_KeyPress);
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.EditContactView_PreviewKeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -187,16 +189,16 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button uiOk;
         private System.Windows.Forms.TextBox uiName;
         private System.Windows.Forms.TextBox uiAddress;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button uiUpdate;
         private MvpFramework.WinForms.ButtonContainer uiRightPanel;
         private MvpFramework.WinForms.ButtonContainer uiButtonContainer2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button btnValidate;
+        private System.Windows.Forms.Button uiValidate;
         private System.Windows.Forms.Button uiValidateControls;
     }
 }

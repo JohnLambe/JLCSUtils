@@ -264,6 +264,7 @@ namespace MvpFramework.Binding
         /// </summary>
         protected virtual void Invoke()
         {
+            //TODO: Don't invoke if not Enabled ?
             _eventHandlerDelegate?.Invoke(this, EventArgs.Empty);     //TODO populate any arguments of event handler
             //_eventHandlerMethod?.Invoke(Presenter, new object[] { this, EventArgs.Empty });     //TODO populate any arguments of event handler
         }

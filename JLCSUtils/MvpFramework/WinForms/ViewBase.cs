@@ -224,6 +224,19 @@ namespace MvpFramework.WinForms
         {
             return ViewBinder.ValidateControls();
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // Processing a command key (a key that tkaes priority over normal input keys).
+
+            // Send it to the View Binder (this will handle it if a handler for it is defined; the handler may or may not have a corresponding button/control):
+            var args = new KeyboardKeyEventArgs(keyData.ToKeyboardKey());
+            ViewBinder.ProcessKey(args);
+            if (!args.Handled)                                         // not handled
+                return base.ProcessCmdKey(ref msg, keyData);           // so it's processed in the usual way by WinForms
+            else
+                return true;
+        }
     }
 
 }

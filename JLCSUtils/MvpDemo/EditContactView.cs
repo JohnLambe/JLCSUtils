@@ -96,5 +96,60 @@ namespace MvpDemo
         {
             MessageBox.Show("F5");
         }
+
+        private void button2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(e.KeyChar == 'A')
+                MessageBox.Show("" + e.KeyChar);
+        }
+
+        private void EditContactView_KeyPress(object sender, KeyPressEventArgs e)
+        {
+        }
+
+        private void EditContactView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Home || (e.KeyCode == (Keys.Control | Keys.U)))
+            {
+                MessageBox.Show("" + e.KeyCode + "; " + e.IsInputKey);
+                e.IsInputKey = true;
+            }
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F12))
+                MessageBox.Show("ProcessDialogKey: " + keyData.ToString());
+
+            return base.ProcessDialogKey(keyData);
+        }
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, System.Windows.Forms.Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F12))
+                MessageBox.Show("ProcessCmdKey: " + keyData.ToString());
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        //
+        // Summary:
+        //     Processes Windows messages.
+        //
+        // Parameters:
+        //   m:
+        //     The Windows System.Windows.Forms.Message to process.
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        protected override void WndProc(ref Message m)
+        {
+            if(m.Msg == WM_KEYDOWN)
+            {
+                Console.Out.WriteLine(m.LParam);
+            }
+            base.WndProc(ref m);
+        }
+
+        const int WM_KEYDOWN = 0x100;
+
     }
 }
