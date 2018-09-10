@@ -18,7 +18,7 @@ namespace JohnLambe.Util.StateMachine
     /// </typeparam>
     /// <typeparam name="TModel"></typeparam>
     /// <remarks>
-    /// A problem that this class is designed to solve is that validation of state transition can be decribed in a state diagram,
+    /// A problem that this class is designed to solve is that validation of state transition can be described in a state diagram,
     /// but without something like this, the code corresponding to that diagram might not be structured similarly to the diagram.
     /// This allows writing a line of code for each state transition (line) in the diagram.
     /// </remarks>
@@ -172,32 +172,55 @@ namespace JohnLambe.Util.StateMachine
         /// </summary>
         public class StateTransition
         {
-            public StateTransition(TState fromState, TState toState, Func<TModel,bool> validator = null)
+            public StateTransition(TState fromState, TState toState, Func<TModel,bool> validator = null, string name = null, string comment = null)
             {
                 this.FromState = fromState;
                 this.ToState = toState;
+
                 this.Validator = validator;
+
+                this.Name = name;
+                this.Comment = comment;
             }
 
-            public StateTransition(bool fromAny, TState fromState, bool toAny, TState toState, Func<TModel, TState, TState, bool> validator = null)
+            /// <summary>
+            /// </summary>
+            /// <param name="fromAny">true if the transition can be made from all states.</param>
+            /// <param name="fromState">The state that this transition starts from. Must be default(<typeparamref name="TState"/>) if <paramref name="fromAny"/> is true.</param>
+            /// <param name="toAny"></param>
+            /// <param name="toState"></param>
+            /// <param name="validator"></param>
+            /// <param name="name"></param>
+            /// <param name="comment"></param>
+            public StateTransition(bool fromAny, TState fromState, bool toAny, TState toState, Func<TModel, TState, TState, bool> validator = null, string name = null, string comment = null)
             {
 //                Debug.Assert((fromAny && fromState != default(TState)) || (toAny && toState != default(TState)));
 
+                if(fromAny && !fromState.Equals(default(TState)))
+                    throw new ArgumentException("'From' state is specified as both <Any> and a state", nameof(fromState));
+                if (toAny && !toState.Equals(default(TState)))
+                    throw new ArgumentException("'To' state is specified as both <Any> and a state", nameof(toState));
+
                 this.FromState = fromState;
                 this.FromAny = fromAny;
+
                 this.ToState = toState;
                 this.ToAny = toAny;
+
                 this.ValidatorEx = validator;
+
+                this.Name = name;
+                this.Comment = comment;
             }
 
-            public static StateTransition CreateFromAny(TState toState, Func<TModel, TState, TState, bool> validator = null)
+            public static StateTransition CreateFromAny(TState toState, Func<TModel, TState, TState, bool> validator = null, string name = null, string comment = null)
             {
-                return new StateTransition(true, default(TState), false, toState, validator);
+                return new StateTransition(true, default(TState), false, toState, validator, name, comment);
             }
 
-            public static StateTransition CreatToAny(TState fromState, Func<TModel, TState, TState, bool> validator = null)
+            public static StateTransition CreatToAny(TState fromState, Func<TModel, TState, TState, bool> validator = null, string name = null, string comment = null)
             {
-                return new StateTransition(false, fromState, true, default(TState), validator);
+                return new StateTransition(false, fromState, true, default(TState), validator, name, comment);
             }
 
             /// <summary>
@@ -216,7 +239,23 @@ namespace JohnLambe.Util.StateMachine
                 return ValidatorEx?.Invoke(model, fromState, toState) ?? Validator?.Invoke(model) ?? false;
             }
 
+            public override string ToString()
+            {
+                return $"State Transition ("
+                    + (Name ?? "")
+                    + (FromAny ? "Any" : FromState?.ToString())
+                    + " -> "
+                    + (ToAny ? "Any" : ToState?.ToString())
+                    + ")";
+            }
+
+            /// <summary>
+            /// The state that this transition starts from. Must be default(<typeparamref name="TState"/>) if <see name="FromAny"/> is true.
+            /// </summary>
             public virtual TState FromState { get; }
+            /// <summary>
+            /// The state that this transition ends in. Must be default(<typeparamref name="TState"/>) if <see name="FromAny"/> is true.
+            /// </summary>
             public virtual TState ToState { get; }
 
             /// <summary>
@@ -229,10 +268,21 @@ namespace JohnLambe.Util.StateMachine
             /// </summary>
             public virtual bool ToAny { get; }
 
+            /// <summary>
+            /// Name (for display) of this state transition, as it would appear on a state transition diagram.
+            /// </summary>
+            public virtual string Name { get; }
+
+            /// <summary>
+            /// Human-readable comment or documentation of this state transition.
+            /// </summary>
+            public virtual string Comment { get; }
+
             protected Func<TModel, bool> Validator { get; }
             protected Func<TModel, TState, TState, bool> ValidatorEx { get; }
         }
     }
+
 
     public interface IState<in TState, TModel>
     {
@@ -240,26 +290,32 @@ namespace JohnLambe.Util.StateMachine
         /// Condition that must always be true while in this state.
         /// </summary>
         /// <param name="model"></param>
-        /// <returns></returns>
+        /// <returns>true iff valid.</returns>
         bool ValidateInvariant(TModel model);
 
         /// <summary>
         /// Validate a guard condition that must be true before leaving this state.
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="newState"></param>
-        /// <returns></returns>
+        /// <param name="newState">The state that is about to be entered.</param>
+        /// <returns>true iff valid.</returns>
         bool ValidateBeforeLeave(TModel model, TState newState);
 
         /// <summary>
         /// Validate a guard condition that must be true before entering this state.
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="oldState"></param>
-        /// <returns></returns>
+        /// <param name="oldState">The current state of the state machine.</param>
+        /// <returns>true iff valid.</returns>
         bool ValidateBeforeEnter(TModel model, TState oldState);
     }
 
+
+    /// <summary>
+    /// Represents a state in a state machine.
+    /// This can be used to create instances or subclass.
+    /// </summary>
+    /// <typeparam name="TModel"></typeparam>
     public class State<TModel> : IState<State<TModel>, TModel>
     {
         public State(Func<TModel, bool> invariant = null, Func<TModel,State<TModel>,bool> beforeEnter = null, Func<TModel, State<TModel>, bool> beforeLeave = null)
@@ -283,6 +339,7 @@ namespace JohnLambe.Util.StateMachine
         protected Func<TModel, State<TModel>, bool> _beforeLeave;
     }
 
+
     public class InterceptableEventArgs : EventArgs
     {
         public virtual bool Cancellable { get; }
@@ -302,6 +359,7 @@ namespace JohnLambe.Util.StateMachine
         }
         protected bool _cancel;
     }
+
 
     public class StateChangeEventArgs : InterceptableEventArgs
     {
