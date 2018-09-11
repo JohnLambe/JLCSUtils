@@ -150,6 +150,7 @@
     <Compile Include="WinForms\ButtonContainer.Designer.cs">
       <DependentUpon>ButtonContainer.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForms\CommandKeyProcessor.cs" />
     <Compile Include="WinForms\Controls\!NamespaceDoc.cs" />
     <Compile Include="WinForms\Controls\GeneratorControl.cs">
       <SubType>UserControl</SubType>

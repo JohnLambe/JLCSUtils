@@ -230,7 +230,7 @@ namespace MvpFramework
                     return resolvedPresenterClass;
             }
 
-            // if no model type given, or if the above (using the model type failed), just use DI to get the type for the given Presenter interface:
+            // if no model type given, or if the above (using the model type) failed, just use DI to get the type for the given Presenter interface:
             resolvedPresenterType = ResolveType(presenterInterface);
             if (resolvedPresenterType != null)
                 return resolvedPresenterType;

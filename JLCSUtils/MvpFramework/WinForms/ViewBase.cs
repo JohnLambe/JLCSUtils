@@ -31,6 +31,7 @@ namespace MvpFramework.WinForms
         /// </summary>
         public ViewBase()
         {
+            _cmdKeys.Scan(this);
         }
 
         public ViewBase(IMessageDialogService dialogService) : this() //TODO: Change parameter to IMvpFramework ?
@@ -229,6 +230,9 @@ namespace MvpFramework.WinForms
         {
             // Processing a command key (a key that tkaes priority over normal input keys).
 
+            if(_cmdKeys.ProcessKey(keyData))
+                return true;
+
             // Send it to the View Binder (this will handle it if a handler for it is defined; the handler may or may not have a corresponding button/control):
             var args = new KeyboardKeyEventArgs(keyData.ToKeyboardKey());
             ViewBinder.ProcessKey(args);
@@ -237,6 +241,8 @@ namespace MvpFramework.WinForms
             else
                 return true;
         }
+
+        private CommandKeyProcessor _cmdKeys = new CommandKeyProcessor();
     }
 
 }

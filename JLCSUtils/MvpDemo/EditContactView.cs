@@ -132,6 +132,13 @@ namespace MvpDemo
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        [KeyHandler(Keys.F1 | Keys.Control | Keys.Shift)]
+        protected virtual bool KeyTest()
+        {
+            MessageBox.Show("CTRL+SHIFT+F1");
+            return true;
+        }
+
         //
         // Summary:
         //     Processes Windows messages.
