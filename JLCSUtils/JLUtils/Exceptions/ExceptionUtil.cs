@@ -46,7 +46,7 @@ namespace JohnLambe.Util.Exceptions
         /// <param name="wrappingExceptions">Exceptions matching exactly these types are removed.</param>
         /// <returns>The extracted exception (may be the <paramref name="ex"/>).</returns>
         [return: Nullable("Iff passed null")]
-        public static Exception ExtractException([Nullable] Exception ex, Type[] wrappingExceptionsAssignable, Type[] wrappingExceptions)
+        public static Exception ExtractException([Nullable] Exception ex, [Nullable("none")] Type[] wrappingExceptionsAssignable, [Nullable("none")] Type[] wrappingExceptions = null)
         {
             if (ex == null)
                 return null;
@@ -56,6 +56,34 @@ namespace JohnLambe.Util.Exceptions
                 ex = ex.InnerException;
             }
             return ex;
+        }
+
+        /// <summary>
+        /// Returns an inner exception (possibly multiple levels down) of the given exception
+        /// of one of the given types.
+        /// <para>
+        /// If the given exception is of assignable to of the required types (in <paramref name="requiredException"/>), it is returned,
+        /// otherwise, if its <see cref="Exception.InnerException"/> is assignable to one of those types, it is returned,
+        /// otherwise, this is repeated for each level of inner exception until one is found of one of the required types, or the InnerException is null.
+        /// </para>
+        /// </summary>
+        /// <param name="ex">Original exception.</param>
+        /// <param name="requiredException">Types of exception that can be returned.</param>
+        /// <returns>The extracted exception. null if there is no inner exception of one of the required types, or <paramref name="ex"/> is null.</returns>
+        [return: Nullable("If required exception type is not found")]
+        public static Exception ExtractExceptionOfType([Nullable] Exception ex, params Type[] requiredException)
+        {
+            if (ex == null)
+                return null;
+            do
+            {
+                if(TypeUtil.IsAssignableToAny(ex.GetType(), requiredException))
+                {
+                    return ex;           // matching exception found
+                }
+                ex = ex.InnerException;
+            } while (ex.InnerException != null);
+            return null;   // not found
         }
 
         /// <summary>

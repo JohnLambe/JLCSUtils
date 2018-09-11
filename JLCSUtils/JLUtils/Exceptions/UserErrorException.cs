@@ -45,9 +45,10 @@ namespace JohnLambe.Util.Exceptions
         //   innerException:
         //     The exception that is the cause of the current exception, or a null reference
         //     (Nothing in Visual Basic) if no inner exception is specified.
-        public UserErrorException(string message, Exception innerException, string detailMessage = null) : base(message, innerException)
+        public UserErrorException(string message, Exception innerException, string detailMessage = null, string title = null) : base(message, innerException)
         {
             DetailMessage = detailMessage;
+            Title = title;
         }
 
         /// <summary>
@@ -61,6 +62,11 @@ namespace JohnLambe.Util.Exceptions
         /// <para>User interfaces may hide this from the user unless they request it by a UI action (e.g. clicking a button, or icon to expand a panel).</para>
         /// </summary>
         public virtual string DetailMessage { get; protected set; }
+
+        /// <summary>
+        /// The title to be show in the title of an error dialog or equivalent.
+        /// </summary>
+        public virtual string Title { get; protected set; }
 
     }
 }
