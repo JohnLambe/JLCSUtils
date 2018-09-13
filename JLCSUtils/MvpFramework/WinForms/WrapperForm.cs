@@ -99,7 +99,8 @@ namespace MvpFramework.WinForms
             MinimumSize = SizeFromChildSize(Child.MinimumSize);
 
             // Synchronise the size of this form with the child:
-            ClientSize = Child.Size;
+            if(Child.Size.Height > 0)       // Height can be 0 on minimizing and maximizing. We ignore it, otherwise, the window height would be reduced to just a title bar.
+                ClientSize = Child.Size;
         }
 
         /// <summary>
@@ -194,7 +195,7 @@ namespace MvpFramework.WinForms
     }
 
 
-    public static class WindowOptionsExt
+    public static class WindowOptionsExtension
     {
         /// <summary>
         /// Apply these options to the given form.
@@ -204,7 +205,7 @@ namespace MvpFramework.WinForms
         public static void Apply(this WindowOptions options, Form window)
         {
             if(options.Opacity.HasValue)
-                window.Opacity = Math.Round((double)options.Opacity.Value * 100);
+                window.Opacity = (double)options.Opacity.Value;
 
             window.ShowInTaskbar = options.ShowInTaskBar ?? window.ShowInTaskbar;
             window.MinimizeBox = options.MinimizeButton ?? window.MinimizeBox;
