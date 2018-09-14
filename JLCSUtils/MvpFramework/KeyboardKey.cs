@@ -551,7 +551,7 @@ namespace MvpFramework
         // Summary:
         //     The decimal key.
         /// <summary>
-        /// The '+' key on the numeric keypad.
+        /// The '.' key on the numeric keypad.
         /// </summary>
         [DisplayNameAny(".")]
         Decimal = 110,
@@ -874,7 +874,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM open bracket key on a US standard keyboard (Windows 2000 or later).
-        [DisplayNameAny("Open Bracket")]
+        [DisplayNameAny("Open Bracket", ShortName = "[")]
         OemOpenBrackets = 219,
         //
         // Summary:
@@ -884,7 +884,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM pipe key on a US standard keyboard (Windows 2000 or later).
-        [DisplayNameAny("Pipe")]
+        [DisplayNameAny("Pipe", ShortName = "|")]
         OemPipe = 220,
         //
         // Summary:
@@ -894,7 +894,7 @@ namespace MvpFramework
         //
         // Summary:
         //     The OEM close bracket key on a US standard keyboard (Windows 2000 or later).
-        [DisplayNameAny("Close Bracket")]
+        [DisplayNameAny("Close Bracket", ShortName = "]")]
         OemCloseBrackets = 221,
         //
         // Summary:
@@ -919,7 +919,7 @@ namespace MvpFramework
         // Summary:
         //     The OEM angle bracket or backslash key on the RT 102 key keyboard (Windows 2000
         //     or later).
-        [DisplayNameAny("Backslash")]
+        [DisplayNameAny("Backslash", ShortName = "\\")]
         OemBackslash = 226,
         //
         // Summary:
@@ -1144,6 +1144,126 @@ namespace MvpFramework
         public static KeyboardKey GetBaseKey(this KeyboardKey key)
         {
             return key & KeyboardKey.BaseKey;
+        }
+
+        /// <summary>
+        /// If the base key of this key is a Function Key, this returns its F key number, otherwise null.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>F key number or null.</returns>
+        [Pure]
+        public static int? GetFKeyNumber(this KeyboardKey key)
+        {
+            key = key.GetBaseKey();
+            if (key >= KeyboardKey.F1 && key <= KeyboardKey.F24)         // depends on these being in a contiguous block, in order
+                return key - KeyboardKey.F1 + 1;
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// If this the base key of this key is a digit, this returns its number (digit value), otherwise null.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>F key number or null.</returns>
+        [Pure]
+        public static int? GetDigit(this KeyboardKey key)
+        {
+            key = key.GetBaseKey();
+            if (key >= KeyboardKey.D0 && key <= KeyboardKey.D9)         // depends on these being in a contiguous block, in order
+                return key - KeyboardKey.D0;
+            else if (key >= KeyboardKey.NumPad0 && key <= KeyboardKey.NumPad9)         // depends on these being in a contiguous block, in order
+                return key - KeyboardKey.NumPad0;
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// If the base key is an F key or digit key, this returns the F key number of digit value, otherwise null.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>F key number, digit value or null.</returns>
+        [Pure]
+        public static int? GetKeyNumber(this KeyboardKey key)
+        {
+            return GetDigit(key) ?? GetFKeyNumber(key);
+        }
+
+        /// <summary>
+        /// Tests whether the base key of this key is on the number keypad.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>true iff the key is on the numeric keypad.</returns>
+        [Pure]
+        public static bool IsNumPadKey(this KeyboardKey key)
+        {
+            key = key.GetBaseKey();
+            return key >= KeyboardKey.NumPad0 && key <= KeyboardKey.Divide;                  // depends on these being in a contiguous block, in order
+        }
+
+        /// <summary>
+        /// If the base key corresponds to a character (including control codes), it is returned, otherwise null is returned.
+        /// Letter keys are mapped to the capital letter.
+        /// Other keys generally return the character that they produce when pressed with no modifier keys.
+        /// Modifier keys are ignored.
+        /// <para>NOTE: Back and Delete are likely to change.</para>
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [Pure]
+        public static char? BaseKeyToChar(this KeyboardKey key)
+        {
+            key = key.GetBaseKey();
+            switch(key)
+            {
+                case KeyboardKey.Back:         // Should this return 8 or 127 ?
+                case KeyboardKey.Tab:
+                case KeyboardKey.LineFeed:
+                case KeyboardKey.Return:
+                case KeyboardKey.Escape:
+                case KeyboardKey.Space:
+                    return (char)key;
+                case KeyboardKey.Delete:
+                    return (char)127;   // ?? RISC OS returns 8 for DELETE and 127 for Backspace.
+                case KeyboardKey.Decimal:
+                case KeyboardKey.OemPeriod:
+                    return '.';
+                case KeyboardKey.Multiply:
+                    return '*';
+                case KeyboardKey.Divide:
+                    return '/';
+                case KeyboardKey.Add:
+                case KeyboardKey.OemPlus:
+                    return '+';
+                case KeyboardKey.Subtract:
+                case KeyboardKey.OemMinus:
+                    return '-';
+
+                case KeyboardKey.OemSemicolon:
+                    return ';';
+                case KeyboardKey.OemComma:
+                    return ',';
+                case KeyboardKey.OemQuestion:
+                    return '?';
+                case KeyboardKey.Oemtilde:
+                    return '~';
+                case KeyboardKey.OemOpenBrackets:
+                    return '[';
+                case KeyboardKey.OemPipe:
+                    return '|';
+                case KeyboardKey.OemCloseBrackets:
+                    return ']';
+                case KeyboardKey.OemBackslash:
+                    return '\\';
+
+                default:
+                    if ((key >= KeyboardKey.D0 && key <= KeyboardKey.D9) || (key >= KeyboardKey.A && key <= KeyboardKey.Z))
+                        return (char)key;
+                    else if (key >= KeyboardKey.NumPad0 && key <= KeyboardKey.NumPad9)
+                        return (char)(key - KeyboardKey.NumPad0 + '0');
+                    else
+                        return null;
+            }
         }
 
         /// <summary>

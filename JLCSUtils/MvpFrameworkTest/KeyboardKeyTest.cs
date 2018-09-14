@@ -136,5 +136,81 @@ namespace MvpFrameworkTest
                 () => Assert.AreEqual(KeyboardKey.G | KeyboardKey.Alt | KeyboardKey.Shift, KeyboardKeyExtension.ToKeyboardKey(ConsoleKey.G, ConsoleModifiers.Alt | ConsoleModifiers.Shift))
                 );
         }
+
+        [TestMethod]
+        public void GetFKeyNumber()
+        {
+            TestUtil.Multiple(
+                () => Assert.AreEqual(1, KeyboardKeyExtension.GetFKeyNumber(KeyboardKey.F1)),
+                () => Assert.AreEqual(8, KeyboardKeyExtension.GetFKeyNumber(KeyboardKey.F8)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetFKeyNumber(KeyboardKey.F1 - 1)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetFKeyNumber(KeyboardKey.C)),
+                () => Assert.AreEqual(11, KeyboardKeyExtension.GetFKeyNumber(KeyboardKey.F11 | KeyboardKey.Shift | KeyboardKey.Alt | KeyboardKey.Control)),
+                () => Assert.AreEqual(24, KeyboardKeyExtension.GetFKeyNumber(KeyboardKey.F24 | KeyboardKey.Shift))
+                );
+        }
+
+        [TestMethod]
+        public void GetDigit()
+        {
+            TestUtil.Multiple(
+                () => Assert.AreEqual(1, KeyboardKeyExtension.GetDigit(KeyboardKey.D1)),
+                () => Assert.AreEqual(9, KeyboardKeyExtension.GetDigit(KeyboardKey.D9)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetDigit(KeyboardKey.F8)),
+                () => Assert.AreEqual(5, KeyboardKeyExtension.GetDigit(KeyboardKey.NumPad5)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetDigit(KeyboardKey.C)),
+                () => Assert.AreEqual(4, KeyboardKeyExtension.GetDigit(KeyboardKey.NumPad4 | KeyboardKey.Shift | KeyboardKey.Alt)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.Control))  // no base key
+                );
+        }
+
+        [TestMethod]
+        public void GetKeyNumber()
+        {
+            TestUtil.Multiple(
+                () => Assert.AreEqual(1, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.D1)),
+                () => Assert.AreEqual(7, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.D7)),
+                () => Assert.AreEqual(21, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.F21)),
+                () => Assert.AreEqual(4, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.NumPad4)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.G)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.LShiftKey)),
+                () => Assert.AreEqual(6, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.NumPad6 | KeyboardKey.Control)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.GetKeyNumber(KeyboardKey.None))
+                );
+        }
+
+        [TestMethod]
+        public void IsNumPad()
+        {
+            TestUtil.Multiple(
+                () => Assert.AreEqual(false, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.D1)),
+                () => Assert.AreEqual(false, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.Delete)),
+                () => Assert.AreEqual(false, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.F21 | KeyboardKey.Alt)),
+                () => Assert.AreEqual(true, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.NumPad3)),
+                () => Assert.AreEqual(true, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.Decimal)),
+                () => Assert.AreEqual(false, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.OemPeriod)),
+                () => Assert.AreEqual(false, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.ControlKey)),
+                () => Assert.AreEqual(true, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.NumPad7 | KeyboardKey.Control)),
+                () => Assert.AreEqual(false, KeyboardKeyExtension.IsNumPadKey(KeyboardKey.None))
+                );
+        }
+
+        [TestMethod]
+        public void ToChar()
+        {
+            TestUtil.Multiple(
+                () => Assert.AreEqual('1', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.D1)),
+                () => Assert.AreEqual('7', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.D7)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.F21)),
+                () => Assert.AreEqual('7', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.NumPad7)),
+                () => Assert.AreEqual('K', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.K)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.LShiftKey)),
+                () => Assert.AreEqual('6', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.NumPad6 | KeyboardKey.Control)),
+                () => Assert.AreEqual(null, KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.None)),
+                () => Assert.AreEqual('\r', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.Return)),
+                () => Assert.AreEqual('-', KeyboardKeyExtension.BaseKeyToChar(KeyboardKey.Subtract))
+                );
+        }
+
     }
 }
