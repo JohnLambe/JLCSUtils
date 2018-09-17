@@ -98,6 +98,7 @@
     <Compile Include="Security\NullSecurityManager.cs" />
     <Compile Include="Security\SecurityManager.cs" />
     <Compile Include="Security\UserAuthenticationFailedException.cs" />
+    <Compile Include="Util\TabControlKeyboardHandler.cs" />
     <Compile Include="WindowOptions.cs" />
     <Compile Include="WinForms\!NamespaceDoc.cs" />
     <Compile Include="WinForms\ApplicationExceptionHandler.cs" />
@@ -152,6 +153,9 @@
     </Compile>
     <Compile Include="WinForms\CommandKeyProcessor.cs" />
     <Compile Include="WinForms\Controls\!NamespaceDoc.cs" />
+    <Compile Include="WinForms\Controls\ExtTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForms\Controls\GeneratorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -262,9 +266,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

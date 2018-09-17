@@ -29,6 +29,10 @@ namespace MvpDemo
             this.TestLayoutPresenterFactory = testLayoutPresenterFactory;
 
             InitializeComponent();
+
+
+            extTabControl1.ChangeTabNumberKeys = MvpFramework.Util.NumberKeysType.MainZeroHigh | MvpFramework.Util.NumberKeysType.NumPadZeroHigh;
+            extTabControl1.TabPages[2].Hide();
         }
 
         private void button1_Click(object sender, EventArgs e)
