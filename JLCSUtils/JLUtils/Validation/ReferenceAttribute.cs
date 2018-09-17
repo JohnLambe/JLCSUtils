@@ -118,10 +118,24 @@ namespace JohnLambe.Util.Validation
 
         public override string Description
         {
-            get { return _source.Value?.GetCustomAttribute<DescriptionAttribute>().Description; }
+            get
+            {
+                var attribute = _source.Value?.GetCustomAttribute<DescriptionAttribute>();
+                if (attribute == null && !Required)
+                    throw new ArgumentException("Referenced " + nameof(DescriptionAttribute) + " does not exist: " + SourceType?.Name + 
+                        (SourcePropertyName != null ? "." + SourcePropertyName: "") );
+                return attribute?.Description;
+            }
         }
 
-        public override bool IsDefaultAttribute() => Description != "";
+        /// <summary>
+        /// Iff true, an exception is thrown if there is no <see cref="DescriptionAttribute"/> on the source type or property.
+        /// Otherwise, <see cref="Description"/> is null in this case.
+        /// </summary>
+        public virtual bool Required { get; set; } = false;
+
+        public override bool IsDefaultAttribute() => false;
+        // This would not be useful or valid if no properties were set.
 
         [NotNull]
         protected readonly Lazy<MemberInfo> _source;

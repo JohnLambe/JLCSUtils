@@ -61,6 +61,7 @@
     <Compile Include="Binding\GetPropertyDelegate.cs" />
     <Compile Include="Binding\IUiTypeAdaptor.cs" />
     <Compile Include="Binding\IViewBinder.cs" />
+    <Compile Include="Binding\ModelMetadataAttributes.cs" />
     <Compile Include="Binding\MvpContext.cs" />
     <Compile Include="Binding\OptionUpdate.cs" />
     <Compile Include="Binding\ViewBinderBase.cs">

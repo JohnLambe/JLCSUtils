@@ -85,6 +85,9 @@ TODO:
 		Enable/Disable controls based on whether there is a selected record.
 	ViewBinder handles hotkeys on the model mathcing a certain filter.
 
+	OptionCollection assigns accelerator characters.
+	Assignment of accelerator characters sets explicitly configured ones first, then assigns the rest automatically (avoiding conflicts with the explicitly assigned ones).
+
 
 Possible additions:
 	Rejected: Map handlers (by ID) from the view to methods on the Presenter Interface?

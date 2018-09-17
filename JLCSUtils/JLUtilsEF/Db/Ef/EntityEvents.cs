@@ -36,4 +36,27 @@ namespace JohnLambe.Util.Db.Ef
     {
         void BeforeSaveChanges();
     }
+
+
+    /// <summary>
+    /// An entity with handler(s) for certain events.
+    /// </summary>
+    public interface IEntityWithEvents
+    {
+        /// <summary>
+        /// Called after certain actions that change an entity's state.
+        /// </summary>
+        void AfterEntityStateChange(EntityStateChangeArgs args);
+    }
+
+    public class EntityStateChangeArgs : EventArgs
+    {
+        public EntityStateChangeArgs(OrmEntityState newState)
+        {
+            this.NewState = newState;
+        }
+
+        public OrmEntityState NewState { get; }
+    }
+
 }
