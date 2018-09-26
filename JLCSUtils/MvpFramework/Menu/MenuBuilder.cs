@@ -117,6 +117,7 @@ namespace MvpFramework.Menu
                 Params = attribute.Params,
                 Rights = attribute.Rights,
                 Filter = attribute.Filter,
+                IconId = attribute.IconId,
                 Attribute = attribute,
                 //| Could copy by reflection (wouldn't require a change when adding new properties of the attribute).
             };

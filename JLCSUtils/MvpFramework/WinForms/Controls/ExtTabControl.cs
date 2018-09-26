@@ -8,6 +8,10 @@ using MvpFramework.Util;
 
 namespace MvpFramework.WinForms.Controls
 {
+    /// <summary>
+    /// Extended tab control.
+    /// Handles extra keystrokes for changing tab.
+    /// </summary>
     public class ExtTabControl : System.Windows.Forms.TabControl
     {
         public ExtTabControl()

@@ -34,6 +34,11 @@ namespace MvpFrameworkTest.Menu
 
             // Assert:
             Assert.AreEqual(3, menu.Children.Count(), "Wrong number of menu items");
+
+            var presenter2MenuItem = menu.Children.ElementAt(1);
+            Assert.AreEqual("Presenter2", presenter2MenuItem.DisplayName, "DisplayName doesn't match");
+            Assert.AreEqual("Presenter2Icon", presenter2MenuItem.IconId, "Icon not populated");
+            Assert.AreEqual(KeyboardKey.F8, presenter2MenuItem.HotKey, "HotKey not populated");
         }
 
         [TestMethod]
@@ -132,7 +137,7 @@ namespace MvpFrameworkTest.Menu
         }
     }
 
-    [MenuItem("#MainMenu", "Presenter2")]
+    [MenuItem("#MainMenu", "Presenter2", IconId = "Presenter2Icon", HotKey = KeyboardKey.F8)]
     public class Presenter2InMenu : IPresenter
     {
         public object Show()

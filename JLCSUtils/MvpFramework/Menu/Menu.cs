@@ -272,11 +272,11 @@ namespace MvpFramework.Menu
         public virtual string MenuHierarchyText(string indent = "")
         {
             StringBuilder output = new StringBuilder(1024);
-            output.Append(indent + ToString() + "\n");
+            output.Append(indent + ToString() + "\t" + IconId + "\t" + (HotKey != KeyboardKey.None ? HotKey.ToString() : "") + "\n");
             string newIndent = indent + "  ";
             foreach (var item in Children)
             {
-                output.Append(newIndent + item.MenuHierarchyText(newIndent));
+                output.Append(indent + item.MenuHierarchyText(newIndent));
             }
             return output.ToString();
         }
