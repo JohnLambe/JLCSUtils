@@ -167,6 +167,33 @@ namespace JohnLambe.Util.Validation
     }
 
 
+    /// <summary>
+    /// Validates that specified properties are unique among the collection elements.
+    /// <para>
+    /// For placment on a property of type <see cref="ICollection{T}"/>.
+    /// </para>
+    /// </summary>
+    public class CollectionUniqueConstraintValidationAttribute : ValidationAttributeBase
+    {
+        /// <summary>
+        /// The properties of the collection element that must (in combination) be unique.
+        /// <para>These properties must be defined on the type that is the generic type parameter of the declared type (the collection type) of the attributed item.
+        /// </para>
+        /// </summary>
+        public virtual string[] Properties { get; set; }
+
+        /*TODO:
+        protected override void IsValid(ref object value, ValidationContext validationContext, ValidationResults results)
+        {
+            base.IsValid(ref value, validationContext, results);
+
+            var collection = value as ICollection<object>;  //TODO get type by reflection
+            collection.Distinct( ... );
+        }
+        */
+    }
+
+
 
     //TODO: Attribute to set initial value, or default value to be used when null.
     //   or use DefaultValueAttribute ?

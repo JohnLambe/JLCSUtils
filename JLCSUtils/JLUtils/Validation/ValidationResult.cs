@@ -53,6 +53,31 @@ namespace JohnLambe.Util.Validation
         /// </summary>
         public virtual bool IsValid
             => Type.IsValid();
+
+        /// <summary>
+        /// Throw an exception if this instance represents validation failure.
+        /// </summary>
+        /// <exception/>
+        public virtual void Throw()
+        {
+            var exception = ToException();
+            if (exception != null)
+            {
+                throw exception;
+            }
+        }
+
+        /// <summary>
+        /// Convert this instance to an exception.
+        /// </summary>
+        /// <returns></returns>
+        public virtual Exception ToException()
+        {
+            if (IsValid)
+                return null;
+            else
+                return new UserErrorException(ErrorMessage);
+        }
     }
 
 

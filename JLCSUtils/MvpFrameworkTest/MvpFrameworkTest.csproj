@@ -65,6 +65,7 @@
     <Compile Include="KeyboardKeyTest.cs" />
     <Compile Include="Menu\MenuBuilderTest.cs" />
     <Compile Include="Menu\OptionCollectionBuilderTest.cs" />
+    <Compile Include="MockDialogService.cs" />
     <Compile Include="RegistrationHelperTest.cs" />
     <Compile Include="ResolverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

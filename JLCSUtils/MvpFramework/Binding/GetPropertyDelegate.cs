@@ -16,10 +16,9 @@ namespace MvpFramework.Binding
     }
 
     /// <summary>
-    /// Delegate to return a name/ID of an item.
-    /// This is typically used when the name matches the name of a type member in code.
+    /// Returns a delegate to get the property value, given the model object.
     /// </summary>
-    /// <returns>The name/ID.</returns>
+    /// <returns>The delegate.</returns>
     /// <remarks>
     /// When used for names of type members, the recommended way to write the handler is like:
     /// <code>
@@ -30,4 +29,6 @@ namespace MvpFramework.Binding
     /// to an incompatible one, will result in a compile-time error.
     /// </remarks>
     public delegate Func<TModel,TProperty> GetPropertyDelegate<TModel, TProperty>(object sender, GetPropertyEventArgs args);
+
+    public delegate Func<object,object> GetPropertyEventHandler(object sender, GetPropertyEventArgs args);
 }

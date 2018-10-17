@@ -20,12 +20,17 @@ namespace MvpFramework
         public const string DesignerCategory = "MVP";
 
         /// <summary>
-        /// The description, for use in a UI designer, for a property with <see cref="MvpHandlerIdPropertyAttribute"/>.
+        /// The description, for use in a UI designer, for a property with <see cref="MvpModelPropertyAttribute"/>.
         /// </summary>
         public const string ModelPropertyNameDescription = "The name of the bound property on the model.";
 
         /// <summary>
-        /// The description, for use in a UI designer, for a property with <see cref="MvpModelPropertyAttribute"/>.
+        /// The description, for use in a UI designer, for a property with <see cref="MvpModelPropertyAttribute"/>, returning a delegate.
+        /// </summary>
+        public const string ModelPropertyDelegateDescription = "The delegate to return the value of the bound property.";
+
+        /// <summary>
+        /// The description, for use in a UI designer, for a property with <see cref="MvpHandlerIdPropertyAttribute"/>.
         /// </summary>
         public const string HandlerIdDescription = "The ID of the handler on Presenter.";
     }
