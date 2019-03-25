@@ -52,7 +52,7 @@ namespace MvpFramework.Generator
     #region For models
 
     /// <summary>
-    /// Attributes for methods that generate view of data.
+    /// Attributes for methods that generate a view of data.
     /// <para>
     /// Parameters can be injected from a DI container (attributed with <see cref="DiExtension.Attributes.InjectAttribute"/>)
     /// or supplied by the consumer or user interface (attributed with <see cref="MvpParamAttribute"/>).
@@ -77,7 +77,7 @@ namespace MvpFramework.Generator
     }
 
     /// <summary>
-    /// Flags a static method that takes the output of a method on the method attributed with <see cref="ListGeneratorAttribute"/>
+    /// Flags a static method that takes the output of a method attributed with <see cref="ListGeneratorAttribute"/>
     /// and returns a new <see cref="IQueryable"/> that modifies it.
     /// This could filter, sort, project or change the data in other ways.
     /// <para>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JohnLambe.Util.Text;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -55,18 +56,18 @@ namespace JohnLambe.Util.GraphicUtil
         public static Color FromGrey(int greyLevel) => Color.FromArgb(greyLevel, greyLevel, greyLevel);
 
         /// <summary>
-        /// Convert a hexadecimal color value to a <see cref="Color"/>.
+        /// Convert a hexadecimal (A)RGB color value to a <see cref="Color"/>.
         /// </summary>
         /// <param name="hexColor">
-        /// Hexadecimal RGB or ARGB value, with 1 or 2 digits per channel,
+        /// Hexadecimal RGB or ARGB value, with 1 or 2 digits (4 or 8 bits) per channel,
         /// with or without a leading "#".
-        ///     CURRENTLY SUPPORTS ONLY THE 2 DIGIT PER CHANNEL FORMAT.
         /// If null or "", <see cref="Color.Empty"/> is returned.
         /// <para>If no alpha value is supplied, the output color is opaque.</para>
         /// <para>HTML format hexadecimal values can be used.</para>
         /// <para>The order of the channels is: alpha, red, green, blue.</para>
         /// </param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"/>
         public static Color FromHex(string hexColor)
         {
             if (string.IsNullOrEmpty(hexColor))
@@ -85,16 +86,14 @@ namespace JohnLambe.Util.GraphicUtil
                 {
                     return Color.FromArgb(int.Parse("FF" + hexColor, System.Globalization.NumberStyles.AllowHexSpecifier));
                 }
-                /*
                 else if (hexColor.Length == 3)  // RGB 4 bits per channel
                 {
-                    return Color.FromArgb(hexColor[0].HexValue * 0x10, hexColor[1].HexValue, hexColor[2].HexValue);
+                    return Color.FromArgb(hexColor[0].HexDigitValue() * 0x11, hexColor[1].HexDigitValue() * 0x11, hexColor[2].HexDigitValue() * 0x11);
                 }
                 else if (hexColor.Length == 4)   // ARGB 4 bits per channel
                 {
-                    return Color.FromArgb(hexColor[0].HexValue * 0x10, hexColor[1].HexValue, hexColor[2].HexValue, hexColor[3].HexValue);
+                    return Color.FromArgb(hexColor[0].HexDigitValue() * 0x11, hexColor[1].HexDigitValue() * 0x11, hexColor[2].HexDigitValue(), hexColor[3].HexDigitValue() * 0x11);
                 }
-                */
                 else
                 {
                     throw new ArgumentException("Invalid hexadecimal color value: " + hexColor);

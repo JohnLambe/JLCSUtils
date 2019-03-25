@@ -777,6 +777,10 @@ namespace JohnLambe.Util.Reflection
             return propertyReference.Substring(0, propertyReference.Length - 1);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="modifier"></param>
+        /// <returns>true iff this modifier indicates that the property may be null or not present.</returns>
         public static bool IsNullable([NotNull] this PropertyNullabilityModifier modifier)
             => modifier <= PropertyNullabilityModifier.ExistsNullable;
 
@@ -823,7 +827,7 @@ namespace JohnLambe.Util.Reflection
                     if (!currentLevelNullabilityModifier.IsNullable())    // null and not nullable
                     {
                         ex = new NullReferenceException("Null reference in '" + propertyName + "'"
-                                    + " on (root) " + DiagnosticStringUtil.GetDebugDisplay(rootTarget)
+                                + " on (root) " + DiagnosticStringUtil.GetDebugDisplay(rootTarget)
                                 + ": '" + localPropertyName + "' (level " + level + ") is null");
                     }
                 }

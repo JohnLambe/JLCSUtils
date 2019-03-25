@@ -112,6 +112,8 @@
     <Compile Include="LazyInitializeTest.cs" />
     <Compile Include="MathUtilities\BitUtilTest.cs" />
     <Compile Include="Encoding\HexConverterTest.cs" />
+    <Compile Include="MathUtilities\DecimalUtilTest.cs" />
+    <Compile Include="MathUtilities\FloatingPointUtilTest.cs" />
     <Compile Include="MathUtilities\MathUtilTest.cs" />
     <Compile Include="MathUtilities\OrdinalUtilTest.cs" />
     <Compile Include="Misc\FlowControlUtilTest.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="ReferenceCountedObjectTest.cs" />
     <Compile Include="Reflection\AttributeUtilTest.cs" />
     <Compile Include="Reflection\BoundPropertyTest.cs" />
+    <Compile Include="Reflection\ExpressionToBoundPropertyTest.cs" />
     <Compile Include="Reflection\PropertyDefaultUtilTest.cs" />
     <Compile Include="Reflection\EnumAttributeUtilTest.cs" />
     <Compile Include="Reflection\EnumUtilTest.cs" />
@@ -167,6 +170,7 @@
     <Compile Include="TimeUtilities\TimeTest.cs" />
     <Compile Include="TimeUtilities\TimeUtilTest.cs" />
     <Compile Include="TypeConversion\GeneralTypeConverterTest.cs" />
+    <Compile Include="Types\DataSizeAttributeTest.cs" />
     <Compile Include="Types\GuidUtilTest.cs" />
     <Compile Include="Types\IDTest.cs" />
     <Compile Include="Types\NotNullAttributeTest.cs" />

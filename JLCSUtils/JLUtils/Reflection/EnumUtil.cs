@@ -240,6 +240,14 @@ namespace JohnLambe.Util.Reflection
         }
         */
 
+        /// <summary>
+        /// Get the FieldInfo for each of the enum values.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <returns></returns>
+        public static IEnumerable<FieldInfo> GetEnumFields(Type enumType)
+            => enumType.GetFields().Where(f => f.IsStatic);
+
     }
 
 

@@ -372,6 +372,40 @@ namespace JohnLambe.Util.MathUtilities
 
         #endregion
 
+
+        /// <summary>
+        /// Returns a specified number raised to the specified power.
+        /// (Same as <see cref="System.Math.Pow(double, double)"/> except that this takes integer parameters.)
+        /// </summary>
+        /// <param name="value">A number to be raised to a power.</param>
+        /// <param name="power">The power.</param>
+        /// <returns>The number <paramref name="value"/> raised to the power <paramref name="power"/>.</returns>
+        /// <remarks>
+        /// This can be used for convenience (to keep the casting out of the calling code),
+        /// and provides the ability to replace this with an implementation optimised for integers in a later version.
+        /// </remarks>
+        // Documentation copied and modified from System.Math.Pow.
+        public static long Pow(long value, long power)
+        {
+            return (long)System.Math.Pow(value, power);
+        }
+
+        /// <summary>
+        /// Returns a specified number raised to the specified power.
+        /// (Same as <see cref="System.Math.Pow(double, double)"/> except that this takes integer parameters.)
+        /// </summary>
+        /// <param name="value">A number to be raised to a power.</param>
+        /// <param name="power">The power.</param>
+        /// <returns>The number <paramref name="value"/> raised to the power <paramref name="power"/>.</returns>
+        /// <remarks>
+        /// This can be used for convenience (to keep the casting out of the calling code),
+        /// and provides the ability to replace this with an implementation optimised for integers in a later version.
+        /// </remarks>
+        // Documentation copied and modified from the other overload.
+        public static int Pow(int value, int power)
+        {
+            return (int)System.Math.Pow(value, power);
+        }
     }
 
 }

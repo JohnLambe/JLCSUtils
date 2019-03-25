@@ -78,7 +78,6 @@
     <Compile Include="GraphicUtil\CoordinateUtil.cs" />
     <Compile Include="GraphicUtil\ImageUtil.cs" />
     <Compile Include="Interfaces\CommonInterfaces.cs" />
-    <Compile Include="Interfaces\IObjectMarshaller.cs" />
     <Compile Include="Io\!NamespaceDoc.cs" />
     <Compile Include="Io\DirectoryUtil.cs" />
     <Compile Include="Linq\SubExpressionUtil.cs" />
@@ -103,7 +102,6 @@
     <Compile Include="Text\FormatUtil.cs" />
     <Compile Include="Text\PreprocessComparer.cs" />
     <Compile Include="TimeUtilities\DaysOfWeek.cs" />
-    <Compile Include="Validation\DataSizeAttribute.cs" />
     <Compile Include="Types\GuidUtil.cs" />
     <Compile Include="Misc\IconRepository.cs" />
     <Compile Include="Misc\IIconRepository.cs" />

@@ -254,6 +254,19 @@ namespace JohnLambe.Tests.JLUtilsTest
         }
 
         [TestMethod]
+        public void RemoveLast()
+        {
+            Multiple(
+                () => Assert.AreEqual("zxcvb", "zxcvbnm".RemoveLast(2)),
+                () => Assert.AreEqual("ASDFghjkl", "ASDFghjkl".RemoveLast(0)),
+                () => Assert.AreEqual("ASDFghjkl", "ASDFghjkl".RemoveLast(-100)),
+                () => Assert.AreEqual("", "é-qwerty-Á".RemoveLast(500), "length longer than string"),
+                () => Assert.AreEqual(null, StrUtil.RemoveLast(null, 0))
+            );
+        }
+
+
+        [TestMethod]
         public void NullPropagate()
         {
             Multiple(

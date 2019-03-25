@@ -34,6 +34,9 @@ namespace JohnLambe.Util.Db.Ef
 
     public interface IEntityBeforeSaveChanges
     {
+        /// <summary>
+        /// Called immediately before changes are saved to the database.
+        /// </summary>
         void BeforeSaveChanges();
     }
 

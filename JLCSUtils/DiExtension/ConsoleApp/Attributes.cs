@@ -64,7 +64,7 @@ namespace DiExtension.ConsoleApp
     }
 
     /// <summary>
-    /// Indicates a method that can be invoked by the command/operation parameter.
+    /// Indicates a method or class that can be invoked by the command/operation parameter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class ConsoleCommandAttribute : ConsoleAttribute

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using JohnLambe.Util.Types;
 
 namespace JohnLambe.Util.Reflection
 {
@@ -14,7 +15,7 @@ namespace JohnLambe.Util.Reflection
     /// <typeparam name="TProperty">The type of the property.</typeparam>
     public class DelegateBoundProperty<TTarget, TProperty> : BoundProperty<TTarget, TProperty>
     {
-        public DelegateBoundProperty(Func<TTarget> targetDelegate, PropertyInfo property) : base(property)
+        public DelegateBoundProperty([NotNull] Func<TTarget> targetDelegate, PropertyInfo property) : base(property)
         {
             ObjectExtension.CheckArgNotNull(targetDelegate, nameof(targetDelegate));
             property.ArgNotNull(nameof(property));
@@ -27,6 +28,9 @@ namespace JohnLambe.Util.Reflection
         /// </summary>
         protected Func<TTarget> TargetDelegate { get; }
 
+        /// <summary>
+        /// The bound instance.
+        /// </summary>
         public override TTarget Target
         {
             get

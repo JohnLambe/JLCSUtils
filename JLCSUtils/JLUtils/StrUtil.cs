@@ -139,9 +139,9 @@ namespace JohnLambe.Util
         /// Concatenates all strings in the enumerable, with a separator.
         /// The separator is included even between blank parts.
         /// </summary>
-        /// <param name="separator"></param>
-        /// <param name="parts"></param>
-        /// <returns></returns>
+        /// <param name="separator">the separator. null for none.</param>
+        /// <param name="parts">The items to be concatenated.</param>
+        /// <returns>the concatenated string.</returns>
         public static string ConcatWithSeparatorIncludeBlanks(string separator, params string[] parts)
         {
             return ConcatWithSeparatorIncludeBlanks(separator, parts);
@@ -151,16 +151,16 @@ namespace JohnLambe.Util
         /// Concatenates all strings in the enumerable, with a separator.
         /// The separator is included even between blank parts.
         /// </summary>
-        /// <param name="separator"></param>
-        /// <param name="parts"></param>
-        /// <returns></returns>
+        /// <param name="separator">the separator. null for none.</param>
+        /// <param name="parts">The items to be concatenated.</param>
+        /// <returns>the concatenated string.</returns>
         public static string ConcatWithSeparatorIncludeBlanks(string separator, IEnumerable<object> parts)
         {
-            StringBuilder sb = new StringBuilder(TotalLength(separator.Length, parts));
+            StringBuilder sb = new StringBuilder(TotalLength(separator?.Length ?? 0, parts));
 
             foreach (var part in parts)
             {
-                if (sb.Length > 0)
+                if (sb.Length > 0 && !string.IsNullOrEmpty(separator))
                 {
                     sb.Append(separator);
                 }
@@ -174,12 +174,12 @@ namespace JohnLambe.Util
         /// Concatenate all non-null, non-blank strings in the parameter list,
         /// with a separator between them.
         /// </summary>
-        /// <param name="separator"></param>
-        /// <param name="parts"></param>
-        /// <returns></returns>
+        /// <param name="separator">the separator.</param>
+        /// <param name="parts">The items to be concatenated.</param>
+        /// <returns>the concatenated string.</returns>
         public static string ConcatWithSeparator(string separator, params string[] parts)
         {
-            return ConcatWithSeparatorIncludeBlanks(separator, parts.Where(p => !string.IsNullOrEmpty(p)));
+            return ConcatWithSeparatorIncludeBlanks(separator, parts?.Where(p => !string.IsNullOrEmpty(p)));
         }
 
         /// <summary>
@@ -783,11 +783,33 @@ namespace JohnLambe.Util
         /// If longer than the string, the whole string is returned.</param>
         /// <returns></returns>
         [return: Nullable]
-        public static string EndSubstring([NotNull]this string s, int length)
+        public static string EndSubstring(this string s, int length)
         {
             if (s == null)
                 return null;
             return s.Substring(System.Math.Max(0, s.Length - length));
+        }
+
+        /// <summary>
+        /// Removes a specified number of characters from the end of string.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="lengthToRemove">Number of characters to remove.
+        /// If longer than the length of the string, "" is returned.
+        /// If negative (or 0), the string is returned unmodified.
+        /// </param>
+        /// <returns></returns>
+        [return: Nullable]
+        public static string RemoveLast(this string s, int lengthToRemove)
+        {
+            if (s == null)
+                return null;
+            if (lengthToRemove > s.Length)
+                return "";
+            else if (lengthToRemove <= 0)
+                return s;
+            else
+                return s.Substring(0, s.Length - lengthToRemove);
         }
 
         #region Get character

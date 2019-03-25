@@ -29,7 +29,7 @@ namespace MvpFramework.WinForms.Controls
     /// </example>
     /// <seealso cref="MvpNestedAttribute"/>
     /// <seealso cref="INestedView"/>
-    public class MvpNestedViewPlaceholder : Panel, INestedViewPlaceholder, IControlBinder
+    public class MvpNestedViewPlaceholder : Panel, INestedViewPlaceholder, IControlBinder //, IKeyboardKeyHandler
     {
         #region INestedViewPlaceholder
 
@@ -115,8 +115,14 @@ namespace MvpFramework.WinForms.Controls
             base.OnPaint(e);
 
             if (DesignMode)
-                e.Graphics.DrawString(ViewId,Font,Brushes.Green, 12, 12);
+                e.Graphics.DrawString(ViewId,Font,Brushes.Green, 12, 12);   // show the ID in design mode
         }
+
+        /*
+        public virtual void NotifyKeyDown(KeyboardKeyEventArgs args)
+        {
+        }
+        */
 
         [Category("Layout")]
         [Description("How the nested view is docked within this control.")]

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{57DD0BFC-5A06-48D2-8E49-57D191E00D4A}</ProjectGuid>
+    <ProjectGuid>{BC5A408E-6FD9-4C55-96AA-9E4EE7271412}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JohnLambe.Util</RootNamespace>

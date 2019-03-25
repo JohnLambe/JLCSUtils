@@ -79,7 +79,7 @@ namespace JohnLambe.Util.Text
         /// If <paramref name="count"/> &lt;= 0, "" is returned.
         /// </summary>
         /// <param name="c">The character to repeat.</param>
-        /// <param name="count"></param>
+        /// <param name="count">The number of times to repeat the character.</param>
         /// <returns></returns>
         [return: NotNull]
         public static string Repeat(this char c, int count)
@@ -90,6 +90,23 @@ namespace JohnLambe.Util.Text
             for(int n = 0; n < count; n++)
                 sb.Append(c);
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Convert a character that is a hexadecimal digit ('0'-'9','A'-'Z' or 'a'-'z') to the value of that digit.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns>the value of the digit (0-15)/</returns>
+        /// <exception cref="ArgumentException">The character is not a hexadecimal digit.</exception>
+        public static int HexDigitValue(this char c)
+        {
+            if (c >= '0' && c <= '9')
+                return ((int)c) - 38;
+            c = char.ToUpper(c);
+            if (c >= 'A' && c <= 'F')
+                return ((int)c) - 65 + 10;
+            else
+                throw new ArgumentException("Not a valid hexadecimal digit: " + c);
         }
     }
 }

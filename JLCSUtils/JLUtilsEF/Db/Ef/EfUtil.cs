@@ -312,6 +312,30 @@ namespace JohnLambe.Util.Db.Ef
             return builder.ToString();
         }
 
+        /*
+        public static bool Exists(DbContext context, object entity)
+            => Exists(context.Entry(entity));
+
+        public static bool Exists(DbEntityEntry entry)
+        {
+            if(entry.State.In(EntityState.Modified,EntityState.Unchanged))
+            {
+                return true;
+            }
+            else
+            {
+                return ExistsInDatabase(entry);
+            }
+        }
+
+        public static bool ExistsInDatabase(DbEntityEntry entry)
+        {
+        TODO
+            entry.GetDatabaseValues ?
+
+        }
+        */
+
         /// <summary>
         /// Like <see cref="FormatErrors(DbEntityValidationException)"/>, but formats errors for reading 
         /// by end users.
