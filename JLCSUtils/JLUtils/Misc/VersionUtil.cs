@@ -14,6 +14,77 @@ namespace JohnLambe.Util.Misc
     public static class VersionUtil
     {
         /// <summary>
+        /// Version number string with no trailing zero parts.
+        /// The first part is always included (even if 0).
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public static string ToCompactString(this Version version)
+        {
+            int parts = NonZeroParts(version);
+            return version.Major +
+                (parts < 2 ? "" :
+                    "." + version.Minor +
+                    (parts < 3 ? "" :
+                        "." + version.Build +
+                        (parts < 4 ? "" :
+                            "." + version.Revision
+                        )
+                    )
+                );
+        }
+
+        /// <summary>
+        /// Returns the minimum number of parts that can be used to display the version number -
+        /// the number of parts in the version number, excluding trailing zero parts.
+        /// <para>
+        /// In the range 1 to 4 inclusive.
+        /// </para>
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public static int NonZeroParts(this Version version)
+        {
+            if (version.Revision > 0)
+                return 4;
+            else if (version.Build > 0)
+                return 3;
+            else if (version.Minor > 0)
+                return 2;
+            else
+                return 1;
+        }
+
+        public static int Parts(this Version version)
+        {
+            if (version.Revision > -1)
+                return 4;
+            else if (version.Build > -1)
+                return 3;
+            else if (version.Minor > -1)
+                return 2;
+            else
+                return 1;
+        }
+
+        /// <summary>
+        /// Same as <see cref="Version(string)"/> except<br/>
+        /// - "" or null returns null<br/>
+        /// - one part version numbers are supported (e.g. "1" is equivalent to "1.0").
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public static Version FromString(string version)
+        {
+            if (string.IsNullOrEmpty(version))
+                return null;
+            if (!version.Contains("."))    // only one part (not supported by Version(string))
+                return new Version(int.Parse(version), 0);
+            else
+                return new Version(version);
+        }
+
+        /// <summary>
         /// Convert the File Version in the given <see cref="FileVersionInfo"/> to a <see cref="Version"/>.
         /// </summary>
         /// <param name="fileVersion"></param>
